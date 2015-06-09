@@ -37,9 +37,12 @@ char* get_config_folder()
 char* get_config_filename()
 {
 	char *configfilename;
+	char *folder =get_config_folder();
 
 	configfilename =calloc(1, 255);
-	snprintf(configfilename, 255, "%s/XwinTox.ini", get_config_folder());
+	snprintf(configfilename, 255, "%s/XwinTox.ini", folder);
+
+	free (folder);
 
 	return configfilename;
 }
