@@ -20,6 +20,8 @@ void List_add(List_t **n, void *data);
 void List_del(List_t **n, void *data);
 void List_print(List_t **n);
 
+void* List_retrieve_and_remove_first(List_t **n);
+
 /* list_iterate is not thread safe */
 #define LIST_ITERATE(list) \
 	List_t *tmp; \

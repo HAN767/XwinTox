@@ -104,12 +104,22 @@ List_retrieve_and_remove_first(List_t **n)
 	{
 		_Locked_Start((*n)->_Lock)
 		ret =(*n)->data;
-		tmp =(*n)->Link;
-		tmplock =(*n)->_Lock;
-		tmp->_Lock =tmplock;
-		free(*n);
-		*n =tmp;
-		_Locked_End((*n)->_Lock)
+		if ((*n)->Link)
+		{
+			tmp =(*n)->Link;
+			tmplock =(*n)->_Lock;
+			tmp->_Lock =tmplock;
+			free(*n);
+			*n =tmp;
+			_Locked_End((*n)->_Lock)
+		}
+		else
+		{
+			_Locked_End((*n)->_Lock)
+			free (*n);
+			*n =NULL;
+		}
+
 		return ret;
 	}
 }
