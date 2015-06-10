@@ -9,7 +9,7 @@ EXE = Toxaemia
 RPC = toxaemia.x
 rpc_h_loc =hdr/
 OBJ_C = toxaemia.c toxaemia_svc.c $(ROOTDIR)/libsunshine_src/libsunshine.ar
-OBJ_C += toxaemia_xdr.c
+OBJ_C += toxaemia_xdr.c toxaemia_funcs.c toxaemia_util.c toxaemia_tox_callbacks.c
 
 CFLAGS = -I$(ROOTDIR)/libsunshine_src/hdr -O0 -g -Ihdr -DRPC_SVC_FG
 CFLAGS += -DXWTOXVERSION=\"$(VERSION)\" $(TOXINC)
