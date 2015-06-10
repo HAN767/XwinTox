@@ -30,6 +30,7 @@ int launch_tox_thread()
 	thrd_create (&Tox_comm->Thrd, Tox_comm_main, 0);
 
 	mtx_lock (&Tox_comm->ConnectedMtx);
+	Tox_thread_launched =1;
 
 	while(!Tox_comm->Connected) 
 		{ err =cnd_wait(&Tox_comm->ConnectedCnd, &Tox_comm->ConnectedMtx); }
