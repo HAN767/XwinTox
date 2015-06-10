@@ -50,10 +50,10 @@ int main()
 
 #define GTC(X) (char *)Dictionary_get (APP->Config, X )
 
-	APP->Connected = !toxconnect_1( 
+	/*APP->Connected = !toxconnect_1( 
 					(int)atoi(Dictionary_get(APP->Config, "Tox.BootstrapPort")), 
 					GTC("Tox.BootstrapIP"), GTC("Tox.BootstrapKey"), 
-					GTC("Tox.Name"), GTC("Tox.Status") , clnt);
+					GTC("Tox.Name"), GTC("Tox.Status") , clnt);*/
 
 	while (!APP->Comm->WantQuit)
 	{

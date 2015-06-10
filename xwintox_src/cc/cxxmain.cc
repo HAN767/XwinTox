@@ -1,6 +1,10 @@
 #include <threads.h>
 #include <unistd.h>
 
+#include <FL/Fl.H>
+
+#include "xwintox_win.h"
+
 extern "C"
 {
 #include "misc.h"
@@ -22,10 +26,15 @@ void CommWork()
 
 extern "C" int CXXMain()
 {
-	sleep(5);
+	/*sleep(5);
 
 	APP->Comm->WantQuit=1;
-	CommWork();
+	CommWork();*/
+	Fl::visual(FL_RGB);
+	XwinTox* Xwin = new XwinTox(640, 480, "XwinTox", 1);
+	Xwin->show();
+
+	Fl::run();
 
 	return 0;
 }

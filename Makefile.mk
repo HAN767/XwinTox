@@ -67,7 +67,7 @@ $(rpc_h_loc)%_rpc.h: %.x
 $(EXE): $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.cc=%.o)
 	@set -e; \
 	printf " LD \t\t$(@)\n"
-	@cc $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.cc=%.o) $(LDFLAGS) $(XFLAGS) $(LDFLAGS) -o $(EXE) && $(BUILTTARGET)
+	@cc $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.cc=%.o) $(BASELDFLAGS) $(LDFLAGS) $(XFLAGS) $(LDFLAGS) -o $(EXE) && $(BUILTTARGET)
 
 $(SHLIB): $(OBJ_C:%.c=%.o)
 	@set -e; \
