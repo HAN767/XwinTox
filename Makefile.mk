@@ -31,8 +31,23 @@ all: build
 	$(ANALYSE)@$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< --analyze -Xanalyzer -analyzer-output=html -o $(ROOTDIR)/analysis && $(OK)
 
 $(rpc_h_loc)%_rpc.h: %.x
-	@printf " RPCGEN \t$(@)"
-	@rpcgen -h $< > $@ && $(OK)
+	@printf " RPCGEN(H) \t$(@)"
+	@rpcgen -C -N -h $< > $@ && $(OK)
+
+%_svc.c: %.x
+	@printf " RPCGEN(SVC) \t$(@)"
+	@rpcgen -C -N -s udp $< > $@.pre && \
+	sed  's/.h"/_rpc.h"/' $(@).pre > $(@) && rm $(@).pre && $(OK)
+
+%_xdr.c: %.x
+	@printf " RPCGEN(XDR) \t$(@)"
+	@rpcgen -C -N -c $< > $@.pre && \
+	sed  's/.h"/_rpc.h"/' $(@).pre > $(@) && rm $(@).pre && $(OK)
+
+%_clnt.c: %.x
+	@printf " RPCGEN(CLNT) \t$(@)"
+	@rpcgen -C -N -l $< > $@.pre && \
+	sed  's/.h"/_rpc.h"/' $(@).pre > $(@) && rm $(@).pre && $(OK)
 
 $(EXE): $(OBJ_C:%.c=%.o)
 	@set -e; \
@@ -51,6 +66,7 @@ $(STLIB): $(OBJ_C:%.c=%.o)
 
 clean_subdir:
 	rm -f $(OBJ_C:%.c=%.o) $(OBJ_CC:%.c=%.o) $(OBJ_C:%.c=%.d) autodeps.mk $(EXE) 
-	rm -rf $(SHLIB) $(STLIB) $(rpc_h_loc)$(RPC:%.x=%_rpc.h)
+	rm -rf $(SHLIB) $(STLIB) $(rpc_h_loc)$(RPC:%.x=%_rpc.h) $(RPC:%.x=%_svc.c)
+	rm -rf $(RPC:%.x=%_xdr.c) $(RPC:%.x=%_clnt.c)
 
 -include autodeps.mk

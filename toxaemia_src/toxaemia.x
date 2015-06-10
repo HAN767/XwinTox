@@ -1,13 +1,9 @@
-struct ToxConnectArgs {
-	int BootstrapPort;
-	string BootstrapAddress<>;
-	string BootstrapKey<>;
-	string Name<>;
-	string Status<>;
-};
-
 program TOXAEMIA_PROG {
-        version TOXAEMIA_VERS1 {
-                int ToxConnect(ToxConnectArgs) = 1;
-        } = 1;
+	version TOXAEMIA_VERS1 {
+		/* ToxConnect
+		 * Connects to Tox
+		 * int BootstrapPort, string BootstrapAddress<>, string BootstrapKey<>, 
+		 * string Name<>, string Status<> */
+		int ToxConnect(int, string<>, string<>, string<>, string<>) = 1;
+	} = 1;
 } = 0x22159817;

@@ -8,13 +8,15 @@ EXE = Toxaemia
 
 RPC = toxaemia.x
 rpc_h_loc =hdr/
-OBJ_C = main.c $(ROOTDIR)/libsunshine_src/libsunshine.ar
+OBJ_C = toxaemia.c toxaemia_svc.c $(ROOTDIR)/libsunshine_src/libsunshine.ar
+OBJ_C += toxaemia_xdr.c
 
-CFLAGS = -I$(ROOTDIR)/libsunshine_src/hdr -O0 -g -Ihdr
-CFLAGS += -DXWTOXVERSION=\"$(VERSION)\"
-LDFLAGS = -lstdthreads
+CFLAGS = -I$(ROOTDIR)/libsunshine_src/hdr -O0 -g -Ihdr -DRPC_SVC_FG
+CFLAGS += -DXWTOXVERSION=\"$(VERSION)\" $(TOXINC)
+LDFLAGS = -lstdthreads $(TOXLIB)
 
-build: $(RPC:%.x=hdr/%_rpc.h) $(OBJ_C:%.c=%.o) $(EXE)
+build: $(RPC:%.x=hdr/%_rpc.h) $(RPC:%.x=%_svc.c) $(RPC:%.x=%_xdr.c) \
+  $(RPC:%.x=%_clnt.c) $(OBJ_C:%.c=%.o) $(EXE)
 	@echo Built
 
 include $(ROOTDIR)/Makefile.mk
