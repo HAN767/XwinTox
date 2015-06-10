@@ -80,8 +80,8 @@ $(STLIB): $(OBJ_C:%.c=%.o)
 	@ar rcs $(STLIB) $(OBJ_C:%.c=%.o) $(XFLAGS) && $(BUILTTARGET)
 
 clean_subdir:
-	rm -f $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.c=%.o) $(OBJ_C:%.c=%.d) autodeps.mk $(EXE) 
-	rm -rf $(SHLIB) $(STLIB) $(rpc_h_loc)$(RPC:%.x=%_rpc.h) $(RPC:%.x=%_svc.c)
-	rm -rf $(RPC:%.x=%_xdr.c) $(RPC:%.x=%_clnt.c) $(OBJ_CXX:%.c=%.d)
+	rm -f $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.cc=%.o) $(OBJ_C:%.c=%.d) autodeps.mk $(EXE) 
+	rm -f $(SHLIB) $(STLIB) $(rpc_h_loc)$(RPC:%.x=%_rpc.h) $(RPC:%.x=%_svc.c)
+	rm -f $(RPC:%.x=%_xdr.c) $(RPC:%.x=%_clnt.c) $(OBJ_CXX:%.cc=%.d)
 
 -include autodeps.mk
