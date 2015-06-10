@@ -12,37 +12,53 @@
 
 #include "etc.h"
 
-typedef struct Tox_comm_s
+typedef struct Xwin_s
 {
-	thrd_t Thread;
+	thrd_t Thrd;
 	List_t* ICQueue;
-} Tox_comm_t;
+} Xwin_t;
+
+typedef struct Comm_s
+{
+	int WantQuit;
+	int Work;
+	cnd_t WorkCnd;
+	mtx_t WorkMtx;
+} Comm_t;
 
 typedef struct XwinTox_instance_s
 {
+	Xwin_t *Xwin;
+	Comm_t *Comm;
+
+	int Connected;
+
 	Dictionary_t *Config;
-	Tox_comm_t *ToxComm;
 	char* ConfigFilename;
 } XwinTox_instance_t;
 
-XwinTox_instance_t *Instance;
+XwinTox_instance_t *APP;
+
+extern int CXXMain();
 
 int main()
 {
-	int conres;
 	CLIENT *clnt;
 
 	/* component independent main */
-	Instance =calloc(1, sizeof (XwinTox_instance_t));
-	Instance->Config =Dictionary_new(24);
-	Instance->ConfigFilename =get_config_filename();
+	APP =calloc(1, sizeof (XwinTox_instance_t));
+	APP->Comm =calloc(1, sizeof(Comm_t));
+	APP->Xwin =calloc(1, sizeof(Xwin_t));
+
+	APP->Config =Dictionary_new(24);
+	APP->ConfigFilename =get_config_filename();
 
 	umask(S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 
 	create_config_folder();
-	if (Dictionary_load_from_file(Instance->Config, 
-		Instance->ConfigFilename, 1)) 
-	{ default_config(Instance->Config); }
+	if (Dictionary_load_from_file(APP->Config, 
+		APP->ConfigFilename, 1)) 
+	{ default_config(APP->Config); }
 
 	clnt = clnt_create("localhost", TOXAEMIA_PROG, TOXAEMIA_VERS1, "udp");
 	if (clnt == (CLIENT *) NULL) 
@@ -51,11 +67,30 @@ int main()
 		exit(1);
 	}
 
-#define GTC(X) (char *)Dictionary_get (Instance->Config, X )
+	cnd_init(&APP->Comm->WorkCnd);
+	mtx_init(&APP->Comm->WorkMtx, mtx_plain);
+	thrd_create (&APP->Xwin->Thrd, CXXMain, 0);
 
-	conres = toxconnect_1( atoi(Dictionary_get(Instance->Config, "Tox.BootstrapPort")), GTC("Tox.BootstrapIP"), GTC("Tox.BootstrapKey"), GTC("Tox.Name"), GTC("Tox.Status") , clnt);
+
+#define GTC(X) (char *)Dictionary_get (APP->Config, X )
+
+	APP->Connected = !toxconnect_1( 
+					(int)atoi(Dictionary_get(APP->Config, "Tox.BootstrapPort")), 
+					GTC("Tox.BootstrapIP"), GTC("Tox.BootstrapKey"), 
+					GTC("Tox.Name"), GTC("Tox.Status") , clnt);
+
+	while (!APP->Comm->WantQuit)
+	{
+		mtx_lock(&APP->Comm->WorkMtx);
+
+		while(!APP->Comm->Work) 
+			{ cnd_wait(&APP->Comm->WorkCnd, &APP->Comm->WorkMtx); }
+		APP->Comm->WorkMtx =0;
+
+		mtx_unlock(&APP->Comm->WorkMtx);
+	}
 	
-	Dictionary_write_to_file(Instance->Config, Instance->ConfigFilename);
+	Dictionary_write_to_file(APP->Config, APP->ConfigFilename);
 
 	return 0;
 }

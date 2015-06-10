@@ -13,10 +13,6 @@ binary in one thread of another binary, and implementing the user interface in
 another thread of that latter binary. *XwinTox* is the user interface side; 
 *Toxaemia* is the service that communicates with Tox.
 
-The process-level seperation of libToxCore communication from communique
-processing and user interface implementation has not yet been actualised. In its
-stead the libToxCore communication occurs within a seperate thread.
-
 XwinTox and Toxaemia are free software; XwinTox is available under the Peer 
 Production Licence (see CPYRIGHT) and Toxaemia (in this context referring to all
 code found within the toxaemia_src folder) may be used under the provisions of

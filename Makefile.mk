@@ -25,10 +25,25 @@ all: build
 	( grep "$(*).d" autodeps.mk > /dev/null \
 	|| echo "-include $(*).d" >> autodeps.mk ) \
 	&& $(OK)
-	@printf " CC \t\t$(@)" 
+	@printf " cc \t\t$(@)" 
 	@$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< -o $@ && $(OK)
-	$(ANALYSE)@printf " CCSA \t\t$(@)" 
+	$(ANALYSE)@printf " ccSA \t\t$(@)" 
 	$(ANALYSE)@$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< --analyze -Xanalyzer -analyzer-output=html -o $(ROOTDIR)/analysis && $(OK)
+
+.cc.o: $(RPC)
+	@set -e; rm -f $@; \
+	printf " DEP \t\t$(@)" 
+	@$(CXX) -MM -MT"$*.o" $(BASECFLAGS) $(CXXFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) $< > $@.dddd; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.dddd > $*.d; \
+	rm -f $@.dddd; \
+	touch autodeps.mk; \
+	( grep "$(*).d" autodeps.mk > /dev/null \
+	|| echo "-include $(*).d" >> autodeps.mk ) \
+	&& $(OK)
+	@printf " CC \t\t$(@)" 
+	@$(CXX) $(CXXFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< -o $@ && $(OK)
+	$(ANALYSE)@printf " CCSA \t\t$(@)" 
+	$(ANALYSE)@$(CXX) $(CXXFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< --analyze -Xanalyzer -analyzer-output=html -o $(ROOTDIR)/analysis && $(OK)
 
 $(rpc_h_loc)%_rpc.h: %.x
 	@printf " RPCGEN(H) \t$(@)"
@@ -49,10 +64,10 @@ $(rpc_h_loc)%_rpc.h: %.x
 	@rpcgen -C -N -l $< > $@.pre && \
 	sed  's/.h"/_rpc.h"/' $(@).pre > $(@) && rm $(@).pre && $(OK)
 
-$(EXE): $(OBJ_C:%.c=%.o)
+$(EXE): $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.cc=%.o)
 	@set -e; \
 	printf " LD \t\t$(@)\n"
-	@cc $(OBJ_C:%.c=%.o) $(OBJ_CC:%.cc=%.o) $(LDFLAGS) $(XFLAGS) $(LDFLAGS) -o $(EXE) && $(BUILTTARGET)
+	@cc $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.cc=%.o) $(LDFLAGS) $(XFLAGS) $(LDFLAGS) -o $(EXE) && $(BUILTTARGET)
 
 $(SHLIB): $(OBJ_C:%.c=%.o)
 	@set -e; \
@@ -65,8 +80,8 @@ $(STLIB): $(OBJ_C:%.c=%.o)
 	@ar rcs $(STLIB) $(OBJ_C:%.c=%.o) $(XFLAGS) && $(BUILTTARGET)
 
 clean_subdir:
-	rm -f $(OBJ_C:%.c=%.o) $(OBJ_CC:%.c=%.o) $(OBJ_C:%.c=%.d) autodeps.mk $(EXE) 
+	rm -f $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.c=%.o) $(OBJ_C:%.c=%.d) autodeps.mk $(EXE) 
 	rm -rf $(SHLIB) $(STLIB) $(rpc_h_loc)$(RPC:%.x=%_rpc.h) $(RPC:%.x=%_svc.c)
-	rm -rf $(RPC:%.x=%_xdr.c) $(RPC:%.x=%_clnt.c)
+	rm -rf $(RPC:%.x=%_xdr.c) $(RPC:%.x=%_clnt.c) $(OBJ_CXX:%.c=%.d)
 
 -include autodeps.mk
