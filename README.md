@@ -20,7 +20,11 @@ stead the libToxCore communication occurs within a seperate thread.
 XwinTox and Toxaemia are free software; XwinTox is available under the Peer 
 Production Licence (see CPYRIGHT) and Toxaemia (in this context referring to all
 code found within the toxaemia_src folder) may be used under the provisions of
-the Peer Production Licence or the GPL version 3.0 or later (see FSF.org).
+the Peer Production Licence or the GPL version 3.0 or later, which may be found
+in full form in CPYRIGHT.ALT within the toxaemia_src folder. LibSunshine, the 
+Sunshine Software Support Library, may be used under the provisions of the 
+ZLib Licence, a copy of which is included within the file CPYRIGHT within the
+libsunshine_src folder.
 
 
 Building
