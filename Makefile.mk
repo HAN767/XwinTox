@@ -41,7 +41,7 @@ all: build
 	|| echo "-include $(*).d" >> autodeps.mk ) \
 	&& $(OK)
 	@printf " CC \t\t$(@)" 
-	@$(CXX) $(CXXFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< -o $@ && $(OK)
+	@$(CXX) $(BASECXXFLAGS) $(CXXFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< -o $@ && $(OK)
 	$(ANALYSE)@printf " CCSA \t\t$(@)" 
 	$(ANALYSE)@$(CXX) $(CXXFLAGS) $(WARN) $(CPPFLAGS) $(XFLAGS) -c $< --analyze -Xanalyzer -analyzer-output=html -o $(ROOTDIR)/analysis && $(OK)
 

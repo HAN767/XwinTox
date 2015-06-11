@@ -3939,7 +3939,7 @@ void nsvgRasterize(NSVGrasterizer* r,
 
 			nsvg__flattenShapeStroke(r, shape, scale);
 
-			dumpEdges(r, "edge.svg");
+			//dumpEdges(r, "edge.svg");
 
 			// Scale and translate edges
 			for (i = 0; i < r->nedges; i++) {

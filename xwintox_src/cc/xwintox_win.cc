@@ -35,11 +35,13 @@ void ContactsEntry::draw()
 	fl_color(txt_color);
 	fl_font(FL_HELVETICA, 12 * scale);
 	fl_draw(name, x() + (50 * scale), y() + (22 * scale));
+	fl_font(FL_HELVETICA, 10 * scale);
 	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
 
 	fl_color(2);
 	fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 		  10 * scale, 0, 360);
+	icon->draw();
 }
 
 int ContactsEntry::handle(int event) 
@@ -81,6 +83,14 @@ int ContactsList::handle(int event)
 	return 0;
 }
 
+void ContactsList::clear_all()
+{
+	this->clear();
+	entries.clear();
+	this->redraw();
+	parent()->redraw();
+}
+
 StatusBox::StatusBox(int X, int Y, int W, int H, int S) : Fl_Box (X, Y, W, H)
 {
 	scale =S;
@@ -102,6 +112,11 @@ SVGBox::SVGBox(int X, int Y, int W, int H, int S, const char* pic, double factor
 	img_r =svgrast(pic, W, H, S, factor);
 	img =new Fl_RGB_Image(img_r, W, H, 4);
 	image(img);
+}
+
+void SVGBox::draw()
+{
+	Fl_Box::draw();
 }
 
 Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)

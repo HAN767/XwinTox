@@ -29,6 +29,7 @@ class SVGBox: public Fl_Box
 public:
 	// Ctor
 	SVGBox(int X, int Y, int W, int H, int S, const char* pic, double factor);
+	void draw();
 
 	int scale;
 	unsigned char *img_r;
@@ -58,6 +59,7 @@ public:
 	// Ctor
 	ContactsList(int X, int Y, int W, int H, int S);
 	int handle(int event);
+	void clear_all();
 
 	vector <ContactsEntry*> entries;
 
@@ -162,5 +164,7 @@ public:
 
 	int scale;
 };
+
+extern XwinTox* Xwin;
 
 #endif
