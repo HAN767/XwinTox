@@ -4,12 +4,82 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Multiline_Input.H>
+#include <FL/Fl_Scroll.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/fl_draw.H>
 
 #include "xwintox_win.h"
 #include "svgs.h"
 #include "nanosvg/nsvgwrap.h"
+
+ContactsEntry::ContactsEntry(int X, int Y, int S, const char* N, const char *S2) : Fl_Box (X, Y, 224 * S, 50 * S)
+{
+	scale =S;
+	name =N;
+	status =S2;
+	selected =0;
+
+	icon = new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S, default_av, 0.35);
+
+	box(FL_FLAT_BOX);
+	color(fl_rgb_color(65, 65, 65));
+}
+
+void ContactsEntry::draw()
+{
+	int txt_color =255;
+	if (selected) { color(255); txt_color =0; }
+	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
+
+	Fl_Box::draw();
+	fl_color(txt_color);
+	fl_font(FL_HELVETICA, 12 * scale);
+	fl_draw(name, x() + (50 * scale), y() + (22 * scale));
+	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
+
+	fl_color(2);
+	fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
+		  10 * scale, 0, 360);
+}
+
+int ContactsEntry::handle(int event) 
+{
+	switch(event) 
+	{
+	case FL_PUSH:
+		selected =1;
+		redraw(); icon->redraw();
+		return 1;
+	}
+	return 0;
+}
+
+ContactsList::ContactsList(int X, int Y, int W, int H, int S) : Fl_Scroll (X, Y, W, H)
+{
+	scale =S;
+	color(fl_rgb_color(65, 65, 65));
+	type(6);
+
+	ContactsEntry *test =new ContactsEntry(X, Y, S, "SylvieLorxu", "Toxing on SylvieTox");
+	ContactsEntry *test2 =new ContactsEntry(X, Y + (50 * S), S, "Furious Polak", "I HATE memes");
+	entries.push_back(test); entries.push_back(test2);
+	test2->selected =1;
+}
+
+int ContactsList::handle(int event) 
+{
+	switch(event) 
+	{
+	case FL_PUSH:
+		for (const auto entry : entries)
+		{
+		entry->selected =0;
+		entry->redraw(); entry->icon->redraw();
+		}
+	}
+	Fl_Scroll::handle(event);
+	return 0;
+}
 
 StatusBox::StatusBox(int X, int Y, int W, int H, int S) : Fl_Box (X, Y, W, H)
 {
@@ -81,6 +151,7 @@ Sidebar::Sidebar(int S) : Fl_Group (0, 0, 224 * S, 480 * S)
 	color(fl_rgb_color(65, 65, 65));
 	top_area =new Sidebar_Top_Area(S);
 	bottom_area =new Sidebar_Bottom_Area(S);
+	contacts =new ContactsList(0, 60 * S, (224 * S), h() - (36 * S) - (60 * S), S);
 	end();
 }
 
@@ -158,7 +229,6 @@ void GAddFriend::draw()
 	fl_font(FL_HELVETICA, 12 * scale);
 	fl_draw("Tox ID", x() + (10 * scale), y() + 84 * scale);
 	fl_draw("Message", x() + (10 * scale), y() + 134 * scale);
-
 }
 
 XWContents::XWContents(int S) : Fl_Box (224 * S, 0, 416 * S, 480 * S)
@@ -169,7 +239,6 @@ XWContents::XWContents(int S) : Fl_Box (224 * S, 0, 416 * S, 480 * S)
 	color(4);
 
 	addfriend =new GAddFriend(S);
-	
 }
 
 
@@ -179,7 +248,6 @@ XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c)
 
 	box(FL_FLAT_BOX);
 	color(255);
-
 
 	contents =new XWContents(S);
 	sidebar =new Sidebar(S);

@@ -1,11 +1,15 @@
 #ifndef XWINTOX_WIN_H_
 #define XWINTOX_WIN_H_
 
+#include <vector>
+using namespace std;
+
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_RGB_Image.H>
+#include <FL/Fl_Scroll.H>
 #include <FL/Fl_Button.H>
 
 class StatusBox: public Fl_Box
@@ -30,6 +34,34 @@ public:
 	unsigned char *img_r;
 	Fl_RGB_Image *img;
 	Fl_Color bg;
+};
+
+class ContactsEntry: public Fl_Box
+{
+public:
+	// Ctor
+	ContactsEntry(int X, int Y, int S, const char* N, const char* S2);
+
+	void draw();
+	int handle(int event);
+
+	SVGBox *icon;
+
+
+	const char *name, *status;
+	int selected, scale;
+};
+
+class ContactsList: public Fl_Scroll
+{
+public:
+	// Ctor
+	ContactsList(int X, int Y, int W, int H, int S);
+	int handle(int event);
+
+	vector <ContactsEntry*> entries;
+
+	int scale;
 };
 
 class Sidebar_Top_Area: public Fl_Group
@@ -70,6 +102,7 @@ public:
 	void resize (int X, int Y, int W, int H);
 
 	Sidebar_Top_Area *top_area;
+	ContactsList *contacts;
 	Sidebar_Bottom_Area *bottom_area;
 
 	int scale;
