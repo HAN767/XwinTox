@@ -27,13 +27,12 @@ void StatusBox::draw()
 }
 
 
-SVGBox::SVGBox(int X, int Y, int W, int H, int S) : Fl_Box (X, Y, W, H)
+SVGBox::SVGBox(int X, int Y, int W, int H, int S, const char* pic, double factor) : Fl_Box (X, Y, W, H)
 {
-	img_r =svgrast(default_av, W, H, S);
+	img_r =svgrast(pic, W, H, S, factor);
 	img =new Fl_RGB_Image(img_r, W, H, 4);
 	image(img);
 }
-
 
 Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
 {
@@ -43,9 +42,9 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
 	color(fl_rgb_color(28, 28, 28));
 
 	statusbox =new StatusBox(192 * S, 10 * S, 20 * S, 40 * S, S);
-	avbox =new SVGBox(10 * S, 10 * S, 40 * S , 40 * S, S);
-	name =new Fl_Input(62 * S, 18 * S, 128 *S, 10 * S); 
-	status =new Fl_Input(62 * S, 30 * S, 128 *S, 10 * S); 
+	avbox =new SVGBox(10 * S, 10 * S, 40 * S , 40 * S, S, default_av, 0.3);
+	name =new Fl_Input(62 * S, 18 * S, 128 *S, 10 * S);
+	status =new Fl_Input(62 * S, 30 * S, 128 *S, 10 * S);
 	name->textsize(12 * S);
 	status->textsize(10 * S);
 	name->box(FL_FLAT_BOX); name->color(fl_rgb_color(28, 28, 28));
@@ -53,6 +52,23 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
 	name->textcolor(255);
 	status->textcolor(54);
 	name->value("XwinTox User"); status->value("Toxing on XwinTox");
+
+	end();
+}
+
+Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group (0, 
+										(480 * S) - (36 * S), 224 * S, 480 * S)
+{
+	scale =S;
+
+	box(FL_FLAT_BOX);
+	color(fl_rgb_color(28, 28, 28));
+
+	addfriend =new SVGBox(0, (480 * S) - (36 * S), 56 * S , 36 * S, S, addfriendsvg, 0.5);
+	newgroup =new SVGBox(56 * S, (480 * S) - (36 * S), 112 * S , 36 * S, S, groupsvg, 0.5);
+	transfers =new SVGBox(112 * S, (480 * S) - (36 * S), 168 * S , 36 * S, S, transfersvg, 0.5);
+	settings =new SVGBox(168 * S, (480 * S) - (36 * S), 212 * S , 36 * S, S, settingssvg, 0.5);
+
 	end();
 }
 
@@ -64,6 +80,7 @@ Sidebar::Sidebar(int S) : Fl_Group (0, 0, 224 * S, 480 * S)
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
 	top_area =new Sidebar_Top_Area(S);
+	bottom_area =new Sidebar_Bottom_Area(S);
 	end();
 }
 
@@ -71,6 +88,7 @@ void Sidebar::resize(int X, int Y, int W, int H)
 {
 	Fl_Group::resize(X, Y, W, H);
 	top_area->resize(0, 0, 224 * scale, 60 * scale);
+	bottom_area->resize(0, H - (36 * scale), 224 * scale, 480 * scale);
 } 
 
 
@@ -93,6 +111,7 @@ void GArea::draw()
 
 	fl_color(fl_rgb_color(192, 192, 192));
 	fl_line(x(), y() + (60 * scale), Fl::w(), y() + (60 * scale));
+	fl_color(0);
 }
 
 GAddFriend::GAddFriend(int S) : GArea (S, "Add Friends")
@@ -103,9 +122,17 @@ GAddFriend::GAddFriend(int S) : GArea (S, "Add Friends")
 	message =new Fl_Multiline_Input(x() + (10 * S), y() + (140 * S), 
 									(x() + w() - (224 * S) - (20 * S)), 
 					84 * S);
+	printf("%d\n", Fl::w());
+
+	send =new Fl_Button(parent()->w() - 62 * scale, y() + 234 * scale, 52 * scale,
+						20 * scale, "Add");/*Fl::w() - 62 * scale, y() + 234 * scale, 52 * scale,
+						20 * scale, "Add");*/
 
 	id->textsize (12 * S); message->textsize (12 * S);
 	message->value("Please accept this friend request.");
+	send->color(fl_rgb_color(107, 194, 96));
+	send->labelcolor(255);
+	send->labelsize(14 * S);
 
 	end();
 }
@@ -119,6 +146,19 @@ void GAddFriend::resize(int X, int Y, int W, int H)
 	message->resize (x() + (10 * scale), y() + (140 * scale), 
 					(x() + w() - (224 * scale) - (20 * scale)), 
 					84 * scale);
+	send->resize(parent()->w() - 62 * scale, y() + 234 * scale, 52 * scale,
+						20 * scale);
+}
+
+void GAddFriend::draw()
+{
+	GArea::draw();
+
+	fl_color(0);
+	fl_font(FL_HELVETICA, 12 * scale);
+	fl_draw("Tox ID", x() + (10 * scale), y() + 84 * scale);
+	fl_draw("Message", x() + (10 * scale), y() + 134 * scale);
+
 }
 
 XWContents::XWContents(int S) : Fl_Box (224 * S, 0, 416 * S, 480 * S)

@@ -3842,7 +3842,7 @@ static void nsvg__initPaint(NSVGcachedPaint* cache, NSVGpaint* paint, float opac
 
 }
 
-/*
+
 static void dumpEdges(NSVGrasterizer* r, const char* name)
 {
 	float xmin = 0, xmax = 0, ymin = 0, ymax = 0;
@@ -3882,7 +3882,7 @@ static void dumpEdges(NSVGrasterizer* r, const char* name)
 	fprintf(fp, "</svg>");
 	fclose(fp);
 }
-*/
+
 
 void nsvgRasterize(NSVGrasterizer* r,
 				   NSVGimage* image, float tx, float ty, float scale,
@@ -3939,7 +3939,7 @@ void nsvgRasterize(NSVGrasterizer* r,
 
 			nsvg__flattenShapeStroke(r, shape, scale);
 
-//			dumpEdges(r, "edge.svg");
+			dumpEdges(r, "edge.svg");
 
 			// Scale and translate edges
 			for (i = 0; i < r->nedges; i++) {

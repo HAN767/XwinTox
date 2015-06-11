@@ -26,7 +26,7 @@ void CommWork()
 
 extern "C" int CXXMain()
 {
-	int scale =1;
+	int scale =2;
 	/*sleep(5);
 
 	APP->Comm->WantQuit=1;

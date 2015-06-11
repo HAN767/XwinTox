@@ -6,7 +6,7 @@ extern "C"
 {
 #endif
 
-unsigned char *svgrast(const char *data, int W, int H, int S);
+unsigned char *svgrast(const char *data, int W, int H, int S, double factor);
 
 #ifdef __cplusplus
 }

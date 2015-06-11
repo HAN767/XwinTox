@@ -24,11 +24,12 @@ class SVGBox: public Fl_Box
 {
 public:
 	// Ctor
-	SVGBox(int X, int Y, int W, int H, int S);
+	SVGBox(int X, int Y, int W, int H, int S, const char* pic, double factor);
 
 	int scale;
 	unsigned char *img_r;
 	Fl_RGB_Image *img;
+	Fl_Color bg;
 };
 
 class Sidebar_Top_Area: public Fl_Group
@@ -46,6 +47,19 @@ public:
 	int scale;
 };
 
+class Sidebar_Bottom_Area: public Fl_Group
+{
+public:
+	// Ctor
+	Sidebar_Bottom_Area(int S);
+
+	SVGBox *addfriend;
+	SVGBox *newgroup;
+	SVGBox *transfers;
+	SVGBox *settings;
+
+	int scale;
+};
 
 class Sidebar: public Fl_Group
 {
@@ -56,6 +70,7 @@ public:
 	void resize (int X, int Y, int W, int H);
 
 	Sidebar_Top_Area *top_area;
+	Sidebar_Bottom_Area *bottom_area;
 
 	int scale;
 };
@@ -65,6 +80,7 @@ class GArea: public Fl_Group
 public:
 	// Ctor
 	GArea(int S, const char *C);
+
 	void draw();
 
 	const char *caption;
@@ -78,6 +94,7 @@ public:
 	GAddFriend(int S);
 
 	void resize (int X, int Y, int W, int H);
+	void draw();
 
 	Fl_Input *id;
 	Fl_Input *message;

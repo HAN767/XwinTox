@@ -7,7 +7,7 @@
 
 #include "nanosvg/nanosvgrast.h"
 
-unsigned char *svgrast(const char *data, int W, int H, int S)
+unsigned char *svgrast(const char *data, int W, int H, int S, double factor)
 {
 	char* newdata =strdup(data);
 	struct NSVGimage* nimage = nsvgParse(newdata, "px", 97);
@@ -18,6 +18,6 @@ unsigned char *svgrast(const char *data, int W, int H, int S)
 	unsigned char *img = (unsigned char *)malloc(W*H*4);
 
 	// Rasterize
-	nsvgRasterize(rast, nimage, 0,0,S*0.3, img, W, H, W*4);
+	nsvgRasterize(rast, nimage, 0,0,S * factor, img, W, H, W*4);
 	return img;
 }
