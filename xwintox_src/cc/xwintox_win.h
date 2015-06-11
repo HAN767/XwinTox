@@ -6,12 +6,14 @@
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_RGB_Image.H>
+#include <FL/Fl_Button.H>
 
 class StatusBox: public Fl_Box
 {
 public:
 	// Ctor
 	StatusBox(int X, int Y, int W, int H, int S);
+
 	void draw();
 
 	int scale;
@@ -58,12 +60,42 @@ public:
 	int scale;
 };
 
-class XWContents: public Fl_Group
+class GArea: public Fl_Group
+{
+public:
+	// Ctor
+	GArea(int S, const char *C);
+	void draw();
+
+	const char *caption;
+	int scale;
+};
+
+class GAddFriend: public GArea
+{
+public:
+	// Ctor
+	GAddFriend(int S);
+
+	void resize (int X, int Y, int W, int H);
+
+	Fl_Input *id;
+	Fl_Input *message;
+	Fl_Button *send;
+
+	Fl_Group *fakebox;
+};
+
+class XWContents: public Fl_Box
 {
 public:
 	// Ctor
 	XWContents(int S);
+
 	Fl_Box *fake;
+	GAddFriend *addfriend;
+
+	int scale;
 };
 
 class XwinTox : public Fl_Double_Window
@@ -76,6 +108,7 @@ public:
 
 	Sidebar *sidebar;
 	XWContents *contents;
+	GAddFriend *addfriend;
 
 	int scale;
 };

@@ -26,12 +26,13 @@ void CommWork()
 
 extern "C" int CXXMain()
 {
+	int scale =1;
 	/*sleep(5);
 
 	APP->Comm->WantQuit=1;
 	CommWork();*/
 	Fl::visual(FL_RGB);
-	XwinTox* Xwin = new XwinTox(640, 480, "XwinTox", 1);
+	XwinTox* Xwin = new XwinTox(640 * scale, 480 * scale, "XwinTox", scale);
 	Xwin->show();
 
 	Fl::run();
