@@ -3,78 +3,92 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
+#include <FL/Fl_RGB_Image.H>
 #include <FL/fl_draw.H>
+
 
 
 #include "xwintox_win.h"
 #include "svgs.h"
 #include "nanosvg/nsvgwrap.h"
 
+StatusBox::StatusBox(int X, int Y, int W, int H, int S) : Fl_Box (X, Y, W, H)
+{
+	scale =S;
+	box(FL_FLAT_BOX);
+	color(fl_rgb_color(65, 65, 65));
+}
+
+void StatusBox::draw()
+{
+	Fl_Box::draw();
+	fl_color(2);
+	fl_pie(this->x() + (5 * scale), this->y() + (15 * scale), 10 * scale,
+			10 * scale, 0, 360);
+}
+
 SVGBox::SVGBox(int X, int Y, int W, int H, int S) : Fl_Box (X, Y, W, H)
 {
-	img =svgrast(default_av, W, H, S);
+	img_r =svgrast(default_av, W, H, S);
+	img =new Fl_RGB_Image(img_r, W, H, 4);
+	image(img);
 }
 
-void SVGBox::draw()
+Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
 {
-	fl_draw_image(img, this->x(), this->y(), this->w(), this->h(), 4, 0);
-}
-
-Sidebar_Top_Area::Sidebar_Top_Area(int s) : Fl_Group (0, 0, 224 * s, 60 * s)
-{
-	scale =s;
+	scale =S;
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(28, 28, 28));
 
-	avbox = new SVGBox (10 * s, 10 * s, 40 * s , 40 * s, s);
+	statusbox =new StatusBox(192 * S, 10 * S, 20 * S, 40 * S, S);
+	avbox =new SVGBox(10 * S, 10 * S, 40 * S , 40 * S, S);
+	name =new Fl_Input(62 * S, 18 * S, 128 *S, 10 * S); 
+	status =new Fl_Input(62 * S, 30 * S, 128 *S, 10 * S); 
+	name->textsize(12 * S);
+	status->textsize(10 * S);
+	name->box(FL_FLAT_BOX); name->color(fl_rgb_color(28, 28, 28));
+	status->box(FL_FLAT_BOX); status->color(fl_rgb_color(28, 28, 28));
+	name->textcolor(255);
+	status->textcolor(54);
+	name->value("XwinTox User"); status->value("Toxing on XwinTox");
 }
 
-Sidebar::Sidebar(int s) : Fl_Group (0, 0, 224 * s, 480)
+Sidebar::Sidebar(int S) : Fl_Group (0, 0, 224 * S, 480)
 {
-	scale =s;
+	scale =S;
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
-	top_area = new Sidebar_Top_Area(s);
-
-	show();
+	top_area =new Sidebar_Top_Area(S);
 }
 
 void Sidebar::resize(int X, int Y, int W, int H)
 {
 	Fl_Group::resize(X, Y, W, H);
 	top_area->resize(0, 0, 224 * scale, 60 * scale);
-
 } 
 
-XWContents::XWContents(int s) : Fl_Group (224 * s, 0, 416, 480)
+XWContents::XWContents(int S) : Fl_Group (224 * S, 0, 416, 480)
 {
-	//fake = new Fl_Box(0,0, 0, 0);
-	//resizable(this);
 	resizable(0);
 	box(FL_FLAT_BOX);
 	color(4);
 	show();
 }
 
-/*void XWContents::resize(int X, int Y, int W, int H)
+
+XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c) 
 {
-	printf("%d, %d, %d, %d\n");
+	scale =S;
 
-} */
-
-
-XwinTox::XwinTox(int w, int h, const char* c, int s) : Fl_Double_Window(w, h, c) 
-{
 	box(FL_FLAT_BOX);
 	color(255);
 
-	sidebar = new Sidebar(s);
-	contents = new XWContents(s);
+	sidebar =new Sidebar(S);
+	contents =new XWContents(S);
 
 	resizable(contents);
-	scale =s;
 }
 
 void XwinTox::resize (int X, int Y, int W, int H)
