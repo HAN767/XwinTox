@@ -20,6 +20,7 @@ extern int CXXMain();
 int main()
 {
 	CLIENT *clnt;
+	struct rpc_err rpcerr;
 
 	/* component independent main */
 	APP =calloc(1, sizeof (XwinTox_instance_t));
@@ -50,11 +51,19 @@ int main()
 
 #define GTC(X) (char *)Dictionary_get (APP->Config, X )
 
-	/*APP->Connected = !toxconnect_1( 
+	APP->Connected = !toxconnect_1( 
 					(int)atoi(Dictionary_get(APP->Config, "Tox.BootstrapPort")), 
 					GTC("Tox.BootstrapIP"), GTC("Tox.BootstrapKey"), 
-					GTC("Tox.Name"), GTC("Tox.Status") , clnt);*/
+					GTC("Tox.Name"), GTC("Tox.Status") , clnt);
 
+	sleep(7);
+	ToxSaveData_t *test=toxgetsavedata_1(clnt);
+	if (!test)
+	{
+		clnt_perror(clnt, "XwinTox RPC:");
+		//clnt_geterr(clnt, rpcerr);
+	}
+	printf("%d, %lu\n", test->Data.Data_len);
 	while (!APP->Comm->WantQuit)
 	{
 		mtx_lock(&APP->Comm->WorkMtx);

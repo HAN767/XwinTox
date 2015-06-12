@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "list.h"
+#include "misc.h"
 
 #include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
@@ -37,11 +38,14 @@ void* toxdisconnect_1_svc(struct svc_req* SvcReq)
 ToxSaveData_t* toxgetsavedata_1_svc()
 {
 	static ToxSaveData_t result;
+	ToxSaveData_t *tmp;
+	int *len;
 	List_add(&Tox_comm->ICQueue, "getsavedata");
 
 	while (!Returns) usleep (1000);
-	result.Data =List_retrieve_and_remove_first(&Returns);
-	result.Len =*(int*)List_retrieve_and_remove_first(&Returns);
+	tmp =(ToxSaveData_t*)List_retrieve_and_remove_first(&Returns);
+	dbg ("Len: %d\n", tmp->Data.Data_len);
+	result =*tmp; free (tmp);
 
 	return &result;
 }

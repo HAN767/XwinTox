@@ -42,8 +42,7 @@ Copied from toxaemia.x.
 ```c
 struct ToxSaveData_s
 {
-	string Data<>;
-	int Len;
+	unsigned char Data<>;
 };
 
 typedef struct ToxSaveData_s ToxSaveData_t;
@@ -55,12 +54,7 @@ program TOXAEMIA_PROG {
 		 * int BootstrapPort, string BootstrapAddress<>, string BootstrapKey<>, 
 		 * string Name<>, string Status<> */
 		int ToxConnect(int, string<>, string<>, string<>, string<>) = 1;
-		/* ToxDisconnect
-		 * disconnects from tox */
 		void ToxDisconnect() = 2;
-		/* ToxGetSaveData
-		 * returns a ToxSaveData_t containing a pointer to the data and 
-		 * the length thereof */
 		ToxSaveData_t ToxGetSaveData() = 3;
 	} = 1;
 } = 0x22159817;

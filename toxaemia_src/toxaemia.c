@@ -9,6 +9,7 @@
 #include "misc.h"
 #include "list.h"
 
+#include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
 #include "toxaemia_util.h"
 
@@ -44,16 +45,13 @@ int launch_tox_thread()
 
 void Deliver_save_data()
 {
-	int *length = calloc(1, sizeof(int));
-	char *data;
+	ToxSaveData_t *save = calloc(1, sizeof(ToxSaveData_t));
+	save->Data.Data_len =tox_get_savedata_size(Tox_comm->tox);
+	dbg("Save Length: %d\n", save->Data.Data_len);
+	save->Data.Data_val =calloc(save->Data.Data_len, sizeof(unsigned char));
+	tox_get_savedata(Tox_comm->tox, (uint8_t *) save->Data.Data_val);
+	List_add(&Returns, save);
 
-	*length =tox_get_savedata_size(Tox_comm->tox);
-	List_add(&Returns, length);
-	
-	data =calloc(*length, sizeof(char));
-	tox_get_savedata(Tox_comm->tox, (uint8_t *) data);
-
-	List_add(&Returns, data);
 }
 
 int Tox_comm_main()
@@ -91,8 +89,8 @@ int Tox_comm_main()
 		if(Tox_comm->ICQueue)
 		{
 			char* Rmsg =List_retrieve_and_remove_first(&Tox_comm->ICQueue);
-			dbg("Recieved: %s", Rmsg);
-			if(strcmp (Rmsg, "getsavedata"))	Deliver_save_data();
+			dbg("Recieved: %s\n", Rmsg);
+			if(!strcmp (Rmsg, "getsavedata"))	Deliver_save_data();
 		}
 
 		tox_iterate(Tox_comm->tox);

@@ -1,7 +1,6 @@
 struct ToxSaveData_s
 {
-	string Data<>;
-	int Len;
+	unsigned char Data<>;
 };
 
 typedef struct ToxSaveData_s ToxSaveData_t;
