@@ -29,6 +29,7 @@ typedef struct Tox_comm_s
 
 extern Tox_comm_t *Tox_comm;
 extern int Tox_thread_launched;
+extern List_t *Returns;
 
 int launch_tox_thread();
 

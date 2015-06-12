@@ -58,6 +58,9 @@ class ContactsList: public Fl_Scroll
 public:
 	// Ctor
 	ContactsList(int X, int Y, int W, int H, int S);
+
+	void draw();
+	void resize (int X, int Y, int W, int H);
 	int handle(int event);
 	void clear_all();
 

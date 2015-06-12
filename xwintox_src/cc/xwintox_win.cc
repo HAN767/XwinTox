@@ -41,7 +41,7 @@ void ContactsEntry::draw()
 	fl_color(2);
 	fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 		  10 * scale, 0, 360);
-	icon->draw();
+	icon->draw(); /* make it account for scrollbar::value(); */
 }
 
 int ContactsEntry::handle(int event) 
@@ -66,6 +66,23 @@ ContactsList::ContactsList(int X, int Y, int W, int H, int S) : Fl_Scroll (X, Y,
 	ContactsEntry *test2 =new ContactsEntry(X, Y + (50 * S), S, "Furious Polak", "I HATE memes");
 	entries.push_back(test); entries.push_back(test2);
 	test2->selected =1;
+}
+
+void ContactsList::draw() 
+{
+	Fl_Scroll::draw();
+	for (const auto entry : entries)
+	{
+		entry->icon->redraw();
+	}
+}
+void ContactsList::resize(int X, int Y, int W, int H) 
+{
+	Fl_Scroll::resize(X, Y, W, H);
+	for (const auto entry : entries)
+	{
+		entry->icon->draw();
+	}
 }
 
 int ContactsList::handle(int event) 
@@ -128,8 +145,8 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
 
 	statusbox =new StatusBox(192 * S, 10 * S, 20 * S, 40 * S, S);
 	avbox =new SVGBox(10 * S, 10 * S, 40 * S , 40 * S, S, default_av, 0.3);
-	name =new Fl_Input(62 * S, 18 * S, 128 *S, 10 * S);
-	status =new Fl_Input(62 * S, 30 * S, 128 *S, 10 * S);
+	name =new Fl_Input(62 * S, 18 * S, 128 *S, 11 * S);
+	status =new Fl_Input(62 * S, 30 * S, 128 *S, 11 * S);
 	name->textsize(12 * S);
 	status->textsize(10 * S);
 	name->box(FL_FLAT_BOX); name->color(fl_rgb_color(28, 28, 28));
@@ -175,6 +192,8 @@ void Sidebar::resize(int X, int Y, int W, int H)
 	Fl_Group::resize(X, Y, W, H);
 	top_area->resize(0, 0, 224 * scale, 60 * scale);
 	bottom_area->resize(0, H - (36 * scale), 224 * scale, 480 * scale);
+	contacts->resize(0, 60 * scale, (224 * scale),
+				    h() - (36 * scale) - (60 * scale));
 } 
 
 
