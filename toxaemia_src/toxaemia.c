@@ -45,12 +45,14 @@ int launch_tox_thread()
 
 void Deliver_save_data()
 {
-	ToxSaveData_t *save = calloc(1, sizeof(ToxSaveData_t));
-	save->Data.Data_len =tox_get_savedata_size(Tox_comm->tox);
-	dbg("Save Length: %d\n", save->Data.Data_len);
-	save->Data.Data_val =calloc(save->Data.Data_len, sizeof(unsigned char));
-	tox_get_savedata(Tox_comm->tox, (uint8_t *) save->Data.Data_val);
-	List_add(&Returns, save);
+	//ToxSaveData_t *save = calloc(1, sizeof(ToxSaveData_t));
+	mtx_lock (&Tox_comm->SaveDataMtx);
+	Tox_comm->SaveData.Data.Data_len =tox_get_savedata_size(Tox_comm->tox);
+	dbg("Save Length: %d\n", Tox_comm->SaveData.Data.Data_len);
+	Tox_comm->SaveData.Data.Data_val =calloc(Tox_comm->SaveData.Data.Data_len, sizeof(unsigned char));
+	tox_get_savedata(Tox_comm->tox, (uint8_t *) Tox_comm->SaveData.Data.Data_val);
+	mtx_unlock (&Tox_comm->SaveDataMtx);
+	//List_add(&Returns, save);
 
 }
 
@@ -63,8 +65,23 @@ int Tox_comm_main()
 	struct Tox_Options *Topts =tox_options_new(&toxoptserr);
 
 	Topts->ipv6_enabled =false;
+
+	if(Tox_comm->SaveData.Data.Data_len != 0)
+	{ 
+		Topts->savedata_type =TOX_SAVEDATA_TYPE_TOX_SAVE;
+		Topts->savedata_data =Tox_comm->SaveData.Data.Data_val;
+		Topts->savedata_length =Tox_comm->SaveData.Data.Data_len;
+		dbg("Savedata length: %d\n", Topts->savedata_length);
+	}
 	
 	Tox_comm->tox =tox_new(Topts, &toxerr);
+	if (toxerr != TOX_ERR_NEW_OK)
+	{
+		char *errcode;
+		if (toxerr == TOX_ERR_NEW_LOAD_BAD_FORMAT) errcode ="Bad save format";
+		dbg("Failed to create new Tox: %s\n", errcode);
+		return -1;
+	}
 
 	InitCallbacks();
 
@@ -78,8 +95,10 @@ int Tox_comm_main()
     tox_bootstrap(Tox_comm->tox, Tox_comm->BootstrapAddress, 
 	Tox_comm->BootstrapPort,hex_string_to_bin(Tox_comm->BootstrapKey),&toxberr);
 
-	if (toxerr != TOX_ERR_BOOTSTRAP_OK) 
+	if (toxberr != TOX_ERR_BOOTSTRAP_OK) 
 	{
+
+		//if (toxerr == TOX_ERR_
 		dbg("Failed to bootstrap\n");
 		return -1;
 	}

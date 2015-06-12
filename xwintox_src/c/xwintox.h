@@ -13,6 +13,7 @@ typedef struct Comm_s
 	int Work;
 	cnd_t WorkCnd;
 	mtx_t WorkMtx;
+	List_t *WorkQueue;
 } Comm_t;
 
 typedef struct XwinTox_instance_s

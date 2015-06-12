@@ -25,6 +25,9 @@ typedef struct Tox_comm_s
 	char* BootstrapKey;
 	char* Name;
 	char* Status;
+
+	ToxSaveData_t SaveData;
+	mtx_t SaveDataMtx;
 } Tox_comm_t;
 
 extern Tox_comm_t *Tox_comm;

@@ -14,5 +14,6 @@ program TOXAEMIA_PROG {
 		int ToxConnect(int, string<>, string<>, string<>, string<>) = 1;
 		void ToxDisconnect() = 2;
 		ToxSaveData_t ToxGetSaveData() = 3;
+		void ToxInstallSaveData(ToxSaveData_t) = 4;
 	} = 1;
 } = 0x22159817;

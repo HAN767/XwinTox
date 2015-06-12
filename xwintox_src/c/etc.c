@@ -47,6 +47,19 @@ char* get_config_filename()
 	return configfilename;
 }
 
+char* get_save_filename()
+{
+	char *savefilename;
+	char *folder =get_config_folder();
+
+	savefilename =calloc(1, 255);
+	snprintf(savefilename, 255, "%s/XwinTox.tox", folder);
+
+	free (folder);
+
+	return savefilename;
+}
+
 int create_config_folder()
 {
 	int error;
