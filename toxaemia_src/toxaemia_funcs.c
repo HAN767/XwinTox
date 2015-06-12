@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h> // sprintf()
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -47,7 +48,13 @@ void* toxdisconnect_1_svc(struct svc_req* SvcReq)
 ToxSaveData_t* toxgetsavedata_1_svc(struct svc_req* SvcReq)
 {
 	static ToxSaveData_t result;
-	List_add(&Tox_comm->ICQueue, "getsavedata");
+	char* icmsg = calloc(12, sizeof(char));
+	
+	Tox_comm->SaveData.Data.Data_len =0;
+	if(Tox_comm->SaveData.Data.Data_val) free(Tox_comm->SaveData.Data.Data_val);
+
+	strcpy(icmsg, "getsavedata");
+	List_add(&Tox_comm->ICQueue, icmsg);
 
 	while (!Tox_comm->SaveData.Data.Data_len) usleep (1000);
 	mtx_lock (&Tox_comm->SaveDataMtx);
@@ -66,5 +73,17 @@ void* toxinstallsavedata_1_svc(ToxSaveData_t save, struct svc_req* SvcReq)
 	data =calloc(save.Data.Data_len, sizeof (unsigned char));
 	memcpy(data, save.Data.Data_val, save.Data.Data_len);
 	Tox_comm->SaveData.Data.Data_val =data;
+	return &result;
+}
+
+void* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq)
+{
+	static int result =0;
+	char *icmsg;
+
+	icmsg =calloc((19 + strlen(id) + 1 + strlen(message)), sizeof(char));
+	sprintf(icmsg, "sendfriendrequest %s %s", id, message);
+	List_add (&Tox_comm->ICQueue, icmsg);
+
 	return &result;
 }

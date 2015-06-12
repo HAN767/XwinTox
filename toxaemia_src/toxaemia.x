@@ -25,5 +25,11 @@ program TOXAEMIA_PROG {
 		 * Installs Tox save data
 		 * ToxSaveData_t => Data to install */
 		void ToxInstallSaveData(ToxSaveData_t) = 4;
+
+		/* ToxSendFriendRequest
+		 * Send a friend request
+		 * string<> => Tox ID of friend
+		 * string<> => Message to include in request */
+		void ToxSendFriendRequest(string<>, string<>) = 5;
 	} = 1;
 } = 0x22159817;

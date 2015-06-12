@@ -56,6 +56,11 @@ void Deliver_save_data()
 
 }
 
+void Send_friend_request(char* id, char* message)
+{
+	dbg("ID %s, Msg %s\n", id, message);
+}
+
 int Tox_comm_main()
 {
 	TOX_ERR_OPTIONS_NEW toxoptserr;
@@ -108,8 +113,19 @@ int Tox_comm_main()
 		if(Tox_comm->ICQueue)
 		{
 			char* Rmsg =List_retrieve_and_remove_first(&Tox_comm->ICQueue);
-			dbg("Recieved: %s\n", Rmsg);
+			char* tofree =Rmsg;
+
 			if(!strcmp (Rmsg, "getsavedata"))	Deliver_save_data();
+			else if(!strncmp (Rmsg, "sendfriendrequest", 17))
+			{
+				char *id;
+				strsep(&Rmsg, " ");
+				id =Rmsg;
+				strsep(&Rmsg, " "); 
+				Send_friend_request(id, Rmsg);
+			}
+			else { 	dbg("Unhandled request %s\n", Rmsg); }
+			free(tofree);
 		}
 
 		tox_iterate(Tox_comm->tox);

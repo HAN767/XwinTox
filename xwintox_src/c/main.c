@@ -27,6 +27,7 @@ int savedata()
 	char *filename =get_save_filename();
 	ToxSaveData_t *savedata;
 
+	unlink(filename);
 	save =fopen(filename, "wb");
 	if (save == NULL) {dbg("Failed to open savefile %s\n", filename); return 1;}
 
@@ -36,7 +37,6 @@ int savedata()
 		clnt_perror(clnt, "Savedata"); fclose(save);
 		return 1;
 	}
-	dbg("Len: %d\n", savedata->Data.Data_len);
 
 	if (fwrite(savedata->Data.Data_val, savedata->Data.Data_len, 1, save) !=1) 
 	{
@@ -44,7 +44,7 @@ int savedata()
 		return 1;
 	}
 
-	dbg("Saved Tox data to %s", filename);
+	dbg("Saved Tox data of length %d to %s\n", savedata->Data.Data_len,  filename);
 
 	fclose (save);
 	return 0;
@@ -115,7 +115,7 @@ int main()
 					GTC("Tox.BootstrapIP"), GTC("Tox.BootstrapKey"), 
 					GTC("Tox.Name"), GTC("Tox.Status") , clnt);
 
-	sleep(1); savedata();
+	sleep(1); savedata(); toxsendfriendrequest_1("Test ID", "Test Message", clnt);
 
 	while (!APP->Comm->WantQuit)
 	{
