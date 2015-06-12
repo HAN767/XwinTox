@@ -12,6 +12,7 @@ extern "C"
 {
 #include "misc.h"
 #include "dictionary.h"
+#include "list.h"
 
 #include "etc.h"
 #include "xwintox.h"
@@ -19,6 +20,7 @@ extern "C"
 
 XwinTox* Xwin;
 
+void InitGUICallbacks();
 
 void CommWork()
 {
@@ -27,7 +29,7 @@ void CommWork()
 	cnd_broadcast(&APP->Comm->WorkCnd);
 	mtx_unlock (&APP->Comm->WorkMtx);
 	usleep(250);
-	APP->Comm->Work =0;
+	//APP->Comm->Work =0;
 }
 
 extern "C" int CXXMain()
@@ -49,6 +51,7 @@ extern "C" int CXXMain()
 	Xwin = new XwinTox(640 * scale, 480 * scale, "XwinTox", scale);
 	Xwin->show();
 	ContactListGUIUpdate();
+	InitGUICallbacks();
 
 	Fl::run();
 

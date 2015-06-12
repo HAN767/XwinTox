@@ -21,22 +21,40 @@ CLIENT *clnt;
 
 extern int CXXMain();
 
+int sendfriendrequest(char* Rmsg)
+{
+	char *id;
+	char *tofree =Rmsg;
+	int result;
+	strsep(&Rmsg, " ");
+	id =Rmsg;
+	strsep(&Rmsg, " "); 
+
+	if (toxsendfriendrequest_1(id, Rmsg, clnt))
+	{
+		clnt_perror(clnt, "Sendfriendrequest");
+		return 1;
+	}
+	return 0;
+}
+	
+
 int savedata()
 {
 	FILE *save;
 	char *filename =get_save_filename();
 	ToxSaveData_t *savedata;
 
-	unlink(filename);
-	save =fopen(filename, "wb");
-	if (save == NULL) {dbg("Failed to open savefile %s\n", filename); return 1;}
-
 	savedata =toxgetsavedata_1(clnt);
 	if (!savedata)
 	{
-		clnt_perror(clnt, "Savedata"); fclose(save);
+		clnt_perror(clnt, "Savedata");
 		return 1;
 	}
+
+	/*unlink(filename);
+	save =fopen(filename, "wb");
+	if (save == NULL) {dbg("Failed to open savefile %s\n", filename); return 1;}
 
 	if (fwrite(savedata->Data.Data_val, savedata->Data.Data_len, 1, save) !=1) 
 	{
@@ -46,7 +64,7 @@ int savedata()
 
 	dbg("Saved Tox data of length %d to %s\n", savedata->Data.Data_len,  filename);
 
-	fclose (save);
+	fclose (save);*/
 	return 0;
 }
 	
@@ -115,11 +133,12 @@ int main()
 					GTC("Tox.BootstrapIP"), GTC("Tox.BootstrapKey"), 
 					GTC("Tox.Name"), GTC("Tox.Status") , clnt);
 
-	sleep(1); savedata(); toxsendfriendrequest_1("Test ID", "Test Message", clnt);
+	sleep(1); savedata();
 
 	while (!APP->Comm->WantQuit)
 	{
-		void* work =0;
+		void* work, *tofree =0;
+		dbg("Work cycle\n");
 
 		mtx_lock(&APP->Comm->WorkMtx);
 
@@ -128,14 +147,20 @@ int main()
 		APP->Comm->WorkMtx =0;
 
 		work =List_retrieve_and_remove_first(&APP->Comm->WorkQueue);
+		tofree =work;
 		if(!work) goto nowork;
 
 		if(strcmp (work, "savedata") == 0) { savedata(); }
+		else if(strncmp (work, "sendfriendrequest", 17) == 0) {sendfriendrequest(work);}
+		else dbg("Unhandled request: %s\n", work);
 
+		
+		free (tofree);
+		APP->Comm->Work =0;
 		nowork:
 		mtx_unlock(&APP->Comm->WorkMtx);
 	}
-	
+	dbg("Terminating\n");
 	Dictionary_write_to_file(APP->Config, APP->ConfigFilename);
 
 	return 0;

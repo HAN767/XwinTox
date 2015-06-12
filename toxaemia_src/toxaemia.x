@@ -1,6 +1,6 @@
 struct ToxSaveData_s
 {
-	unsigned char Data<>;
+	opaque Data<>;
 };
 
 typedef struct ToxSaveData_s ToxSaveData_t;

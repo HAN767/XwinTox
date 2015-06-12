@@ -1,6 +1,9 @@
 #ifndef XWINTOX_H_
 #define XWINTOX_H_
 
+#include "dictionary.h"
+#include "list.h"
+
 typedef struct Xwin_s
 {
 	thrd_t Thrd;
@@ -31,6 +34,7 @@ typedef struct XwinTox_instance_s
 extern "C" {
 #endif
 extern XwinTox_instance_t *APP;
+void CommWork();
 #ifdef __cplusplus__
 }
 #endif
