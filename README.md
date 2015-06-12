@@ -54,8 +54,19 @@ program TOXAEMIA_PROG {
 		 * int BootstrapPort, string BootstrapAddress<>, string BootstrapKey<>, 
 		 * string Name<>, string Status<> */
 		int ToxConnect(int, string<>, string<>, string<>, string<>) = 1;
+
+		/* ToxDisconnect
+		 * Disconnects from Tox */
 		void ToxDisconnect() = 2;
+
+		/* ToxGetSaveData
+		 * Returns Tox save data as ToxSaveData_t */
 		ToxSaveData_t ToxGetSaveData() = 3;
+
+		/* ToxInstallSaveData
+		 * Installs Tox save data
+		 * ToxSaveData_t => Data to install */
+		void ToxInstallSaveData(ToxSaveData_t) = 4;
 	} = 1;
 } = 0x22159817;
 ```
