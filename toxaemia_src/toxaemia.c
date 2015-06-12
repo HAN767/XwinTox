@@ -45,20 +45,25 @@ int launch_tox_thread()
 
 void Deliver_save_data()
 {
-	//ToxSaveData_t *save = calloc(1, sizeof(ToxSaveData_t));
 	mtx_lock (&Tox_comm->SaveDataMtx);
 	Tox_comm->SaveData.Data.Data_len =tox_get_savedata_size(Tox_comm->tox);
 	dbg("Save Length: %d\n", Tox_comm->SaveData.Data.Data_len);
-	Tox_comm->SaveData.Data.Data_val =calloc(Tox_comm->SaveData.Data.Data_len, sizeof(unsigned char));
-	tox_get_savedata(Tox_comm->tox, (uint8_t *) Tox_comm->SaveData.Data.Data_val);
+	Tox_comm->SaveData.Data.Data_val =calloc(Tox_comm->SaveData.Data.Data_len, 
+											sizeof(unsigned char));
+	tox_get_savedata(Tox_comm->tox, 
+					(uint8_t *) Tox_comm->SaveData.Data.Data_val);
 	mtx_unlock (&Tox_comm->SaveDataMtx);
-	//List_add(&Returns, save);
 
 }
 
 void Send_friend_request(char* id, char* message)
 {
+ 	TOX_ERR_FRIEND_ADD err;
+	uint8_t* binid =hex_string_to_bin(id); 
 	dbg("ID %s, Msg %s\n", id, message);
+	
+	tox_friend_add(Tox_comm->tox, binid, (uint8_t *) message, 
+				  strlen(message), &err);
 }
 
 int Tox_comm_main()
@@ -74,7 +79,7 @@ int Tox_comm_main()
 	if(Tox_comm->SaveData.Data.Data_len != 0)
 	{ 
 		Topts->savedata_type =TOX_SAVEDATA_TYPE_TOX_SAVE;
-		Topts->savedata_data =Tox_comm->SaveData.Data.Data_val;
+		Topts->savedata_data =(uint8_t*) Tox_comm->SaveData.Data.Data_val;
 		Topts->savedata_length =Tox_comm->SaveData.Data.Data_len;
 		dbg("Savedata length: %d\n", Topts->savedata_length);
 	}

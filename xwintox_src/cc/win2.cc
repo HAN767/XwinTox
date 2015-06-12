@@ -12,14 +12,17 @@ extern "C"
 
 void AddFriendPressed(Fl_Widget* B , void*)
 {
-	char *testmsg =(char*)calloc(1, sizeof(char)* 255);
+	char *amsg =(char*)calloc(255, sizeof(char));
+	char *bmsg =(char*)calloc(9, sizeof(char));
 	const char *id = ((GAddFriend*)B->parent())->id->value();
 	const char *msg = ((GAddFriend*)B->parent())->message->value();
 	// add a validity check here later //
 
+	sprintf(amsg, "sendfriendrequest %s %s", id, msg);
+	strcpy(bmsg, "savedata");
 
-	sprintf(testmsg, "sendfriendrequest %s %s", id, msg);
-	List_add(&APP->Comm->WorkQueue, (void*)testmsg);
+	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	List_add(&APP->Comm->WorkQueue, (void*)bmsg);
 	CommWork();
 }
 

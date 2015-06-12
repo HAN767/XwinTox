@@ -26,9 +26,16 @@ int sendfriendrequest(char* Rmsg)
 	char *id;
 	char *tofree =Rmsg;
 	int result;
+	
 	strsep(&Rmsg, " ");
 	id =Rmsg;
 	strsep(&Rmsg, " "); 
+
+	/* try to add tox ID */
+	if (strlen(id) == 64) 
+	{
+	dbg("Adding regular Tox ID\n");
+	}
 
 	if (toxsendfriendrequest_1(id, Rmsg, clnt))
 	{
@@ -52,7 +59,7 @@ int savedata()
 		return 1;
 	}
 
-	/*unlink(filename);
+	unlink(filename);
 	save =fopen(filename, "wb");
 	if (save == NULL) {dbg("Failed to open savefile %s\n", filename); return 1;}
 
@@ -64,7 +71,7 @@ int savedata()
 
 	dbg("Saved Tox data of length %d to %s\n", savedata->Data.Data_len,  filename);
 
-	fclose (save);*/
+	fclose (save);
 	return 0;
 }
 	
@@ -86,7 +93,7 @@ int loaddata()
 		fclose(save); dbg ("Save file unusual: length is zero\n"); return 1;
 	}
 
-	unsigned char data[length];
+	char data[length];
 	fread(data, sizeof(data), 1, save);
 
 	savedata.Data.Data_len =length;
@@ -156,7 +163,7 @@ int main()
 
 		
 		free (tofree);
-		APP->Comm->Work =0;
+		if(!APP->Comm->WorkQueue) APP->Comm->Work =0;
 		nowork:
 		mtx_unlock(&APP->Comm->WorkMtx);
 	}
