@@ -116,6 +116,17 @@ ToxFriends_t* toxgetfriendlist_1_svc()
 ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 {
 	static ToxFriend_t result;
+	char *icmsg;
+
+	icmsg =calloc(10 + 10, sizeof(char));
+	strcpy(icmsg, "getfriend %d");
+	List_add(&Tox_comm->ICQueue, icmsg);
+
+	while (!Returns) usleep (1000);
+	while (!Returns->Link) usleep (1000);
+
+	result.name =List_retrieve_and_remove_first(&Returns);
+	result.statusm =List_retrieve_and_remove_first(&Returns);
 
 	return &result;
 }

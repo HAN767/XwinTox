@@ -63,7 +63,6 @@ void Send_friend_request(char* id, char* message)
  	TOX_ERR_FRIEND_ADD err;
 	uint8_t* binid =hex_string_to_bin(id); 
 
-	
 	tox_friend_add(Tox_comm->tox, binid, (uint8_t *) message, 
 				  strlen(message), &err);
 	dbg("ID %s, Msg %s, Error %d\n", id, message, err);
@@ -79,6 +78,24 @@ void Deliver_friend_list()
 	data =calloc((int) Returns->data, sizeof (unsigned int));
 	tox_self_get_friend_list(Tox_comm->tox, data);
 	List_add(&Returns, data);
+}
+
+void Deliver_friend(unsigned int num)
+{
+	char *name;
+	char *statusm;
+
+	size_t size = tox_friend_get_name_size(Tox_comm->tox, num, 0) + 1;
+	name =calloc(size, sizeof(char));
+	tox_friend_get_name(Tox_comm->tox, num, (uint8_t*)name, 0);
+	name[size+1] ='\0';
+
+	size = tox_friend_get_status_message_size(Tox_comm->tox, num, 0) + 1;
+	statusm =calloc(size, sizeof(char));
+	tox_friend_get_status_message(Tox_comm->tox, num, (uint8_t*)statusm, 0);
+	statusm[size+1] ='\0';
+
+	List_add(&Returns, name); List_add (&Returns, statusm);
 }
 
 int Tox_comm_main()
@@ -144,6 +161,12 @@ int Tox_comm_main()
 				Send_friend_request(id, Rmsg);
 			}
 			else if(!strcmp (Rmsg, "getfriendlist"))	Deliver_friend_list();
+			else if(!strncmp (Rmsg, "getfriend", 9))
+			{
+				char *num;
+				strsep(&Rmsg, " ");
+				Deliver_friend(strtol(Rmsg, 0, 10));
+			}
 			else { 	dbg("Unhandled request %s\n", Rmsg); }
 			free(tofree);
 		}

@@ -11,7 +11,7 @@ struct ToxFriends_s
 struct ToxFriend_s
 {
 	string name<>;
-	string status<>;
+	string statusm<>;
 };
 
 typedef struct ToxSaveData_s ToxSaveData_t;
