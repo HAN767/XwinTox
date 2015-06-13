@@ -18,3 +18,15 @@ uint8_t* hex_string_to_bin(const char *hex_string)
 	return ret;
 }
 
+char* bin_to_hex_string(uint8_t *bin, size_t len)
+{
+	char *result =calloc((2 * len) + 1, sizeof(char));
+
+	for (int i = 0, b = 0; i < (len); i++)
+	{
+		b += sprintf(result+b, "%02X", bin[i]);
+	}
+
+	result[(2 * len) +1] ='\0';
+	return result;
+}

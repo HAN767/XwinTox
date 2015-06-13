@@ -10,6 +10,7 @@ struct ToxFriends_s
 
 struct ToxFriend_s
 {
+	string pubkey<>;
 	string name<>;
 	string statusm<>;
 };

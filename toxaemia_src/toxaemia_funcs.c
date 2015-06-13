@@ -119,14 +119,16 @@ ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 	char *icmsg;
 
 	icmsg =calloc(10 + 10, sizeof(char));
-	strcpy(icmsg, "getfriend %d");
+	sprintf(icmsg, "getfriend %d", num);
 	List_add(&Tox_comm->ICQueue, icmsg);
 
 	while (!Returns) usleep (1000);
 	while (!Returns->Link) usleep (1000);
+	while (!Returns->Link->Link) usleep (1000);
 
 	result.name =List_retrieve_and_remove_first(&Returns);
 	result.statusm =List_retrieve_and_remove_first(&Returns);
+	result.pubkey =List_retrieve_and_remove_first(&Returns);
 
 	return &result;
 }

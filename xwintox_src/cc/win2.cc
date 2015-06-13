@@ -31,5 +31,5 @@ void AddFriendPressed(Fl_Widget* B , void*)
 
 void InitGUICallbacks()
 {
-	Xwin->contents->addfriend->send->callback(&AddFriendPressed);
+	XwinTox->contents->addfriend->send->callback(&AddFriendPressed);
 }

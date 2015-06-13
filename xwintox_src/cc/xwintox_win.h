@@ -12,6 +12,8 @@ using namespace std;
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_Button.H>
 
+#include "contacts.h"
+
 class StatusBox: public Fl_Box
 {
 public:
@@ -41,15 +43,14 @@ class ContactsEntry: public Fl_Box
 {
 public:
 	// Ctor
-	ContactsEntry(int X, int Y, int S, const char* N, const char* S2);
+	ContactsEntry(int X, int Y, int S, Contact_t *C);
 
 	void draw();
 	int handle(int event);
 
 	SVGBox *icon;
 
-
-	const char *name, *status;
+	Contact_t *contact;
 	int selected, scale;
 };
 
@@ -168,6 +169,6 @@ public:
 	int scale;
 };
 
-extern XwinTox* Xwin;
+extern "C" XwinTox* XwinTox;
 
 #endif

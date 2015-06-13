@@ -30,6 +30,8 @@ typedef struct XwinTox_instance_s
 	char* ConfigFilename;
 } XwinTox_instance_t;
 
+
+
 #ifdef __cplusplus__
 extern "C" {
 #endif

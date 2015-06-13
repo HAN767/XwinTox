@@ -32,7 +32,7 @@ int sendfriendrequest(char* Rmsg)
 	strsep(&Rmsg, " "); 
 
 	/* try to add tox ID */
-	if (strlen(id) == 64) 
+	if (strlen(id) == 72) 
 	{
 	dbg("Adding regular Tox ID\n");
 	}
@@ -107,6 +107,12 @@ void getfriendlist()
 {
 	ToxFriends_t *tst =toxgetfriendlist_1(clnt);
 	printf("Friends count: %d\n", tst->Data.Data_len);
+	for(int i =0; i < tst->Data.Data_len; i++)
+	{
+		ToxFriend_t *friend =toxgetfriend_1(tst->Data.Data_val[i], clnt);
+		printf("Friend ID: %d, name %s, status %s\n", tst->Data.Data_val[i], friend->name, friend->statusm);
+		List_add(&APP->Xwin->ICQueue, friend);
+	}
 }
 
 int main()
@@ -135,11 +141,14 @@ int main()
 		exit(1);
 	}
 
+	loaddata();
+	getfriendlist();
+
 	cnd_init(&APP->Comm->WorkCnd);
 	mtx_init(&APP->Comm->WorkMtx, mtx_plain);
 	thrd_create (&APP->Xwin->Thrd, CXXMain, 0);
 
-	loaddata();
+
 	APP->Connected = !toxconnect_1( 
 					(int)atoi(Dictionary_get(APP->Config, "Tox.BootstrapPort")), 
 					GTC("Tox.BootstrapIP"), GTC("Tox.BootstrapKey"), 
@@ -151,7 +160,6 @@ int main()
 
 	while (!APP->Comm->WantQuit)
 	{
-		savedata();
 		void* work, *tofree =0;
 		dbg("Work cycle\n");
 

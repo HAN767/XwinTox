@@ -8,15 +8,14 @@
 #include <FL/Fl_RGB_Image.H>
 #include <FL/fl_draw.H>
 
+#include "contacts.h"
 #include "xwintox_win.h"
 #include "svgs.h"
 #include "nanosvg/nsvgwrap.h"
 
-ContactsEntry::ContactsEntry(int X, int Y, int S, const char* N, const char *S2) : Fl_Box (X, Y, 224 * S, 50 * S)
+ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C) : Fl_Box (X, Y, 224 * S, 50 * S)
 {
-	scale =S;
-	name =N;
-	status =S2;
+	contact =C;
 	selected =0;
 
 	icon = new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S, default_av, 0.35);
@@ -34,9 +33,9 @@ void ContactsEntry::draw()
 	Fl_Box::draw();
 	fl_color(txt_color);
 	fl_font(FL_HELVETICA, 12 * scale);
-	fl_draw(name, x() + (50 * scale), y() + (22 * scale));
+	fl_draw(contact->name, x() + (50 * scale), y() + (22 * scale));
 	fl_font(FL_HELVETICA, 10 * scale);
-	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
+	fl_draw(contact->statusm, x() + (50 * scale), y() + (36 * scale));
 
 	fl_color(2);
 	fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
@@ -61,11 +60,6 @@ ContactsList::ContactsList(int X, int Y, int W, int H, int S) : Fl_Scroll (X, Y,
 	scale =S;
 	color(fl_rgb_color(65, 65, 65));
 	type(6);
-
-	ContactsEntry *test =new ContactsEntry(X, Y, S, "SylvieLorxu", "Toxing on SylvieTox");
-	ContactsEntry *test2 =new ContactsEntry(X, Y + (50 * S), S, "Furious Polak", "I HATE memes");
-	entries.push_back(test); entries.push_back(test2);
-	test2->selected =1;
 }
 
 void ContactsList::draw() 

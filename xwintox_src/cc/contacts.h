@@ -3,19 +3,12 @@
 #include <vector>
 using namespace std;
 
-#include <tox/tox.h>
-
 typedef struct Contact_s
 {
-	char name[256];
-	char statusm[TOX_MAX_STATUS_MESSAGE_LENGTH + 1];
-	char pub_key[TOX_PUBLIC_KEY_SIZE];
-
+	char *name, *statusm, *pubkey;
 	int num;
-	TOX_CONNECTION connection_status;
-
-	int status;
-} Contact_t;
+	int status; /* 0 = offline, 1 = online */
+} Contact_t __attribute__((packed));
 
 typedef struct ContactList_s
 {

@@ -82,8 +82,10 @@ void Deliver_friend_list()
 
 void Deliver_friend(unsigned int num)
 {
-	char *name;
-	char *statusm;
+	char *name, *statusm, *pub_key;
+	unsigned char *pubkey;
+
+	TOX_ERR_FRIEND_QUERY err;
 
 	size_t size = tox_friend_get_name_size(Tox_comm->tox, num, 0) + 1;
 	name =calloc(size, sizeof(char));
@@ -95,7 +97,11 @@ void Deliver_friend(unsigned int num)
 	tox_friend_get_status_message(Tox_comm->tox, num, (uint8_t*)statusm, 0);
 	statusm[size+1] ='\0';
 
-	List_add(&Returns, name); List_add (&Returns, statusm);
+	pubkey =calloc(TOX_PUBLIC_KEY_SIZE, sizeof (unsigned char));
+	tox_friend_get_public_key(Tox_comm->tox, num, pubkey, 0);
+
+	List_add(&Returns, name); List_add (&Returns, statusm); 
+	List_add (&Returns, pubkey);
 }
 
 int Tox_comm_main()
