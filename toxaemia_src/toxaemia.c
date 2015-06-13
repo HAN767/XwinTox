@@ -60,10 +60,23 @@ void Send_friend_request(char* id, char* message)
 {
  	TOX_ERR_FRIEND_ADD err;
 	uint8_t* binid =hex_string_to_bin(id); 
-	dbg("ID %s, Msg %s\n", id, message);
+
 	
 	tox_friend_add(Tox_comm->tox, binid, (uint8_t *) message, 
 				  strlen(message), &err);
+	dbg("ID %s, Msg %s, Error %d\n", id, message, err);
+	
+}
+
+void Deliver_friend_list()
+{
+	unsigned int *data;
+
+	List_add(&Returns, (int) tox_self_get_friend_list_size(Tox_comm->tox));
+
+	data =calloc(Returns->data, sizeof (unsigned int));
+	tox_self_get_friend_list(Tox_comm->tox, data);
+	List_add(&Returns, data);
 }
 
 int Tox_comm_main()
@@ -107,8 +120,6 @@ int Tox_comm_main()
 
 	if (toxberr != TOX_ERR_BOOTSTRAP_OK) 
 	{
-
-		//if (toxerr == TOX_ERR_
 		dbg("Failed to bootstrap\n");
 		return -1;
 	}
@@ -129,6 +140,7 @@ int Tox_comm_main()
 				strsep(&Rmsg, " "); 
 				Send_friend_request(id, Rmsg);
 			}
+			else if(!strcmp (Rmsg, "getfriendlist"))	Deliver_friend_list();
 			else { 	dbg("Unhandled request %s\n", Rmsg); }
 			free(tofree);
 		}

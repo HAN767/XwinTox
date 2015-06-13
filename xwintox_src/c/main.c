@@ -103,6 +103,11 @@ int loaddata()
 	return 0;
 }
 
+void getfriendlist()
+{
+	ToxFriends_t *tst =toxgetfriendlist_1(clnt);
+	printf("Friends count: %d\n", tst->Data.Data_len);
+}
 
 int main()
 {
@@ -141,9 +146,12 @@ int main()
 					GTC("Tox.Name"), GTC("Tox.Status") , clnt);
 
 	sleep(1); savedata();
+	//ToxFriends_t *tst =toxgetfriendlist_1(clnt);
+	//printf("Friends count: %d\n", tst->Data.Data_len);
 
 	while (!APP->Comm->WantQuit)
 	{
+		savedata();
 		void* work, *tofree =0;
 		dbg("Work cycle\n");
 
@@ -159,6 +167,7 @@ int main()
 
 		if(strcmp (work, "savedata") == 0) { savedata(); }
 		else if(strncmp (work, "sendfriendrequest", 17) == 0) {sendfriendrequest(work);}
+		else if(strcmp (work, "getfriendlist") == 0) {getfriendlist();}
 		else dbg("Unhandled request: %s\n", work);
 
 		

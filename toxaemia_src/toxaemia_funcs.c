@@ -1,3 +1,8 @@
+/* Note:
+ * As the lists implementation is thread-safe, any apparently unusual waiting
+ * on the value of list pointers is not harmful, and will behave correctly.
+ */
+
 #include <string.h>
 #include <stdio.h> // sprintf()
 #include <stdlib.h>
@@ -66,7 +71,7 @@ ToxSaveData_t* toxgetsavedata_1_svc(struct svc_req* SvcReq)
 void* toxinstallsavedata_1_svc(ToxSaveData_t save, struct svc_req* SvcReq)
 {
 	static int result =0;
-	unsigned char *data;
+	char *data;
 	ctorTox_comm();
 	dbg("Installing save data\n");
 	Tox_comm->SaveData =save;
@@ -84,6 +89,26 @@ void* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq
 	icmsg =calloc((19 + strlen(id) + 1 + strlen(message)), sizeof(char));
 	sprintf(icmsg, "sendfriendrequest %s %s", id, message);
 	List_add (&Tox_comm->ICQueue, icmsg);
+
+	return &result;
+}
+
+ToxFriends_t* toxgetfriendlist_1_svc()
+{
+	static ToxFriends_t result;
+	ToxFriends_t *returned;
+	size_t cnt;
+	char *icmsg;
+
+	icmsg =calloc(14, sizeof(char));
+	strcpy(icmsg, "getfriendlist");
+	List_add(&Tox_comm->ICQueue, icmsg);
+
+	while (!Returns) usleep (1000);
+	while (!Returns->Link) usleep (1000);
+
+	result.Data.Data_len =List_retrieve_and_remove_first(&Returns);
+	result.Data.Data_val =List_retrieve_and_remove_first(&Returns);
 
 	return &result;
 }

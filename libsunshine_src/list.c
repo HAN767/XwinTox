@@ -27,11 +27,14 @@ List_add(List_t **n, void* data)
 		t=*n;
 		temp=malloc(sizeof(List_t));
 		_Locked_Start(t->_Lock)
+		_Locktype_ lock; //=calloc(1, sizeof(_Locktype_));
+		lock =t->_Lock;
 		while(t->Link!=NULL)
 			t=t->Link;
 		temp->data=data;
 		temp->Link=NULL;
 		t->Link=temp;
+		t->_Lock =lock;
 		_Locked_End(t->_Lock)
 	}
 }

@@ -3,7 +3,13 @@ struct ToxSaveData_s
 	opaque Data<>;
 };
 
+struct ToxFriends_s
+{
+	unsigned int Data<>;
+};
+
 typedef struct ToxSaveData_s ToxSaveData_t;
+typedef struct ToxFriends_s ToxFriends_t;
 
 program TOXAEMIA_PROG {
 	version TOXAEMIA_VERS1 {
@@ -31,5 +37,9 @@ program TOXAEMIA_PROG {
 		 * string<> => Tox ID of friend
 		 * string<> => Message to include in request */
 		void ToxSendFriendRequest(string<>, string<>) = 5;
+
+		/* ToxGetFriendList
+		 * Returns friendlist as an array of friend IDs */
+		ToxFriends_t ToxGetFriendList() = 6;
 	} = 1;
 } = 0x22159817;
