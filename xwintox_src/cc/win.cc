@@ -15,6 +15,7 @@
 
 ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C) : Fl_Box (X, Y, 224 * S, 50 * S)
 {
+	scale =S;
 	contact =C;
 	selected =0;
 
@@ -27,15 +28,43 @@ ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C) : Fl_Box (X, Y, 
 void ContactsEntry::draw()
 {
 	int txt_color =255;
+	char name[255] = { 0 }, status[255] = { 0 };
 	if (selected) { color(255); txt_color =0; }
 	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
 
+dbg("%d\n", strlen(contact->statusm));
+	if (strlen(contact->name) == 0)
+	{ 
+		strncpy(name, contact->pubkey, 14);
+		name[14] ='.'; name[15] ='.'; name[16] ='.';
+		if (strlen(contact->statusm) == 0) strcpy (status, "Unknown");
+	}
+	else if (strlen(contact->name) >= 15)
+	{
+		strncpy(name, contact->name, 15);
+		name[15] ='.'; name[16] ='.'; name[17] ='.';
+	}
+	else
+	{
+		strcpy(name, contact->name);
+	}
+
+	if (strlen(contact->statusm) >= 20)
+	{
+		strncpy(status, contact->statusm, 20);
+		status[20] ='.'; status[21] ='.'; status[22] ='.';
+	}
+	else if (strlen (contact->statusm) > 0)
+	{
+		strcpy(status, contact->statusm);
+	}
+	
 	Fl_Box::draw();
 	fl_color(txt_color);
 	fl_font(FL_HELVETICA, 12 * scale);
-	fl_draw(contact->name, x() + (50 * scale), y() + (22 * scale));
+	fl_draw(name, x() + (50 * scale), y() + (22 * scale));
 	fl_font(FL_HELVETICA, 10 * scale);
-	fl_draw(contact->statusm, x() + (50 * scale), y() + (36 * scale));
+	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
 
 	fl_color(2);
 	fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
@@ -60,6 +89,7 @@ ContactsList::ContactsList(int X, int Y, int W, int H, int S) : Fl_Scroll (X, Y,
 	scale =S;
 	color(fl_rgb_color(65, 65, 65));
 	type(6);
+
 }
 
 void ContactsList::draw() 

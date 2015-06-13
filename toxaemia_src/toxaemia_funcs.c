@@ -23,6 +23,7 @@ void ctorTox_comm()
 	Tox_comm =calloc(1, sizeof(Tox_comm_t));
 	mtx_init(&Tox_comm->SaveDataMtx, mtx_plain);
 	}
+	if(!Tox_thread_launched) launch_tox_thread();
 } 
 
 int*
@@ -38,8 +39,11 @@ toxconnect_1_svc(int BootstrapPort, char* BootstrapAddress, char* BootstrapKey,
 	Tox_comm->Name =strdup(Name);
 	Tox_comm->Status =strdup(Status);
 
-
 	if(!Tox_thread_launched) launch_tox_thread();
+	char *icmsg =calloc(8, sizeof(char));
+	strcpy(icmsg, "connect");
+	List_add(&Tox_comm->ICQueue, icmsg);
+
 
 	return &result;
 }
@@ -117,6 +121,7 @@ ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 {
 	static ToxFriend_t result;
 	char *icmsg;
+	ctorTox_comm();
 
 	icmsg =calloc(10 + 10, sizeof(char));
 	sprintf(icmsg, "getfriend %d", num);

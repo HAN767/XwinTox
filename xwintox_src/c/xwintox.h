@@ -30,7 +30,12 @@ typedef struct XwinTox_instance_s
 	char* ConfigFilename;
 } XwinTox_instance_t;
 
-
+typedef struct Contact_s
+{
+	char *name, *statusm, *pubkey;
+	int num;
+	int status; /* 0 = offline, 1 = online */
+} Contact_t __attribute__((packed));
 
 #ifdef __cplusplus__
 extern "C" {

@@ -3,12 +3,10 @@
 #include <vector>
 using namespace std;
 
-typedef struct Contact_s
+extern "C"
 {
-	char *name, *statusm, *pubkey;
-	int num;
-	int status; /* 0 = offline, 1 = online */
-} Contact_t __attribute__((packed));
+#include "xwintox.h"
+}
 
 typedef struct ContactList_s
 {

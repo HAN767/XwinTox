@@ -33,14 +33,33 @@ int launch_tox_thread()
 	mtx_lock (&Tox_comm->ConnectedMtx);
 	Tox_thread_launched =1;
 
-	while(!Tox_comm->Connected) 
-		{ err =cnd_wait(&Tox_comm->ConnectedCnd, &Tox_comm->ConnectedMtx); }
+	//while(!Tox_comm->Connected) 
+	//	{ err =cnd_wait(&Tox_comm->ConnectedCnd, &Tox_comm->ConnectedMtx); }
 
 	mtx_unlock (&Tox_comm->ConnectedMtx);
 
-	if (err != thrd_success) { dbg("Failed to connect to Tox\n"); return 1; }
+	//if (err != thrd_success) { dbg("Failed to connect to Tox\n"); return 1; }
 
 	return 0;
+}
+
+void Connect_to_tox()
+{
+	TOX_ERR_BOOTSTRAP toxberr;
+	tox_self_set_name(Tox_comm->tox, (uint8_t*)Tox_comm->Name, 
+					  strlen(Tox_comm->Name), NULL);
+    tox_self_set_status_message(Tox_comm->tox, (uint8_t*)Tox_comm->Status, 
+								strlen(Tox_comm->Status), NULL);
+
+    tox_self_set_status(Tox_comm->tox, TOX_USER_STATUS_NONE);
+
+    tox_bootstrap(Tox_comm->tox, Tox_comm->BootstrapAddress, 
+	Tox_comm->BootstrapPort,hex_string_to_bin(Tox_comm->BootstrapKey),&toxberr);
+
+	if (toxberr != TOX_ERR_BOOTSTRAP_OK) 
+	{
+		dbg("Failed to bootstrap\n");
+	}
 }
 
 void Deliver_save_data()
@@ -101,14 +120,13 @@ void Deliver_friend(unsigned int num)
 	tox_friend_get_public_key(Tox_comm->tox, num, pubkey, 0);
 
 	List_add(&Returns, name); List_add (&Returns, statusm); 
-	List_add (&Returns, pubkey);
+	List_add (&Returns, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE));
 }
 
 int Tox_comm_main()
 {
 	TOX_ERR_OPTIONS_NEW toxoptserr;
 	TOX_ERR_NEW toxerr;
-	TOX_ERR_BOOTSTRAP toxberr;
 
 	struct Tox_Options *Topts =tox_options_new(&toxoptserr);
 
@@ -134,21 +152,6 @@ int Tox_comm_main()
 
 	InitCallbacks();
 
-	tox_self_set_name(Tox_comm->tox, (uint8_t*)Tox_comm->Name, 
-					  strlen(Tox_comm->Name), NULL);
-    tox_self_set_status_message(Tox_comm->tox, (uint8_t*)Tox_comm->Status, 
-								strlen(Tox_comm->Status), NULL);
-
-    tox_self_set_status(Tox_comm->tox, TOX_USER_STATUS_NONE);
-
-    tox_bootstrap(Tox_comm->tox, Tox_comm->BootstrapAddress, 
-	Tox_comm->BootstrapPort,hex_string_to_bin(Tox_comm->BootstrapKey),&toxberr);
-
-	if (toxberr != TOX_ERR_BOOTSTRAP_OK) 
-	{
-		dbg("Failed to bootstrap\n");
-		return -1;
-	}
 
 	while (1)
 	{
@@ -173,6 +176,7 @@ int Tox_comm_main()
 				strsep(&Rmsg, " ");
 				Deliver_friend(strtol(Rmsg, 0, 10));
 			}
+			else if(!strncmp (Rmsg, "connect", 7)) Connect_to_tox();
 			else { 	dbg("Unhandled request %s\n", Rmsg); }
 			free(tofree);
 		}

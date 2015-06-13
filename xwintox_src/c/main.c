@@ -109,9 +109,12 @@ void getfriendlist()
 	printf("Friends count: %d\n", tst->Data.Data_len);
 	for(int i =0; i < tst->Data.Data_len; i++)
 	{
-		ToxFriend_t *friend =toxgetfriend_1(tst->Data.Data_val[i], clnt);
-		printf("Friend ID: %d, name %s, status %s\n", tst->Data.Data_val[i], friend->name, friend->statusm);
-		List_add(&APP->Xwin->ICQueue, friend);
+		Contact_t *c =calloc(1, sizeof(Contact_t));
+		ToxFriend_t *f =toxgetfriend_1(tst->Data.Data_val[i], clnt);
+		c->name =strdup(f->name); c->statusm =strdup(f->statusm); 
+		c->pubkey =strdup(f->pubkey); c->num =tst->Data.Data_val[i];
+		printf("Friend ID: %d, name %s, status %s, pubkey %s\n", tst->Data.Data_val[i], c->name, c->statusm, c->pubkey);
+		List_add(&APP->Xwin->ICQueue, c);
 	}
 }
 
