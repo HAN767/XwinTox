@@ -63,7 +63,7 @@ int savedata()
 	save =fopen(filename, "wb");
 	if (save == NULL) {dbg("Failed to open savefile %s\n", filename); return 1;}
 
-	if (fwrite(savedata->Data.Data_val, savedata->Data.Data_len, 1, save) !=1) 
+	if (fwrite(savedata->Data.Data_val, savedata->Data.Data_len-1, 1, save) !=1) 
 	{
 		dbg("Failed to save data to savefile %s\n", filename); fclose(save);
 		return 1;
@@ -128,7 +128,7 @@ int main()
 		APP->ConfigFilename, 1)) 
 	{ default_config(APP->Config); }
 
-	clnt = clnt_create("localhost", TOXAEMIA_PROG, TOXAEMIA_VERS1, "udp");
+	clnt = clnt_create("localhost", TOXAEMIA_PROG, TOXAEMIA_VERS1, "tcp");
 	if (clnt == (CLIENT *) NULL) 
 	{
 		clnt_pcreateerror("localhost");

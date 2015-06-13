@@ -47,11 +47,13 @@ void Deliver_save_data()
 {
 	mtx_lock (&Tox_comm->SaveDataMtx);
 	Tox_comm->SaveData.Data.Data_len =tox_get_savedata_size(Tox_comm->tox);
-	dbg("Save Length: %d\n", Tox_comm->SaveData.Data.Data_len);
-	Tox_comm->SaveData.Data.Data_val =calloc(Tox_comm->SaveData.Data.Data_len, 
+	Tox_comm->SaveData.Data.Data_val =calloc(Tox_comm->SaveData.Data.Data_len+1, 
 											sizeof(unsigned char));
 	tox_get_savedata(Tox_comm->tox, 
 					(uint8_t *) Tox_comm->SaveData.Data.Data_val);
+	Tox_comm->SaveData.Data.Data_val[Tox_comm->SaveData.Data.Data_len+1] = 'F';
+	Tox_comm->SaveData.Data.Data_len++;
+	dbg("Save Length: %d\n", Tox_comm->SaveData.Data.Data_len);
 	mtx_unlock (&Tox_comm->SaveDataMtx);
 
 }

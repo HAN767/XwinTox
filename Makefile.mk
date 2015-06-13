@@ -51,7 +51,7 @@ $(rpc_h_loc)%_rpc.h: %.x
 
 %_svc.c: %.x
 	@printf " RPCGEN(SVC) \t$(@)"
-	@rpcgen -C -N -s udp $< > $@.pre && \
+	@rpcgen -C -N -s tcp $< > $@.pre && \
 	sed  's/.h"/_rpc.h"/' $(@).pre > $(@) && rm $(@).pre && $(OK)
 
 %_xdr.c: %.x
