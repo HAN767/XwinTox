@@ -48,7 +48,7 @@ void Deliver_save_data()
 	mtx_lock (&Tox_comm->SaveDataMtx);
 	Tox_comm->SaveData.Data.Data_len =tox_get_savedata_size(Tox_comm->tox);
 	Tox_comm->SaveData.Data.Data_val =calloc(Tox_comm->SaveData.Data.Data_len+1, 
-											sizeof(unsigned char));
+											sizeof(char));
 	tox_get_savedata(Tox_comm->tox, 
 					(uint8_t *) Tox_comm->SaveData.Data.Data_val);
 	Tox_comm->SaveData.Data.Data_val[Tox_comm->SaveData.Data.Data_len+1] = 'F';
@@ -74,9 +74,9 @@ void Deliver_friend_list()
 {
 	unsigned int *data;
 
-	List_add(&Returns, (int) tox_self_get_friend_list_size(Tox_comm->tox));
+	List_add(&Returns, (void*) tox_self_get_friend_list_size(Tox_comm->tox));
 
-	data =calloc(Returns->data, sizeof (unsigned int));
+	data =calloc((int) Returns->data, sizeof (unsigned int));
 	tox_self_get_friend_list(Tox_comm->tox, data);
 	List_add(&Returns, data);
 }
@@ -104,6 +104,7 @@ int Tox_comm_main()
 	{
 		char *errcode;
 		if (toxerr == TOX_ERR_NEW_LOAD_BAD_FORMAT) errcode ="Bad save format";
+		else errcode ="Unknown";
 		dbg("Failed to create new Tox: %s\n", errcode);
 		return -1;
 	}

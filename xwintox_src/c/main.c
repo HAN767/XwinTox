@@ -81,7 +81,7 @@ int loaddata()
 	struct stat st;
 	off_t length;
 	char *filename =get_save_filename();
-	static ToxSaveData_t savedata;
+	ToxSaveData_t savedata;
 
 	save =fopen(filename, "rb");
 	if (save == NULL) {dbg("Failed to open savefile %s\n", filename); return 1;}

@@ -8,8 +8,15 @@ struct ToxFriends_s
 	unsigned int Data<>;
 };
 
+struct ToxFriend_s
+{
+	string name<>;
+	string status<>;
+};
+
 typedef struct ToxSaveData_s ToxSaveData_t;
 typedef struct ToxFriends_s ToxFriends_t;
+typedef struct ToxFriend_s ToxFriend_t;
 
 program TOXAEMIA_PROG {
 	version TOXAEMIA_VERS1 {
@@ -41,5 +48,10 @@ program TOXAEMIA_PROG {
 		/* ToxGetFriendList
 		 * Returns friendlist as an array of friend IDs */
 		ToxFriends_t ToxGetFriendList() = 6;
+
+		/* ToxGetFriend
+		 * Returns data of a friend as ToxFriend_t
+		 * unsigned int => Friend number to retrieve data for */
+		ToxFriend_t ToxGetFriend(unsigned int) = 7;
 	} = 1;
 } = 0x22159817;

@@ -12,6 +12,7 @@ void *user_data)
 	if (connection_status == TOX_CONNECTION_NONE) status ="Disconnected";
 	else if (connection_status == TOX_CONNECTION_TCP) status ="TCP";
 	else if (connection_status == TOX_CONNECTION_UDP) status ="UDP";
+	else status ="Unknown";
 
 	mtx_lock (&Tox_comm->ConnectedMtx);
 	Tox_comm->Connected =1;
@@ -29,6 +30,7 @@ TOX_CONNECTION connection_status, void *user_data)
 	if (connection_status == TOX_CONNECTION_NONE) status ="Disconnected";
 	else if (connection_status == TOX_CONNECTION_TCP) status ="TCP";
 	else if (connection_status == TOX_CONNECTION_UDP) status ="UDP";
+	else status ="Unknown";
 
 	dbg("Friend num %d is in status: %s\n", friend_number, status);
 

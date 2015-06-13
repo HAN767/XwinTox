@@ -75,7 +75,7 @@ void* toxinstallsavedata_1_svc(ToxSaveData_t save, struct svc_req* SvcReq)
 	ctorTox_comm();
 	dbg("Installing save data\n");
 	Tox_comm->SaveData =save;
-	data =calloc(save.Data.Data_len, sizeof (unsigned char));
+	data =calloc(save.Data.Data_len, sizeof (char));
 	memcpy(data, save.Data.Data_val, save.Data.Data_len);
 	Tox_comm->SaveData.Data.Data_val =data;
 	return &result;
@@ -107,8 +107,15 @@ ToxFriends_t* toxgetfriendlist_1_svc()
 	while (!Returns) usleep (1000);
 	while (!Returns->Link) usleep (1000);
 
-	result.Data.Data_len =List_retrieve_and_remove_first(&Returns);
+	result.Data.Data_len =(unsigned int)List_retrieve_and_remove_first(&Returns);
 	result.Data.Data_val =List_retrieve_and_remove_first(&Returns);
+
+	return &result;
+}
+
+ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
+{
+	static ToxFriend_t result;
 
 	return &result;
 }
