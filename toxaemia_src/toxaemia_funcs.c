@@ -15,6 +15,7 @@
 #include "toxaemia_core.h"
 
 List_t *Returns;
+List_t *Events;
 
 void ctorTox_comm()
 {
@@ -136,4 +137,13 @@ ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 	result.pubkey =List_retrieve_and_remove_first(&Returns);
 
 	return &result;
+}
+
+ToxEvent_t* toxgetevent_1_svc(struct svc_req* SvcReq)
+{
+	ToxEvent_t *result =0;
+
+	result =List_retrieve_and_remove_first(&Events);
+
+	return result;
 }
