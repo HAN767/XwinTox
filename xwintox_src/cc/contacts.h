@@ -20,4 +20,7 @@ void ContactListGUIUpdate();
 
 extern ContactList_t *contactlist;
 
+class GMessageArea;
+GMessageArea *FindContactMArea(Contact_t *contact);
+
 #endif

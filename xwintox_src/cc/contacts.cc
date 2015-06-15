@@ -1,5 +1,9 @@
 #include <vector>
 
+extern "C"
+{
+#include "misc.h"
+}
 #include "contacts.h"
 #include "xwintox_win.h"
 
@@ -20,6 +24,20 @@ void ContactListGUIUpdate()
 		XwinTox->sidebar->contacts->add(newgui);
 		XwinTox->sidebar->contacts->entries.push_back(newgui);
 		YM += (50 * XwinTox->scale);
+
+		GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
+		newarea->hide();
+		XwinTox->add(newarea);
+		XwinTox->contents->messageareas.push_back(newarea);
 	}
 	XwinTox->redraw(); XwinTox->sidebar->contacts->redraw();
+}
+
+GMessageArea *FindContactMArea(Contact_t *contact)
+{
+	for (const auto messagearea : XwinTox->contents->messageareas)
+	{
+		if(messagearea->contact == contact) return messagearea;
+	}
+	dbg("Fail"); return 0;
 }

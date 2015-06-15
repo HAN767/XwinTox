@@ -13,6 +13,8 @@
 #include "svgs.h"
 #include "nanosvg/nsvgwrap.h"
 
+extern class XwinTox *XwinTox;
+
 ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C) : Fl_Box (X, Y, 224 * S, 50 * S)
 {
 	scale =S;
@@ -78,6 +80,7 @@ int ContactsEntry::handle(int event)
 	case FL_PUSH:
 		selected =1;
 		redraw(); icon->redraw();
+		XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
 		return 1;
 	}
 	return 0;
@@ -288,6 +291,32 @@ void GAddFriend::draw()
 	fl_draw("Message", x() + (10 * scale), y() + 134 * scale);
 }
 
+GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (224 * S, 0, 416 * S, 480 * S)
+{
+	contact =C;
+	scale =S;
+
+	box(FL_FLAT_BOX);
+	color(255);
+
+	icon = new SVGBox(x()+(12 * S), y()+(9 * S), 40 * S, 40 *S, S, default_av, 0.32);
+
+	end();
+}
+
+void GMessageArea::draw()
+{
+	Fl_Group::draw();
+
+	fl_color(0);
+	fl_font(FL_HELVETICA_BOLD, 12 * scale);
+	fl_draw(contact->name, x() + (60 * scale), y() + (26 * scale));
+
+	fl_color(fl_rgb_color(192, 192, 192));
+	fl_line(x(), y() + (60 * scale), Fl::w(), y() + (60 * scale));
+	fl_color(0);
+}
+
 XWContents::XWContents(int S) : Fl_Box (224 * S, 0, 416 * S, 480 * S)
 {
 	scale =S;
@@ -296,8 +325,26 @@ XWContents::XWContents(int S) : Fl_Box (224 * S, 0, 416 * S, 480 * S)
 	color(4);
 
 	addfriend =new GAddFriend(S);
+	currentarea =addfriend;
 }
 
+void XWContents::NewCurrentArea(Fl_Group *G)
+{
+	currentarea->hide();
+	this->newcurrentarea =G;
+	currentarea =newcurrentarea;
+	currentarea->show();
+	currentarea->redraw();
+}
+
+void XWContents::draw()
+{
+	//if (currentarea != newcurrentarea)
+//	currentarea->hide();
+	//currentarea =newcurrentarea;
+	//currentarea->show();
+	//Fl_Box::draw();
+}
 
 XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c) 
 {

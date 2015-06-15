@@ -142,15 +142,40 @@ public:
 	Fl_Group *fakebox;
 };
 
+class GMessageArea: public Fl_Group
+{
+public:
+	// Ctor
+	GMessageArea(int S, Contact_t *C);
+
+	void draw();
+
+	SVGBox *icon;
+	Fl_Input *message;
+	Fl_Button *send;
+
+	int scale;
+	Contact_t *contact;
+};
+
 class XWContents: public Fl_Box
 {
 public:
 	// Ctor
 	XWContents(int S);
 
+	void draw();
+
+	void NewCurrentArea(Fl_Group* G);
+
 	Fl_Box *fake;
 	GAddFriend *addfriend;
 
+	vector <GMessageArea*> messageareas;
+
+
+	Fl_Group *currentarea;
+	Fl_Group *newcurrentarea;
 	int scale;
 };
 

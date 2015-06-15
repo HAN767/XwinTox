@@ -37,6 +37,8 @@ void cb_friend_connection_status(Tox *tox, uint32_t friend_number,
 	else if (connection_status == TOX_CONNECTION_TCP) event->param0 =1;
 	else if (connection_status == TOX_CONNECTION_UDP) event->param0 =2;
 
+	event->param1 =" "; event->param2 =" "; event->param3 =" ";
+
 	List_add(&Events, event);
 
 }
