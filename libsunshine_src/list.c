@@ -101,7 +101,7 @@ List_retrieve_and_remove_first(List_t **n)
 
 	if(*n==NULL)
 	{
-		printf("No list exists\n"); return 0;
+		return 0;
 	}
 	else
 	{

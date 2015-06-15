@@ -2,6 +2,7 @@
 #include <stdlib.h> // calloc()
 #include <string.h> // strdup()
 #include <sys/stat.h> // umask()
+#include <sys/time.h> // gettimeofday()
 #include <threads.h> // threading
 #include <unistd.h> // sleeping
 
@@ -121,6 +122,8 @@ void getfriendlist()
 int main()
 {
 	struct rpc_err rpcerr;
+	struct timeval tv = { 0 };
+	struct timeval newtv = { 0 };
 
 	/* component independent main */
 	APP =calloc(1, sizeof (XwinTox_instance_t));
@@ -147,8 +150,8 @@ int main()
 	loaddata();
 	getfriendlist();
 
-	cnd_init(&APP->Comm->WorkCnd);
 	mtx_init(&APP->Comm->WorkMtx, mtx_plain);
+	mtx_init(&APP->Xwin->EventsMtx, mtx_plain);
 	thrd_create (&APP->Xwin->Thrd, CXXMain, 0);
 
 
@@ -158,19 +161,16 @@ int main()
 					GTC("Tox.Name"), GTC("Tox.Status") , clnt);
 
 	sleep(1); savedata();
-	//ToxFriends_t *tst =toxgetfriendlist_1(clnt);
-	//printf("Friends count: %d\n", tst->Data.Data_len);
+
+	gettimeofday(&tv, NULL);
 
 	while (!APP->Comm->WantQuit)
 	{
 		void* work, *tofree =0;
-		dbg("Work cycle\n");
+		ToxEvent_t *Event;
 
 		mtx_lock(&APP->Comm->WorkMtx);
-
-		while(!APP->Comm->Work) 
-			{ cnd_wait(&APP->Comm->WorkCnd, &APP->Comm->WorkMtx); }
-		APP->Comm->WorkMtx =0;
+		mtx_lock(&APP->Xwin->EventsMtx);
 
 		work =List_retrieve_and_remove_first(&APP->Comm->WorkQueue);
 		tofree =work;
@@ -180,12 +180,21 @@ int main()
 		else if(strncmp (work, "sendfriendrequest", 17) == 0) {sendfriendrequest(work);}
 		else if(strcmp (work, "getfriendlist") == 0) {getfriendlist();}
 		else dbg("Unhandled request: %s\n", work);
-
 		
 		free (tofree);
-		if(!APP->Comm->WorkQueue) APP->Comm->Work =0;
+
 		nowork:
+		gettimeofday(&newtv, NULL);
+		if ((newtv.tv_sec - tv.tv_sec) > 1)
+		{
+			Event =toxgetevent_1(clnt);
+			if (Event)	printf("Event %d, param 0 %d, param 1 %s\n", Event->type, Event->param0, Event->param1);
+			gettimeofday(&tv, NULL);
+		}
+		if(!APP->Comm->WorkQueue) APP->Comm->Work =0;
 		mtx_unlock(&APP->Comm->WorkMtx);
+		mtx_unlock(&APP->Xwin->EventsMtx);
+		usleep(5000);
 	}
 	dbg("Terminating\n");
 	Dictionary_write_to_file(APP->Config, APP->ConfigFilename);

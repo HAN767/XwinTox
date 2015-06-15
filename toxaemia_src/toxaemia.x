@@ -17,12 +17,12 @@ struct ToxFriend_s
 
 enum ToxEventType
 {
-	FCONN =0,
-	FNAME =1,
-	FSTATUSM =2,
-	FSTATUS =3,
-	FMESSAGE =4,
-	FREQUEST =5
+	FCONN =1,
+	FNAME =2,
+	FSTATUSM =3,
+	FSTATUS =4,
+	FMESSAGE =5,
+	FREQUEST =6
 };
 
 

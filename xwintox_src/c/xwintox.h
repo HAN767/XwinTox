@@ -7,14 +7,15 @@
 typedef struct Xwin_s
 {
 	thrd_t Thrd;
-	List_t* ICQueue;
+	List_t *ICQueue;
+	List_t *Events;
+	mtx_t EventsMtx;
 } Xwin_t;
 
 typedef struct Comm_s
 {
 	int WantQuit;
 	int Work;
-	cnd_t WorkCnd;
 	mtx_t WorkMtx;
 	List_t *WorkQueue;
 } Comm_t;
@@ -27,7 +28,7 @@ typedef struct XwinTox_instance_s
 	int Connected;
 
 	Dictionary_t *Config;
-	char* ConfigFilename;
+	char *ConfigFilename;
 } XwinTox_instance_t;
 
 typedef struct Contact_s

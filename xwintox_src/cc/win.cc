@@ -32,7 +32,6 @@ void ContactsEntry::draw()
 	if (selected) { color(255); txt_color =0; }
 	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
 
-dbg("%d\n", strlen(contact->statusm));
 	if (strlen(contact->name) == 0)
 	{ 
 		strncpy(name, contact->pubkey, 14);
