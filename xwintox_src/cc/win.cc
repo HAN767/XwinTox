@@ -290,8 +290,11 @@ GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (224 * S, 0, 416 * S,
 	send->labelsize(14 * S);
 
 	moutput =new Fl_Text_Display(x() + (10 * S), y() + (65 * S), w() - (20 * S), y() + h() - ((84 + 65) * S)); 
+	moutput->wrap_mode(moutput->WRAP_AT_BOUNDS, 0);
+	moutput->textsize(12 * S);
 
 	moutbuffer =new Fl_Text_Buffer();
+	moutput->buffer(moutbuffer);
 
 	end();
 }

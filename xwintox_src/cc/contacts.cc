@@ -30,6 +30,7 @@ void ContactListGUIUpdate()
 		GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
 		newarea->hide();
 		newarea->send->callback(&SendMessagePressed);
+
 		XwinTox->add(newarea);
 		XwinTox->contents->messageareas.push_back(newarea);
 	}
@@ -50,6 +51,15 @@ GMessageArea *FindContactMArea(unsigned int id)
 	for (const auto messagearea : XwinTox->contents->messageareas)
 	{
 		if(messagearea->contact->num == id) return messagearea;
+	}
+	dbg("Fail"); return 0;
+}
+
+Contact_t *FindContact(unsigned int id)
+{
+	for (const auto contact : contactlist->contacts)
+	{
+		if(contact->num == id) return contact;
 	}
 	dbg("Fail"); return 0;
 }

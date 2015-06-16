@@ -142,15 +142,18 @@ ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 ToxEvent_t* toxgetevent_1_svc(struct svc_req* SvcReq)
 {
 	static ToxEvent_t result;
-	ToxEvent_t *ptr;
+	ToxEvent_t *ptr, *ret;
 
 	result.type =0; result.paramid =0; result.param0 =0; result.param1 =" "; 
 	result.param2 =" "; result.param3 =" ";
+
 	ptr =List_retrieve_and_remove_first(&Events);
 
-	if(ptr != 0) result =*ptr;
+	if(ptr != 0) ret =ptr;
+	else ret =&result;
 
-	return &result;
+
+	return ret;
 }
 
 void* toxsendmessage_1_svc(unsigned int id, char* message, struct svc_req* SvcReq)

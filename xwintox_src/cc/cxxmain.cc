@@ -43,12 +43,14 @@ void ProcessEvents()
 		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
 			Event->paramid, Event->param0, Event->param1);
 		if(Event->type == FMESSAGE) AddLine(Event->paramid, Event->param1);
+		free(Event->param1); free(Event->param2); free(Event->param3);
+		free (Event);
 	}
 }
 
 extern "C" int CXXMain()
 {
-	int scale =1;
+	int scale =2;
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
 
@@ -65,7 +67,7 @@ extern "C" int CXXMain()
 
 	while (1)
 	{
-		Fl::wait();
+		Fl::wait(0.1);
 		if(APP->Xwin->Events) ProcessEvents();
 	}
 

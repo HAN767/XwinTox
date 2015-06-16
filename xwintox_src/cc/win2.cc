@@ -33,6 +33,7 @@ void AddFriendPressed(Fl_Widget* B , void*)
 void SendMessagePressed(Fl_Widget* B , void*)
 {
 	char *amsg =(char*)calloc(1025, sizeof(char));
+	static char nmsg[1024];
 	unsigned int id =((GMessageArea*)B->parent())->contact->num;
 	const char *msg =((GMessageArea*)B->parent())->message->value();
 	// add a validity check here later //
@@ -41,6 +42,11 @@ void SendMessagePressed(Fl_Widget* B , void*)
 
 	List_add(&APP->Comm->WorkQueue, (void*)amsg);
 	CommWork();
+
+
+	sprintf(nmsg, "%s: %s\n", XwinTox->sidebar->top_area->name->value(),
+			((GMessageArea*)B->parent())->message->value());
+	FindContactMArea(id)->moutbuffer->append(nmsg);
 }
 
 void InitGUICallbacks()
@@ -95,6 +101,9 @@ char *GetDisplayStatus(Contact_t *contact, size_t LenLimit)
 
 void AddLine(unsigned int id, char* msg)
 {
-
+	Contact_t *contact =FindContact(id);
+	static char nmsg[1024];
+	sprintf(nmsg, "%s: %s\n", contact->name, msg);
+	FindContactMArea(id)->moutbuffer->append(nmsg);
 }
 

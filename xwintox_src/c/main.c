@@ -207,8 +207,13 @@ int main()
 		{
 			while ( ((Event =toxgetevent_1(clnt)) != 0) && Event && Event->type != 0)
 			{
-				dbg("Pre param 1 %s\n", Event->param1);
-				List_add(&APP->Xwin->Events, Event); 
+				ToxEvent_t *NEvent =calloc(1, sizeof(ToxEvent_t));
+				*NEvent =*Event;
+				NEvent->param1 =strdup(Event->param1);
+				NEvent->param2 =strdup(Event->param2);
+				NEvent->param3 =strdup(Event->param3);
+
+				List_add(&APP->Xwin->Events, NEvent); 
 			}
 			gettimeofday(&tv, NULL);
 		}

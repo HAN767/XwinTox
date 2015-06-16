@@ -74,7 +74,9 @@ void cb_friend_message(Tox *tox, uint32_t friend_number, TOX_MESSAGE_TYPE type,
 					   const uint8_t *message, size_t length, void *user_data)
 {
 	char *nmessage =calloc(length + 1, sizeof(char));
+
 	ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
+	strncpy(nmessage, (char*) message, length); nmessage[length+1] ='\0';
 
 	event->type =FMESSAGE;
 	event->paramid =friend_number;
@@ -82,7 +84,6 @@ void cb_friend_message(Tox *tox, uint32_t friend_number, TOX_MESSAGE_TYPE type,
 	event->param2 =calloc(1, sizeof(char)); 
 	event->param3 =calloc(1, sizeof(char));
 
-	strncpy(nmessage, (char*) message, length); nmessage[length+1] ='\0';
 	dbg("Message from ID %d: %s\n", event->paramid, nmessage);
 	List_add(&Events, event);
 }

@@ -23,6 +23,7 @@ extern ContactList_t *contactlist;
 class GMessageArea;
 GMessageArea *FindContactMArea(Contact_t *contact);
 GMessageArea *FindContactMArea(unsigned int id);
+Contact_t *FindContact(unsigned int id);
 char *GetDisplayName(Contact_t *contact, size_t LenLimit);
 char *GetDisplayStatus(Contact_t *contact, size_t LenLimit);
 
