@@ -48,6 +48,8 @@ void cb_friend_connection_status(Tox *tox, uint32_t friend_number,
 	event->param2 =calloc(1, sizeof(char)); 
 	event->param3 =calloc(1, sizeof(char));
 
+	dbg("ID %d status %d\n", friend_number, connection_status);
+
 	List_add(&Events, event);
 
 }

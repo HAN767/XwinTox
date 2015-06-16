@@ -23,6 +23,7 @@ class XwinTox* XwinTox;
 extern "C" Xwin_t *Xwin;
 
 void InitGUICallbacks();
+void AddLine(unsigned int id, char* msg);
 
 void CommWork()
 {
@@ -41,6 +42,7 @@ void ProcessEvents()
 	{
 		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
 			Event->paramid, Event->param0, Event->param1);
+		if(Event->type == FMESSAGE) AddLine(Event->paramid, Event->param1);
 	}
 }
 

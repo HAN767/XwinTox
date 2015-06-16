@@ -119,6 +119,23 @@ void getfriendlist()
 	}
 }
 
+int sendmessage(char* Rmsg)
+{
+	char *id;
+	int result;
+	
+	strsep(&Rmsg, " ");
+	id =Rmsg;
+	strsep(&Rmsg, " ");
+
+	if (toxsendmessage_1(strtol(id, 0, 10), Rmsg, clnt))
+	{
+		clnt_perror(clnt, "Sendmessage");
+		return 1;
+	}
+	return 0;
+}
+
 int main()
 {
 	struct rpc_err rpcerr;
@@ -179,6 +196,7 @@ int main()
 		if(strcmp (work, "savedata") == 0) { savedata(); }
 		else if(strncmp (work, "sendfriendrequest", 17) == 0) {sendfriendrequest(work);}
 		else if(strcmp (work, "getfriendlist") == 0) {getfriendlist();}
+		else if(strncmp (work, "sendmessage", 11) == 0) {sendmessage(work);}
 		else dbg("Unhandled request: %s\n", work);
 		
 		free (tofree);
@@ -187,9 +205,11 @@ int main()
 		gettimeofday(&newtv, NULL);
 		if ((newtv.tv_sec - tv.tv_sec) > 1)
 		{
-			Event =toxgetevent_1(clnt);
-			if (Event && Event->type != 0)
-			{	List_add(&APP->Xwin->Events, Event); }//dbg("Event %d, param 0 %d, param 1 %s\n", Event->type, Event->param0, Event->param1);
+			while ( ((Event =toxgetevent_1(clnt)) != 0) && Event && Event->type != 0)
+			{
+				dbg("Pre param 1 %s\n", Event->param1);
+				List_add(&APP->Xwin->Events, Event); 
+			}
 			gettimeofday(&tv, NULL);
 		}
 		if(!APP->Comm->WorkQueue) APP->Comm->Work =0;

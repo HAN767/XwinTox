@@ -9,6 +9,8 @@ extern "C"
 
 ContactList_t *contactlist;
 
+void SendMessagePressed(Fl_Widget* B , void*);
+
 void ContactListGUIUpdate()
 {
 	XwinTox->sidebar->contacts->clear_all();
@@ -27,6 +29,7 @@ void ContactListGUIUpdate()
 
 		GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
 		newarea->hide();
+		newarea->send->callback(&SendMessagePressed);
 		XwinTox->add(newarea);
 		XwinTox->contents->messageareas.push_back(newarea);
 	}
@@ -38,6 +41,15 @@ GMessageArea *FindContactMArea(Contact_t *contact)
 	for (const auto messagearea : XwinTox->contents->messageareas)
 	{
 		if(messagearea->contact == contact) return messagearea;
+	}
+	dbg("Fail"); return 0;
+}
+
+GMessageArea *FindContactMArea(unsigned int id)
+{
+	for (const auto messagearea : XwinTox->contents->messageareas)
+	{
+		if(messagearea->contact->num == id) return messagearea;
 	}
 	dbg("Fail"); return 0;
 }

@@ -123,6 +123,12 @@ void Deliver_friend(unsigned int num)
 	List_add (&Returns, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE));
 }
 
+void Send_message(unsigned int num, char* message)
+{
+	tox_friend_send_message(Tox_comm->tox, num, TOX_MESSAGE_TYPE_NORMAL, 
+							(uint8_t*) message, strlen(message), 0);
+}
+
 int Tox_comm_main()
 {
 	TOX_ERR_OPTIONS_NEW toxoptserr;
@@ -177,6 +183,14 @@ int Tox_comm_main()
 				Deliver_friend(strtol(Rmsg, 0, 10));
 			}
 			else if(!strncmp (Rmsg, "connect", 7)) Connect_to_tox();
+			else if(!strncmp (Rmsg, "sendmessage", 11))
+			{
+				char *id;
+				strsep(&Rmsg, " ");
+				id =Rmsg;
+				strsep(&Rmsg, " "); 
+				Send_message(strtol(id, 0, 10), Rmsg);
+			}
 			else { 	dbg("Unhandled request %s\n", Rmsg); }
 			free(tofree);
 		}

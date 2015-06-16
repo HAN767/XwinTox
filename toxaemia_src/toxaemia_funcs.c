@@ -152,3 +152,15 @@ ToxEvent_t* toxgetevent_1_svc(struct svc_req* SvcReq)
 
 	return &result;
 }
+
+void* toxsendmessage_1_svc(unsigned int id, char* message, struct svc_req* SvcReq)
+{
+	char *icmsg;
+
+	dbg("Send message to id %d, message %s\n", id, message);
+	icmsg =calloc(17 + strlen(message), sizeof(char));
+	sprintf(icmsg, "sendmessage %d %s", id, message);
+	List_add(&Tox_comm->ICQueue, icmsg);
+
+	return 1;
+}

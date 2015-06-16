@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "xwintox_win.h"
+#include "contacts.h"
 
 extern "C"
 {
@@ -29,6 +30,19 @@ void AddFriendPressed(Fl_Widget* B , void*)
 	CommWork();
 }
 
+void SendMessagePressed(Fl_Widget* B , void*)
+{
+	char *amsg =(char*)calloc(1025, sizeof(char));
+	unsigned int id =((GMessageArea*)B->parent())->contact->num;
+	const char *msg =((GMessageArea*)B->parent())->message->value();
+	// add a validity check here later //
+
+	sprintf(amsg, "sendmessage %d %s", id, msg);
+
+	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	CommWork();
+}
+
 void InitGUICallbacks()
 {
 	XwinTox->contents->addfriend->send->callback(&AddFriendPressed);
@@ -40,13 +54,13 @@ char *GetDisplayName(Contact_t *contact, size_t LenLimit)
 
 	if (strlen(contact->name) == 0)
 	{ 
-		strncpy(name, contact->pubkey, LenLimit-3);
+		strncpy(name, contact->pubkey, LenLimit);
 		name[LenLimit-2] ='.'; name[LenLimit-1] ='.'; name[LenLimit] ='.';
 
 	}
 	else if (strlen(contact->name) >= LenLimit)
 	{
-		strncpy(name, contact->name, LenLimit-3);
+		strncpy(name, contact->name, LenLimit);
 		name[LenLimit-2] ='.'; name[LenLimit-1] ='.'; name[LenLimit] ='.';
 	}
 	else
@@ -63,7 +77,7 @@ char *GetDisplayStatus(Contact_t *contact, size_t LenLimit)
 
 	if (strlen(contact->statusm) >= LenLimit)
 	{
-		strncpy(status, contact->statusm, LenLimit - 3);
+		strncpy(status, contact->statusm, LenLimit);
 		status[LenLimit - 2] ='.'; status[LenLimit - 1] ='.'; 
 		status[LenLimit] ='.';
 	}
@@ -79,4 +93,8 @@ char *GetDisplayStatus(Contact_t *contact, size_t LenLimit)
 	return status;
 }
 
+void AddLine(unsigned int id, char* msg)
+{
+
+}
 

@@ -33,8 +33,8 @@ typedef struct XwinTox_instance_s
 
 typedef struct Contact_s
 {
+	unsigned int num;
 	char *name, *statusm, *pubkey;
-	int num;
 	int status; /* 0 = offline, 1 = online */
 } Contact_t __attribute__((packed));
 

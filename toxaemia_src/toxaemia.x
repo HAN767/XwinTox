@@ -81,5 +81,11 @@ program TOXAEMIA_PROG {
 		 * Returns data of a friend as ToxFriend_t
 		 * unsigned int => Friend number to retrieve data for */
 		ToxFriend_t ToxGetFriend(unsigned int) = 8;
+
+		/* ToxSendMessage
+		 * Sends a message to a contact
+		 * unsigned int => Friend number to send message to
+		 * string<> => Message to send */
+		void ToxSendMessage(unsigned int, string<>) = 9;
 	} = 1;
 } = 0x22159817;
