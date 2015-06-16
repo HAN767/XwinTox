@@ -98,6 +98,7 @@ int ContactsList::handle(int event)
 		{
 		entry->selected =0;
 		entry->redraw(); entry->icon->redraw();
+		((Sidebar*)(parent()))->bottom_area->deselect_all();
 		}
 	}
 	Fl_Scroll::handle(event);
@@ -110,6 +111,15 @@ void ContactsList::clear_all()
 	entries.clear();
 	this->redraw();
 	parent()->redraw();
+}
+
+void ContactsList::deselect_all()
+{
+	for (const auto entry : entries)
+	{
+		entry->selected =0;
+		entry->redraw(); entry->icon->redraw();
+	}
 }
 
 StatusBox::StatusBox(int X, int Y, int W, int H, int S) : Fl_Box (X, Y, W, H)
@@ -138,6 +148,17 @@ SVGBox::SVGBox(int X, int Y, int W, int H, int S, const char* pic, double factor
 void SVGBox::draw()
 {
 	Fl_Box::draw();
+}
+
+int SVGBox::handle(int event) 
+{
+	switch(event) 
+	{
+	case FL_PUSH:
+		do_callback();
+		return 1;
+	}
+	return 0;
 }
 
 Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
@@ -176,6 +197,14 @@ Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group (0,
 	settings =new SVGBox(168 * S, (480 * S) - (36 * S), 212 * S , 36 * S, S, settingssvg, 0.5);
 
 	end();
+}
+
+void Sidebar_Bottom_Area::deselect_all()
+{
+	addfriend->box(FL_NO_BOX);
+	newgroup->box(FL_NO_BOX);
+	transfers->box(FL_NO_BOX);
+	settings->box(FL_NO_BOX);
 }
 
 

@@ -13,6 +13,14 @@ extern "C"
 
 void AddFriendPressed(Fl_Widget* B , void*)
 {
+	XwinTox->contents->NewCurrentArea(XwinTox->contents->addfriend);
+	B->box(FL_FLAT_BOX);
+	B->color(fl_rgb_color(68, 68, 67));
+	XwinTox->sidebar->contacts->deselect_all();
+}
+
+void AddFriendSendPressed(Fl_Widget* B , void*)
+{
 	char *amsg =(char*)calloc(255, sizeof(char));
 	char *bmsg =(char*)calloc(9, sizeof(char));
 	char *cmsg =(char*)calloc(14, sizeof(char));
@@ -51,7 +59,8 @@ void SendMessagePressed(Fl_Widget* B , void*)
 
 void InitGUICallbacks()
 {
-	XwinTox->contents->addfriend->send->callback(&AddFriendPressed);
+	XwinTox->contents->addfriend->send->callback(&AddFriendSendPressed);
+	XwinTox->sidebar->bottom_area->addfriend->callback(&AddFriendPressed);
 }
 
 char *GetDisplayName(Contact_t *contact, size_t LenLimit)

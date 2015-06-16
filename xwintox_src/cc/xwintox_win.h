@@ -33,6 +33,7 @@ public:
 	// Ctor
 	SVGBox(int X, int Y, int W, int H, int S, const char* pic, double factor);
 	void draw();
+	int handle(int event);
 
 	int scale;
 	unsigned char *img_r;
@@ -64,7 +65,9 @@ public:
 	void draw();
 	void resize (int X, int Y, int W, int H);
 	int handle(int event);
+
 	void clear_all();
+	void deselect_all();
 
 	vector <ContactsEntry*> entries;
 
@@ -91,6 +94,8 @@ class Sidebar_Bottom_Area: public Fl_Group
 public:
 	// Ctor
 	Sidebar_Bottom_Area(int S);
+
+	void deselect_all();
 
 	SVGBox *addfriend;
 	SVGBox *newgroup;
