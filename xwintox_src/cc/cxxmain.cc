@@ -33,6 +33,17 @@ void CommWork()
 	//APP->Comm->Work =0;
 }
 
+void ProcessEvents()
+{
+	ToxEvent_t *Event;
+	while ((Event =(ToxEvent_t*)
+			List_retrieve_and_remove_first(&APP->Xwin->Events)) != 0)
+	{
+		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
+			Event->paramid, Event->param0, Event->param1);
+	}
+}
+
 extern "C" int CXXMain()
 {
 	int scale =1;
@@ -53,6 +64,7 @@ extern "C" int CXXMain()
 	while (1)
 	{
 		Fl::wait();
+		if(APP->Xwin->Events) ProcessEvents();
 	}
 
 	return 0;

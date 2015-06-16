@@ -4,7 +4,7 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Multiline_Input.H>
-#include <FL/Fl_Output.H>
+#include <FL/Fl_Text_Display.H>
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/fl_draw.H>
@@ -289,7 +289,9 @@ GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (224 * S, 0, 416 * S,
 	send->labelcolor(255);
 	send->labelsize(14 * S);
 
-	moutput =new Fl_Output(x() + (10 * S), y() + (65 * S), w() - (20 * S), y() + h() - ((84 + 65) * S)); 
+	moutput =new Fl_Text_Display(x() + (10 * S), y() + (65 * S), w() - (20 * S), y() + h() - ((84 + 65) * S)); 
+
+	moutbuffer =new Fl_Text_Buffer();
 
 	end();
 }

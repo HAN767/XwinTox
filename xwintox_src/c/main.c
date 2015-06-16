@@ -188,7 +188,8 @@ int main()
 		if ((newtv.tv_sec - tv.tv_sec) > 1)
 		{
 			Event =toxgetevent_1(clnt);
-			if (Event)	printf("Event %d, param 0 %d, param 1 %s\n", Event->type, Event->param0, Event->param1);
+			if (Event && Event->type != 0)
+			{	List_add(&APP->Xwin->Events, Event); }//dbg("Event %d, param 0 %d, param 1 %s\n", Event->type, Event->param0, Event->param1);
 			gettimeofday(&tv, NULL);
 		}
 		if(!APP->Comm->WorkQueue) APP->Comm->Work =0;

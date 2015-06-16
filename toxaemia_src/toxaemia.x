@@ -29,6 +29,7 @@ enum ToxEventType
 struct ToxEvent_s
 {
 	ToxEventType type;
+	int paramid;
 	int param0;
 	string param1<>;
 	string param2<>;
