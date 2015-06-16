@@ -37,7 +37,9 @@ void cb_friend_connection_status(Tox *tox, uint32_t friend_number,
 	else if (connection_status == TOX_CONNECTION_TCP) event->param0 =1;
 	else if (connection_status == TOX_CONNECTION_UDP) event->param0 =2;
 
-	event->param1 =" "; event->param2 =" "; event->param3 =" ";
+	event->param1 =calloc(1, sizeof(char)); 
+	event->param2 =calloc(1, sizeof(char)); 
+	event->param3 =calloc(1, sizeof(char));
 
 	List_add(&Events, event);
 
@@ -51,6 +53,8 @@ void cb_friend_name(Tox *tox, uint32_t friend_number, const uint8_t *name,
 
 	event->type =FNAME;
 	event->param1 =nname;
+	event->param2 =calloc(1, sizeof(char)); 
+	event->param3 =calloc(1, sizeof(char));
 
 	strncpy(nname, (char*) name, length); nname[length+1] ='\0';
 	List_add(&Events, event);

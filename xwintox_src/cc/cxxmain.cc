@@ -35,7 +35,7 @@ void CommWork()
 
 extern "C" int CXXMain()
 {
-	int scale =2;
+	int scale =1;
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
 

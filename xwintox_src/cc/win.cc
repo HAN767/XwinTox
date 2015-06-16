@@ -4,6 +4,7 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Multiline_Input.H>
+#include <FL/Fl_Output.H>
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/fl_draw.H>
@@ -30,35 +31,12 @@ ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C) : Fl_Box (X, Y, 
 void ContactsEntry::draw()
 {
 	int txt_color =255;
-	char name[255] = { 0 }, status[255] = { 0 };
+	char *name, *status;
 	if (selected) { color(255); txt_color =0; }
 	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
 
-	if (strlen(contact->name) == 0)
-	{ 
-		strncpy(name, contact->pubkey, 14);
-		name[14] ='.'; name[15] ='.'; name[16] ='.';
-		if (strlen(contact->statusm) == 0) strcpy (status, "Unknown");
-	}
-	else if (strlen(contact->name) >= 15)
-	{
-		strncpy(name, contact->name, 15);
-		name[15] ='.'; name[16] ='.'; name[17] ='.';
-	}
-	else
-	{
-		strcpy(name, contact->name);
-	}
+	name =GetDisplayName(contact, 18); status =GetDisplayStatus(contact, 25);
 
-	if (strlen(contact->statusm) >= 20)
-	{
-		strncpy(status, contact->statusm, 20);
-		status[20] ='.'; status[21] ='.'; status[22] ='.';
-	}
-	else if (strlen (contact->statusm) > 0)
-	{
-		strcpy(status, contact->statusm);
-	}
 	
 	Fl_Box::draw();
 	fl_color(txt_color);
@@ -300,6 +278,18 @@ GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (224 * S, 0, 416 * S,
 	color(255);
 
 	icon = new SVGBox(x()+(12 * S), y()+(9 * S), 40 * S, 40 *S, S, default_av, 0.32);
+	message =new Fl_Multiline_Input(x() + (10 * S), h() - (80 * S), 
+									(x() + w() - (224 * S) - (110 * S)), 
+					64 * S);
+	message->textsize (12 * S);
+
+	send =new Fl_Button(x() + w() - 74 * scale, h() - (80 * scale), 64 * scale,
+						64 * scale, "Send");
+	send->color(fl_rgb_color(107, 194, 96));
+	send->labelcolor(255);
+	send->labelsize(14 * S);
+
+	moutput =new Fl_Output(x() + (10 * S), y() + (65 * S), w() - (20 * S), y() + h() - ((84 + 65) * S)); 
 
 	end();
 }
@@ -314,6 +304,7 @@ void GMessageArea::draw()
 
 	fl_color(fl_rgb_color(192, 192, 192));
 	fl_line(x(), y() + (60 * scale), Fl::w(), y() + (60 * scale));
+
 	fl_color(0);
 }
 
@@ -339,11 +330,6 @@ void XWContents::NewCurrentArea(Fl_Group *G)
 
 void XWContents::draw()
 {
-	//if (currentarea != newcurrentarea)
-//	currentarea->hide();
-	//currentarea =newcurrentarea;
-	//currentarea->show();
-	//Fl_Box::draw();
 }
 
 XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c) 

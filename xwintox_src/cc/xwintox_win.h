@@ -8,6 +8,7 @@ using namespace std;
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Input.H>
+#include <FL/Fl_Output.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_Button.H>
@@ -151,6 +152,7 @@ public:
 	void draw();
 
 	SVGBox *icon;
+	Fl_Output *moutput;
 	Fl_Input *message;
 	Fl_Button *send;
 
