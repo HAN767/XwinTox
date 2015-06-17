@@ -110,9 +110,20 @@ char *GetDisplayStatus(Contact_t *contact, size_t LenLimit)
 
 void AddLine(unsigned int id, char* msg)
 {
+	time_t rawtime;
+	struct tm *info;
 	Contact_t *contact =FindContact(id);
 	static char nmsg[1024];
+	static char date[256];
+
+	time( &rawtime );
+	info = localtime( &rawtime );
+
+	strftime(date, 255, "%H:%M", info);
 	sprintf(nmsg, "%s: %s\n", contact->name, msg);
+ FindContactMArea(id)->moutput->insert_position(5);
 	FindContactMArea(id)->moutbuffer->append(nmsg);
+
+	dbg("Insert position: %d\n", FindContactMArea(id)->moutput->insert_position());
 }
 
