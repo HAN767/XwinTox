@@ -36,7 +36,7 @@ void ContactsEntry::draw()
 	if (selected) { color(255); txt_color =0; }
 	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
 
-	name =GetDisplayName(contact, 17); status =GetDisplayStatus(contact, 25);
+	name =GetDisplayName(contact, 16); status =GetDisplayStatus(contact, 25);
 
 	
 	Fl_Box::draw();
@@ -57,6 +57,12 @@ int ContactsEntry::handle(int event)
 	switch(event) 
 	{
 	case FL_PUSH:
+		for (const auto entry : ((ContactsList*)parent())->entries)
+		{
+		entry->selected =0;
+		entry->redraw(); entry->icon->redraw();
+		((Sidebar*)(parent()->parent()))->bottom_area->deselect_all();
+		}
 		selected =1;
 		redraw(); icon->redraw();
 		XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
@@ -97,9 +103,7 @@ int ContactsList::handle(int event)
 	case FL_PUSH:
 		for (const auto entry : entries)
 		{
-		entry->selected =0;
 		entry->redraw(); entry->icon->redraw();
-		((Sidebar*)(parent()))->bottom_area->deselect_all();
 		}
 	}
 	Fl_Scroll::handle(event);
@@ -386,6 +390,8 @@ void GMessageArea::draw()
 	fl_color(0);
 }
 
+void AddFriendPressed(Fl_Widget* B , void*);
+
 XWContents::XWContents(int S) : Fl_Box(XwinTox->sblength * S,XwinTox->basey * S,
 									   XwinTox->w() - (XwinTox->sblength * S), 
 									   XwinTox->h() - (XwinTox->basey * S))
@@ -396,6 +402,8 @@ XWContents::XWContents(int S) : Fl_Box(XwinTox->sblength * S,XwinTox->basey * S,
 
 	addfriend =new GAddFriend(S);
 	currentarea =addfriend;
+	XwinTox->sidebar->bottom_area->addfriend->box(FL_FLAT_BOX);
+	XwinTox->sidebar->bottom_area->addfriend->color(fl_rgb_color(68, 68, 67));
 }
 
 void XWContents::NewCurrentArea(Fl_Group *G)
@@ -419,9 +427,11 @@ XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c)
 	if(scale < 2) basey =35;
 	else basey =25;
 
-	Fl_Menu_Bar *mbar = new Fl_Menu_Bar(0, 0, w + 1, basey * S);
-	mbar->add("File"); mbar->add("Edit");mbar->add("Tools");mbar->add("Help");
-	mbar->add("Help/_&DHT Information");mbar->add("Help/About Tox"); mbar->add("Help/About Toxaemia");mbar->add("Help/About XwinTox");
+	mbar = new Fl_Menu_Bar(0, 0, w + 1, basey * S);
+	mbar->add("File/Quit");
+	mbar->add("Edit/Preferences");
+	mbar->add("Tools/Switch Profile");
+	mbar->add("Help/_&DHT Information"); mbar->add("Help/About XwinTox");
 	mbar->textsize(12 * S);
 
 	box(FL_FLAT_BOX);
@@ -430,8 +440,8 @@ XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c)
 
 void XwinTox::init2()
 {
-	contents =new XWContents(scale);
 	sidebar =new Sidebar(scale);
+	contents =new XWContents(scale);
 	resizable(contents);
 }
 void XwinTox::resize (int X, int Y, int W, int H)

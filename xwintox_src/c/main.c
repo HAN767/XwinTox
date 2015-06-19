@@ -108,7 +108,7 @@ void getfriendlist()
 {
 	ToxFriends_t *tst =toxgetfriendlist_1(clnt);
 	printf("Friends count: %d\n", tst->Data.Data_len);
-	for(int i =0; i < tst->Data.Data_len; i++)
+	for(int i =0; i < tst->Data.Data_len - 1; i++)
 	{
 		Contact_t *c =calloc(1, sizeof(Contact_t));
 		ToxFriend_t *f =toxgetfriend_1(tst->Data.Data_val[i], clnt);

@@ -8,6 +8,7 @@ using namespace std;
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Input.H>
+#include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Text_Display.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Scroll.H>
@@ -199,6 +200,7 @@ public:
 
 	void resize (int X, int Y, int W, int H);
 
+	Fl_Menu_Bar *mbar;
 	Sidebar *sidebar;
 	XWContents *contents;
 	GAddFriend *addfriend;
