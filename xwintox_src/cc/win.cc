@@ -57,6 +57,8 @@ int ContactsEntry::handle(int event)
 	switch(event) 
 	{
 	case FL_PUSH:
+		if ( Fl::event_button() == FL_LEFT_MOUSE )
+		{
 		for (const auto entry : ((ContactsList*)parent())->entries)
 		{
 		entry->selected =0;
@@ -65,8 +67,10 @@ int ContactsEntry::handle(int event)
 		}
 		selected =1;
 		redraw(); icon->redraw();
+		((ContactsList*)parent())->selected =contact->num;
 		XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
 		return 1;
+		}
 	}
 	return 0;
 }
@@ -74,6 +78,7 @@ int ContactsEntry::handle(int event)
 ContactsList::ContactsList(int X, int Y, int W, int H, int S) : Fl_Scroll (X, Y, W, H)
 {
 	scale =S;
+	selected =-1;
 	color(fl_rgb_color(65, 65, 65));
 	type(6);
 
@@ -87,6 +92,7 @@ void ContactsList::draw()
 		entry->icon->redraw();
 	}
 }
+
 void ContactsList::resize(int X, int Y, int W, int H) 
 {
 	Fl_Scroll::resize(X, Y, W, H);

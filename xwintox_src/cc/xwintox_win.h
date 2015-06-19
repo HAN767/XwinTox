@@ -72,7 +72,7 @@ public:
 
 	vector <ContactsEntry*> entries;
 
-	int scale;
+	int selected, scale;
 };
 
 class Sidebar_Top_Area: public Fl_Group

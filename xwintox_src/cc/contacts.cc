@@ -13,7 +13,14 @@ void SendMessagePressed(Fl_Widget* B , void*);
 
 void ContactListGUIUpdate()
 {
-	XwinTox->sidebar->contacts->clear_all();
+	int selected =-1;
+
+	if(XwinTox->sidebar->contacts->entries.size() > 0)
+	{
+		if (XwinTox->sidebar->contacts->selected >= 0)
+		{ selected = XwinTox->sidebar->contacts->selected; }
+		XwinTox->sidebar->contacts->clear_all();
+	}
 
 	int YM =0;
 	for (const auto contact : contactlist->contacts)
@@ -33,8 +40,24 @@ void ContactListGUIUpdate()
 
 		XwinTox->add(newarea);
 		XwinTox->contents->messageareas.push_back(newarea);
+
+		if(contact->num == selected)
+		{
+			newgui->selected =1;
+			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
+			XwinTox->sidebar->contacts->selected =selected;
+		}
 	}
 	XwinTox->redraw(); XwinTox->sidebar->contacts->redraw();
+}
+
+ContactsEntry *FindContactEntry(unsigned int num)
+{
+	for (const auto entry : XwinTox->sidebar->contacts->entries)
+	{
+		if(entry->contact->num == num) return entry;
+	}
+	dbg("Fail"); return 0;
 }
 
 GMessageArea *FindContactMArea(Contact_t *contact)
@@ -46,11 +69,11 @@ GMessageArea *FindContactMArea(Contact_t *contact)
 	dbg("Fail"); return 0;
 }
 
-GMessageArea *FindContactMArea(unsigned int id)
+GMessageArea *FindContactMArea(unsigned int num)
 {
 	for (const auto messagearea : XwinTox->contents->messageareas)
 	{
-		if(messagearea->contact->num == id) return messagearea;
+		if(messagearea->contact->num == num) return messagearea;
 	}
 	dbg("Fail"); return 0;
 }
