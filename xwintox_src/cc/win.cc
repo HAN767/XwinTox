@@ -414,11 +414,15 @@ void XWContents::draw()
 XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c) 
 {
 	scale =S;
-	basex =0; basey =25; sblength =224;
+	basex =0; basey =0; sblength =224;
 
-	Fl_Menu_Bar *mbar = new Fl_Menu_Bar(0, 0, w + 1, 50);
+	if(scale < 2) basey =35;
+	else basey =25;
+
+	Fl_Menu_Bar *mbar = new Fl_Menu_Bar(0, 0, w + 1, basey * S);
 	mbar->add("File"); mbar->add("Edit");mbar->add("Tools");mbar->add("Help");
 	mbar->add("Help/_&DHT Information");mbar->add("Help/About Tox"); mbar->add("Help/About Toxaemia");mbar->add("Help/About XwinTox");
+	mbar->textsize(12 * S);
 
 	box(FL_FLAT_BOX);
 	color(255);
