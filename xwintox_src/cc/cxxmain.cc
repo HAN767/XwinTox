@@ -61,6 +61,7 @@ extern "C" int CXXMain()
 
 	Fl::visual(FL_RGB);
 	XwinTox = new class XwinTox(640 * scale, 480 * scale, "XwinTox", scale);
+	XwinTox->init2();
 	XwinTox->show();
 	ContactListGUIUpdate();
 	InitGUICallbacks();

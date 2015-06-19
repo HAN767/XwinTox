@@ -3,6 +3,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Multiline_Input.H>
 #include <FL/Fl_Text_Display.H>
 #include <FL/Fl_Scroll.H>
@@ -35,7 +36,7 @@ void ContactsEntry::draw()
 	if (selected) { color(255); txt_color =0; }
 	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
 
-	name =GetDisplayName(contact, 18); status =GetDisplayStatus(contact, 25);
+	name =GetDisplayName(contact, 17); status =GetDisplayStatus(contact, 25);
 
 	
 	Fl_Box::draw();
@@ -161,17 +162,19 @@ int SVGBox::handle(int event)
 	return 0;
 }
 
-Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
+Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (XwinTox->basex * S,XwinTox->basey * S,
+									   (XwinTox->sblength * S), 
+									   60 * S)
 {
 	scale =S;
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(28, 28, 28));
 
-	statusbox =new StatusBox(192 * S, 10 * S, 20 * S, 40 * S, S);
-	avbox =new SVGBox(10 * S, 10 * S, 40 * S , 40 * S, S, default_av, 0.3);
-	name =new Fl_Input(62 * S, 18 * S, 128 *S, 11 * S);
-	status =new Fl_Input(62 * S, 30 * S, 128 *S, 11 * S);
+	statusbox =new StatusBox(x() + (192 * S), y() + (10 * S), 20 * S, 40 * S, S);
+	avbox =new SVGBox(x() + (10 * S), y() + (10 * S), 40 * S , 40 * S, S, default_av, 0.3);
+	name =new Fl_Input(x() + (62 * S), y() + (18 * S), 128 *S, 11 * S);
+	status =new Fl_Input(x() + (62 * S), y() + (30 * S), 128 *S, 11 * S);
 	name->textsize(12 * S);
 	status->textsize(10 * S);
 	name->box(FL_FLAT_BOX); name->color(fl_rgb_color(28, 28, 28));
@@ -183,20 +186,30 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (0, 0, 224 * S, 60 * S)
 	end();
 }
 
-Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group (0, 
-										(480 * S) - (36 * S), 224 * S, 480 * S)
+Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group (XwinTox->basex * S, XwinTox->h() - (36 * S) - (XwinTox->basey * S),
+									   (XwinTox->sblength * S), 
+									   XwinTox->h() - (XwinTox->basey * S))
 {
 	scale =S;
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(28, 28, 28));
 
-	addfriend =new SVGBox(0, (480 * S) - (36 * S), 56 * S , 36 * S, S, addfriendsvg, 0.5);
-	newgroup =new SVGBox(56 * S, (480 * S) - (36 * S), 112 * S , 36 * S, S, groupsvg, 0.5);
-	transfers =new SVGBox(112 * S, (480 * S) - (36 * S), 168 * S , 36 * S, S, transfersvg, 0.5);
-	settings =new SVGBox(168 * S, (480 * S) - (36 * S), 212 * S , 36 * S, S, settingssvg, 0.5);
+	addfriend =new SVGBox(0, 0, 56 * scale, 36 * S, S, addfriendsvg, 0.5);
+	newgroup =new SVGBox(0, 0, 112 * S , 36 * S, S, groupsvg, 0.5);
+	transfers =new SVGBox(0, 0, 168 * S , 36 * S, S, transfersvg, 0.5);
+	settings =new SVGBox(0, 0, 212 * S , 36 * S, S, settingssvg, 0.5);
 
 	end();
+}
+
+void Sidebar_Bottom_Area::resize(int X, int Y, int W, int H)
+{
+	Fl_Group::resize(X, Y, W, H);
+	addfriend->position(x(), XwinTox->h() - (36 * scale));
+	newgroup->position(x() + (56 * scale), XwinTox->h() - (36 * scale));
+	transfers->position(x() + (112 * scale), XwinTox->h() - (36 * scale));
+	settings->position(x() + (168 * scale), XwinTox->h() - (36 * scale));
 }
 
 void Sidebar_Bottom_Area::deselect_all()
@@ -208,7 +221,9 @@ void Sidebar_Bottom_Area::deselect_all()
 }
 
 
-Sidebar::Sidebar(int S) : Fl_Group (0, 0, 224 * S, 480 * S)
+Sidebar::Sidebar(int S) : Fl_Group (XwinTox->basex * S,XwinTox->basey * S,
+									   (XwinTox->sblength * S), 
+									   XwinTox->h() - (XwinTox->basey * S))
 {
 	scale =S;
 
@@ -216,21 +231,31 @@ Sidebar::Sidebar(int S) : Fl_Group (0, 0, 224 * S, 480 * S)
 	color(fl_rgb_color(65, 65, 65));
 	top_area =new Sidebar_Top_Area(S);
 	bottom_area =new Sidebar_Bottom_Area(S);
-	contacts =new ContactsList(0, 60 * S, (224 * S), h() - (36 * S) - (60 * S), S);
+	contacts =new ContactsList(x(), y() + (60 * S), 
+							  (XwinTox->sblength * S), h() - (36 * S) - (60 * S), S);
+
+	resize(x(), y(), w(), h());
 	end();
 }
 
 void Sidebar::resize(int X, int Y, int W, int H)
 {
 	Fl_Group::resize(X, Y, W, H);
-	top_area->resize(0, 0, 224 * scale, 60 * scale);
-	bottom_area->resize(0, H - (36 * scale), 224 * scale, 480 * scale);
-	contacts->resize(0, 60 * scale, (224 * scale),
-				    h() - (36 * scale) - (60 * scale));
+	top_area->resize(XwinTox->basex * scale, XwinTox->basey * scale, 
+					 XwinTox->sblength * scale, 60 * scale);
+	bottom_area->resize(XwinTox->basex * scale, 
+						XwinTox->h() - (36 * scale) - (XwinTox->basey * scale),
+						(XwinTox->sblength * scale), 
+						XwinTox->h() - (XwinTox->basey * scale));
+	contacts->resize(x(), y() + (60 * scale), (XwinTox->sblength * scale),
+					 h() - (36 * scale) - (60 * scale));
 } 
 
 
-GArea::GArea(int S, const char *C) : Fl_Group (224 * S, 0, 416 * S, 480 * S)
+GArea::GArea(int S, const char *C) : Fl_Group (XwinTox->sblength * S,
+									   XwinTox->basey * S,
+									   XwinTox->w() - (XwinTox->sblength * S), 
+									   XwinTox->h()- (XwinTox->basey * S))
 {
 	caption =C;
 	scale =S;
@@ -254,6 +279,7 @@ void GArea::draw()
 
 GAddFriend::GAddFriend(int S) : GArea (S, "Add Friends")
 {
+	scale = S;
 	id =new Fl_Input(x() + (10 * S), y() + (90 * S), 
 					(x() + w() - (224 * S) - (20 * S)), 
 					24 * S);
@@ -277,7 +303,10 @@ GAddFriend::GAddFriend(int S) : GArea (S, "Add Friends")
 
 void GAddFriend::resize(int X, int Y, int W, int H)
 {
-	Fl_Group::resize(X, Y, W, H);
+	Fl_Group::resize(XwinTox->sblength * scale,
+					 XwinTox->basey * scale,
+					 XwinTox->w() - (XwinTox->sblength * scale), 
+					 XwinTox->h()- (XwinTox->basey * scale));
 	id->resize (x() + (10 * scale), y() + (90 * scale), 
 				(x() + w() - (224 * scale) - (20 * scale)), 
 				24 * scale);
@@ -298,7 +327,7 @@ void GAddFriend::draw()
 	fl_draw("Message", x() + (10 * scale), y() + 134 * scale);
 }
 
-GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (224 * S, 0, 416 * S, 480 * S)
+GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (0, 0, 0, 0)
 {
 	contact =C;
 	scale =S;
@@ -306,26 +335,41 @@ GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (224 * S, 0, 416 * S,
 	box(FL_FLAT_BOX);
 	color(255);
 
-	icon = new SVGBox(x()+(12 * S), y()+(9 * S), 40 * S, 40 *S, S, default_av, 0.32);
-	message =new Fl_Multiline_Input(x() + (10 * S), h() - (80 * S), 
-									(x() + w() - (224 * S) - (110 * S)), 
-					64 * S);
+	icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.32);
+	send =new Fl_Button(0, 0, (64 * scale), (64 * scale) , "Send");
+	moutput =new Fl_Text_Display(0, 0, 0, 0);
+	moutbuffer =new Fl_Text_Buffer();
+
+	message =new Fl_Multiline_Input(0, 0, (w() - (110 * S)), (64 * S));
 	message->textsize (12 * S);
 
-	send =new Fl_Button(x() + w() - 74 * scale, h() - (80 * scale), 64 * scale,
-						64 * scale, "Send");
 	send->color(fl_rgb_color(107, 194, 96));
 	send->labelcolor(255);
 	send->labelsize(14 * S);
 
-	moutput =new Fl_Text_Display(x() + (10 * S), y() + (65 * S), w() - (20 * S), y() + h() - ((84 + 65) * S)); 
 	moutput->wrap_mode(moutput->WRAP_AT_BOUNDS, 0);
 	moutput->textsize(12 * S);
-
-	moutbuffer =new Fl_Text_Buffer();
 	moutput->buffer(moutbuffer);
 
+	resize(0, 0, 0, 0);
 	end();
+}
+
+void GMessageArea::resize(int X, int Y, int W, int H)
+{
+	Fl_Group::resize(XwinTox->sblength * scale,
+					 XwinTox->basey * scale,
+					 XwinTox->w() - (XwinTox->sblength * scale), 
+					 XwinTox->h()- (XwinTox->basey * scale));
+
+
+	icon->position(x()+(12 * scale),  y() + (9 * scale));
+	send->position(x() + (w() - 74 * scale), y() + (h() - (80 * scale)));
+	message->resize (x() + (10 * scale), y() + h() - (80 * scale),
+					(w() - (110 * scale)), (64 * scale));
+
+	moutput->resize(x() + (10 * scale), y() + (65 * scale),
+					w() - (20 * scale), h() - ((84 + 65)  * scale));
 }
 
 void GMessageArea::draw()
@@ -342,10 +386,11 @@ void GMessageArea::draw()
 	fl_color(0);
 }
 
-XWContents::XWContents(int S) : Fl_Box (224 * S, 0, 416 * S, 480 * S)
+XWContents::XWContents(int S) : Fl_Box(XwinTox->sblength * S,XwinTox->basey * S,
+									   XwinTox->w() - (XwinTox->sblength * S), 
+									   XwinTox->h() - (XwinTox->basey * S))
 {
 	scale =S;
-	//resizable(0);
 	box(FL_FLAT_BOX);
 	color(4);
 
@@ -369,18 +414,25 @@ void XWContents::draw()
 XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c) 
 {
 	scale =S;
+	basex =0; basey =25; sblength =224;
+
+	Fl_Menu_Bar *mbar = new Fl_Menu_Bar(0, 0, w + 1, 50);
+	mbar->add("File"); mbar->add("Edit");mbar->add("Tools");mbar->add("Help");
+	mbar->add("Help/_&DHT Information");mbar->add("Help/About Tox"); mbar->add("Help/About Toxaemia");mbar->add("Help/About XwinTox");
 
 	box(FL_FLAT_BOX);
 	color(255);
-
-	contents =new XWContents(S);
-	sidebar =new Sidebar(S);
-	resizable(contents);
 }
 
+void XwinTox::init2()
+{
+	contents =new XWContents(scale);
+	sidebar =new Sidebar(scale);
+	resizable(contents);
+}
 void XwinTox::resize (int X, int Y, int W, int H)
 {
 	Fl_Double_Window::resize (X, Y, W, H);
-	contents->resize(224 * scale, 0, W - (224 * scale), H);
+	contents->resize(X, Y, W, H);
 }
 

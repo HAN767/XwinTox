@@ -95,6 +95,8 @@ public:
 	// Ctor
 	Sidebar_Bottom_Area(int S);
 
+	void resize(int X, int Y, int W, int H);
+
 	void deselect_all();
 
 	SVGBox *addfriend;
@@ -154,6 +156,7 @@ public:
 	// Ctor
 	GMessageArea(int S, Contact_t *C);
 
+	void resize(int X, int Y, int W, int H);
 	void draw();
 
 	SVGBox *icon;
@@ -192,6 +195,7 @@ class XwinTox : public Fl_Double_Window
 public:
 	// Ctor
 	XwinTox(int w, int h, const char* c, int S);
+	void init2();
 
 	void resize (int X, int Y, int W, int H);
 
@@ -199,7 +203,7 @@ public:
 	XWContents *contents;
 	GAddFriend *addfriend;
 
-	int scale;
+	int scale, sblength, basex, basey;
 };
 
 extern "C" XwinTox* XwinTox;
