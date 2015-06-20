@@ -425,7 +425,7 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	}
 
 
-	gnames =new Fl_Multiline_Output(0,0, 40*scale, 40*scale);
+	gnames =new Fl_Multiline_Output(0,0, w() - (65 * scale), (28 * scale));
 	send =new Fl_Button(0, 0, (64 * scale), (64 * scale) , "Send");
 	moutput =new Fl_Text_Display(0, 0, 0, 0);
 	moutbuffer =new Fl_Text_Buffer();
@@ -472,6 +472,11 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 void GMessageArea::draw()
 {
+	if (type)
+	{
+		if (strcmp(gnames->value(), groupchat->peers)) gnames->value(groupchat->peers); gnames->redraw();
+	}
+
 	Fl_Group::draw();
 
 	fl_color(0);
@@ -484,12 +489,8 @@ void GMessageArea::draw()
 	{
 		fl_font(FL_HELVETICA_BOLD, 12 * scale);
 		fl_draw(groupchat->name, x() + (60 * scale), y() + (12 * scale));
-		if (strcmp(gnames->value(), groupchat->peers))
-		{
-			gnames->value(groupchat->peers);
-			redraw();
-		}
 	}
+
 
 	fl_color(fl_rgb_color(192, 192, 192));
 	fl_line(x(), y() + (60 * scale), Fl::w(), y() + (60 * scale));
