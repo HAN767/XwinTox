@@ -22,18 +22,30 @@ extern int CGUIUPDFLAG;
 
 using namespace std;
 
-ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, short T)
+ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G, 
+							 short T)
  : Fl_Box (X, Y, 224 * S, 50 * S)
 {
 	scale =S;
 	contact =C;
+	groupchat =G;
 	type =T;
 	selected =0;
 
-	if (!T) icon =new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S,
-							  default_av, 0.35);
-	else icon =new SVGBox(X-(8 * S), Y+(2 * S), 46 * S, 46 *S, S,
-						  groupsvg, 0.63);
+	if (!T)
+	{
+		icon =new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S,
+								  default_av, 0.35);
+		groupchat =new Groupchat_t;
+		groupchat->num =65535;
+	}
+	else
+	{
+		icon =new SVGBox(X-(8 * S), Y+(2 * S), 46 * S, 46 *S, S,
+							  groupsvg, 0.63);
+		contact =new Contact_t;
+		contact->num =65535;
+	}
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
@@ -49,18 +61,21 @@ void ContactsEntry::draw()
 	if (!type)
 	{
 		name =GetDisplayName(contact, 16); status =GetDisplayStatus(contact, 25);
-
 		Fl_Box::draw();
-		fl_color(txt_color);
-		fl_font(FL_HELVETICA, 12 * scale);
-		fl_draw(name, x() + (50 * scale), y() + (22 * scale));
-		fl_font(FL_HELVETICA, 10 * scale);
-		fl_draw(status, x() + (50 * scale), y() + (36 * scale));
-
 		if(contact->connected) fl_color(2);
 		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 			  10 * scale, 0, 360);
 	}
+	else
+	{
+		name =groupchat->name;
+		status="";
+	}
+	fl_color(txt_color);
+	fl_font(FL_HELVETICA, 12 * scale);
+	fl_draw(name, x() + (50 * scale), y() + (22 * scale));
+	fl_font(FL_HELVETICA, 10 * scale);
+	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
 	icon->draw(); /* make it account for scrollbar::value(); */
 }
 

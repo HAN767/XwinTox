@@ -8,6 +8,7 @@ extern "C"
 #include "xwintox_win.h"
 
 ContactList_t *contactlist;
+vector <Groupchat_t*> groupchats;
 
 void SendMessagePressed(Fl_Widget* B , void*);
 
@@ -45,6 +46,19 @@ void FriendRequestSuccess(int num)
 	}
 }
 
+void GroupchatCreateSuccess(int num)
+{
+	if(!FindGroupchat(num))
+	{
+	Groupchat_t *g =new Groupchat_t;
+	g->name =(char*)calloc (8, sizeof(char)); 
+	sprintf(g->name, "Groupchat %d", num + 1);
+	g->peers =strdup("");
+	groupchats.push_back(g);
+	ContactListGUIUpdate();
+	}
+}
+
 void ContactListGUIUpdate()
 {
 	int selected =-1;
@@ -57,13 +71,41 @@ void ContactListGUIUpdate()
 	}
 
 	int YM =0;
+	for (const auto groupchat : groupchats)
+	{
+		printf("Contact: %s\n", groupchat->name);
+		ContactsEntry *newgui =new ContactsEntry(XwinTox->sidebar->contacts->x(), 
+											  XwinTox->sidebar->contacts->y() + YM, 
+											  XwinTox->sidebar->contacts->scale, 
+											  0, groupchat, 1);
+		XwinTox->sidebar->contacts->add(newgui);
+		XwinTox->sidebar->contacts->entries.push_back(newgui);
+		YM += (50 * XwinTox->scale);
+
+		/*if(!FindContactMArea(contact))
+		{
+			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
+			newarea->hide();
+			newarea->send->callback(&SendMessagePressed);
+
+			XwinTox->add(newarea);
+			XwinTox->contents->messageareas.push_back(newarea);
+		}
+
+		if(groupchat->num == selected && cursel )
+		{
+			newgui->selected =1;
+			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
+			XwinTox->sidebar->contacts->selected =selected;
+		}*/
+	}
 	for (const auto contact : contactlist->contacts)
 	{
 		printf("Contact: %s\n", contact->name);
 		ContactsEntry *newgui =new ContactsEntry(XwinTox->sidebar->contacts->x(), 
 											  XwinTox->sidebar->contacts->y() + YM, 
 											  XwinTox->sidebar->contacts->scale, 
-											  contact, 0);
+											  contact, 0, 0);
 		XwinTox->sidebar->contacts->add(newgui);
 		XwinTox->sidebar->contacts->entries.push_back(newgui);
 		YM += (50 * XwinTox->scale);
@@ -118,6 +160,15 @@ GMessageArea *FindContactMArea(unsigned int num)
 Contact_t *FindContact(unsigned int id)
 {
 	for (const auto contact : contactlist->contacts)
+	{
+		if(contact->num == id) return contact;
+	}
+	dbg("Fail"); return 0;
+}
+
+Groupchat_t *FindGroupchat(unsigned int id)
+{
+	for (const auto contact : groupchats)
 	{
 		if(contact->num == id) return contact;
 	}

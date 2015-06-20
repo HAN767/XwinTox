@@ -45,14 +45,18 @@ void ProcessEvents()
 		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
 			Event->paramid, Event->param0, Event->param1);
 		if(Event->type == FMESSAGE) AddLine(Event->paramid, Event->param1);
-		if(Event->type == FADDED && Event->param0 == 1 && Event->paramid != -1)
+		else if(Event->type == FADDED && Event->param0 == 1 && Event->paramid != -1)
 		{
 			FriendRequestSuccess(Event->paramid);
 		}
-		if(Event->type == FCONN)
+		else if(Event->type == FCONN)
 		{
 			FindContact(Event->paramid)->connected =Event->param0;
 			FindContactEntry(Event->paramid)->redraw();
+		}
+		else if(Event->type == GNEW)
+		{
+			GroupchatCreateSuccess(Event->paramid);
 		}
 		free(Event->param1); free(Event->param2); free(Event->param3);
 		free (Event);

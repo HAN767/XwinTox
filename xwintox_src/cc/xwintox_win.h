@@ -46,7 +46,7 @@ class ContactsEntry: public Fl_Box
 {
 public:
 	// Ctor
-	ContactsEntry(int X, int Y, int S, Contact_t *C, short T);
+	ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G, short T);
 
 	void draw();
 	int handle(int event);
@@ -55,6 +55,7 @@ public:
 
 	short type; /* 0 = contact, 1 = groupchat */
 	Contact_t *contact;
+	Groupchat_t *groupchat;
 	int selected, scale;
 };
 

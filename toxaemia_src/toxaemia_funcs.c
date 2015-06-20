@@ -186,6 +186,13 @@ void* toxdeletefriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 int* toxcreategroupchat_1_svc(struct svc_req *SvcReq)
 {
 	static int ret =-1;
+	char *icmsg;
+	
+	icmsg =strdup("creategroupchat");
+	List_add(&Tox_comm->ICQueue, icmsg);
+
+	while (!Returns) usleep (1000);
+	ret =(int)List_retrieve_and_remove_first(&Returns);
 
 	return &ret;
 }

@@ -162,6 +162,30 @@ int deletefriend(char* Rmsg)
 	return 0;
 }
 
+void newgroupchat()
+{
+	int* res =toxcreategroupchat_1(clnt);
+
+	if (!res)
+	{
+		clnt_perror(clnt, "Newgroupchat");
+		return;
+	}
+	else
+	{
+		ToxEvent_t *fadd =calloc(1, sizeof(ToxEvent_t));
+		fadd->type =GNEW;
+		fadd->paramid =*res;
+		fadd->param0 =1; /* 1 indicates internally generated, group added
+							after successful request */
+		fadd->param1 =calloc(1, sizeof(char));
+		fadd->param2 =calloc(1, sizeof(char));
+		fadd->param3 =calloc(1, sizeof(char));
+		List_add(&APP->Xwin->Events, fadd); 
+	}
+	dbg("Groupchat: %d\n", *res);
+}
+
 int main()
 {
 	struct rpc_err rpcerr;
@@ -224,6 +248,7 @@ int main()
 		else if(strcmp (work, "getfriendlist") == 0) {getfriendlist();}
 		else if(strncmp (work, "sendmessage", 11) == 0) {sendmessage(work);}
 		else if(strncmp (work, "deletecontact", 13) == 0) {deletefriend(work);}
+		else if(strcmp (work, "newgroupchat") == 0) {newgroupchat();}
 		else dbg("Unhandled request: %s\n", work);
 		
 		free (tofree);

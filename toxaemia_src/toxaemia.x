@@ -29,7 +29,8 @@ enum ToxEventType
 	GTITLE =21,
 	GMESSAGE =22,
 	GINVITE =23,
-	GNAMES =24
+	GNAMES =24,
+	GNEW =25
 };
 
 struct ToxEvent_s
@@ -102,7 +103,7 @@ program TOXAEMIA_PROG {
 
 		/* ToxCreateGroupChat
 		 * Creates a new groupchat
-		 * Returns number of new friend, or -1 for failure. */
+		 * Returns number of new groupchat, or -1 for failure. */
 		int ToxCreateGroupChat() = 11;
 	} = 1;
 } = 0x22159817;

@@ -21,7 +21,10 @@ void AddFriendPressed(Fl_Widget* B , void*)
 
 void NewGroupchatPressed(Fl_Widget *B, void*)
 {
-
+	char *amsg =(char*)calloc(13, sizeof(char));
+	strcpy(amsg, "newgroupchat");
+	dbg("New groupchat\n");
+	List_add(&APP->Comm->WorkQueue, (void*)amsg);
 }
 
 void AddFriendSendPressed(Fl_Widget* B , void*)
@@ -77,6 +80,7 @@ void InitGUICallbacks()
 {
 	XwinTox->contents->addfriend->send->callback(&AddFriendSendPressed);
 	XwinTox->sidebar->bottom_area->addfriend->callback(&AddFriendPressed);
+	XwinTox->sidebar->bottom_area->newgroup->callback(&NewGroupchatPressed);
 }
 
 char *GetDisplayName(Contact_t *contact, size_t LenLimit)

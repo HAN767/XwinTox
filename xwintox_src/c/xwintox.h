@@ -38,6 +38,12 @@ typedef struct Contact_s
 	int status, connected; /* connected: 0 = offline, 1 = online */
 } Contact_t;
 
+typedef struct Groupchat_s
+{
+	unsigned int num;
+	char *name, *peers;
+} Groupchat_t;
+
 #ifdef __cplusplus__
 extern "C" {
 #endif

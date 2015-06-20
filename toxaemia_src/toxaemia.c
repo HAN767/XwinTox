@@ -136,6 +136,11 @@ void Send_message(unsigned int num, char* message)
 							(uint8_t*) message, strlen(message), 0);
 }
 
+void Create_group_chat()
+{
+	List_add (&Returns, (void*)tox_add_groupchat(Tox_comm->tox));
+}
+
 int Tox_comm_main()
 {
 	TOX_ERR_OPTIONS_NEW toxoptserr;
@@ -198,6 +203,7 @@ int Tox_comm_main()
 				strsep(&Rmsg, " "); 
 				Send_message(strtol(id, 0, 10), Rmsg);
 			}
+			else if(!strcmp (Rmsg, "creategroupchat")) Create_group_chat();
 			else { 	dbg("Unhandled request %s\n", Rmsg); }
 			free(tofree);
 		}
