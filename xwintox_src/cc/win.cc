@@ -58,10 +58,10 @@ void ContactsEntry::draw()
 	if (selected) { color(255); txt_color =0; }
 	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
 
+	Fl_Box::draw();
 	if (!type)
 	{
 		name =GetDisplayName(contact, 16); status =GetDisplayStatus(contact, 25);
-		Fl_Box::draw();
 		if(contact->connected) fl_color(2);
 		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 			  10 * scale, 0, 360);
@@ -95,7 +95,10 @@ int ContactsEntry::handle(int event)
 			selected =1;
 			redraw(); icon->redraw();
 			((ContactsList*)parent())->selected =contact->num;
-			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
+			if(!type)
+			{ XwinTox->contents->NewCurrentArea(FindContactMArea(contact)); }
+			else
+			{ XwinTox->contents->NewCurrentArea(FindGroupchatMArea(groupchat));}
 			return 1;
 		}
 		else if (Fl::event_button() == FL_RIGHT_MOUSE)
@@ -386,13 +389,28 @@ void GAddFriend::draw()
 	fl_draw("Message", x() + (10 * scale), y() + 134 * scale);
 }
 
-GMessageArea::GMessageArea(int S, Contact_t *C) : Fl_Group (0, 0, 0, 0)
+GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
+: Fl_Group (0, 0, 0, 0)
 {
 	contact =C;
+	groupchat =G;
 	scale =S;
+	type =T;
 
 	box(FL_FLAT_BOX);
 	color(255);
+
+
+	if (!T)
+	{
+		groupchat =new Groupchat_t;
+		groupchat->num =65535;
+	}
+	else
+	{
+		contact =new Contact_t;
+		contact->num =65535;
+	}
 
 	icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.32);
 	send =new Fl_Button(0, 0, (64 * scale), (64 * scale) , "Send");
@@ -436,13 +454,19 @@ void GMessageArea::draw()
 	Fl_Group::draw();
 
 	fl_color(0);
-	fl_font(FL_HELVETICA_BOLD, 12 * scale);
-	fl_draw(contact->name, x() + (60 * scale), y() + (26 * scale));
+	if (!type)
+	{
+		fl_font(FL_HELVETICA_BOLD, 12 * scale);
+		fl_draw(contact->name, x() + (60 * scale), y() + (26 * scale));
+	}
+	else
+	{
+		fl_font(FL_HELVETICA_BOLD, 12 * scale);
+		fl_draw(groupchat->name, x() + (60 * scale), y() + (26 * scale));
+	}
 
 	fl_color(fl_rgb_color(192, 192, 192));
 	fl_line(x(), y() + (60 * scale), Fl::w(), y() + (60 * scale));
-
-	fl_color(0);
 }
 
 void AddFriendPressed(Fl_Widget* B , void*);

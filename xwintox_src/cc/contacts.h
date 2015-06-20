@@ -30,6 +30,8 @@ GMessageArea *FindContactMArea(unsigned int id);
 Contact_t *FindContact(unsigned int id);
 
 Groupchat_t *FindGroupchat(unsigned int id);
+GMessageArea *FindGroupchatMArea(Groupchat_t *contact);
+GMessageArea *FindGroupchatMArea(unsigned int id);
 
 char *GetDisplayName(Contact_t *contact, size_t LenLimit);
 char *GetDisplayStatus(Contact_t *contact, size_t LenLimit);

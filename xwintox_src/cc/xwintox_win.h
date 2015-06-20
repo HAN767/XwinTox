@@ -157,7 +157,7 @@ class GMessageArea: public Fl_Group
 {
 public:
 	// Ctor
-	GMessageArea(int S, Contact_t *C);
+	GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T);
 
 	void resize(int X, int Y, int W, int H);
 	void draw();
@@ -169,7 +169,9 @@ public:
 	Fl_Button *send;
 
 	int scale;
+	short type;
 	Contact_t *contact;
+	Groupchat_t *groupchat;
 };
 
 class XWContents: public Fl_Box

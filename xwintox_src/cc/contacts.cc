@@ -82,9 +82,10 @@ void ContactListGUIUpdate()
 		XwinTox->sidebar->contacts->entries.push_back(newgui);
 		YM += (50 * XwinTox->scale);
 
-		/*if(!FindContactMArea(contact))
+		if(!FindGroupchatMArea(groupchat))
 		{
-			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
+			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, 0,
+													groupchat, 1);
 			newarea->hide();
 			newarea->send->callback(&SendMessagePressed);
 
@@ -92,7 +93,7 @@ void ContactListGUIUpdate()
 			XwinTox->contents->messageareas.push_back(newarea);
 		}
 
-		if(groupchat->num == selected && cursel )
+		/*if(groupchat->num == selected && cursel )
 		{
 			newgui->selected =1;
 			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
@@ -112,7 +113,7 @@ void ContactListGUIUpdate()
 
 		if(!FindContactMArea(contact))
 		{
-			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
+			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact, 0, 0);
 			newarea->hide();
 			newarea->send->callback(&SendMessagePressed);
 
@@ -171,6 +172,24 @@ Groupchat_t *FindGroupchat(unsigned int id)
 	for (const auto contact : groupchats)
 	{
 		if(contact->num == id) return contact;
+	}
+	dbg("Fail"); return 0;
+}
+
+GMessageArea *FindGroupchatMArea(Groupchat_t *contact)
+{
+	for (const auto messagearea : XwinTox->contents->messageareas)
+	{
+		if(messagearea->groupchat == contact) return messagearea;
+	}
+	dbg("Fail"); return 0;
+}
+
+GMessageArea *FindGroupchatMArea(unsigned int num)
+{
+	for (const auto messagearea : XwinTox->contents->messageareas)
+	{
+		if(messagearea->groupchat->num == num) return messagearea;
 	}
 	dbg("Fail"); return 0;
 }
