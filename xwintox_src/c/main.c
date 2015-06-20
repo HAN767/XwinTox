@@ -124,6 +124,7 @@ void getfriendlist()
 	{
 		Contact_t *c =calloc(1, sizeof(Contact_t));
 		ToxFriend_t *f =toxgetfriend_1(tst->Data.Data_val[i], clnt);
+		c->status =f->status; c->connected =f->connected;
 		c->name =strdup(f->name); c->statusm =strdup(f->statusm); 
 		c->pubkey =strdup(f->pubkey); c->num =tst->Data.Data_val[i];
 		printf("Friend ID: %d, name %s, status %s, pubkey %s\n", tst->Data.Data_val[i], c->name, c->statusm, c->pubkey);

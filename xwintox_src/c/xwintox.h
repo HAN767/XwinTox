@@ -35,7 +35,7 @@ typedef struct Contact_s
 {
 	unsigned int num;
 	char *name, *statusm, *pubkey;
-	int status; /* 0 = offline, 1 = online */
+	int status, connected; /* connected: 0 = offline, 1 = online */
 } Contact_t __attribute__((packed));
 
 #ifdef __cplusplus__

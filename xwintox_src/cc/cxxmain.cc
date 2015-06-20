@@ -49,6 +49,11 @@ void ProcessEvents()
 		{
 			FriendRequestSuccess(Event->paramid);
 		}
+		if(Event->type == FCONN)
+		{
+			FindContact(Event->paramid)->connected =Event->param0;
+			FindContactEntry(Event->paramid)->redraw();
+		}
 		free(Event->param1); free(Event->param2); free(Event->param3);
 		free (Event);
 	}

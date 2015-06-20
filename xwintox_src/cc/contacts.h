@@ -20,6 +20,8 @@ void ContactListGUIUpdate();
 
 extern ContactList_t *contactlist;
 
+class ContactsEntry;
+ContactsEntry *FindContactEntry(unsigned int num);
 class GMessageArea;
 GMessageArea *FindContactMArea(Contact_t *contact);
 GMessageArea *FindContactMArea(unsigned int id);

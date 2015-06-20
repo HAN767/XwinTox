@@ -51,7 +51,7 @@ void ContactsEntry::draw()
 	fl_font(FL_HELVETICA, 10 * scale);
 	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
 
-	fl_color(2);
+	if(contact->connected) fl_color(2);
 	fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 		  10 * scale, 0, 360);
 	icon->draw(); /* make it account for scrollbar::value(); */

@@ -11,6 +11,8 @@
 
 #include "toxaemia_core.h"
 
+extern short F_online[65535];
+
 void cb_self_connection_status(Tox *tox, TOX_CONNECTION connection_status, 
 							   void *user_data)
 {
@@ -42,6 +44,8 @@ void cb_friend_connection_status(Tox *tox, uint32_t friend_number,
 	if (connection_status == TOX_CONNECTION_NONE) event->param0 =0;
 	else if (connection_status == TOX_CONNECTION_TCP) event->param0 =1;
 	else if (connection_status == TOX_CONNECTION_UDP) event->param0 =2;
+
+	F_online[friend_number] =event->param0;
 
 	event->paramid =friend_number;
 	event->param1 =calloc(1, sizeof(char)); 

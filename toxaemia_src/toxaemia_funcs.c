@@ -134,10 +134,14 @@ ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 	while (!Returns) usleep (1000);
 	while (!Returns->Link) usleep (1000);
 	while (!Returns->Link->Link) usleep (1000);
+	while (!Returns->Link->Link->Link) usleep (1000);
+	while (!Returns->Link->Link->Link->Link) usleep (1000);
 
 	result.name =List_retrieve_and_remove_first(&Returns);
 	result.statusm =List_retrieve_and_remove_first(&Returns);
 	result.pubkey =List_retrieve_and_remove_first(&Returns);
+	result.status =(int)List_retrieve_and_remove_first(&Returns);
+	result.connected =(short)List_retrieve_and_remove_first(&Returns);
 
 	return &result;
 }
@@ -154,7 +158,6 @@ ToxEvent_t* toxgetevent_1_svc(struct svc_req* SvcReq)
 
 	if(ptr != 0) ret =ptr;
 	else ret =&result;
-
 
 	return ret;
 }

@@ -10,6 +10,8 @@ struct ToxFriends_s
 
 struct ToxFriend_s
 {
+	short connected;
+	int status;
 	string pubkey<>;
 	string name<>;
 	string statusm<>;

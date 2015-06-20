@@ -16,6 +16,8 @@
 Tox_comm_t *Tox_comm;
 int Tox_thread_launched =0;
 
+short F_online[65535] = { 0 };
+
 void InitCallbacks();
 
 int Tox_comm_main();
@@ -33,12 +35,7 @@ int launch_tox_thread()
 	mtx_lock (&Tox_comm->ConnectedMtx);
 	Tox_thread_launched =1;
 
-	//while(!Tox_comm->Connected) 
-	//	{ err =cnd_wait(&Tox_comm->ConnectedCnd, &Tox_comm->ConnectedMtx); }
-
 	mtx_unlock (&Tox_comm->ConnectedMtx);
-
-	//if (err != thrd_success) { dbg("Failed to connect to Tox\n"); return 1; }
 
 	return 0;
 }
@@ -106,6 +103,7 @@ void Deliver_friend_list()
 void Deliver_friend(unsigned int num)
 {
 	char *name, *statusm, *pub_key;
+	int status;
 	unsigned char *pubkey;
 
 	TOX_ERR_FRIEND_QUERY err;
@@ -123,10 +121,13 @@ void Deliver_friend(unsigned int num)
 
 	pubkey =calloc(TOX_PUBLIC_KEY_SIZE, sizeof (unsigned char));
 	tox_friend_get_public_key(Tox_comm->tox, num, pubkey, &errp);
-	dbg("ErrP: %d. Key: %s\n", errp, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE)); 
+
+	status =tox_friend_get_status(Tox_comm->tox, num, &err);
 
 	List_add(&Returns, name); List_add (&Returns, statusm); 
-	List_add (&Returns, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE));
+	List_add(&Returns, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE));
+	List_add(&Returns, (void*)status); 
+	List_add(&Returns, (void*) F_online[num]);
 }
 
 void Send_message(unsigned int num, char* message)
