@@ -140,11 +140,24 @@ int sendmessage(char* Rmsg)
 	id =Rmsg;
 	strsep(&Rmsg, " ");
 
-	if (toxsendmessage_1(strtol(id, 0, 10), Rmsg, clnt))
+	if (!toxsendmessage_1(strtol(id, 0, 10), Rmsg, clnt))
 	{
 		clnt_perror(clnt, "Sendmessage");
 		return 1;
 	}
+	return 0;
+}
+
+int deletefriend(char* Rmsg)
+{	
+	strsep(&Rmsg, " ");
+
+	if (!toxdeletefriend_1(strtol(Rmsg, 0, 10), clnt))
+	{
+		clnt_perror(clnt, "Deletecontact");
+		return 1;
+	}
+	savedata();
 	return 0;
 }
 
@@ -209,6 +222,7 @@ int main()
 		else if(strncmp (work, "sendfriendrequest", 17) == 0) {sendfriendrequest(work);}
 		else if(strcmp (work, "getfriendlist") == 0) {getfriendlist();}
 		else if(strncmp (work, "sendmessage", 11) == 0) {sendmessage(work);}
+		else if(strncmp (work, "deletecontact", 13) == 0) {deletefriend(work);}
 		else dbg("Unhandled request: %s\n", work);
 		
 		free (tofree);

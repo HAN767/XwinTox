@@ -173,7 +173,9 @@ void* toxsendmessage_1_svc(unsigned int id, char* message, struct svc_req* SvcRe
 
 void* toxdeletefriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 {
-	static void* ret =1;
+	static int ret =1;
 
-	return ret;
+	tox_friend_delete(Tox_comm->tox, num, 0);
+
+	return &ret;
 }

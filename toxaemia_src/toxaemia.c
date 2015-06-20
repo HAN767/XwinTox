@@ -109,6 +109,7 @@ void Deliver_friend(unsigned int num)
 	unsigned char *pubkey;
 
 	TOX_ERR_FRIEND_QUERY err;
+	TOX_ERR_FRIEND_GET_PUBLIC_KEY errp;
 
 	size_t size = tox_friend_get_name_size(Tox_comm->tox, num, 0) + 1;
 	name =calloc(size, sizeof(char));
@@ -121,7 +122,8 @@ void Deliver_friend(unsigned int num)
 	statusm[size+1] ='\0';
 
 	pubkey =calloc(TOX_PUBLIC_KEY_SIZE, sizeof (unsigned char));
-	tox_friend_get_public_key(Tox_comm->tox, num, pubkey, 0);
+	tox_friend_get_public_key(Tox_comm->tox, num, pubkey, &errp);
+	dbg("ErrP: %d. Key: %s\n", errp, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE)); 
 
 	List_add(&Returns, name); List_add (&Returns, statusm); 
 	List_add (&Returns, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE));
