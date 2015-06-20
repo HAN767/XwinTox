@@ -63,7 +63,7 @@ void ContactListGUIUpdate()
 		ContactsEntry *newgui =new ContactsEntry(XwinTox->sidebar->contacts->x(), 
 											  XwinTox->sidebar->contacts->y() + YM, 
 											  XwinTox->sidebar->contacts->scale, 
-											  contact);
+											  contact, 0);
 		XwinTox->sidebar->contacts->add(newgui);
 		XwinTox->sidebar->contacts->entries.push_back(newgui);
 		YM += (50 * XwinTox->scale);

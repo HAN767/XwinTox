@@ -25,7 +25,11 @@ enum ToxEventType
 	FSTATUS =4,
 	FMESSAGE =5,
 	FREQUEST =6,
-	FADDED =6
+	FADDED =7,
+	GTITLE =21,
+	GMESSAGE =22,
+	GINVITE =23,
+	GNAMES =24
 };
 
 struct ToxEvent_s
@@ -46,42 +50,42 @@ typedef struct ToxEvent_s ToxEvent_t;
 program TOXAEMIA_PROG {
 	version TOXAEMIA_VERS1 {
 		/* ToxConnect
-		 * Connects to Tox
+		 * Connects to Tox.
 		 * int BootstrapPort, string BootstrapAddress<>, string BootstrapKey<>, 
 		 * string Name<>, string Status<> */
 		int ToxConnect(int, string<>, string<>, string<>, string<>) = 1;
 
 		/* ToxDisconnect
-		 * Disconnects from Tox */
+		 * Disconnects from Tox. */
 		void ToxDisconnect() = 2;
 
 		/* ToxGetEvent
-		 * Retrieves the first event in the event queue
-		 * Returns null if the event queue is empty */
+		 * Retrieves the first event in the event queue.
+		 * Returns null if the event queue is empty. */
 		ToxEvent_t ToxGetEvent() = 3;
 
 		/* ToxGetSaveData
-		 * Returns Tox save data as ToxSaveData_t */
+		 * Returns Tox save data as ToxSaveData_t. */
 		ToxSaveData_t ToxGetSaveData() = 4;
 
 		/* ToxInstallSaveData
-		 * Installs Tox save data
+		 * Installs Tox save data.
 		 * ToxSaveData_t => Data to install */
 		void ToxInstallSaveData(ToxSaveData_t) = 5;
 
 		/* ToxSendFriendRequest
-		 * Send a friend request
+		 * Send a friend request.
 		 * Returns number of new friend, or -1 for failure.
 		 * string<> => Tox ID of friend
 		 * string<> => Message to include in request */
 		int ToxSendFriendRequest(string<>, string<>) = 6;
 
 		/* ToxGetFriendList
-		 * Returns friendlist as an array of friend IDs */
+		 * Returns friendlist as an array of friend IDs. */
 		ToxFriends_t ToxGetFriendList() = 7;
 
 		/* ToxGetFriend
-		 * Returns data of a friend as ToxFriend_t
+		 * Returns data of a friend as ToxFriend_t.
 		 * unsigned int => Friend number to retrieve data for */
 		ToxFriend_t ToxGetFriend(unsigned int) = 8;
 
@@ -92,8 +96,13 @@ program TOXAEMIA_PROG {
 		void ToxSendMessage(unsigned int, string<>) = 9;
 
 		/* ToxDeleteFriend
-		 * Deletes a contact
+		 * Deletes a contact.
 		 * unsigned int => Friend number to delete */
 		void ToxDeleteFriend(unsigned int) = 10;
+
+		/* ToxCreateGroupChat
+		 * Creates a new groupchat
+		 * Returns number of new friend, or -1 for failure. */
+		int ToxCreateGroupChat() = 11;
 	} = 1;
 } = 0x22159817;

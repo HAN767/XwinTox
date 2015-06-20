@@ -19,6 +19,11 @@ void AddFriendPressed(Fl_Widget* B , void*)
 	XwinTox->sidebar->contacts->deselect_all();
 }
 
+void NewGroupchatPressed(Fl_Widget *B, void*)
+{
+
+}
+
 void AddFriendSendPressed(Fl_Widget* B , void*)
 {
 	char *amsg =(char*)calloc(255, sizeof(char));
@@ -55,6 +60,17 @@ void SendMessagePressed(Fl_Widget* B , void*)
 	sprintf(nmsg, "%s: %s\n", XwinTox->sidebar->top_area->name->value(),
 			((GMessageArea*)B->parent())->message->value());
 	FindContactMArea(id)->moutbuffer->append(nmsg);
+}
+
+void WindowClosed (Fl_Widget *widget, void *) 
+{
+	char *amsg =(char*)calloc(5, sizeof(char));
+    Fl_Double_Window *window = (Fl_Double_Window *)widget;
+
+	sprintf(amsg, "quit");
+
+	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	CommWork();
 }
 
 void InitGUICallbacks()

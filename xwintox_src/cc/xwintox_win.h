@@ -46,13 +46,14 @@ class ContactsEntry: public Fl_Box
 {
 public:
 	// Ctor
-	ContactsEntry(int X, int Y, int S, Contact_t *C);
+	ContactsEntry(int X, int Y, int S, Contact_t *C, short T);
 
 	void draw();
 	int handle(int event);
 
 	SVGBox *icon;
 
+	short type; /* 0 = contact, 1 = groupchat */
 	Contact_t *contact;
 	int selected, scale;
 };

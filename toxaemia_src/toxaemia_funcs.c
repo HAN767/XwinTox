@@ -182,3 +182,10 @@ void* toxdeletefriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 
 	return &ret;
 }
+
+int* toxcreategroupchat_1_svc(struct svc_req *SvcReq)
+{
+	static int ret =-1;
+
+	return &ret;
+}

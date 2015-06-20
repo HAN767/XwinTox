@@ -22,13 +22,18 @@ extern int CGUIUPDFLAG;
 
 using namespace std;
 
-ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C) : Fl_Box (X, Y, 224 * S, 50 * S)
+ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, short T)
+ : Fl_Box (X, Y, 224 * S, 50 * S)
 {
 	scale =S;
 	contact =C;
+	type =T;
 	selected =0;
 
-	icon = new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S, default_av, 0.35);
+	if (!T) icon =new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S,
+							  default_av, 0.35);
+	else icon =new SVGBox(X-(8 * S), Y+(2 * S), 46 * S, 46 *S, S,
+						  groupsvg, 0.63);
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
@@ -41,19 +46,21 @@ void ContactsEntry::draw()
 	if (selected) { color(255); txt_color =0; }
 	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
 
-	name =GetDisplayName(contact, 16); status =GetDisplayStatus(contact, 25);
+	if (!type)
+	{
+		name =GetDisplayName(contact, 16); status =GetDisplayStatus(contact, 25);
 
-	
-	Fl_Box::draw();
-	fl_color(txt_color);
-	fl_font(FL_HELVETICA, 12 * scale);
-	fl_draw(name, x() + (50 * scale), y() + (22 * scale));
-	fl_font(FL_HELVETICA, 10 * scale);
-	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
+		Fl_Box::draw();
+		fl_color(txt_color);
+		fl_font(FL_HELVETICA, 12 * scale);
+		fl_draw(name, x() + (50 * scale), y() + (22 * scale));
+		fl_font(FL_HELVETICA, 10 * scale);
+		fl_draw(status, x() + (50 * scale), y() + (36 * scale));
 
-	if(contact->connected) fl_color(2);
-	fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
-		  10 * scale, 0, 360);
+		if(contact->connected) fl_color(2);
+		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
+			  10 * scale, 0, 360);
+	}
 	icon->draw(); /* make it account for scrollbar::value(); */
 }
 
@@ -79,6 +86,7 @@ int ContactsEntry::handle(int event)
 		else if (Fl::event_button() == FL_RIGHT_MOUSE)
 		{
 			Fl_Menu_Item contmenu[] = { { "Delete contact" }, { 0 } };
+			contmenu->labelsize(12 * scale);
 			const Fl_Menu_Item *m = contmenu->popup(Fl::event_x(), Fl::event_y(),
 													   0, 0, 0);
 			if(!m) return 0;
@@ -464,7 +472,9 @@ XwinTox::XwinTox(int w, int h, const char* c, int S) : Fl_Double_Window(w, h, c)
 	mbar->add("Edit/Preferences");
 	mbar->add("Tools/Switch Profile");
 	mbar->add("Help/_&DHT Information"); mbar->add("Help/About XwinTox");
-	mbar->textsize(12 * S);
+
+	if (scale < 2) mbar->textsize(12 * S);
+	else mbar->textsize(10 * S);
 
 	box(FL_FLAT_BOX);
 	color(255);
