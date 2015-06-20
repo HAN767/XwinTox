@@ -19,6 +19,12 @@ typedef struct ContactList_s
 extern ContactList_t *contactlist;
 extern vector <Groupchat_t*> groupchats;
 
+void FriendRequestSuccess(int num);
+void DeleteContact(int num);
+
+void GroupchatCreateSuccess(int num);
+void GroupchatNames(int num, char* names);
+
 void ContactListGUIUpdate();
 
 class ContactsEntry;
@@ -36,9 +42,5 @@ GMessageArea *FindGroupchatMArea(unsigned int id);
 char *GetDisplayName(Contact_t *contact, size_t LenLimit);
 char *GetDisplayStatus(Contact_t *contact, size_t LenLimit);
 
-void FriendRequestSuccess(int num);
-void DeleteContact(int num);
-
-void GroupchatCreateSuccess(int num);
 
 #endif

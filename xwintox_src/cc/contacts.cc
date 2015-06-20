@@ -51,12 +51,22 @@ void GroupchatCreateSuccess(int num)
 	if(!FindGroupchat(num))
 	{
 	Groupchat_t *g =new Groupchat_t;
-	g->name =(char*)calloc (8, sizeof(char)); 
+	g->num =num;
+	g->name =(char*)calloc (15, sizeof(char)); 
 	sprintf(g->name, "Groupchat %d", num + 1);
 	g->peers =strdup("");
 	groupchats.push_back(g);
 	ContactListGUIUpdate();
 	}
+}
+
+void GroupchatNames(int num, char* names)
+{
+	Groupchat_t *g;
+	if((g =FindGroupchat(num)) == 0) { dbg("No groupchat\n"); return; }
+	g->peers =strdup(names);
+	FindGroupchatMArea(num)->redraw();
+	FindGroupchatMArea(num)->gnames->redraw();
 }
 
 void ContactListGUIUpdate()
@@ -173,7 +183,7 @@ Groupchat_t *FindGroupchat(unsigned int id)
 	{
 		if(contact->num == id) return contact;
 	}
-	dbg("Fail"); return 0;
+	return 0;
 }
 
 GMessageArea *FindGroupchatMArea(Groupchat_t *contact)

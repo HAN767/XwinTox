@@ -18,6 +18,8 @@ int Tox_thread_launched =0;
 
 short F_online[65535] = { 0 };
 
+List_t *Groupchats =0;
+
 void InitCallbacks();
 
 int Tox_comm_main();

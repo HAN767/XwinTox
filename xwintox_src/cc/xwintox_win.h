@@ -8,6 +8,7 @@ using namespace std;
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Input.H>
+#include <FL/Fl_Multiline_Output.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Text_Display.H>
 #include <FL/Fl_RGB_Image.H>
@@ -51,7 +52,7 @@ public:
 	void draw();
 	int handle(int event);
 
-	SVGBox *icon;
+	SVGBox *icon; SVGBox *invicon;
 
 	short type; /* 0 = contact, 1 = groupchat */
 	Contact_t *contact;
@@ -163,6 +164,7 @@ public:
 	void draw();
 
 	SVGBox *icon;
+	Fl_Multiline_Output *gnames;
 	Fl_Text_Display *moutput;
 	Fl_Text_Buffer *moutbuffer;
 	Fl_Input *message;

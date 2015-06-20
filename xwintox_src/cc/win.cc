@@ -36,6 +36,9 @@ ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G,
 	{
 		icon =new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S,
 								  default_av, 0.35);
+		invicon =new SVGBox(X+(4 * S), Y+(2 * S), 46 * S, 46 *S, S,
+								  default_av, 0.35);
+		invicon->hide();
 		groupchat =new Groupchat_t;
 		groupchat->num =65535;
 	}
@@ -43,6 +46,9 @@ ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G,
 	{
 		icon =new SVGBox(X-(8 * S), Y+(2 * S), 46 * S, 46 *S, S,
 							  groupsvg, 0.63);
+		invicon =new SVGBox(X-(8 * S), Y+(2 * S), 46 * S, 46 *S, S,
+							  groupsvg2, 0.63);
+		//invicon->hide();
 		contact =new Contact_t;
 		contact->num =65535;
 	}
@@ -77,6 +83,7 @@ void ContactsEntry::draw()
 	fl_font(FL_HELVETICA, 10 * scale);
 	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
 	icon->draw(); /* make it account for scrollbar::value(); */
+	invicon->draw();
 }
 
 int ContactsEntry::handle(int event) 
@@ -95,6 +102,8 @@ int ContactsEntry::handle(int event)
 			selected =1;
 			redraw(); icon->redraw();
 			((ContactsList*)parent())->selected =contact->num;
+			icon->hide();
+			invicon->show();
 			if(!type)
 			{ XwinTox->contents->NewCurrentArea(FindContactMArea(contact)); }
 			else
@@ -181,6 +190,8 @@ void ContactsList::deselect_all()
 	for (const auto entry : entries)
 	{
 		entry->selected =0;
+		entry->icon->show();
+		entry->invicon->hide();
 		entry->redraw(); entry->icon->redraw();
 	}
 }
@@ -400,22 +411,29 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	box(FL_FLAT_BOX);
 	color(255);
 
-
 	if (!T)
 	{
+		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.32);
 		groupchat =new Groupchat_t;
 		groupchat->num =65535;
 	}
 	else
 	{
+		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, groupsvg2, 1);
 		contact =new Contact_t;
 		contact->num =65535;
 	}
 
-	icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.32);
+
+	gnames =new Fl_Multiline_Output(0,0, 40*scale, 40*scale);
 	send =new Fl_Button(0, 0, (64 * scale), (64 * scale) , "Send");
 	moutput =new Fl_Text_Display(0, 0, 0, 0);
 	moutbuffer =new Fl_Text_Buffer();
+
+	gnames->box(FL_NO_BOX);
+	gnames->textsize(9 * scale);
+	gnames->wrap(1);
+	gnames->textcolor(fl_rgb_color(180, 180, 180));
 
 	message =new Fl_Multiline_Input(0, 0, (w() - (110 * S)), (64 * S));
 	message->textsize (12 * S);
@@ -441,6 +459,9 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 
 	icon->position(x()+(12 * scale),  y() + (9 * scale));
+	gnames->resize(x()+(60 * scale), y() + (28 * scale), w() - (65 * scale),
+				   (28 * scale));
+	gnames->redraw();
 	send->position(x() + (w() - 74 * scale), y() + (h() - (80 * scale)));
 	message->resize (x() + (10 * scale), y() + h() - (80 * scale),
 					(w() - (110 * scale)), (64 * scale));
@@ -462,7 +483,12 @@ void GMessageArea::draw()
 	else
 	{
 		fl_font(FL_HELVETICA_BOLD, 12 * scale);
-		fl_draw(groupchat->name, x() + (60 * scale), y() + (26 * scale));
+		fl_draw(groupchat->name, x() + (60 * scale), y() + (12 * scale));
+		if (strcmp(gnames->value(), groupchat->peers))
+		{
+			gnames->value(groupchat->peers);
+			redraw();
+		}
 	}
 
 	fl_color(fl_rgb_color(192, 192, 192));

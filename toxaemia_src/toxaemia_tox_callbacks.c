@@ -4,14 +4,18 @@
    SunRPC will free these extra strings. */
 
 #include <threads.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <tox/tox.h>
 
+#include "list.h"
+
 #include "toxaemia_core.h"
 
 extern short F_online[65535];
+extern List_t *Groupchats;
 
 void cb_self_connection_status(Tox *tox, TOX_CONNECTION connection_status, 
 							   void *user_data)
@@ -92,6 +96,59 @@ void cb_friend_message(Tox *tox, uint32_t friend_number, TOX_MESSAGE_TYPE type,
 	List_add(&Events, event);
 }
 
+void cb_group_invite(Tox *tox, int32_t friendnumber, uint8_t type,
+					 const uint8_t *data, uint16_t length, void * user_data)
+{
+	unsigned int gid =tox_join_groupchat(tox, friendnumber, data, length);
+	if(gid != -1)
+	{
+		ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
+		List_add(&Groupchats, (void*) gid);
+		dbg("Joined groupchat %d\n", gid);
+		event->type =GNEW;
+		event->paramid =gid;
+		event->param1 =calloc(1, sizeof(char));
+		event->param2 =calloc(1, sizeof(char));
+		event->param3 =calloc(1, sizeof(char));
+		List_add(&Events, event);
+	}
+}
+
+void cb_group_namelist_change(Tox *tox, int groupnum, int peernum, 
+							  uint8_t change, void* user_data)
+{
+	unsigned short pos =0, gpos =0;
+	unsigned short numpeers =tox_group_number_peers(tox, groupnum);
+	if (numpeers < 1) { dbg("fail: numpeers < 1\n"); return; }
+	unsigned short peerlens[numpeers];
+	char peernames[numpeers][TOX_MAX_NAME_LENGTH];
+	char *gnames =calloc(numpeers + 1 + (numpeers * TOX_MAX_NAME_LENGTH),
+						 sizeof(char));
+
+	//memset(peerlens, 0x0, numpeers);
+
+	if(tox_group_get_names(tox, groupnum, (uint8_t(*)[128])peernames, peerlens, 
+						numpeers) == -1) { dbg("fail\n"); return; }
+	
+
+	for(int i =0; i < numpeers; i++)
+	{
+		char *tmpname =calloc(TOX_MAX_NAME_LENGTH, sizeof(char));
+		memcpy(tmpname, peernames[pos], peerlens[i]);
+		pos +=1;
+		gpos +=sprintf(gnames+gpos, "%s ", tmpname);
+	}
+	//dbg("Group names: %s\n", gnames);
+
+	ToxEvent_t *event =calloc(1, sizeof(ToxEvent_t));
+	event->type =GNAMES;
+	event->paramid =groupnum;
+	event->param1 =gnames;
+	event->param2 =calloc(1, sizeof(char));
+	event->param3 =calloc(1, sizeof(char));
+	List_add(&Events, event);
+}
+
 void InitCallbacks()
 {
 	tox_callback_self_connection_status(Tox_comm->tox, 
@@ -100,5 +157,8 @@ void InitCallbacks()
 										  cb_friend_connection_status, 0);	
 	tox_callback_friend_name(Tox_comm->tox, cb_friend_name, 0);
 	tox_callback_friend_message(Tox_comm->tox, cb_friend_message, 0);
+	tox_callback_group_invite(Tox_comm->tox, cb_group_invite, 0);
+	tox_callback_group_namelist_change(Tox_comm->tox, cb_group_namelist_change, 
+									   0);
 }
 

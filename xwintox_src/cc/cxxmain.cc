@@ -58,6 +58,10 @@ void ProcessEvents()
 		{
 			GroupchatCreateSuccess(Event->paramid);
 		}
+		else if(Event->type == GNAMES)
+		{
+			GroupchatNames(Event->paramid, Event->param1);
+		}
 		free(Event->param1); free(Event->param2); free(Event->param3);
 		free (Event);
 	}
