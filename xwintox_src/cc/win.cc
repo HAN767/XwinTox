@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <vector>
 #include <stdio.h>
 
 #include <FL/Fl.H>
@@ -16,6 +18,9 @@
 #include "nanosvg/nsvgwrap.h"
 
 extern class XwinTox *XwinTox;
+extern int CGUIUPDFLAG;
+
+using namespace std;
 
 ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C) : Fl_Box (X, Y, 224 * S, 50 * S)
 {
@@ -59,17 +64,35 @@ int ContactsEntry::handle(int event)
 	case FL_PUSH:
 		if ( Fl::event_button() == FL_LEFT_MOUSE )
 		{
-		for (const auto entry : ((ContactsList*)parent())->entries)
-		{
-		entry->selected =0;
-		entry->redraw(); entry->icon->redraw();
-		((Sidebar*)(parent()->parent()))->bottom_area->deselect_all();
+			for (const auto entry : ((ContactsList*)parent())->entries)
+			{
+			entry->selected =0;
+			entry->redraw(); entry->icon->redraw();
+			((Sidebar*)(parent()->parent()))->bottom_area->deselect_all();
+			}
+			selected =1;
+			redraw(); icon->redraw();
+			((ContactsList*)parent())->selected =contact->num;
+			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
+			return 1;
 		}
-		selected =1;
-		redraw(); icon->redraw();
-		((ContactsList*)parent())->selected =contact->num;
-		XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
-		return 1;
+		else if (Fl::event_button() == FL_RIGHT_MOUSE)
+		{
+			Fl_Menu_Item contmenu[] = { { "Delete contact" }, { 0 } };
+			const Fl_Menu_Item *m = contmenu->popup(Fl::event_x(), Fl::event_y(),
+													   0, 0, 0);
+			if(!m) return 0;
+			else if (strcmp (m->label(), "Delete contact") == 0)
+			{
+			vector <ContactsEntry*> *ref =&((ContactsList*)parent())->entries;
+ref->erase(std::remove(ref->begin(), ref->end(), this), ref->end());
+				DeleteContact(contact->num);
+				parent()->remove(this);
+				Fl::delete_widget(this);
+				Fl::delete_widget(FindContactMArea(contact));
+				CGUIUPDFLAG =1;
+				return 0;
+			}
 		}
 	}
 	return 0;
@@ -107,10 +130,13 @@ int ContactsList::handle(int event)
 	switch(event) 
 	{
 	case FL_PUSH:
+	if(Fl::event_button() == FL_LEFT_MOUSE)
+	{
 		for (const auto entry : entries)
 		{
 		entry->redraw(); entry->icon->redraw();
 		}
+	}
 	}
 	Fl_Scroll::handle(event);
 	return 0;

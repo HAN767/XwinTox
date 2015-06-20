@@ -26,7 +26,7 @@ int sendfriendrequest(char* Rmsg)
 {
 	char *id;
 	char *tofree =Rmsg;
-	int result;
+	int *result;
 	
 	strsep(&Rmsg, " ");
 	id =Rmsg;
@@ -38,10 +38,22 @@ int sendfriendrequest(char* Rmsg)
 	dbg("Adding regular Tox ID\n");
 	}
 
-	if (toxsendfriendrequest_1(id, Rmsg, clnt))
+	if ((result =toxsendfriendrequest_1(id, Rmsg, clnt)) == 0)
 	{
 		clnt_perror(clnt, "Sendfriendrequest");
 		return 1;
+	}
+	else
+	{
+		ToxEvent_t *fadd =calloc(1, sizeof(ToxEvent_t));
+		fadd->type =FADDED;
+		fadd->paramid =*result;
+		fadd->param0 =1; /* 1 indicates internally generated, friend added
+							after successful request */
+		fadd->param1 =calloc(1, sizeof(char));
+		fadd->param2 =calloc(1, sizeof(char));
+		fadd->param3 =calloc(1, sizeof(char));
+		List_add(&APP->Xwin->Events, fadd); 
 	}
 	return 0;
 }

@@ -22,9 +22,9 @@ enum ToxEventType
 	FSTATUSM =3,
 	FSTATUS =4,
 	FMESSAGE =5,
-	FREQUEST =6
+	FREQUEST =6,
+	FADDED =6
 };
-
 
 struct ToxEvent_s
 {
@@ -69,9 +69,10 @@ program TOXAEMIA_PROG {
 
 		/* ToxSendFriendRequest
 		 * Send a friend request
+		 * Returns number of new friend, or -1 for failure.
 		 * string<> => Tox ID of friend
 		 * string<> => Message to include in request */
-		void ToxSendFriendRequest(string<>, string<>) = 6;
+		int ToxSendFriendRequest(string<>, string<>) = 6;
 
 		/* ToxGetFriendList
 		 * Returns friendlist as an array of friend IDs */
@@ -87,5 +88,10 @@ program TOXAEMIA_PROG {
 		 * unsigned int => Friend number to send message to
 		 * string<> => Message to send */
 		void ToxSendMessage(unsigned int, string<>) = 9;
+
+		/* ToxDeleteFriend
+		 * Deletes a contact
+		 * unsigned int => Friend number to delete */
+		void ToxDeleteFriend(unsigned int) = 10;
 	} = 1;
 } = 0x22159817;

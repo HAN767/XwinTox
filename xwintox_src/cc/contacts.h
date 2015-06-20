@@ -27,4 +27,7 @@ Contact_t *FindContact(unsigned int id);
 char *GetDisplayName(Contact_t *contact, size_t LenLimit);
 char *GetDisplayStatus(Contact_t *contact, size_t LenLimit);
 
+void FriendRequestSuccess(int num);
+void DeleteContact(int num);
+
 #endif

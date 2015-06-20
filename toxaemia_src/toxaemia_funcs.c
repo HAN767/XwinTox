@@ -86,14 +86,17 @@ void* toxinstallsavedata_1_svc(ToxSaveData_t save, struct svc_req* SvcReq)
 	return &result;
 }
 
-void* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq)
+int* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq)
 {
-	static int result =0;
+	static int result =-1;
 	char *icmsg;
 
 	icmsg =calloc((19 + strlen(id) + 1 + strlen(message)), sizeof(char));
 	sprintf(icmsg, "sendfriendrequest %s %s", id, message);
 	List_add (&Tox_comm->ICQueue, icmsg);
+
+	while (!Returns) usleep (1000);
+	result =(int)List_retrieve_and_remove_first(&Returns);
 
 	return &result;
 }
@@ -165,5 +168,12 @@ void* toxsendmessage_1_svc(unsigned int id, char* message, struct svc_req* SvcRe
 	sprintf(icmsg, "sendmessage %d %s", id, message);
 	List_add(&Tox_comm->ICQueue, icmsg);
 
-	return 1;
+	return (void*)1;
+}
+
+void* toxdeletefriend_1_svc(unsigned int num, struct svc_req* SvcReq)
+{
+	static void* ret =1;
+
+	return ret;
 }

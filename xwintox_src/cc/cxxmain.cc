@@ -22,6 +22,8 @@ extern "C"
 class XwinTox* XwinTox;
 extern "C" Xwin_t *Xwin;
 
+int CGUIUPDFLAG =0;
+
 void InitGUICallbacks();
 void AddLine(unsigned int id, char* msg);
 
@@ -43,6 +45,10 @@ void ProcessEvents()
 		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
 			Event->paramid, Event->param0, Event->param1);
 		if(Event->type == FMESSAGE) AddLine(Event->paramid, Event->param1);
+		if(Event->type == FADDED && Event->param0 == 1 && Event->paramid != -1)
+		{
+			FriendRequestSuccess(Event->paramid);
+		}
 		free(Event->param1); free(Event->param2); free(Event->param3);
 		free (Event);
 	}
@@ -63,6 +69,7 @@ extern "C" int CXXMain()
 	XwinTox = new class XwinTox(640 * scale, 480 * scale, "XwinTox", scale);
 	XwinTox->init2();
 	XwinTox->show();
+	//ContactListGUIUpdate();
 	ContactListGUIUpdate();
 	InitGUICallbacks();
 
@@ -70,6 +77,7 @@ extern "C" int CXXMain()
 	{
 		Fl::wait(0.1);
 		if(APP->Xwin->Events) ProcessEvents();
+		if(CGUIUPDFLAG) { ContactListGUIUpdate(); CGUIUPDFLAG =0; }
 	}
 
 	return 0;

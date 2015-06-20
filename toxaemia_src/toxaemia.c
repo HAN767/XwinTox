@@ -80,11 +80,15 @@ void Deliver_save_data()
 void Send_friend_request(char* id, char* message)
 {
  	TOX_ERR_FRIEND_ADD err;
+	int newid;
 	uint8_t* binid =hex_string_to_bin(id); 
 
-	tox_friend_add(Tox_comm->tox, binid, (uint8_t *) message, 
+	newid =tox_friend_add(Tox_comm->tox, binid, (uint8_t *) message, 
 				  strlen(message), &err);
 	dbg("ID %s, Msg %s, Error %d\n", id, message, err);
+
+	if(err == TOX_ERR_FRIEND_ADD_OK) List_add(&Returns, (void*)newid);
+	else List_add (&Returns, (void*)-1);
 	
 }
 

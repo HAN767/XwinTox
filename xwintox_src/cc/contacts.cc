@@ -11,6 +11,40 @@ ContactList_t *contactlist;
 
 void SendMessagePressed(Fl_Widget* B , void*);
 
+void DeleteContact(int num)
+{
+	Contact_t *todel;
+	char *amsg =(char*)calloc(255, sizeof(char));
+	if((todel =FindContact(num)) != 0)
+	{
+		vector <Contact_t*> *ref=&contactlist->contacts;
+		sprintf(amsg, "deletecontact %d", num);
+		List_add(&APP->Comm->WorkQueue, (void*)amsg);
+		free(todel->name); free(todel->statusm); free(todel->pubkey);
+		free(todel);
+		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
+		if(XwinTox->contents->currentarea == FindContactMArea(todel))
+		{
+			XwinTox->contents->currentarea =XwinTox->contents->addfriend;
+		}
+		CommWork();
+	}
+}
+
+void FriendRequestSuccess(int num)
+{
+	if(!FindContact(num))
+	{
+	Contact_t *c =(Contact_t*)calloc(1, sizeof(Contact_t));
+	c->name =(char*)calloc (8, sizeof(char)); strcpy(c->name, "Unknown");
+	c->num =num;
+ 	c->statusm =strdup(""); 
+	c->pubkey =strdup("");
+	contactlist->contacts.push_back(c);
+	ContactListGUIUpdate();
+	}
+}
+
 void ContactListGUIUpdate()
 {
 	int selected =-1;
@@ -34,12 +68,15 @@ void ContactListGUIUpdate()
 		XwinTox->sidebar->contacts->entries.push_back(newgui);
 		YM += (50 * XwinTox->scale);
 
-		GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
-		newarea->hide();
-		newarea->send->callback(&SendMessagePressed);
+		if(!FindContactMArea(contact))
+		{
+			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact);
+			newarea->hide();
+			newarea->send->callback(&SendMessagePressed);
 
-		XwinTox->add(newarea);
-		XwinTox->contents->messageareas.push_back(newarea);
+			XwinTox->add(newarea);
+			XwinTox->contents->messageareas.push_back(newarea);
+		}
 
 		if(contact->num == selected)
 		{
