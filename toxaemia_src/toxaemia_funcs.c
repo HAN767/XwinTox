@@ -152,7 +152,7 @@ ToxEvent_t* toxgetevent_1_svc(struct svc_req* SvcReq)
 	ToxEvent_t *ptr, *ret;
 
 	result.type =0; result.paramid =0; result.param0 =0; result.param1 =" "; 
-	result.param2 =" "; result.param3 =" ";
+	result.param2.param2_len =0;
 
 	ptr =List_retrieve_and_remove_first(&Events);
 

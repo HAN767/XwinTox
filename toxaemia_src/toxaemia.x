@@ -39,8 +39,8 @@ struct ToxEvent_s
 	int paramid;
 	int param0;
 	string param1<>;
-	string param2<>;
-	string param3<>;
+	opaque param2<>;
+	short param3<>;
 };
 
 enum ToxMessageType

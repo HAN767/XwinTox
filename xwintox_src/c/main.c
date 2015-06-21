@@ -51,8 +51,7 @@ int sendfriendrequest(char* Rmsg)
 		fadd->param0 =1; /* 1 indicates internally generated, friend added
 							after successful request */
 		fadd->param1 =calloc(1, sizeof(char));
-		fadd->param2 =calloc(1, sizeof(char));
-		fadd->param3 =calloc(1, sizeof(char));
+		fadd->param2.param2_len =0;
 		List_add(&APP->Xwin->Events, fadd); 
 	}
 	return 0;
@@ -181,8 +180,7 @@ void newgroupchat()
 		fadd->param0 =1; /* 1 indicates internally generated, group added
 							after successful request */
 		fadd->param1 =calloc(1, sizeof(char));
-		fadd->param2 =calloc(1, sizeof(char));
-		fadd->param3 =calloc(1, sizeof(char));
+		fadd->param2.param2_len =0;
 		List_add(&APP->Xwin->Events, fadd); 
 	}
 	dbg("Groupchat: %d\n", *res);
@@ -264,8 +262,18 @@ int main()
 				ToxEvent_t *NEvent =calloc(1, sizeof(ToxEvent_t));
 				*NEvent =*Event;
 				NEvent->param1 =strdup(Event->param1);
-				NEvent->param2 =strdup(Event->param2);
-				NEvent->param3 =strdup(Event->param3);
+
+				NEvent->param2.param2_val =calloc(Event->param2.param2_len, 
+												  sizeof(char));
+				memcpy(NEvent->param2.param2_val, Event->param2.param2_val, 
+					   Event->param2.param2_len);
+				NEvent->param2.param2_len =Event->param2.param2_len;
+
+				NEvent->param3.param3_val =calloc(Event->param3.param3_len, 
+												  sizeof(short));
+				memcpy(NEvent->param3.param3_val, Event->param3.param3_val, 
+					   Event->param3.param3_len * sizeof(short));
+				NEvent->param3.param3_len =Event->param3.param3_len;
 
 				List_add(&APP->Xwin->Events, NEvent); 
 			}

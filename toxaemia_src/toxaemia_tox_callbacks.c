@@ -53,8 +53,8 @@ void cb_friend_connection_status(Tox *tox, uint32_t friend_number,
 
 	event->paramid =friend_number;
 	event->param1 =calloc(1, sizeof(char)); 
-	event->param2 =calloc(1, sizeof(char)); 
-	event->param3 =calloc(1, sizeof(char));
+	event->param2.param2_len =0;
+	event->param3.param3_len =0;
 
 	dbg("ID %d status %d\n", friend_number, connection_status);
 
@@ -71,8 +71,8 @@ void cb_friend_name(Tox *tox, uint32_t friend_number, const uint8_t *name,
 	event->type =FNAME;
 	event->paramid =friend_number;
 	event->param1 =nname;
-	event->param2 =calloc(1, sizeof(char)); 
-	event->param3 =calloc(1, sizeof(char));
+	event->param2.param2_len =0;
+	event->param3.param3_len =0;
 
 	strncpy(nname, (char*) name, length); nname[length+1] ='\0';
 	List_add(&Events, event);
@@ -89,8 +89,8 @@ void cb_friend_message(Tox *tox, uint32_t friend_number, TOX_MESSAGE_TYPE type,
 	event->type =FMESSAGE;
 	event->paramid =friend_number;
 	event->param1 =nmessage;
-	event->param2 =calloc(1, sizeof(char)); 
-	event->param3 =calloc(1, sizeof(char));
+	event->param2.param2_len =0;
+	event->param3.param3_len =0;
 
 	dbg("Message from ID %d: %s\n", event->paramid, nmessage);
 	List_add(&Events, event);
@@ -108,8 +108,8 @@ void cb_group_invite(Tox *tox, int32_t friendnumber, uint8_t type,
 		event->type =GNEW;
 		event->paramid =gid;
 		event->param1 =calloc(1, sizeof(char));
-		event->param2 =calloc(1, sizeof(char));
-		event->param3 =calloc(1, sizeof(char));
+		event->param2.param2_len =0;
+		event->param3.param3_len =0;
 		List_add(&Events, event);
 	}
 }
@@ -122,7 +122,7 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 	if (numpeers < 1) { dbg("fail: numpeers < 1\n"); return; }
 	unsigned short peerlens[numpeers];
 	char peernames[numpeers][TOX_MAX_NAME_LENGTH];
-	char *gnames =calloc(numpeers + 1 + (numpeers * TOX_MAX_NAME_LENGTH),
+	char *gnames =calloc((numpeers * 2) + 1 + (numpeers * TOX_MAX_NAME_LENGTH),
 						 sizeof(char));
 
 	//memset(peerlens, 0x0, numpeers);
@@ -136,16 +136,21 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 		char *tmpname =calloc(TOX_MAX_NAME_LENGTH, sizeof(char));
 		memcpy(tmpname, peernames[pos], peerlens[i]);
 		pos +=1;
-		gpos +=sprintf(gnames+gpos, "%s ", tmpname);
+		if (i < (numpeers - 1)) gpos +=sprintf(gnames+gpos, "%s, ", tmpname);
+		else gpos +=sprintf(gnames+gpos, "%s", tmpname);
 	}
-	//dbg("Group names: %s\n", gnames);
 
 	ToxEvent_t *event =calloc(1, sizeof(ToxEvent_t));
 	event->type =GNAMES;
 	event->paramid =groupnum;
 	event->param1 =gnames;
-	event->param2 =calloc(1, sizeof(char));
-	event->param3 =calloc(1, sizeof(char));
+	event->param2.param2_len =numpeers * TOX_MAX_NAME_LENGTH;
+	event->param2.param2_val =calloc((numpeers * TOX_MAX_NAME_LENGTH),
+									  sizeof(char));
+	memcpy(event->param2.param2_val, peernames, (numpeers * TOX_MAX_NAME_LENGTH));
+	event->param3.param3_val =calloc(numpeers, sizeof(short));
+	memcpy(event->param3.param3_val, peerlens, sizeof(short) * numpeers);
+	event->param3.param3_len =numpeers;
 	List_add(&Events, event);
 }
 
@@ -159,8 +164,8 @@ void cb_group_message(Tox *tox, int groupnumber, int peernumber,
 	event->paramid =groupnumber;
 	event->param0 =peernumber;
 	event->param1 =msg;
-	event->param2 =calloc(1, sizeof(char)); 
-	event->param3 =calloc(1, sizeof(char));
+	event->param2.param2_len =0;
+	event->param3.param3_len =0;
 
 	dbg("Group message: %s\n", msg);
 	List_add(&Events, event);

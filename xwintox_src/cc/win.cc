@@ -461,7 +461,7 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 
 	gnames->box(FL_NO_BOX);
 	if (scale <2)gnames->textsize(9 * scale);
-	else gnames->textsize(8.2 * scale);
+	else gnames->textsize(8.8 * scale);
 	gnames->wrap(1);
 	gnames->textcolor(fl_rgb_color(180, 180, 180));
 
@@ -490,7 +490,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 	icon->position(x()+(12 * scale),  y() + (9 * scale));
 	gnames->resize(x()+(60 * scale), y() + (28 * scale), w() - (65 * scale),
-				   (28 * scale));
+				   (32 * scale));
 	gnames->redraw();
 	send->position(x() + (w() - 74 * scale), y() + (h() - (80 * scale)));
 	message->resize (x() + (10 * scale), y() + h() - (80 * scale),

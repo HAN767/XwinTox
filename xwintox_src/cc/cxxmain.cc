@@ -48,7 +48,8 @@ void ProcessEvents()
 											Event->param1);
 		if(Event->type == GMESSAGE) AddLine(MGCHAT, Event->paramid, 
 											 Event->param0, Event->param1);
-		else if(Event->type == FADDED && Event->param0 == 1 && Event->paramid != -1)
+		else if(Event->type == FADDED && Event->param0 == 1 &&
+				Event->paramid != -1)
 		{
 			FriendRequestSuccess(Event->paramid);
 		}
@@ -63,20 +64,23 @@ void ProcessEvents()
 		}
 		else if(Event->type == GNAMES)
 		{
-			GroupchatNames(Event->paramid, Event->param1);
+			GroupchatNames(Event->paramid, Event->param3.param3_len,
+						   Event->param1, Event->param2.param2_val,
+						   Event->param3.param3_val, Event->param2.param2_len);
 		}
-		free(Event->param1); free(Event->param2); free(Event->param3);
-		free (Event);
+		free(Event->param1); free(Event->param2.param2_val); 
+		free(Event->param3.param3_val); free (Event);
 	}
 }
 
 extern "C" int CXXMain()
 {
-	int scale =1;
+	int scale =2;
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
 
-	while ((c =(Contact_t*)List_retrieve_and_remove_first(&APP->Xwin->ICQueue)) != 0)
+	while ((c =(Contact_t*)List_retrieve_and_remove_first(&APP->Xwin->ICQueue)) 
+			!= 0)
 	{
 		contactlist->contacts.push_back(c);
 	}
@@ -85,7 +89,6 @@ extern "C" int CXXMain()
 	XwinTox = new class XwinTox(640 * scale, 480 * scale, "XwinTox", scale);
 	XwinTox->init2();
 	XwinTox->show();
-	//ContactListGUIUpdate();
 	ContactListGUIUpdate();
 	InitGUICallbacks();
 

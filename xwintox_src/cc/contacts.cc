@@ -60,11 +60,13 @@ void GroupchatCreateSuccess(int num)
 	}
 }
 
-void GroupchatNames(int num, char* names)
+void GroupchatNames(int num, int numpeers, char* names, char* names_raw,
+					short *names_raw_lens, int names_raw_len)
 {
 	Groupchat_t *g;
 	if((g =FindGroupchat(num)) == 0) { dbg("No groupchat\n"); return; }
 	g->peers =strdup(names);
+	g->num_peers =numpeers;
 	FindGroupchatMArea(num)->redraw();
 	FindGroupchatMArea(num)->gnames->redraw();
 }
