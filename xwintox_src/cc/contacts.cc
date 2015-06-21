@@ -72,11 +72,13 @@ void GroupchatNames(int num, char* names)
 void ContactListGUIUpdate()
 {
 	int selected =-1;
+	int seltype =-1;
 
 	if(XwinTox->sidebar->contacts->entries.size() > 0)
 	{
 		if (XwinTox->sidebar->contacts->selected >= 0)
-		{ selected = XwinTox->sidebar->contacts->selected; }
+		{ selected =XwinTox->sidebar->contacts->selected;
+		  seltype =XwinTox->sidebar->contacts->seltype; }
 		XwinTox->sidebar->contacts->clear_all();
 	}
 
@@ -103,12 +105,13 @@ void ContactListGUIUpdate()
 			XwinTox->contents->messageareas.push_back(newarea);
 		}
 
-		/*if(groupchat->num == selected && cursel )
+		if(groupchat->num == selected && seltype == 1)
 		{
 			newgui->selected =1;
-			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
+			XwinTox->contents->NewCurrentArea(FindGroupchatMArea(groupchat));
 			XwinTox->sidebar->contacts->selected =selected;
-		}*/
+			XwinTox->sidebar->contacts->seltype =seltype;
+		}
 	}
 	for (const auto contact : contactlist->contacts)
 	{
@@ -131,11 +134,12 @@ void ContactListGUIUpdate()
 			XwinTox->contents->messageareas.push_back(newarea);
 		}
 
-		if(contact->num == selected)
+		if(contact->num == selected && seltype == 0)
 		{
 			newgui->selected =1;
 			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
 			XwinTox->sidebar->contacts->selected =selected;
+			XwinTox->sidebar->contacts->seltype =seltype;
 		}
 	}
 	XwinTox->redraw(); XwinTox->sidebar->contacts->redraw();

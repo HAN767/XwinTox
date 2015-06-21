@@ -46,9 +46,9 @@ ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G,
 	{
 		icon =new SVGBox(X-(8 * S), Y+(2 * S), 46 * S, 46 *S, S,
 							  groupsvg, 0.63);
-		invicon =new SVGBox(X-(8 * S), Y+(2 * S), 46 * S, 46 *S, S,
+		invicon =new SVGBox(X+(14 * S), Y+(12 * S), 46 * S, 46 *S, S,
 							  groupsvg2, 0.63);
-		//invicon->hide();
+		invicon->hide();
 		contact =new Contact_t;
 		contact->num =65535;
 	}
@@ -61,14 +61,23 @@ void ContactsEntry::draw()
 {
 	int txt_color =255;
 	char *name, *status;
-	if (selected) { color(255); txt_color =0; }
-	else {color (fl_rgb_color(65, 65, 65)); txt_color=255; }
+	if (selected) 
+	{ 
+		color(255); txt_color =0;
+		icon->hide(); invicon->show();
+	}
+	else
+	{
+		color (fl_rgb_color(65, 65, 65)); txt_color=255; 
+		invicon->hide(); icon->show();
+	}
 
 	Fl_Box::draw();
 	if (!type)
 	{
 		name =GetDisplayName(contact, 16); status =GetDisplayStatus(contact, 25);
 		if(contact->connected) fl_color(2);
+		else fl_color(FL_RED);
 		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 			  10 * scale, 0, 360);
 	}
@@ -96,12 +105,20 @@ int ContactsEntry::handle(int event)
 			for (const auto entry : ((ContactsList*)parent())->entries)
 			{
 			entry->selected =0;
-			entry->redraw(); entry->icon->redraw();
+			entry->redraw(); entry->icon->redraw(); entry->invicon->redraw();
 			((Sidebar*)(parent()->parent()))->bottom_area->deselect_all();
 			}
 			selected =1;
-			redraw(); icon->redraw();
-			((ContactsList*)parent())->selected =contact->num;
+			((ContactsList*)parent())->seltype =type;
+			redraw(); icon->redraw(); invicon->redraw();
+			if (!type)
+			{
+				((ContactsList*)parent())->selected =contact->num;
+			}
+			else
+			{ 
+				((ContactsList*)parent())->selected =groupchat->num; 
+			}
 			icon->hide();
 			invicon->show();
 			if(!type)
@@ -233,6 +250,18 @@ int SVGBox::handle(int event)
 		return 1;
 	}
 	return 0;
+}
+
+void SVGBox::hide()
+{
+	Fl_Box::hide();
+	image(0);
+}
+
+void SVGBox::show()
+{
+	Fl_Box::show();
+	image(img);
 }
 
 Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group (XwinTox->basex * S,XwinTox->basey * S,

@@ -36,6 +36,8 @@ public:
 	SVGBox(int X, int Y, int W, int H, int S, const char* pic, double factor);
 	void draw();
 	int handle(int event);
+	void hide();
+	void show();
 
 	int scale;
 	unsigned char *img_r;
@@ -75,7 +77,7 @@ public:
 
 	vector <ContactsEntry*> entries;
 
-	int selected, scale;
+	int selected, seltype, scale;
 };
 
 class Sidebar_Top_Area: public Fl_Group
