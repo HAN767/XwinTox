@@ -40,8 +40,9 @@ typedef struct Contact_s
 
 typedef struct Groupchat_s
 {
-	unsigned int num, num_peers;
+	unsigned int num, num_peers, peers_raw_len;
 	char *name, *peers, *peers_raw;
+	short *peers_raw_lens;
 } Groupchat_t;
 
 #ifdef __cplusplus__

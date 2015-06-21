@@ -22,6 +22,7 @@ void DeleteContact(int num);
 void GroupchatCreateSuccess(int num);
 void GroupchatNames(int num, int numpeers, char* names, char* names_raw,
 					short *names_raw_lens, int names_raw_len);
+char* GroupchatGetPeerName(int gnum, int pnum);
 
 void ContactListGUIUpdate();
 

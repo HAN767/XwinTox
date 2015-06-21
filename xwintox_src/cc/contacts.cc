@@ -66,9 +66,25 @@ void GroupchatNames(int num, int numpeers, char* names, char* names_raw,
 	Groupchat_t *g;
 	if((g =FindGroupchat(num)) == 0) { dbg("No groupchat\n"); return; }
 	g->peers =strdup(names);
+	g->peers_raw_len =names_raw_len;
 	g->num_peers =numpeers;
+	g->peers_raw =(char*)calloc(names_raw_len, sizeof(char));
+	memcpy(g->peers_raw, names_raw, names_raw_len);
+	g->peers_raw_lens =(short*)calloc(numpeers, sizeof(short));
+	memcpy(g->peers_raw_lens, names_raw_lens, sizeof(short) * numpeers);
 	FindGroupchatMArea(num)->redraw();
 	FindGroupchatMArea(num)->gnames->redraw();
+}
+
+char* GroupchatGetPeerName(int gnum, int pnum)
+{
+	static char tmpname[128] = { 0 };
+	Groupchat_t *g =FindGroupchat(gnum);
+	
+	memcpy(tmpname, g->peers_raw + (pnum * 128), g->peers_raw_lens[pnum]);
+	tmpname[g->peers_raw_lens[pnum]] = '\0';
+
+	return (char*)(&tmpname);
 }
 
 void ContactListGUIUpdate()

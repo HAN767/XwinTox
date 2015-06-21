@@ -161,7 +161,7 @@ void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg)
 	else if(type == MGCHAT)
 	{
 		Groupchat_t *gchat =FindGroupchat(id);
-		sprintf(nmsg, "%d: %s\n", pid, msg);
+		sprintf(nmsg, "%s: %s\n", GroupchatGetPeerName(id, pid), msg);
 		FindGroupchatMArea(id)->moutbuffer->append(nmsg);
 	}
 
