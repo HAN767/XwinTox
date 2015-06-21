@@ -10,9 +10,6 @@ extern "C"
 
 typedef struct ContactList_s
 {
-	int num_selected;
-	size_t num_online;
-
 	vector <Contact_t*> contacts;
 } ContactList_t;
 

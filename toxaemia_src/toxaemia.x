@@ -43,6 +43,12 @@ struct ToxEvent_s
 	string param3<>;
 };
 
+enum ToxMessageType
+{
+	MFRIEND =1,
+	MGCHAT =2
+};
+
 typedef struct ToxSaveData_s ToxSaveData_t;
 typedef struct ToxFriends_s ToxFriends_t;
 typedef struct ToxFriend_s ToxFriend_t;
@@ -91,10 +97,10 @@ program TOXAEMIA_PROG {
 		ToxFriend_t ToxGetFriend(unsigned int) = 8;
 
 		/* ToxSendMessage
-		 * Sends a message to a contact
+		 * Sends a message to a contact or groupchat
 		 * unsigned int => Friend number to send message to
 		 * string<> => Message to send */
-		void ToxSendMessage(unsigned int, string<>) = 9;
+		void ToxSendMessage(ToxMessageType, unsigned int, string<>) = 9;
 
 		/* ToxDeleteFriend
 		 * Deletes a contact.

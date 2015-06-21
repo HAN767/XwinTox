@@ -173,7 +173,7 @@ public:
 	Fl_Button *send;
 
 	int scale;
-	short type;
+	short mtype;
 	Contact_t *contact;
 	Groupchat_t *groupchat;
 };

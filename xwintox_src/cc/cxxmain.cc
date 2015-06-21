@@ -25,7 +25,7 @@ extern "C" Xwin_t *Xwin;
 int CGUIUPDFLAG =0;
 
 void InitGUICallbacks();
-void AddLine(unsigned int id, char* msg);
+void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg);
 
 void CommWork()
 {
@@ -44,7 +44,10 @@ void ProcessEvents()
 	{
 		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
 			Event->paramid, Event->param0, Event->param1);
-		if(Event->type == FMESSAGE) AddLine(Event->paramid, Event->param1);
+		if(Event->type == FMESSAGE) AddLine(MFRIEND, Event->paramid, 0,
+											Event->param1);
+		if(Event->type == GMESSAGE) AddLine(MGCHAT, Event->paramid, 
+											 Event->param0, Event->param1);
 		else if(Event->type == FADDED && Event->param0 == 1 && Event->paramid != -1)
 		{
 			FriendRequestSuccess(Event->paramid);
@@ -69,7 +72,7 @@ void ProcessEvents()
 
 extern "C" int CXXMain()
 {
-	int scale =2;
+	int scale =1;
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
 

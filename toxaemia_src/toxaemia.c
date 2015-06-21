@@ -132,10 +132,18 @@ void Deliver_friend(unsigned int num)
 	List_add(&Returns, (void*) F_online[num]);
 }
 
-void Send_message(unsigned int num, char* message)
+void Send_message(ToxMessageType type, unsigned int num, char* message)
 {
-	tox_friend_send_message(Tox_comm->tox, num, TOX_MESSAGE_TYPE_NORMAL, 
-							(uint8_t*) message, strlen(message), 0);
+	if(type == MFRIEND)
+	{
+		tox_friend_send_message(Tox_comm->tox, num, TOX_MESSAGE_TYPE_NORMAL, 
+								(uint8_t*) message, strlen(message), 0);
+	}
+	else
+	{
+		tox_group_message_send(Tox_comm->tox, num, (uint8_t*) message,
+							   strlen(message));
+	}
 }
 
 void Create_group_chat()
@@ -199,11 +207,13 @@ int Tox_comm_main()
 			else if(!strncmp (Rmsg, "connect", 7)) Connect_to_tox();
 			else if(!strncmp (Rmsg, "sendmessage", 11))
 			{
-				char *id;
+				char *type, *id;
+				strsep(&Rmsg, " ");
+				type =Rmsg;
 				strsep(&Rmsg, " ");
 				id =Rmsg;
-				strsep(&Rmsg, " "); 
-				Send_message(strtol(id, 0, 10), Rmsg);
+				strsep(&Rmsg, " ");
+				Send_message(strtol(type, 0, 10), strtol(id, 0, 10), Rmsg);
 			}
 			else if(!strcmp (Rmsg, "creategroupchat")) Create_group_chat();
 			else { 	dbg("Unhandled request %s\n", Rmsg); }

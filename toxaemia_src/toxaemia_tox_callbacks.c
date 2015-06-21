@@ -149,6 +149,23 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 	List_add(&Events, event);
 }
 
+void cb_group_message(Tox *tox, int groupnumber, int peernumber, 
+					  const uint8_t * message, uint16_t length, void *userdata)
+{
+	char *msg =strndup(message, length);
+	ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
+
+	event->type =GMESSAGE;
+	event->paramid =groupnumber;
+	event->param0 =peernumber;
+	event->param1 =msg;
+	event->param2 =calloc(1, sizeof(char)); 
+	event->param3 =calloc(1, sizeof(char));
+
+	dbg("Group message: %s\n", msg);
+	List_add(&Events, event);
+}
+
 void InitCallbacks()
 {
 	tox_callback_self_connection_status(Tox_comm->tox, 
@@ -160,5 +177,6 @@ void InitCallbacks()
 	tox_callback_group_invite(Tox_comm->tox, cb_group_invite, 0);
 	tox_callback_group_namelist_change(Tox_comm->tox, cb_group_namelist_change, 
 									   0);
+	tox_callback_group_message(Tox_comm->tox, cb_group_message, 0);
 }
 

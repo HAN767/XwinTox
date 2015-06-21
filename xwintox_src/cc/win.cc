@@ -435,7 +435,7 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	contact =C;
 	groupchat =G;
 	scale =S;
-	type =T;
+	mtype =T;
 
 	box(FL_FLAT_BOX);
 	color(255);
@@ -460,7 +460,8 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	moutbuffer =new Fl_Text_Buffer();
 
 	gnames->box(FL_NO_BOX);
-	gnames->textsize(9 * scale);
+	if (scale <2)gnames->textsize(9 * scale);
+	else gnames->textsize(8.2 * scale);
 	gnames->wrap(1);
 	gnames->textcolor(fl_rgb_color(180, 180, 180));
 
@@ -501,7 +502,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 void GMessageArea::draw()
 {
-	if (type)
+	if (mtype)
 	{
 		if (strcmp(gnames->value(), groupchat->peers)) gnames->value(groupchat->peers); gnames->redraw();
 	}
@@ -509,7 +510,7 @@ void GMessageArea::draw()
 	Fl_Group::draw();
 
 	fl_color(0);
-	if (!type)
+	if (!mtype)
 	{
 		fl_font(FL_HELVETICA_BOLD, 12 * scale);
 		fl_draw(contact->name, x() + (60 * scale), y() + (26 * scale));

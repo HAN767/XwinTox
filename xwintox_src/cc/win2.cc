@@ -5,6 +5,7 @@
 
 extern "C"
 {
+#include "toxaemia_rpc.h"
 #include "misc.h"
 #include "list.h"
 
@@ -50,19 +51,31 @@ void SendMessagePressed(Fl_Widget* B , void*)
 {
 	char *amsg =(char*)calloc(1025, sizeof(char));
 	static char nmsg[1024];
-	unsigned int id =((GMessageArea*)B->parent())->contact->num;
+	unsigned int id;
 	const char *msg =((GMessageArea*)B->parent())->message->value();
+
 	// add a validity check here later //
-
-	sprintf(amsg, "sendmessage %d %s", id, msg);
-
-	List_add(&APP->Comm->WorkQueue, (void*)amsg);
-	CommWork();
-
 
 	sprintf(nmsg, "%s: %s\n", XwinTox->sidebar->top_area->name->value(),
 			((GMessageArea*)B->parent())->message->value());
-	FindContactMArea(id)->moutbuffer->append(nmsg);
+
+	if(!((GMessageArea*)B->parent())->mtype) /* contact */
+	{
+		id =((GMessageArea*)B->parent())->contact->num;
+		sprintf(amsg, "sendmessage %d %d %s", MFRIEND, id, msg);
+		FindContactMArea(id)->moutbuffer->append(nmsg);
+		FindContactMArea(id)->message->value("");
+	}
+	else
+	{
+		id =((GMessageArea*)B->parent())->groupchat->num;
+		sprintf(amsg, "sendmessage %d %d %s", MGCHAT, id, msg);
+		FindGroupchatMArea(id)->message->value("");
+		//FindGroupchatMArea(id)->moutbuffer->append(nmsg);
+	}
+
+	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	CommWork();
 }
 
 void WindowClosed (Fl_Widget *widget, void *) 
@@ -128,22 +141,29 @@ char *GetDisplayStatus(Contact_t *contact, size_t LenLimit)
 	return status;
 }
 
-void AddLine(unsigned int id, char* msg)
+void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg)
 {
 	time_t rawtime;
 	struct tm *info;
-	Contact_t *contact =FindContact(id);
 	static char nmsg[1024];
 	static char date[256];
 
 	time( &rawtime );
 	info = localtime( &rawtime );
-
 	strftime(date, 255, "%H:%M", info);
-	sprintf(nmsg, "%s: %s\n", contact->name, msg);
- FindContactMArea(id)->moutput->insert_position(5);
-	FindContactMArea(id)->moutbuffer->append(nmsg);
+	
+	if(type == MFRIEND)
+	{
+		Contact_t *contact =FindContact(id);
+		sprintf(nmsg, "%s: %s\n", contact->name, msg);
+		FindContactMArea(id)->moutbuffer->append(nmsg);
+	}
+	else if(type == MGCHAT)
+	{
+		Groupchat_t *gchat =FindGroupchat(id);
+		sprintf(nmsg, "%d: %s\n", pid, msg);
+		FindGroupchatMArea(id)->moutbuffer->append(nmsg);
+	}
 
-	dbg("Insert position: %d\n", FindContactMArea(id)->moutput->insert_position());
 }
 

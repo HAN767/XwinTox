@@ -151,7 +151,7 @@ ContactsEntry *FindContactEntry(unsigned int num)
 	{
 		if(entry->contact->num == num) return entry;
 	}
-	dbg("Fail"); return 0;
+	return 0;
 }
 
 GMessageArea *FindContactMArea(Contact_t *contact)
@@ -160,7 +160,7 @@ GMessageArea *FindContactMArea(Contact_t *contact)
 	{
 		if(messagearea->contact == contact) return messagearea;
 	}
-	dbg("Fail"); return 0;
+	return 0;
 }
 
 GMessageArea *FindContactMArea(unsigned int num)
@@ -169,7 +169,7 @@ GMessageArea *FindContactMArea(unsigned int num)
 	{
 		if(messagearea->contact->num == num) return messagearea;
 	}
-	dbg("Fail"); return 0;
+	return 0;
 }
 
 Contact_t *FindContact(unsigned int id)
@@ -178,7 +178,7 @@ Contact_t *FindContact(unsigned int id)
 	{
 		if(contact->num == id) return contact;
 	}
-	dbg("Fail"); return 0;
+	return 0;
 }
 
 Groupchat_t *FindGroupchat(unsigned int id)
@@ -196,7 +196,7 @@ GMessageArea *FindGroupchatMArea(Groupchat_t *contact)
 	{
 		if(messagearea->groupchat == contact) return messagearea;
 	}
-	dbg("Fail"); return 0;
+	return 0;
 }
 
 GMessageArea *FindGroupchatMArea(unsigned int num)
@@ -205,5 +205,5 @@ GMessageArea *FindGroupchatMArea(unsigned int num)
 	{
 		if(messagearea->groupchat->num == num) return messagearea;
 	}
-	dbg("Fail"); return 0;
+	return 0;
 }

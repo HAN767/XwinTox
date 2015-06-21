@@ -134,14 +134,16 @@ void getfriendlist()
 
 int sendmessage(char* Rmsg)
 {
-	char *id;
+	char *type, *id;
 	int result;
 	
+	strsep(&Rmsg, " ");
+	type =Rmsg;
 	strsep(&Rmsg, " ");
 	id =Rmsg;
 	strsep(&Rmsg, " ");
 
-	if (!toxsendmessage_1(strtol(id, 0, 10), Rmsg, clnt))
+	if (!toxsendmessage_1(strtol(type, 0, 10), strtol(id, 0, 10), Rmsg, clnt))
 	{
 		clnt_perror(clnt, "Sendmessage");
 		return 1;
