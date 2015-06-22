@@ -131,4 +131,11 @@
       </Completion>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="control">
+    <File Name="control/gui.cc"/>
+    <File Name="control/gui.h"/>
+    <File Name="control/msgarea.cc"/>
+    <File Name="control/msgarea.h"/>
+    <File Name="control/gaddfrnd.cc"/>
+  </VirtualDirectory>
 </CodeLite_Project>

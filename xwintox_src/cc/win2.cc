@@ -1,23 +1,25 @@
 #include <stdio.h>
 
-#include "xwintox_win.h"
-#include "contacts.h"
-
 extern "C"
 {
 #include "toxaemia_rpc.h"
 #include "misc.h"
 #include "list.h"
-
 #include "xwintox.h"
 }
 
+#include "contacts.h"
+
+#include "control/msgarea.h"
+#include "control/gui.h"
+
+
 void AddFriendPressed(Fl_Widget* B , void*)
 {
-	XwinTox->contents->NewCurrentArea(XwinTox->contents->addfriend);
+	Xw->contents->NewCurrentArea(Xw->contents->addfriend);
 	B->box(FL_FLAT_BOX);
 	B->color(fl_rgb_color(68, 68, 67));
-	XwinTox->sidebar->contacts->deselect_all();
+	Xw->sidebar->contacts->deselect_all();
 }
 
 void NewGroupchatPressed(Fl_Widget *B, void*)
@@ -56,7 +58,7 @@ void SendMessagePressed(Fl_Widget* B , void*)
 
 	// add a validity check here later //
 
-	sprintf(nmsg, "%s: %s\n", XwinTox->sidebar->top_area->name->value(),
+	sprintf(nmsg, "%s: %s\n", Xw->sidebar->top_area->name->value(),
 	        ((GMessageArea*)B->parent())->message->value());
 
 	if(!((GMessageArea*)B->parent())->mtype) /* contact */
@@ -94,9 +96,9 @@ void WindowClosed(Fl_Widget *widget, void *)
 
 void InitGUICallbacks()
 {
-	XwinTox->contents->addfriend->send->callback(&AddFriendSendPressed);
-	XwinTox->sidebar->bottom_area->addfriend->callback(&AddFriendPressed);
-	XwinTox->sidebar->bottom_area->newgroup->callback(&NewGroupchatPressed);
+	Xw->contents->addfriend->send->callback(&AddFriendSendPressed);
+	Xw->sidebar->bottom_area->addfriend->callback(&AddFriendPressed);
+	Xw->sidebar->bottom_area->newgroup->callback(&NewGroupchatPressed);
 }
 
 char *GetDisplayName(Contact_t *contact, size_t LenLimit)

@@ -5,7 +5,11 @@ extern "C"
 #include "misc.h"
 }
 #include "contacts.h"
+
 #include "xwintox_win.h"
+#include "control/gui.h"
+#include "control/msgarea.h"
+
 
 ContactList_t *contactlist;
 vector <Groupchat_t*> groupchats;
@@ -24,9 +28,9 @@ void DeleteContact(int num)
 		free(todel->name); free(todel->statusm); free(todel->pubkey);
 		free(todel);
 		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
-		if(XwinTox->contents->currentarea == FindContactMArea(todel))
+		if(Xw->contents->currentarea == FindContactMArea(todel))
 		{
-			XwinTox->contents->currentarea =XwinTox->contents->addfriend;
+			Xw->contents->currentarea =Xw->contents->addfriend;
 		}
 		CommWork();
 	}
@@ -99,80 +103,80 @@ void ContactListGUIUpdate()
 	int selected =-1;
 	int seltype =-1;
 
-	if(XwinTox->sidebar->contacts->entries.size() > 0)
+	if(Xw->sidebar->contacts->entries.size() > 0)
 	{
-		if (XwinTox->sidebar->contacts->selected >= 0)
-		{ selected =XwinTox->sidebar->contacts->selected;
-		  seltype =XwinTox->sidebar->contacts->seltype; }
-		XwinTox->sidebar->contacts->clear_all();
+		if (Xw->sidebar->contacts->selected >= 0)
+		{ selected =Xw->sidebar->contacts->selected;
+		  seltype =Xw->sidebar->contacts->seltype; }
+		Xw->sidebar->contacts->clear_all();
 	}
 
 	int YM =0;
 	for (const auto groupchat : groupchats)
 	{
 		printf("Contact: %s\n", groupchat->name);
-		ContactsEntry *newgui =new ContactsEntry(XwinTox->sidebar->contacts->x(), 
-											  XwinTox->sidebar->contacts->y() + YM, 
-											  XwinTox->sidebar->contacts->scale, 
+		ContactsEntry *newgui =new ContactsEntry(Xw->sidebar->contacts->x(), 
+											  Xw->sidebar->contacts->y() + YM, 
+											  Xw->sidebar->contacts->scale, 
 											  0, groupchat, 1);
-		XwinTox->sidebar->contacts->add(newgui);
-		XwinTox->sidebar->contacts->entries.push_back(newgui);
-		YM += (50 * XwinTox->scale);
+		Xw->sidebar->contacts->add(newgui);
+		Xw->sidebar->contacts->entries.push_back(newgui);
+		YM += (50 * Xw->scale);
 
 		if(!FindGroupchatMArea(groupchat))
 		{
-			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, 0,
+			GMessageArea *newarea =new GMessageArea(Xw->sidebar->scale, 0,
 													groupchat, 1);
 			newarea->hide();
 			newarea->send->callback(&SendMessagePressed);
 
-			XwinTox->add(newarea);
-			XwinTox->contents->messageareas.push_back(newarea);
+			Xw->add(newarea);
+			Xw->contents->messageareas.push_back(newarea);
 		}
 
 		if(groupchat->num == selected && seltype == 1)
 		{
 			newgui->selected =1;
-			XwinTox->contents->NewCurrentArea(FindGroupchatMArea(groupchat));
-			XwinTox->sidebar->contacts->selected =selected;
-			XwinTox->sidebar->contacts->seltype =seltype;
+			Xw->contents->NewCurrentArea(FindGroupchatMArea(groupchat));
+			Xw->sidebar->contacts->selected =selected;
+			Xw->sidebar->contacts->seltype =seltype;
 		}
 	}
 	for (const auto contact : contactlist->contacts)
 	{
 		printf("Contact: %s\n", contact->name);
-		ContactsEntry *newgui =new ContactsEntry(XwinTox->sidebar->contacts->x(), 
-											  XwinTox->sidebar->contacts->y() + YM, 
-											  XwinTox->sidebar->contacts->scale, 
+		ContactsEntry *newgui =new ContactsEntry(Xw->sidebar->contacts->x(), 
+											  Xw->sidebar->contacts->y() + YM, 
+											  Xw->sidebar->contacts->scale, 
 											  contact, 0, 0);
-		XwinTox->sidebar->contacts->add(newgui);
-		XwinTox->sidebar->contacts->entries.push_back(newgui);
-		YM += (50 * XwinTox->scale);
+		Xw->sidebar->contacts->add(newgui);
+		Xw->sidebar->contacts->entries.push_back(newgui);
+		YM += (50 * Xw->scale);
 
 		if(!FindContactMArea(contact))
 		{
-			GMessageArea *newarea =new GMessageArea(XwinTox->sidebar->scale, contact, 0, 0);
+			GMessageArea *newarea =new GMessageArea(Xw->sidebar->scale, contact, 0, 0);
 			newarea->hide();
 			newarea->send->callback(&SendMessagePressed);
 
-			XwinTox->add(newarea);
-			XwinTox->contents->messageareas.push_back(newarea);
+			Xw->add(newarea);
+			Xw->contents->messageareas.push_back(newarea);
 		}
 
 		if(contact->num == selected && seltype == 0)
 		{
 			newgui->selected =1;
-			XwinTox->contents->NewCurrentArea(FindContactMArea(contact));
-			XwinTox->sidebar->contacts->selected =selected;
-			XwinTox->sidebar->contacts->seltype =seltype;
+			Xw->contents->NewCurrentArea(FindContactMArea(contact));
+			Xw->sidebar->contacts->selected =selected;
+			Xw->sidebar->contacts->seltype =seltype;
 		}
 	}
-	XwinTox->redraw(); XwinTox->sidebar->contacts->redraw();
+	Xw->redraw(); Xw->sidebar->contacts->redraw();
 }
 
 ContactsEntry *FindContactEntry(unsigned int num)
 {
-	for (const auto entry : XwinTox->sidebar->contacts->entries)
+	for (const auto entry : Xw->sidebar->contacts->entries)
 	{
 		if(entry->contact->num == num) return entry;
 	}
@@ -181,7 +185,7 @@ ContactsEntry *FindContactEntry(unsigned int num)
 
 GMessageArea *FindContactMArea(Contact_t *contact)
 {
-	for (const auto messagearea : XwinTox->contents->messageareas)
+	for (const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->contact == contact) return messagearea;
 	}
@@ -190,7 +194,7 @@ GMessageArea *FindContactMArea(Contact_t *contact)
 
 GMessageArea *FindContactMArea(unsigned int num)
 {
-	for (const auto messagearea : XwinTox->contents->messageareas)
+	for (const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->contact->num == num) return messagearea;
 	}
@@ -217,7 +221,7 @@ Groupchat_t *FindGroupchat(unsigned int id)
 
 GMessageArea *FindGroupchatMArea(Groupchat_t *contact)
 {
-	for (const auto messagearea : XwinTox->contents->messageareas)
+	for (const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->groupchat == contact) return messagearea;
 	}
@@ -226,7 +230,7 @@ GMessageArea *FindGroupchatMArea(Groupchat_t *contact)
 
 GMessageArea *FindGroupchatMArea(unsigned int num)
 {
-	for (const auto messagearea : XwinTox->contents->messageareas)
+	for (const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->groupchat->num == num) return messagearea;
 	}

@@ -5,7 +5,7 @@ using namespace std;
 
 #include <FL/Fl.H>
 
-#include "xwintox_win.h"
+#include "control/gui.h"
 #include "contacts.h"
 
 extern "C"
@@ -19,7 +19,7 @@ extern "C"
 #include "xwintox.h"
 }
 
-class XwinTox* XwinTox;
+class XwinTox* Xw;
 extern "C" Xwin_t *Xwin;
 
 int CGUIUPDFLAG =0;
@@ -92,9 +92,9 @@ extern "C" int CXXMain()
 	}
 
 	Fl::visual(FL_RGB);
-	XwinTox = new class XwinTox(640 * scale, 480 * scale, "XwinTox", scale);
-	XwinTox->init2();
-	XwinTox->show();
+	Xw = new class XwinTox(640 * scale, 480 * scale, "XwinTox", scale);
+	Xw->init2();
+	Xw->show();
 	ContactListGUIUpdate();
 	InitGUICallbacks();
 
