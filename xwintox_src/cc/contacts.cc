@@ -74,6 +74,13 @@ void GroupchatNames(int num, int numpeers, char* names, char* names_raw,
 	memcpy(g->peers_raw_lens, names_raw_lens, sizeof(short) * numpeers);
 	FindGroupchatMArea(num)->redraw();
 	FindGroupchatMArea(num)->gnames->redraw();
+	FindGroupchatMArea(num)->names->clear();
+	for(int i =0; i < numpeers; i++)
+	{
+		char *tmpname =(char*)calloc(128, sizeof(char));
+		memcpy(tmpname, names_raw + (i * 128), names_raw_lens[i]);
+		FindGroupchatMArea(num)->names->add(tmpname);
+	}
 }
 
 char* GroupchatGetPeerName(int gnum, int pnum)

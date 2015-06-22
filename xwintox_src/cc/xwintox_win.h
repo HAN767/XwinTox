@@ -13,6 +13,7 @@ using namespace std;
 #include <FL/Fl_Text_Display.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Scroll.H>
+#include <FL/Fl_Select_Browser.H>
 #include <FL/Fl_Button.H>
 
 #include "contacts.h"
@@ -167,6 +168,7 @@ public:
 
 	SVGBox *icon;
 	Fl_Multiline_Output *gnames;
+	Fl_Select_Browser *names;
 	Fl_Text_Display *moutput;
 	Fl_Text_Buffer *moutbuffer;
 	Fl_Input *message;
