@@ -186,7 +186,6 @@ ContactsList::ContactsList(int X, int Y, int W, int H, int S)
 	selected =-1;
 	color(fl_rgb_color(65, 65, 65));
 	type(6);
-
 }
 
 void ContactsList::draw()
@@ -269,7 +268,6 @@ SVGBox::SVGBox(int X, int Y, int W, int H, int S, const char* pic,
 {
 	img_r =svgrast(pic, W, H, S, factor);
 	img =new Fl_RGB_Image(img_r, W, H, 4);
-	image(img);
 }
 
 void SVGBox::draw()
@@ -325,6 +323,8 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group(Xw->basex * S,
 	name->value("XwinTox User");
 	status->value("Toxing on XwinTox");
 
+	avbox->show();
+
 	end();
 }
 
@@ -341,6 +341,7 @@ Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group(Xw->basex * S,
 	newgroup =new SVGBox(0, 0, 112 * S , 36 * S, S, groupsvg, 0.5);
 	transfers =new SVGBox(0, 0, 168 * S , 36 * S, S, transfersvg, 0.5);
 	settings =new SVGBox(0, 0, 212 * S , 36 * S, S, settingssvg, 0.5);
+	addfriend->show(); newgroup->show(); transfers->show(); settings->show();
 
 	end();
 }

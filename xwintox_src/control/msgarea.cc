@@ -21,12 +21,14 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	if(!T)
 	{
 		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.32);
+		icon->show();
 		groupchat =new Groupchat_t;
 		groupchat->num =65535;
 	}
 	else
 	{
 		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, groupsvg2, 1);
+		icon->show();
 		contact =new Contact_t;
 		contact->num =65535;
 	}
