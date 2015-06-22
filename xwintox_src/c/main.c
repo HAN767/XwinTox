@@ -150,9 +150,10 @@ void getfriendlist()
 		printf("Friend ID: %d, name %s, status %s, pubkey %s\n",
 		       tst->Data.Data_val[0], c->name, c->statusm, c->pubkey);
 		List_add(&APP->Xwin->ICQueue, c);
+		dbg("Alternative pathway completed\n");
 	}
 
-	for(int i =0; i < tst->Data.Data_len - 1; i++)
+	for(int i =0; i < tst->Data.Data_len; i++)
 	{
 		Contact_t *c =calloc(1, sizeof(Contact_t));
 		ToxFriend_t *f =toxgetfriend_1(tst->Data.Data_val[i], clnt);
@@ -165,6 +166,7 @@ void getfriendlist()
 		printf("Friend ID: %d, name %s, status %s, pubkey %s\n",
 		       tst->Data.Data_val[i], c->name, c->statusm, c->pubkey);
 		List_add(&APP->Xwin->ICQueue, c);
+		dbg("Primary pathway completed\n");
 	}
 }
 
