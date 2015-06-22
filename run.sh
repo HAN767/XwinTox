@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# IRIXuser added - delete if non-applicable #
+export LD_LIBRARY_PATH=/ws/tox/staging/lib
+
+case "$PWD" in
+*xwintox_src*)
+	cd ..
+	;;
+*) ;;
+esac
+
 sigint()
 {
     for proc in `jobs -p`

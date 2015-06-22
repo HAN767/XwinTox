@@ -11,7 +11,7 @@ unsigned char *svgrast(const char *data, int W, int H, int S, double factor)
 {
 	char* newdata =strdup(data);
 	struct NSVGimage* nimage = nsvgParse(newdata, "px", 97);
-	free (newdata);
+	free(newdata);
 	// Create rasterizer (can be used to render multiple images).
 	struct NSVGrasterizer* rast = nsvgCreateRasterizer();
 	// Allocate memory for image

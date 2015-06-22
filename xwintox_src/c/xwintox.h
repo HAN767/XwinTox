@@ -48,8 +48,8 @@ typedef struct Groupchat_s
 #ifdef __cplusplus__
 extern "C" {
 #endif
-extern XwinTox_instance_t *APP;
-void CommWork();
+	extern XwinTox_instance_t *APP;
+	void CommWork();
 #ifdef __cplusplus__
 }
 #endif

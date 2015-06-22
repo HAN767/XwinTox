@@ -19,17 +19,18 @@ List_t *Events;
 
 void ctorTox_comm()
 {
-	if (!Tox_comm)
+	if(!Tox_comm)
 	{
-	Tox_comm =calloc(1, sizeof(Tox_comm_t));
-	mtx_init(&Tox_comm->SaveDataMtx, mtx_plain);
+		Tox_comm =calloc(1, sizeof(Tox_comm_t));
+		mtx_init(&Tox_comm->SaveDataMtx, mtx_plain);
 	}
+
 	if(!Tox_thread_launched) launch_tox_thread();
-} 
+}
 
 int*
 toxconnect_1_svc(int BootstrapPort, char* BootstrapAddress, char* BootstrapKey,
-				char* Name, char* Status, struct svc_req* SvcReq)
+                 char* Name, char* Status, struct svc_req* SvcReq)
 {
 	static int result =0;
 	ctorTox_comm();
@@ -41,6 +42,7 @@ toxconnect_1_svc(int BootstrapPort, char* BootstrapAddress, char* BootstrapKey,
 	Tox_comm->Status =strdup(Status);
 
 	if(!Tox_thread_launched) launch_tox_thread();
+
 	char *icmsg =calloc(8, sizeof(char));
 	strcpy(icmsg, "connect");
 	List_add(&Tox_comm->ICQueue, icmsg);
@@ -59,17 +61,19 @@ ToxSaveData_t* toxgetsavedata_1_svc(struct svc_req* SvcReq)
 {
 	static ToxSaveData_t result;
 	char* icmsg = calloc(12, sizeof(char));
-	
+
 	Tox_comm->SaveData.Data.Data_len =0;
+
 	if(Tox_comm->SaveData.Data.Data_val) free(Tox_comm->SaveData.Data.Data_val);
 
 	strcpy(icmsg, "getsavedata");
 	List_add(&Tox_comm->ICQueue, icmsg);
 
-	while (!Tox_comm->SaveData.Data.Data_len) usleep (1000);
-	mtx_lock (&Tox_comm->SaveDataMtx);
+	while(!Tox_comm->SaveData.Data.Data_len) usleep(1000);
+
+	mtx_lock(&Tox_comm->SaveDataMtx);
 	result =Tox_comm->SaveData;
-	mtx_unlock (&Tox_comm->SaveDataMtx);
+	mtx_unlock(&Tox_comm->SaveDataMtx);
 	return &result;
 }
 
@@ -80,7 +84,7 @@ void* toxinstallsavedata_1_svc(ToxSaveData_t save, struct svc_req* SvcReq)
 	ctorTox_comm();
 	dbg("Installing save data\n");
 	Tox_comm->SaveData =save;
-	data =calloc(save.Data.Data_len, sizeof (char));
+	data =calloc(save.Data.Data_len, sizeof(char));
 	memcpy(data, save.Data.Data_val, save.Data.Data_len);
 	Tox_comm->SaveData.Data.Data_val =data;
 	return &result;
@@ -93,9 +97,10 @@ int* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq)
 
 	icmsg =calloc((19 + strlen(id) + 1 + strlen(message)), sizeof(char));
 	sprintf(icmsg, "sendfriendrequest %s %s", id, message);
-	List_add (&Tox_comm->ICQueue, icmsg);
+	List_add(&Tox_comm->ICQueue, icmsg);
 
-	while (!Returns) usleep (1000);
+	while(!Returns) usleep(1000);
+
 	result =(int)List_retrieve_and_remove_first(&Returns);
 
 	return &result;
@@ -112,8 +117,9 @@ ToxFriends_t* toxgetfriendlist_1_svc()
 	strcpy(icmsg, "getfriendlist");
 	List_add(&Tox_comm->ICQueue, icmsg);
 
-	while (!Returns) usleep (1000);
-	while (!Returns->Link) usleep (1000);
+	while(!Returns) usleep(1000);
+
+	while(!Returns->Link) usleep(1000);
 
 	result.Data.Data_len =(unsigned int)List_retrieve_and_remove_first(&Returns);
 	result.Data.Data_val =List_retrieve_and_remove_first(&Returns);
@@ -131,11 +137,15 @@ ToxFriend_t* toxgetfriend_1_svc(unsigned int num, struct svc_req* SvcReq)
 	sprintf(icmsg, "getfriend %d", num);
 	List_add(&Tox_comm->ICQueue, icmsg);
 
-	while (!Returns) usleep (1000);
-	while (!Returns->Link) usleep (1000);
-	while (!Returns->Link->Link) usleep (1000);
-	while (!Returns->Link->Link->Link) usleep (1000);
-	while (!Returns->Link->Link->Link->Link) usleep (1000);
+	while(!Returns) usleep(1000);
+
+	while(!Returns->Link) usleep(1000);
+
+	while(!Returns->Link->Link) usleep(1000);
+
+	while(!Returns->Link->Link->Link) usleep(1000);
+
+	while(!Returns->Link->Link->Link->Link) usleep(1000);
 
 	result.name =List_retrieve_and_remove_first(&Returns);
 	result.statusm =List_retrieve_and_remove_first(&Returns);
@@ -151,7 +161,10 @@ ToxEvent_t* toxgetevent_1_svc(struct svc_req* SvcReq)
 	static ToxEvent_t result;
 	ToxEvent_t *ptr, *ret;
 
-	result.type =0; result.paramid =0; result.param0 =0; result.param1 =" "; 
+	result.type =0;
+	result.paramid =0;
+	result.param0 =0;
+	result.param1 =" ";
 	result.param2.param2_len =0;
 
 	ptr =List_retrieve_and_remove_first(&Events);
@@ -162,8 +175,8 @@ ToxEvent_t* toxgetevent_1_svc(struct svc_req* SvcReq)
 	return ret;
 }
 
-void* toxsendmessage_1_svc(ToxMessageType type, unsigned int id, char* message, 
-						   struct svc_req* SvcReq)
+void* toxsendmessage_1_svc(ToxMessageType type, unsigned int id, char* message,
+                           struct svc_req* SvcReq)
 {
 	char *icmsg;
 
@@ -188,11 +201,12 @@ int* toxcreategroupchat_1_svc(struct svc_req *SvcReq)
 {
 	static int ret =-1;
 	char *icmsg;
-	
+
 	icmsg =strdup("creategroupchat");
 	List_add(&Tox_comm->ICQueue, icmsg);
 
-	while (!Returns) usleep (1000);
+	while(!Returns) usleep(1000);
+
 	ret =(int)List_retrieve_and_remove_first(&Returns);
 
 	return &ret;

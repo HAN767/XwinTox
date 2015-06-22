@@ -57,7 +57,7 @@ void SendMessagePressed(Fl_Widget* B , void*)
 	// add a validity check here later //
 
 	sprintf(nmsg, "%s: %s\n", XwinTox->sidebar->top_area->name->value(),
-			((GMessageArea*)B->parent())->message->value());
+	        ((GMessageArea*)B->parent())->message->value());
 
 	if(!((GMessageArea*)B->parent())->mtype) /* contact */
 	{
@@ -66,8 +66,8 @@ void SendMessagePressed(Fl_Widget* B , void*)
 		FindContactMArea(id)->moutbuffer->append(nmsg);
 		FindContactMArea(id)->message->value("");
 		FindContactMArea(id)->moutput->scroll
-		  (FindContactMArea(id)->moutput->count_lines(0,
-						   FindContactMArea(id)->moutbuffer->length(), 1), 0);
+		(FindContactMArea(id)->moutput->count_lines(0,
+		        FindContactMArea(id)->moutbuffer->length(), 1), 0);
 	}
 	else
 	{
@@ -81,10 +81,10 @@ void SendMessagePressed(Fl_Widget* B , void*)
 	CommWork();
 }
 
-void WindowClosed (Fl_Widget *widget, void *) 
+void WindowClosed(Fl_Widget *widget, void *)
 {
 	char *amsg =(char*)calloc(5, sizeof(char));
-    Fl_Double_Window *window = (Fl_Double_Window *)widget;
+	Fl_Double_Window *window = (Fl_Double_Window *)widget;
 
 	sprintf(amsg, "quit");
 
@@ -103,17 +103,21 @@ char *GetDisplayName(Contact_t *contact, size_t LenLimit)
 {
 	static char name[255] = { 0 };
 
-	if (strlen(contact->name) == 0)
-	{ 
+	if(strlen(contact->name) == 0)
+	{
 		strncpy(name, contact->pubkey, LenLimit);
-		name[LenLimit-2] ='.'; name[LenLimit-1] ='.'; name[LenLimit] ='.';
+		name[LenLimit-2] ='.';
+		name[LenLimit-1] ='.';
+		name[LenLimit] ='.';
 		name[LenLimit+1] = '\0';
 
 	}
-	else if (strlen(contact->name) >= LenLimit)
+	else if(strlen(contact->name) >= LenLimit)
 	{
 		strncpy(name, contact->name, LenLimit);
-		name[LenLimit-2] ='.'; name[LenLimit-1] ='.'; name[LenLimit] ='.';
+		name[LenLimit-2] ='.';
+		name[LenLimit-1] ='.';
+		name[LenLimit] ='.';
 		name[LenLimit+1] = '\0';
 	}
 	else
@@ -128,17 +132,19 @@ char *GetDisplayStatus(Contact_t *contact, size_t LenLimit)
 {
 	static char status[255] = { 0 };
 
-	if (strlen(contact->statusm) >= LenLimit)
+	if(strlen(contact->statusm) >= LenLimit)
 	{
 		strncpy(status, contact->statusm, LenLimit);
-		status[LenLimit - 2] ='.'; status[LenLimit - 1] ='.'; 
-		status[LenLimit] ='.'; status[LenLimit+1] = '\0';
+		status[LenLimit - 2] ='.';
+		status[LenLimit - 1] ='.';
+		status[LenLimit] ='.';
+		status[LenLimit+1] = '\0';
 	}
-	else if (strlen (contact->statusm) > 0)
+	else if(strlen(contact->statusm) > 0)
 	{
 		strcpy(status, contact->statusm);
 	}
-	else if (strlen (contact->statusm) == 0)
+	else if(strlen(contact->statusm) == 0)
 	{
 		strcpy(status, "Unknown");
 	}
@@ -153,18 +159,18 @@ void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg)
 	static char nmsg[1024];
 	static char date[256];
 
-	time( &rawtime );
-	info = localtime( &rawtime );
+	time(&rawtime);
+	info = localtime(&rawtime);
 	strftime(date, 255, "%H:%M", info);
-	
+
 	if(type == MFRIEND)
 	{
 		Contact_t *contact =FindContact(id);
 		sprintf(nmsg, "%s: %s\n", contact->name, msg);
 		FindContactMArea(id)->moutbuffer->append(nmsg);
 		FindContactMArea(id)->moutput->scroll
-		  (FindContactMArea(id)->moutput->count_lines(0,
-						   FindContactMArea(id)->moutbuffer->length(), 1), 0);
+		(FindContactMArea(id)->moutput->count_lines(0,
+		        FindContactMArea(id)->moutbuffer->length(), 1), 0);
 	}
 	else if(type == MGCHAT)
 	{
@@ -172,9 +178,8 @@ void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg)
 		sprintf(nmsg, "%s: %s\n", GroupchatGetPeerName(id, pid), msg);
 		FindGroupchatMArea(id)->moutbuffer->append(nmsg);
 		FindGroupchatMArea(id)->moutput->scroll
-		  (FindGroupchatMArea(id)->moutput->count_lines(0,
-						   FindGroupchatMArea(id)->moutbuffer->length(), 1), 0);
+		(FindGroupchatMArea(id)->moutput->count_lines(0,
+		        FindGroupchatMArea(id)->moutbuffer->length(), 1), 0);
 	}
 
 }
-

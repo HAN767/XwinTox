@@ -29,9 +29,9 @@ void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg);
 
 void CommWork()
 {
-	mtx_lock (&APP->Comm->WorkMtx);
+	mtx_lock(&APP->Comm->WorkMtx);
 	APP->Comm->Work =1;
-	mtx_unlock (&APP->Comm->WorkMtx);
+	mtx_unlock(&APP->Comm->WorkMtx);
 	usleep(250);
 	//APP->Comm->Work =0;
 }
@@ -39,17 +39,20 @@ void CommWork()
 void ProcessEvents()
 {
 	ToxEvent_t *Event;
-	while ((Event =(ToxEvent_t*)
-			List_retrieve_and_remove_first(&APP->Xwin->Events)) != 0)
+
+	while((Event =(ToxEvent_t*)
+	              List_retrieve_and_remove_first(&APP->Xwin->Events)) != 0)
 	{
 		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
-			Event->paramid, Event->param0, Event->param1);
+		    Event->paramid, Event->param0, Event->param1);
+
 		if(Event->type == FMESSAGE) AddLine(MFRIEND, Event->paramid, 0,
-											Event->param1);
-		if(Event->type == GMESSAGE) AddLine(MGCHAT, Event->paramid, 
-											 Event->param0, Event->param1);
+			                                    Event->param1);
+
+		if(Event->type == GMESSAGE) AddLine(MGCHAT, Event->paramid,
+			                                    Event->param0, Event->param1);
 		else if(Event->type == FADDED && Event->param0 == 1 &&
-				Event->paramid != -1)
+		        Event->paramid != -1)
 		{
 			FriendRequestSuccess(Event->paramid);
 		}
@@ -65,11 +68,14 @@ void ProcessEvents()
 		else if(Event->type == GNAMES)
 		{
 			GroupchatNames(Event->paramid, Event->param3.param3_len,
-						   Event->param1, Event->param2.param2_val,
-						   Event->param3.param3_val, Event->param2.param2_len);
+			               Event->param1, Event->param2.param2_val,
+			               Event->param3.param3_val, Event->param2.param2_len);
 		}
-		free(Event->param1); free(Event->param2.param2_val); 
-		free(Event->param3.param3_val); free (Event);
+
+		free(Event->param1);
+		free(Event->param2.param2_val);
+		free(Event->param3.param3_val);
+		free(Event);
 	}
 }
 
@@ -79,8 +85,8 @@ extern "C" int CXXMain()
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
 
-	while ((c =(Contact_t*)List_retrieve_and_remove_first(&APP->Xwin->ICQueue)) 
-			!= 0)
+	while((c =(Contact_t*)List_retrieve_and_remove_first(&APP->Xwin->ICQueue))
+	        != 0)
 	{
 		contactlist->contacts.push_back(c);
 	}
@@ -92,11 +98,17 @@ extern "C" int CXXMain()
 	ContactListGUIUpdate();
 	InitGUICallbacks();
 
-	while (1)
+	while(1)
 	{
 		Fl::wait(0.1);
+
 		if(APP->Xwin->Events) ProcessEvents();
-		if(CGUIUPDFLAG) { ContactListGUIUpdate(); CGUIUPDFLAG =0; }
+
+		if(CGUIUPDFLAG)
+		{
+			ContactListGUIUpdate();
+			CGUIUPDFLAG =0;
+		}
 	}
 
 	return 0;

@@ -55,7 +55,8 @@ public:
 	void draw();
 	int handle(int event);
 
-	SVGBox *icon; SVGBox *invicon;
+	SVGBox *icon;
+	SVGBox *invicon;
 
 	short type; /* 0 = contact, 1 = groupchat */
 	Contact_t *contact;
@@ -70,7 +71,7 @@ public:
 	ContactsList(int X, int Y, int W, int H, int S);
 
 	void draw();
-	void resize (int X, int Y, int W, int H);
+	void resize(int X, int Y, int W, int H);
 	int handle(int event);
 
 	void clear_all();
@@ -120,7 +121,7 @@ public:
 	// Ctor
 	Sidebar(int S);
 
-	void resize (int X, int Y, int W, int H);
+	void resize(int X, int Y, int W, int H);
 
 	Sidebar_Top_Area *top_area;
 	ContactsList *contacts;
@@ -147,7 +148,7 @@ public:
 	// Ctor
 	GAddFriend(int S);
 
-	void resize (int X, int Y, int W, int H);
+	void resize(int X, int Y, int W, int H);
 	void draw();
 
 	Fl_Input *id;
@@ -208,7 +209,7 @@ public:
 	XwinTox(int w, int h, const char* c, int S);
 	void init2();
 
-	void resize (int X, int Y, int W, int H);
+	void resize(int X, int Y, int W, int H);
 
 	Fl_Menu_Bar *mbar;
 	Sidebar *sidebar;
