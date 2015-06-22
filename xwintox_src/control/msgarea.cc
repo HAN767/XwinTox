@@ -3,9 +3,9 @@
 #include "cc/svgs.h"
 #include "cc/contacts.h"
 
-#include "cc/xwintox_win.h"
 #include "control/gui.h"
 #include "control/msgarea.h"
+#include "control/svgbox.h"
 
 GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	: Fl_Group(0, 0, 0, 0)
@@ -100,7 +100,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 	send->position(x() + (w() - 74 * scale), y() + (h() - (80 * scale)));
 	message->resize(x() + (10 * scale), y() + h() - (80 * scale),
-	                (w() - (110 * scale)), (64 * scale));
+	                (w() - (110 * scale)), (74 * scale));
 
 
 }

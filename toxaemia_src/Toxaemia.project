@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="Toxaemia" InternalType="">
+  <Reconciliation>
+    <Regexes/>
+    <Excludepaths/>
+    <Ignorefiles/>
+    <Extensions>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;cc;x]]>
+    </Extensions>
+    <Topleveldir>../toxaemia_src</Topleveldir>
+  </Reconciliation>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">

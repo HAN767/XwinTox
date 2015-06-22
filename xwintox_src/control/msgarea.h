@@ -1,7 +1,11 @@
 #ifndef MSGAREA_H_
 #define MSGAREA_H_
 
-#include "cc/xwintox_win.h"
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Group.H>
+#include <FL/Fl_Multiline_Output.H>
+#include <FL/Fl_Text_Display.H>
+#include <FL/Fl_Select_Browser.H>
 
 class GMessageArea: public Fl_Group
 {

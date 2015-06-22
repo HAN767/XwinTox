@@ -7,7 +7,6 @@ extern "C"
 }
 #include "contacts.h"
 
-#include "xwintox_win.h"
 #include "control/gui.h"
 #include "control/msgarea.h"
 

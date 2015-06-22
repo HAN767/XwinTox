@@ -17,6 +17,15 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <Reconciliation>
+    <Regexes/>
+    <Excludepaths/>
+    <Ignorefiles/>
+    <Extensions>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;cc;x]]>
+    </Extensions>
+    <Topleveldir>../xwintox_src</Topleveldir>
+  </Reconciliation>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="xwintox_src">
@@ -30,12 +39,11 @@
   </VirtualDirectory>
   <VirtualDirectory Name="cc">
     <File Name="cc/contacts.cc"/>
-    <File Name="cc/win.cc"/>
     <File Name="cc/cxxmain.cc"/>
     <File Name="cc/svgs.h"/>
     <File Name="cc/win2.cc"/>
     <File Name="cc/contacts.h"/>
-    <File Name="cc/xwintox_win.h"/>
+    <File Name="cc/res.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">
     <File Name="nanosvg/nanosvgrast.h"/>
@@ -137,5 +145,22 @@
     <File Name="control/msgarea.cc"/>
     <File Name="control/msgarea.h"/>
     <File Name="control/gaddfrnd.cc"/>
+    <File Name="control/gaddfrnd.h"/>
+    <File Name="control/sidebar.h"/>
+    <File Name="control/sidebar.cc"/>
+    <File Name="control/sbarbtm.cc"/>
+    <File Name="control/sbarbtm.h"/>
+    <File Name="control/sbartop.cc"/>
+    <File Name="control/sbartop.h"/>
+    <File Name="control/cntctlst.cc"/>
+    <File Name="control/cntctlst.h"/>
+    <File Name="control/cntctent.cc"/>
+    <File Name="control/cntctent.h"/>
+    <File Name="control/svgbox.cc"/>
+    <File Name="control/svgbox.h"/>
+    <File Name="control/statbox.h"/>
+    <File Name="control/statbox.cc"/>
+    <File Name="control/garea.cc"/>
+    <File Name="control/garea.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

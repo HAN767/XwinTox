@@ -1,12 +1,16 @@
 #ifndef CONTACTS_H_
 #define CONTACTS_H_
+
 #include <vector>
+
 using namespace std;
 
 extern "C"
 {
 #include "xwintox.h"
 }
+
+#include "control/cntctent.h"
 
 typedef struct ContactList_s
 {

@@ -1,7 +1,10 @@
+#include <FL/Fl.H>
 #include <FL/Fl_Multiline_Input.H>
+#include <FL/fl_draw.H>
 
-#include "cc/xwintox_win.h"
 #include "control/gui.h"
+#include "control/gaddfrnd.h"
+
 
 GAddFriend::GAddFriend(int S) : GArea(S, "Add Friends")
 {

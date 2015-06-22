@@ -1,7 +1,11 @@
 #ifndef GUI_H_
 #define GUI_H_
 
-#include "cc/xwintox_win.h"
+#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Menu_Bar.H>
+
+#include "control/sidebar.h"
+#include "control/gaddfrnd.h"
 
 class XWContents: public Fl_Box
 {

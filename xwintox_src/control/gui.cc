@@ -1,11 +1,8 @@
-
-
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 
 #include "control/gui.h"
-#include "cc/xwintox_win.h"
-
+#include "control/svgbox.h"
 
 XWContents::XWContents(int S) : Fl_Box(Xw->sblength * S,Xw->basey * S,
 	                                       Xw->w() - (Xw->sblength * S),

@@ -12,6 +12,7 @@ extern "C"
 
 #include "control/msgarea.h"
 #include "control/gui.h"
+#include "control/svgbox.h"
 
 
 void AddFriendPressed(Fl_Widget* B , void*)
