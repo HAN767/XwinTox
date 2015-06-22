@@ -20,7 +20,7 @@ CFLAGS = -I$(ROOTDIR)/xwintox_src/hdr -I$(ROOTDIR)/libsunshine_src/hdr
 CFLAGS += -I$(ROOTDIR)/toxaemia_src/hdr -I$(ROOTDIR)/xwintox_src
 CFLAGS += -DXWTOXVERSION=\"$(VERSION)\" -O0 -g 
 CXXFLAGS = $(CFLAGS) -I$(ROOTDIR)/xwintox_src/c $(FLTKINC)
-LDFLAGS = -pthread -lstdc++ -lm $(FLTKLIB)
+LDFLAGS = $(FLTKLIB)
 
 build: $(OBJ_C:%.c=%.o) $(OBJ_CXX:%.cc=%.o) $(EXE)
 	@echo Built

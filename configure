@@ -12,7 +12,7 @@ CC=clang
 CXX=clang++
 MAKE=/usr/local/bin/gmake
 
-PLATLDFLAGS= -lstdthreads -lm 
+PLATLDFLAGS= -lstdthreads -lm  -lc++
 
 TOXINC+= -I/usr/local/include
 TOXLIB+= -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
