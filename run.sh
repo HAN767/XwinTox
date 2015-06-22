@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 case "$PWD" in
 *xwintox_src*)
@@ -15,7 +15,7 @@ sigint()
     done
 }
 
-trap sigint SIGINT
+trap sigint SIGINT SIGTERM SIGQUIT
 
 toxaemia_src/Toxaemia &
 sleep 1

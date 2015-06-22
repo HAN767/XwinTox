@@ -1,0 +1,52 @@
+#
+# XwinTox
+#
+
+rm Makefile.plt
+
+freebsd_cfg()
+{
+	echo "Configuring for FreeBSD"
+cat << EOF > Makefile.plt
+CC=clang
+CXX=clang++
+MAKE=/usr/local/bin/gmake
+
+PLATLDFLAGS= -lstdthreads -lm 
+
+TOXINC+= -I/usr/local/include
+TOXLIB+= -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
+
+FLTKINC= \$(shell fltk-config --cxxflags)
+FLTKLIB= \$(shell fltk-config --ldstaticflags) -lxcb
+EOF
+}
+
+linux_cfg()
+{
+	echo "Configuring for GNU/Linux"
+cat << EOF > Makefile.plt
+CC=clang
+CXX=clang++
+MAKE=/usr/bin/make
+
+PLATCFLAGS= -I\$(ROOTDIR)/libsunshine_src/hdr/compat
+PLATLDFLAGS= -pthread -lstdc++ -lm 
+
+TOXINC= -I/usr/local/include
+TOXLIB= -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
+
+FLTKINC= \$(shell fltk-config --cxxflags)
+FLTKLIB= \$(shell fltk-config --ldstaticflags) -lxcb
+EOF
+}
+
+case `uname` in
+FreeBSD)
+	freebsd_cfg
+	;;
+
+Linux)
+	linux_cfg
+	;;
+esac

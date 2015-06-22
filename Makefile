@@ -2,15 +2,21 @@
 # XwinTox
 #
 
+ROOTDIR=$(shell pwd)
+
 include Makefile.cfg
 include Makefile.mk
 
 build:
 	@env ANALYSE="@#" $(MAKE) real
 
-real: buildxwintox
+real: configureit buildxwintox
+
+configureit:
+	@./configure
 
 buildxwintox: buildtoxaemia buildlibsunshine toxaemia_src/toxaemia_clnt.c
+
 	cd xwintox_src && env ROOTDIR=$(shell pwd) $(MAKE) all
 
 buildtoxaemia: buildlibsunshine
