@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# IRIXuser added - delete if non-applicable #
-export LD_LIBRARY_PATH=/ws/tox/staging/lib
-
 case "$PWD" in
 *xwintox_src*)
 	cd ..
@@ -18,7 +15,7 @@ sigint()
     done
 }
 
-trap sigint SIGINT
+trap sigint SIGINT SIGTERM SIGQUIT
 
 toxaemia_src/Toxaemia &
 sleep 1

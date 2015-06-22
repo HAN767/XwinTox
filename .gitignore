@@ -33,3 +33,7 @@
 
 # CodeLite
 *.codelite
+
+# SunshinePro D-Make custom file
+*.plt
+*.cst

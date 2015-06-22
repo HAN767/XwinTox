@@ -26,7 +26,7 @@ List_add(List_t **n, void* data)
 	{
 		t=*n;
 		temp=malloc(sizeof(List_t));
-		_Locked_Start(t->_Lock)
+		//_Locked_Start(t->_Lock)
 		_Locktype_ lock; //=calloc(1, sizeof(_Locktype_));
 		lock =t->_Lock;
 		while(t->Link!=NULL)
@@ -35,7 +35,7 @@ List_add(List_t **n, void* data)
 		temp->Link=NULL;
 		t->Link=temp;
 		t->_Lock =lock;
-		_Locked_End(t->_Lock)
+		//_Locked_End(t->_Lock)
 	}
 }
 
@@ -105,7 +105,7 @@ List_retrieve_and_remove_first(List_t **n)
 	}
 	else
 	{
-		_Locked_Start((*n)->_Lock)
+		//_Locked_Start((*n)->_Lock)
 		ret =(*n)->data;
 		if ((*n)->Link)
 		{
@@ -114,11 +114,11 @@ List_retrieve_and_remove_first(List_t **n)
 			tmp->_Lock =tmplock;
 			free(*n);
 			*n =tmp;
-			_Locked_End((*n)->_Lock)
+			//_Locked_End((*n)->_Lock)
 		}
 		else
 		{
-			_Locked_End((*n)->_Lock)
+			//_Locked_End((*n)->_Lock)
 			free (*n);
 			*n =NULL;
 		}

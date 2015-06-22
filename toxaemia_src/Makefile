@@ -13,7 +13,7 @@ OBJ_C += toxaemia_xdr.c toxaemia_funcs.c toxaemia_util.c toxaemia_tox_callbacks.
 
 CFLAGS = -I$(ROOTDIR)/libsunshine_src/hdr -O0 -g -Ihdr -DRPC_SVC_FG
 CFLAGS += -DXWTOXVERSION=\"$(VERSION)\" $(TOXINC)
-LDFLAGS = -lstdthreads $(TOXLIB)
+LDFLAGS = $(TOXLIB)
 
 build: $(RPC:%.x=hdr/%_rpc.h) $(RPC:%.x=%_svc.c) $(RPC:%.x=%_xdr.c) \
   $(RPC:%.x=%_clnt.c) $(OBJ_C:%.c=%.o) $(EXE)
