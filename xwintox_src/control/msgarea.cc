@@ -35,9 +35,10 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 
 	names =new Fl_Select_Browser(0, 0, 60 * scale, h() - 80 * scale);
 	gnames =new Fl_Multiline_Output(0,0, w() - (65 * scale), (28 * scale));
-	send =new Fl_Button(0, 0, (64 * scale), (64 * scale) , "Send");
 	moutput =new Fl_Text_Display(0, 0, 0, 0);
 	moutbuffer =new Fl_Text_Buffer();
+	send =new Fl_Button(0, 0, (64 * scale), (74 * scale) , "Send");
+	message =new Fl_Multiline_Input(0, 0, (w() - (110 * S)), (74 * S));
 
 	names->textsize(9.5 * scale);
 	names->textcolor(fl_rgb_color(56, 56, 56));
@@ -54,8 +55,8 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	gnames->textcolor(fl_rgb_color(180, 180, 180));
 	gnames->hide();
 
-	message =new Fl_Multiline_Input(0, 0, (w() - (110 * S)), (64 * S));
 	message->textsize(12 * S);
+	message->wrap(1);
 
 	send->color(fl_rgb_color(107, 194, 96));
 	send->labelcolor(255);
@@ -87,7 +88,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 		names->resize(x() + w() - (93 * scale), y() + (63 * scale),
 		              87 * scale, h() - ((84 + 57)  * scale));
 		gnames->resize(x() + (60 * scale), y() + (28 * scale), w()
-		               - (65 * scale), (32 * scale));
+		               - (70 * scale), (32 * scale));
 		moutput->resize(x() + (10 * scale), y() + (65 * scale),
 		                w() - (110 * scale), h() - ((84 + 65)  * scale));
 	}

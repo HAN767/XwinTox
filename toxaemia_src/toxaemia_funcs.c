@@ -17,6 +17,15 @@
 List_t *Returns;
 List_t *Events;
 
+void ctorTox_comm_onlycreate()
+{
+	if(!Tox_comm)
+	{
+		Tox_comm =calloc(1, sizeof(Tox_comm_t));
+		mtx_init(&Tox_comm->SaveDataMtx, mtx_plain);
+	}
+}
+
 void ctorTox_comm()
 {
 	if(!Tox_comm)
@@ -82,7 +91,7 @@ void* toxinstallsavedata_1_svc(ToxSaveData_t save, struct svc_req* SvcReq)
 {
 	static int result =0;
 	char *data;
-	ctorTox_comm();
+	ctorTox_comm_onlycreate();
 	dbg("Installing save data\n");
 	Tox_comm->SaveData =save;
 	data =calloc(save.Data.Data_len, sizeof(char));
