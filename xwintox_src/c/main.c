@@ -151,6 +151,7 @@ void getfriendlist()
 		       tst->Data.Data_val[0], c->name, c->statusm, c->pubkey);
 		List_add(&APP->Xwin->ICQueue, c);
 		dbg("Alternative pathway completed\n");
+		return;
 	}
 
 	for(int i =0; i < tst->Data.Data_len; i++)
