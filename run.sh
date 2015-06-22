@@ -1,7 +1,4 @@
-#!/bin/sh
-
-# IRIXuser added - delete if non-applicable #
-export LD_LIBRARY_PATH=/ws/tox/staging/lib
+#!/bin/bash
 
 case "$PWD" in
 *xwintox_src*)

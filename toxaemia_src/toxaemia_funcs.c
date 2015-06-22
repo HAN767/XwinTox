@@ -24,6 +24,7 @@ void ctorTox_comm()
 		Tox_comm =calloc(1, sizeof(Tox_comm_t));
 		mtx_init(&Tox_comm->SaveDataMtx, mtx_plain);
 	}
+	Tox_comm->ICQueue =0;
 
 	if(!Tox_thread_launched) launch_tox_thread();
 }
@@ -113,8 +114,11 @@ ToxFriends_t* toxgetfriendlist_1_svc()
 	size_t cnt;
 	char *icmsg;
 
+	ctorTox_comm();
+
 	icmsg =calloc(14, sizeof(char));
 	strcpy(icmsg, "getfriendlist");
+	//Tox_comm->ICQueue =0;
 	List_add(&Tox_comm->ICQueue, icmsg);
 
 	while(!Returns) usleep(1000);

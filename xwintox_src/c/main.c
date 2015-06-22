@@ -136,6 +136,21 @@ void getfriendlist()
 {
 	ToxFriends_t *tst =toxgetfriendlist_1(clnt);
 	printf("Friends count: %d\n", tst->Data.Data_len);
+	if(tst->Data.Data_len <1) return;
+	if(tst->Data.Data_len == 1)
+	{
+	Contact_t *c =calloc(1, sizeof(Contact_t));
+		ToxFriend_t *f =toxgetfriend_1(tst->Data.Data_val[0], clnt);
+		c->status =f->status;
+		c->connected =f->connected;
+		c->name =strdup(f->name);
+		c->statusm =strdup(f->statusm);
+		c->pubkey =strdup(f->pubkey);
+		c->num =tst->Data.Data_val[0];
+		List_add(&APP->Xwin->ICQueue, c);
+	}
+
+
 
 	for(int i =0; i < tst->Data.Data_len - 1; i++)
 	{
@@ -229,11 +244,11 @@ int main()
 
 	create_config_folder();
 
-	if(Dictionary_load_from_file(APP->Config,
+	/*if(Dictionary_load_from_file(APP->Config,
 	                             APP->ConfigFilename, 1))
-	{
+	{*/
 		default_config(APP->Config);
-	}
+	//}
 
 	clnt = clnt_create("localhost", TOXAEMIA_PROG, TOXAEMIA_VERS1, "tcp");
 
