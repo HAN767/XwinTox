@@ -51,6 +51,7 @@ CXX=g++
 MAKE=/usr/bin/make
 
 PLATCFLAGS= -I\$(ROOTDIR)/libsunshine_src/hdr/compat -std=c11
+PLATCFLAGS+= -D_GNU_SOURCE
 PLATLDFLAGS= -pthread -lstdc++ -lm 
 
 TOXINC= -I/usr/local/include
