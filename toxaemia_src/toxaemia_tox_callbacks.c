@@ -39,7 +39,6 @@ void cb_friend_connection_status(Tox *tox, uint32_t friend_number,
                                  TOX_CONNECTION connection_status,
                                  void *user_data)
 {
-	const char *status;
 	ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
 
 	event->type =FCONN;
@@ -76,6 +75,24 @@ void cb_friend_name(Tox *tox, uint32_t friend_number, const uint8_t *name,
 
 	strncpy(nname, (char*) name, length);
 	nname[length+1] ='\0';
+	List_add(&Events, event);
+}
+
+void cb_friend_status_message(Tox *tox, uint32_t friend_number,
+                              const uint8_t *status, size_t length,
+                              void *user_data)
+{
+	char *nstatus =calloc(length + 1, sizeof(char));
+	ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
+
+	event->type =FSTATUS;
+	event->paramid =friend_number;
+	event->param1 =nstatus;
+	event->param2.param2_len =0;
+	event->param3.param3_len =0;
+
+	strncpy(nstatus, (char*) status, length);
+	nstatus[length+1] ='\0';
 	List_add(&Events, event);
 }
 
@@ -171,7 +188,7 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 void cb_group_message(Tox *tox, int groupnumber, int peernumber,
                       const uint8_t * message, uint16_t length, void *userdata)
 {
-	char *msg =strndup(message, length);
+	char *msg =strndup((const char*)message, length);
 	ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
 
 	event->type =GMESSAGE;
@@ -192,6 +209,8 @@ void InitCallbacks()
 	tox_callback_friend_connection_status(Tox_comm->tox,
 	                                      cb_friend_connection_status, 0);
 	tox_callback_friend_name(Tox_comm->tox, cb_friend_name, 0);
+	tox_callback_friend_status_message(Tox_comm->tox, cb_friend_status_message,
+	                                   0);
 	tox_callback_friend_message(Tox_comm->tox, cb_friend_message, 0);
 	tox_callback_group_invite(Tox_comm->tox, cb_group_invite, 0);
 	tox_callback_group_namelist_change(Tox_comm->tox, cb_group_namelist_change,

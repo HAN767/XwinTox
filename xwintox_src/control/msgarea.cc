@@ -86,7 +86,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 		names->show();
 
 		names->resize(x() + w() - (93 * scale), y() + (63 * scale),
-		              87 * scale, h() - ((84 + 57)  * scale));
+		              87 * scale, h() - ((84 + 68)  * scale));
 		gnames->resize(x() + (60 * scale), y() + (28 * scale), w()
 		               - (70 * scale), (32 * scale));
 		moutput->resize(x() + (10 * scale), y() + (65 * scale),

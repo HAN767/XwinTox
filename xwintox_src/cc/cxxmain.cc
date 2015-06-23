@@ -36,6 +36,13 @@ void CommWork()
 	//APP->Comm->Work =0;
 }
 
+void SaveData()
+{
+	char *amsg =(char*)calloc(9, sizeof(char));
+	strcpy(amsg, "savedata");
+	List_add(&APP->Comm->WorkQueue, amsg);
+}
+
 void ProcessEvents()
 {
 	ToxEvent_t *Event;
@@ -60,6 +67,18 @@ void ProcessEvents()
 		{
 			FindContact(Event->paramid)->connected =Event->param0;
 			FindContactEntry(Event->paramid)->redraw();
+		}
+		else if(Event->type == FNAME)
+		{
+			FindContact(Event->paramid)->name =strdup(Event->param1);
+			FindContactEntry(Event->paramid)->redraw();
+			SaveData();
+		}
+		else if(Event->type == FSTATUS)
+		{
+			FindContact(Event->paramid)->statusm =strdup(Event->param1);
+			FindContactEntry(Event->paramid)->redraw();
+			SaveData();
 		}
 		else if(Event->type == GNEW)
 		{
