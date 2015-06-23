@@ -12,6 +12,26 @@ CC=clang
 CXX=clang++
 MAKE=/usr/local/bin/gmake
 
+PLATCFLAGS= -fcolor-diagnostics
+PLATLDFLAGS= -lstdthreads -lm  -lc++
+
+TOXINC+= -I/usr/local/include
+TOXLIB+= -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
+
+FLTKINC= \$(shell fltk-config --cxxflags)
+FLTKLIB= \$(shell fltk-config --ldstaticflags) -lxcb
+EOF
+}
+
+freebsdgcc_cfg()
+{
+	echo "Configuring for FreeBSD(gcc)"
+cat << EOF > Makefile.plt
+CC=gcc48
+CXX=g++48
+MAKE=/usr/local/bin/gmake
+
+PLATCFLAGS= -std=c11
 PLATLDFLAGS= -lstdthreads -lm  -lc++
 
 TOXINC+= -I/usr/local/include
@@ -26,11 +46,30 @@ linux_cfg()
 {
 	echo "Configuring for GNU/Linux"
 cat << EOF > Makefile.plt
+CC=gcc
+CXX=g++
+MAKE=/usr/bin/make
+
+PLATCFLAGS= -I\$(ROOTDIR)/libsunshine_src/hdr/compat -std=c11
+PLATLDFLAGS= -pthread -lstdc++ -lm 
+
+TOXINC= -I/usr/local/include
+TOXLIB= -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
+
+FLTKINC= \$(shell fltk-config --cxxflags)
+FLTKLIB= \$(shell fltk-config --ldstaticflags) -lxcb
+EOF
+}
+
+linuxclang_cfg()
+{
+	echo "Configuring for GNU/Linux(clang)"
+cat << EOF > Makefile.plt
 CC=clang
 CXX=clang++
 MAKE=/usr/bin/make
 
-PLATCFLAGS= -I\$(ROOTDIR)/libsunshine_src/hdr/compat
+PLATCFLAGS= -I\$(ROOTDIR)/libsunshine_src/hdr/compat -fcolor-diagnostics
 PLATLDFLAGS= -pthread -lstdc++ -lm 
 
 TOXINC= -I/usr/local/include

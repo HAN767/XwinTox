@@ -131,7 +131,7 @@ int* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq)
 	return &result;
 }
 
-ToxFriends_t* toxgetfriendlist_1_svc()
+ToxFriends_t* toxgetfriendlist_1_svc(struct svc_req *SvcReq)
 {
 	static ToxFriends_t result;
 	char *icmsg;

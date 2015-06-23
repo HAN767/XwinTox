@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <FL/Fl_Box.H>
 
 #include "cc/svgs.h"

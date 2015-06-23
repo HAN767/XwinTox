@@ -1,3 +1,4 @@
+#include <string.h>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Input.H>
 
