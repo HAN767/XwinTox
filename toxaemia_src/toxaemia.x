@@ -113,9 +113,14 @@ program TOXAEMIA_PROG {
 		 * unsigned int => Friend number to delete */
 		void ToxDeleteFriend(unsigned int) = 11;
 
-		/* ToxCreateGroupChat
+		/* ToxCreateGroupchat
 		 * Creates a new groupchat
 		 * Returns number of new groupchat, or -1 for failure. */
-		int ToxCreateGroupChat() = 50;
+		int ToxCreateGroupchat() = 50;
+
+		/* ToxLeaveGroupchat
+		 * Leaves a groupchat
+		 * unsigned int => Groupchat number to leave */
+		void ToxLeaveGroupchat(unsigned int) = 51;
 	} = 1;
 } = 0x22159817;
