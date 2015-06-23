@@ -19,11 +19,13 @@ void SendMessagePressed(Fl_Widget* B , void*);
 void DeleteContact(int num)
 {
 	Contact_t *todel;
+	GMessageArea *mtodel;
 	char *amsg =(char*)calloc(255, sizeof(char));
 
 	if((todel =FindContact(num)) != 0)
 	{
 		vector <Contact_t*> *ref=&contactlist->contacts;
+		vector <GMessageArea*> *mref =&Xw->contents->messageareas;
 		sprintf(amsg, "deletecontact %d", num);
 		List_add(&APP->Comm->WorkQueue, (void*)amsg);
 		free(todel->name);
@@ -31,6 +33,14 @@ void DeleteContact(int num)
 		free(todel->pubkey);
 		free(todel);
 		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
+
+		for(const auto messagearea : Xw->contents->messageareas)
+		{
+			if(messagearea->contact == todel) mtodel =messagearea;
+		}
+
+		mref->erase(std::remove(mref->begin(), mref->end(), mtodel),
+		            mref->end());
 
 		if(Xw->contents->currentarea == FindContactMArea(todel))
 		{
