@@ -8,6 +8,8 @@
 #include "control/svgbox.h"
 #include "control/statbox.h"
 
+void namechangecb(Fl_Widget *w, long which);
+
 Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group(Xw->basex * S,
 	        Xw->basey * S, (Xw->sblength * S), 60 * S)
 {
@@ -29,10 +31,27 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group(Xw->basex * S,
 	status->color(fl_rgb_color(28, 28, 28));
 	name->textcolor(255);
 	status->textcolor(54);
-	name->value("XwinTox User");
-	status->value("Toxing on XwinTox");
+	name->value(Dictionary_get(APP->Config, "Tox.Name"));
+	status->value(Dictionary_get(APP->Config, "Tox.Status"));
+	name->when(FL_WHEN_RELEASE | FL_WHEN_ENTER_KEY);
+	status->when(FL_WHEN_RELEASE | FL_WHEN_ENTER_KEY);
+	name->callback(namechangecb, 1);
+	status->callback(namechangecb);
 
 	avbox->show();
 
 	end();
+}
+
+void namechangecb(Fl_Widget *w, long which)
+{
+	char *amsg =(char*)calloc(11, sizeof(char));
+	Fl_Input *f =(Fl_Input*)w;
+	
+	strcpy(amsg, "namechange");
+
+	if (which) Dictionary_set(APP->Config, "Tox.Name", f->value());
+	else Dictionary_set(APP->Config, "Tox.Status", f->value());
+	
+	List_add(&APP->Comm->WorkQueue, (void*)amsg);
 }

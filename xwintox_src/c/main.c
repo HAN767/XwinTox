@@ -25,7 +25,6 @@ extern int CXXMain();
 int sendfriendrequest(char* Rmsg)
 {
 	char *id;
-	char *tofree =Rmsg;
 	int *result;
 
 	strsep(&Rmsg, " ");
@@ -93,6 +92,9 @@ int savedata()
 	    filename);
 
 	fclose(save);
+
+	Dictionary_write_to_file(APP->Config, APP->ConfigFilename);
+
 	return 0;
 }
 
@@ -136,7 +138,9 @@ void getfriendlist()
 {
 	ToxFriends_t *tst =toxgetfriendlist_1(clnt);
 	printf("Friends count: %d\n", tst->Data.Data_len);
+
 	if(tst->Data.Data_len <1) return;
+
 	if(tst->Data.Data_len == 1)
 	{
 		Contact_t *c =calloc(1, sizeof(Contact_t));
@@ -174,7 +178,6 @@ void getfriendlist()
 int sendmessage(char* Rmsg)
 {
 	char *type, *id;
-	int result;
 
 	strsep(&Rmsg, " ");
 	type =Rmsg;
@@ -229,9 +232,22 @@ void newgroupchat()
 	dbg("Groupchat: %d\n", *res);
 }
 
+void namechange()
+{
+
+	int* res =toxsetnamestatus_1(GTC("Tox.Name"), GTC("Tox.Status"), clnt);
+
+	if(!res)
+	{
+		clnt_perror(clnt, __func__);
+		return;
+	}
+
+	savedata();
+}
+
 int main()
 {
-	struct rpc_err rpcerr;
 	struct timeval tv = { 0 };
 	struct timeval newtv = { 0 };
 
@@ -247,11 +263,8 @@ int main()
 
 	create_config_folder();
 
-	/*if(Dictionary_load_from_file(APP->Config,
-	                             APP->ConfigFilename, 1))
-	{*/
-		default_config(APP->Config);
-	//}
+	Dictionary_load_from_file(APP->Config, APP->ConfigFilename, 1);
+	default_config(APP->Config);
 
 	clnt = clnt_create("localhost", TOXAEMIA_PROG, TOXAEMIA_VERS1, "tcp");
 
@@ -315,6 +328,10 @@ int main()
 		else if(strcmp(work, "newgroupchat") == 0)
 		{
 			newgroupchat();
+		}
+		else if(strcmp(work, "namechange") == 0)
+		{
+			namechange();
 		}
 		else dbg("Unhandled request: %s\n", work);
 

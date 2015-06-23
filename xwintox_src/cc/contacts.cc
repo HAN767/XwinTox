@@ -1,5 +1,5 @@
 #include <vector>
-#include <algorithm> 
+#include <algorithm>
 
 extern "C"
 {
@@ -20,18 +20,23 @@ void DeleteContact(int num)
 {
 	Contact_t *todel;
 	char *amsg =(char*)calloc(255, sizeof(char));
+
 	if((todel =FindContact(num)) != 0)
 	{
 		vector <Contact_t*> *ref=&contactlist->contacts;
 		sprintf(amsg, "deletecontact %d", num);
 		List_add(&APP->Comm->WorkQueue, (void*)amsg);
-		free(todel->name); free(todel->statusm); free(todel->pubkey);
+		free(todel->name);
+		free(todel->statusm);
+		free(todel->pubkey);
 		free(todel);
 		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
+
 		if(Xw->contents->currentarea == FindContactMArea(todel))
 		{
 			Xw->contents->currentarea =Xw->contents->addfriend;
 		}
+
 		CommWork();
 	}
 }
@@ -40,13 +45,14 @@ void FriendRequestSuccess(int num)
 {
 	if(!FindContact(num))
 	{
-	Contact_t *c =(Contact_t*)calloc(1, sizeof(Contact_t));
-	c->name =(char*)calloc (8, sizeof(char)); strcpy(c->name, "Unknown");
-	c->num =num;
- 	c->statusm =strdup(""); 
-	c->pubkey =strdup("");
-	contactlist->contacts.push_back(c);
-	ContactListGUIUpdate();
+		Contact_t *c =(Contact_t*)calloc(1, sizeof(Contact_t));
+		c->name =(char*)calloc(8, sizeof(char));
+		strcpy(c->name, "Unknown");
+		c->num =num;
+		c->statusm =strdup("");
+		c->pubkey =strdup("");
+		contactlist->contacts.push_back(c);
+		ContactListGUIUpdate();
 	}
 }
 
@@ -54,21 +60,27 @@ void GroupchatCreateSuccess(int num)
 {
 	if(!FindGroupchat(num))
 	{
-	Groupchat_t *g =new Groupchat_t;
-	g->num =num;
-	g->name =(char*)calloc (15, sizeof(char)); 
-	sprintf(g->name, "Groupchat %d", num + 1);
-	g->peers =strdup("");
-	groupchats.push_back(g);
-	ContactListGUIUpdate();
+		Groupchat_t *g =new Groupchat_t;
+		g->num =num;
+		g->name =(char*)calloc(15, sizeof(char));
+		sprintf(g->name, "Groupchat %d", num + 1);
+		g->peers =strdup("");
+		groupchats.push_back(g);
+		ContactListGUIUpdate();
 	}
 }
 
 void GroupchatNames(int num, int numpeers, char* names, char* names_raw,
-					short *names_raw_lens, int names_raw_len)
+                    short *names_raw_lens, int names_raw_len)
 {
 	Groupchat_t *g;
-	if((g =FindGroupchat(num)) == 0) { dbg("No groupchat\n"); return; }
+
+	if((g =FindGroupchat(num)) == 0)
+	{
+		dbg("No groupchat: %d\n", num);
+		return;
+	}
+
 	g->peers =strdup(names);
 	g->peers_raw_len =names_raw_len;
 	g->num_peers =numpeers;
@@ -79,6 +91,7 @@ void GroupchatNames(int num, int numpeers, char* names, char* names_raw,
 	FindGroupchatMArea(num)->redraw();
 	FindGroupchatMArea(num)->gnames->redraw();
 	FindGroupchatMArea(num)->names->clear();
+
 	for(int i =0; i < numpeers; i++)
 	{
 		char *tmpname =(char*)calloc(128, sizeof(char));
@@ -91,7 +104,7 @@ char* GroupchatGetPeerName(int gnum, int pnum)
 {
 	static char tmpname[128] = { 0 };
 	Groupchat_t *g =FindGroupchat(gnum);
-	
+
 	memcpy(tmpname, g->peers_raw + (pnum * 128), g->peers_raw_lens[pnum]);
 	tmpname[g->peers_raw_lens[pnum]] = '\0';
 
@@ -105,20 +118,24 @@ void ContactListGUIUpdate()
 
 	if(Xw->sidebar->contacts->entries.size() > 0)
 	{
-		if (Xw->sidebar->contacts->selected >= 0)
-		{ selected =Xw->sidebar->contacts->selected;
-		  seltype =Xw->sidebar->contacts->seltype; }
+		if(Xw->sidebar->contacts->selected >= 0)
+		{
+			selected =Xw->sidebar->contacts->selected;
+			seltype =Xw->sidebar->contacts->seltype;
+		}
+
 		Xw->sidebar->contacts->clear_all();
 	}
 
 	int YM =0;
-	for (const auto groupchat : groupchats)
+
+	for(const auto groupchat : groupchats)
 	{
 		printf("Contact: %s\n", groupchat->name);
-		ContactsEntry *newgui =new ContactsEntry(Xw->sidebar->contacts->x(), 
-											  Xw->sidebar->contacts->y() + YM, 
-											  Xw->sidebar->contacts->scale, 
-											  0, groupchat, 1);
+		ContactsEntry *newgui =new ContactsEntry(Xw->sidebar->contacts->x(),
+		        Xw->sidebar->contacts->y() + YM,
+		        Xw->sidebar->contacts->scale,
+		        0, groupchat, 1);
 		Xw->sidebar->contacts->add(newgui);
 		Xw->sidebar->contacts->entries.push_back(newgui);
 		YM += (50 * Xw->scale);
@@ -126,7 +143,7 @@ void ContactListGUIUpdate()
 		if(!FindGroupchatMArea(groupchat))
 		{
 			GMessageArea *newarea =new GMessageArea(Xw->sidebar->scale, 0,
-													groupchat, 1);
+			                                        groupchat, 1);
 			newarea->hide();
 			newarea->send->callback(&SendMessagePressed);
 
@@ -142,13 +159,14 @@ void ContactListGUIUpdate()
 			Xw->sidebar->contacts->seltype =seltype;
 		}
 	}
-	for (const auto contact : contactlist->contacts)
+
+	for(const auto contact : contactlist->contacts)
 	{
 		printf("Contact: %s\n", contact->name);
-		ContactsEntry *newgui =new ContactsEntry(Xw->sidebar->contacts->x(), 
-											  Xw->sidebar->contacts->y() + YM, 
-											  Xw->sidebar->contacts->scale, 
-											  contact, 0, 0);
+		ContactsEntry *newgui =new ContactsEntry(Xw->sidebar->contacts->x(),
+		        Xw->sidebar->contacts->y() + YM,
+		        Xw->sidebar->contacts->scale,
+		        contact, 0, 0);
 		Xw->sidebar->contacts->add(newgui);
 		Xw->sidebar->contacts->entries.push_back(newgui);
 		YM += (50 * Xw->scale);
@@ -171,68 +189,77 @@ void ContactListGUIUpdate()
 			Xw->sidebar->contacts->seltype =seltype;
 		}
 	}
-	Xw->redraw(); Xw->sidebar->contacts->redraw();
+
+	Xw->redraw();
+	Xw->sidebar->contacts->redraw();
 }
 
 ContactsEntry *FindContactEntry(unsigned int num)
 {
-	for (const auto entry : Xw->sidebar->contacts->entries)
+	for(const auto entry : Xw->sidebar->contacts->entries)
 	{
 		if(entry->contact->num == num) return entry;
 	}
+
 	return 0;
 }
 
 GMessageArea *FindContactMArea(Contact_t *contact)
 {
-	for (const auto messagearea : Xw->contents->messageareas)
+	for(const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->contact == contact) return messagearea;
 	}
+
 	return 0;
 }
 
 GMessageArea *FindContactMArea(unsigned int num)
 {
-	for (const auto messagearea : Xw->contents->messageareas)
+	for(const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->contact->num == num) return messagearea;
 	}
+
 	return 0;
 }
 
 Contact_t *FindContact(unsigned int id)
 {
-	for (const auto contact : contactlist->contacts)
+	for(const auto contact : contactlist->contacts)
 	{
 		if(contact->num == id) return contact;
 	}
+
 	return 0;
 }
 
 Groupchat_t *FindGroupchat(unsigned int id)
 {
-	for (const auto contact : groupchats)
+	for(const auto contact : groupchats)
 	{
 		if(contact->num == id) return contact;
 	}
+
 	return 0;
 }
 
 GMessageArea *FindGroupchatMArea(Groupchat_t *contact)
 {
-	for (const auto messagearea : Xw->contents->messageareas)
+	for(const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->groupchat == contact) return messagearea;
 	}
+
 	return 0;
 }
 
 GMessageArea *FindGroupchatMArea(unsigned int num)
 {
-	for (const auto messagearea : Xw->contents->messageareas)
+	for(const auto messagearea : Xw->contents->messageareas)
 	{
 		if(messagearea->groupchat->num == num) return messagearea;
 	}
+
 	return 0;
 }

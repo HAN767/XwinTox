@@ -28,9 +28,7 @@
   </Reconciliation>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="xwintox_src">
-    <File Name="Makefile"/>
-  </VirtualDirectory>
+  <VirtualDirectory Name="xwintox_src"/>
   <VirtualDirectory Name="c">
     <File Name="c/xwintox.h"/>
     <File Name="c/etc.h"/>
@@ -162,5 +160,6 @@
     <File Name="control/statbox.cc"/>
     <File Name="control/garea.cc"/>
     <File Name="control/garea.h"/>
+    <File Name="Makefile"/>
   </VirtualDirectory>
 </CodeLite_Project>

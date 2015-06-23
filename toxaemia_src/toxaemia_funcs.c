@@ -14,8 +14,9 @@
 #include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
 
-List_t *Returns;
-List_t *Events;
+List_t *Returns =0;
+List_t *Events =0;
+List_t *Calls =0;
 
 void ctorTox_comm_onlycreate()
 {
@@ -33,6 +34,7 @@ void ctorTox_comm()
 		Tox_comm =calloc(1, sizeof(Tox_comm_t));
 		mtx_init(&Tox_comm->SaveDataMtx, mtx_plain);
 	}
+
 	Tox_comm->ICQueue =0;
 
 	if(!Tox_thread_launched) launch_tox_thread();
@@ -100,6 +102,19 @@ void* toxinstallsavedata_1_svc(ToxSaveData_t save, struct svc_req* SvcReq)
 	return &result;
 }
 
+void* toxsetnamestatus_1_svc(char* name, char* status, struct svc_req* SvcReq)
+{
+	static int result =0;
+	Call_t *call =calloc(1, sizeof(Call_t));
+
+	call->Func =ToxSetNameStatus;
+	call->S1 =strdup(name);
+	call->S2 =strdup(status);
+	List_add(&Calls, call);
+
+	return &result;
+}
+
 int* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq)
 {
 	static int result =-1;
@@ -119,15 +134,12 @@ int* toxsendfriendrequest_1_svc(char *id, char* message, struct svc_req* SvcReq)
 ToxFriends_t* toxgetfriendlist_1_svc()
 {
 	static ToxFriends_t result;
-	ToxFriends_t *returned;
-	size_t cnt;
 	char *icmsg;
 
 	ctorTox_comm();
 
 	icmsg =calloc(14, sizeof(char));
 	strcpy(icmsg, "getfriendlist");
-	//Tox_comm->ICQueue =0;
 	List_add(&Tox_comm->ICQueue, icmsg);
 
 	while(!Returns) usleep(1000);

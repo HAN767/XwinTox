@@ -26,8 +26,6 @@ int Tox_comm_main();
 
 int launch_tox_thread()
 {
-	int err;
-
 	dbg("Launching Tox thread\n");
 	cnd_init(&Tox_comm->ConnectedCnd);
 	mtx_init(&Tox_comm->ConnectedMtx, mtx_plain);
@@ -104,7 +102,7 @@ void Deliver_friend_list()
 
 void Deliver_friend(unsigned int num)
 {
-	char *name, *statusm, *pub_key;
+	char *name, *statusm;
 	int status;
 	unsigned char *pubkey;
 
@@ -150,6 +148,16 @@ void Send_message(ToxMessageType type, unsigned int num, char* message)
 void Create_group_chat()
 {
 	List_add(&Returns, (void*)tox_add_groupchat(Tox_comm->tox));
+}
+
+/* new call structure */
+
+void Set_name_status(char* name, char* status)
+{
+	dbg("Set name or status: %s, %s\n", name, status);
+	tox_self_set_name(Tox_comm->tox, (uint8_t*)name, strlen(name), 0);
+	tox_self_set_status_message(Tox_comm->tox, (uint8_t*)
+	                            status, strlen(status), 0);
 }
 
 int Tox_comm_main()
@@ -204,7 +212,6 @@ int Tox_comm_main()
 			else if(!strcmp(Rmsg, "getfriendlist"))	Deliver_friend_list();
 			else if(!strncmp(Rmsg, "getfriend", 9))
 			{
-				char *num;
 				strsep(&Rmsg, " ");
 				Deliver_friend(strtol(Rmsg, 0, 10));
 			}
@@ -226,6 +233,22 @@ int Tox_comm_main()
 			}
 
 			free(tofree);
+		}
+
+		if(Calls)
+		{
+			Call_t *call =List_retrieve_and_remove_first(&Calls);
+
+			if(call->Func ==ToxSetNameStatus)
+			{
+				Set_name_status(call->S1, call->S2);
+			}
+
+			if(call->S1) free(call->S1);
+
+			if(call->S2) free(call->S2);
+			
+			free(call);
 		}
 
 		tox_iterate(Tox_comm->tox);

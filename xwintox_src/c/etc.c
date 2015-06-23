@@ -89,7 +89,7 @@ int create_config_folder()
 
 void default_config(Dictionary_t *conf)
 {
-#define Add(x,y) Dictionary_set(conf, x, y)
+#define Add(x,y) Dictionary_set_aux(conf, x, y)
 	Add("XwinTox.Version", XWTOXVERSION);
 	Add("Tox.Name", "XwinTox User");
 	Add("Tox.Status", "Toxing on XwinTox");

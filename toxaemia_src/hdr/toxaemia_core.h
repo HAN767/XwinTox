@@ -30,8 +30,16 @@ typedef struct Tox_comm_s
 	mtx_t SaveDataMtx;
 } Tox_comm_t;
 
+typedef struct Call_s
+{
+	unsigned long Func;
+	char *S1, *S2;
+	int I1, I2;
+} Call_t;
+
 extern Tox_comm_t *Tox_comm;
 extern int Tox_thread_launched;
+extern List_t *Calls;
 extern List_t *Returns;
 extern List_t *Events;
 

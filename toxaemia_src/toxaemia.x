@@ -80,36 +80,42 @@ program TOXAEMIA_PROG {
 		 * ToxSaveData_t => Data to install */
 		void ToxInstallSaveData(ToxSaveData_t) = 5;
 
+		/* ToxSetNameStatus
+		 * Sets name and status.
+		 * string<> => New name
+		 * string<> => New status */
+		void ToxSetNameStatus(string<>, string<>) = 6;
+
 		/* ToxSendFriendRequest
 		 * Send a friend request.
 		 * Returns number of new friend, or -1 for failure.
 		 * string<> => Tox ID of friend
 		 * string<> => Message to include in request */
-		int ToxSendFriendRequest(string<>, string<>) = 6;
+		int ToxSendFriendRequest(string<>, string<>) = 7;
 
 		/* ToxGetFriendList
 		 * Returns friendlist as an array of friend IDs. */
-		ToxFriends_t ToxGetFriendList() = 7;
+		ToxFriends_t ToxGetFriendList() = 8;
 
 		/* ToxGetFriend
 		 * Returns data of a friend as ToxFriend_t.
 		 * unsigned int => Friend number to retrieve data for */
-		ToxFriend_t ToxGetFriend(unsigned int) = 8;
+		ToxFriend_t ToxGetFriend(unsigned int) = 9;
 
 		/* ToxSendMessage
 		 * Sends a message to a contact or groupchat
 		 * unsigned int => Friend number to send message to
 		 * string<> => Message to send */
-		void ToxSendMessage(ToxMessageType, unsigned int, string<>) = 9;
+		void ToxSendMessage(ToxMessageType, unsigned int, string<>) = 10;
 
 		/* ToxDeleteFriend
 		 * Deletes a contact.
 		 * unsigned int => Friend number to delete */
-		void ToxDeleteFriend(unsigned int) = 10;
+		void ToxDeleteFriend(unsigned int) = 11;
 
 		/* ToxCreateGroupChat
 		 * Creates a new groupchat
 		 * Returns number of new groupchat, or -1 for failure. */
-		int ToxCreateGroupChat() = 11;
+		int ToxCreateGroupChat() = 50;
 	} = 1;
 } = 0x22159817;
