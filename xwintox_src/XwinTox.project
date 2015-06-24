@@ -40,8 +40,9 @@
     <File Name="cc/cxxmain.cc"/>
     <File Name="cc/svgs.h"/>
     <File Name="cc/win2.cc"/>
-    <File Name="cc/contacts.h"/>
     <File Name="cc/res.cc"/>
+    <File Name="cc/signal.h"/>
+    <File Name="cc/contacts.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">
     <File Name="nanosvg/nanosvgrast.h"/>
