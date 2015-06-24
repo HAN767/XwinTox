@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "control/gui.h"
 #include "control/sidebar.h"
 
@@ -7,6 +9,16 @@ extern Postbox_t *postbox;
 
 void sb_post(int mtype, PBMessage_t* msg, void* custom)
 {
+	if(mtype == PB_FRequest)
+	{
+		static char newlabel[32];
+		Sidebar *me =(Sidebar*) custom;
+		me->frs +=1;
+		if(me->frs > 1) sprintf(newlabel, "%d Friend\n Requests", me->frs);
+		else sprintf(newlabel, "1 Friend\nRequest");
+
+		me->frbutton->label(newlabel);
+	}
 	dbg("Received post: %s, %s\n", msg->S1, msg->S2);
 }
 
@@ -16,6 +28,7 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 {
 	scale =S;
 	top2_h =38;
+	frs =0;
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
@@ -30,7 +43,7 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	f_reqs->show();
 	f_reqs->hide();
 	frbutton->labelsize(10 * scale);
-	frbutton->label("0 Friend\nRequests");
+	frbutton->label("No Friend\nRequests");
 	frbutton->color(fl_rgb_color(107, 194, 96));
 	frbutton->labelcolor(255);
 	

@@ -26,7 +26,7 @@ public:
 	ContactsList *contacts;
 	Sidebar_Bottom_Area *bottom_area;
 
-	int scale, top2_h;
+	int scale, top2_h, frs;
 };
 
 #endif

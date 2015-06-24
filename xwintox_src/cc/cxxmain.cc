@@ -89,7 +89,6 @@ void ProcessEvents()
 			message->S2 =strdup(pbmsg);
 			free(tofree);
 			PB_Signal(postbox, PB_FRequest, message);
-			free(message);
 		}
 		else if(Event->type == FSTATUS)
 		{

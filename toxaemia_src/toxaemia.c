@@ -164,6 +164,7 @@ int Tox_comm_main()
 {
 	TOX_ERR_OPTIONS_NEW toxoptserr;
 	TOX_ERR_NEW toxerr;
+	uint8_t mypubkey[TOX_ADDRESS_SIZE];
 
 	struct Tox_Options *Topts =tox_options_new(&toxoptserr);
 
@@ -189,6 +190,9 @@ int Tox_comm_main()
 		dbg("Failed to create new Tox: %s\n", errcode);
 		return -1;
 	}
+
+	tox_self_get_address(Tox_comm->tox, mypubkey);
+	dbg("Your Tox ID is: %s\n",bin_to_hex_string(mypubkey, TOX_ADDRESS_SIZE));
 
 	InitCallbacks();
 
