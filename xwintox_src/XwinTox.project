@@ -34,6 +34,8 @@
     <File Name="c/etc.h"/>
     <File Name="c/main.c"/>
     <File Name="c/etc.c"/>
+    <File Name="c/signal.h"/>
+    <File Name="c/postbox.c"/>
   </VirtualDirectory>
   <VirtualDirectory Name="cc">
     <File Name="cc/contacts.cc"/>
@@ -41,7 +43,6 @@
     <File Name="cc/svgs.h"/>
     <File Name="cc/win2.cc"/>
     <File Name="cc/res.cc"/>
-    <File Name="cc/signal.h"/>
     <File Name="cc/contacts.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">

@@ -1,6 +1,15 @@
 #include "control/gui.h"
 #include "control/sidebar.h"
 
+#include "c/signal.h"
+
+extern Postbox_t *postbox;
+
+void sb_post(int mtype, PBMessage_t* msg, void* custom)
+{
+	dbg("Received post: %s, %s\n", msg->S1, msg->S2);
+}
+
 Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	                                   (Xw->sblength * S),
 	                                   Xw->h() - (Xw->basey * S))
@@ -24,6 +33,8 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	frbutton->label("0 Friend\nRequests");
 	frbutton->color(fl_rgb_color(107, 194, 96));
 	frbutton->labelcolor(255);
+	
+	PB_Register(postbox, PB_FRequest, this, sb_post);
 
 	resize(x(), y(), w(), h());
 	end();

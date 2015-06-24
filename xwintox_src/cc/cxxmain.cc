@@ -5,6 +5,8 @@ using namespace std;
 
 #include <FL/Fl.H>
 
+#include "c/signal.h"
+
 #include "control/gui.h"
 #include "contacts.h"
 
@@ -21,6 +23,8 @@ extern "C"
 
 class XwinTox* Xw;
 extern "C" Xwin_t *Xwin;
+
+Postbox_t *postbox;
 
 int CGUIUPDFLAG =0;
 
@@ -74,6 +78,19 @@ void ProcessEvents()
 			FindContactEntry(Event->paramid)->redraw();
 			SaveData();
 		}
+		else if(Event->type == FREQUEST)
+		{
+			PBMessage_t *message =(PBMessage_t*)calloc(1, sizeof(PBMessage_t));
+			char *tofree, *pbmsg =strdup(Event->param1);
+			tofree =pbmsg;
+
+			char *msg1 = strsep(&pbmsg, " ");
+			message->S1 =strdup(msg1);
+			message->S2 =strdup(pbmsg);
+			free(tofree);
+			PB_Signal(postbox, PB_FRequest, message);
+			free(message);
+		}
 		else if(Event->type == FSTATUS)
 		{
 			FindContact(Event->paramid)->statusm =strdup(Event->param1);
@@ -103,6 +120,8 @@ extern "C" int CXXMain()
 	int scale =1;
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
+	
+	postbox =(Postbox_t*)calloc(1, sizeof(Postbox_t));
 
 	while((c =(Contact_t*)List_retrieve_and_remove_first(&APP->Xwin->ICQueue))
 	        != 0)
