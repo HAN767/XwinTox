@@ -23,7 +23,7 @@
 static unsigned long
 jenkins_hash (const char *key) /* Jenkins One-at-a-Time Hash function */
 {
-	unsigned long int hash, i;
+	unsigned long int hash;
 	size_t len =strlen (key);
 
 	for (int i =hash =0; i < len; ++i)
@@ -224,8 +224,6 @@ Dictionary_set_aux (Dictionary_t *dict, const char *key, const char *value)
 int
 Dictionary_set_if_exists (Dictionary_t *dict, const char *key, const char *value)
 {
-	const char* val;
-	
 	if (Dictionary_get(dict, key))
 	{
 		Dictionary_set (dict, key, value); 

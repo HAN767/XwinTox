@@ -19,5 +19,6 @@ unsigned char *svgrast(const char *data, int W, int H, int S, double factor)
 
 	// Rasterize
 	nsvgRasterize(rast, nimage, 0,0,S * factor, img, W, H, W*4);
+	free(rast);
 	return img;
 }

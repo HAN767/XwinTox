@@ -87,7 +87,7 @@ void SendMessagePressed(Fl_Widget* B , void*)
 void WindowClosed(Fl_Widget *widget, void *)
 {
 	char *amsg =(char*)calloc(5, sizeof(char));
-	Fl_Double_Window *window = (Fl_Double_Window *)widget;
+	/* Fl_Double_Window *window = (Fl_Double_Window *)widget; */
 
 	sprintf(amsg, "quit");
 
@@ -177,7 +177,6 @@ void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg)
 	}
 	else if(type == MGCHAT)
 	{
-		Groupchat_t *gchat =FindGroupchat(id);
 		sprintf(nmsg, "%s: %s\n", GroupchatGetPeerName(id, pid), msg);
 		FindGroupchatMArea(id)->moutbuffer->append(nmsg);
 		FindGroupchatMArea(id)->moutput->scroll

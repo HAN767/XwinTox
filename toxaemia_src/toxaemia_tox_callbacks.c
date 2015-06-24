@@ -13,6 +13,7 @@
 #include "list.h"
 
 #include "toxaemia_core.h"
+#include "toxaemia_util.h"
 
 extern short F_online[65535];
 extern List_t *Groupchats;
@@ -83,7 +84,7 @@ void cb_friend_status_message(Tox *tox, uint32_t friend_number,
                               void *user_data)
 {
 	char *nstatus =calloc(length + 1, sizeof(char));
-	ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
+	ToxEvent_t *event =calloc(1, sizeof(ToxEvent_t));
 
 	event->type =FSTATUS;
 	event->paramid =friend_number;
@@ -93,6 +94,25 @@ void cb_friend_status_message(Tox *tox, uint32_t friend_number,
 
 	strncpy(nstatus, (char*) status, length);
 	nstatus[length+1] ='\0';
+	List_add(&Events, event);
+}
+
+void cb_friend_request(Tox *tox, const uint8_t *public_key,
+                       const uint8_t *message, size_t length, void *user_data)
+{
+	char *nbundle =calloc((TOX_PUBLIC_KEY_SIZE * 2) + length + 3, sizeof(char));
+	char *s_message =strndup((const char*) message, length);
+	char *s_pubkey =bin_to_hex_string(public_key, TOX_PUBLIC_KEY_SIZE);
+	ToxEvent_t *event =calloc(1, sizeof(ToxEvent_t));
+
+	event->type =FREQUEST;
+	event->param1 =nbundle;
+	event->param2.param2_len =0;
+	event->param3.param3_len =0;
+
+	sprintf(nbundle, "%s %s", s_pubkey, s_message);
+	dbg("Friend request: %s", nbundle);
+	free (s_message); free(s_pubkey);
 	List_add(&Events, event);
 }
 
@@ -151,12 +171,11 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 	char *gnames =calloc((numpeers * 2) + 1 + (numpeers * TOX_MAX_NAME_LENGTH),
 	                     sizeof(char));
 
-	//memset(peerlens, 0x0, numpeers);
-
 	if(tox_group_get_names(tox, groupnum, (uint8_t(*)[128])peernames, peerlens,
 	                       numpeers) == -1)
 	{
 		dbg("fail\n");
+		free(gnames);
 		return;
 	}
 
@@ -169,6 +188,7 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 
 		if(i < (numpeers - 1)) gpos +=sprintf(gnames+gpos, "%s, ", tmpname);
 		else gpos +=sprintf(gnames+gpos, "%s", tmpname);
+		free (tmpname);
 	}
 
 	ToxEvent_t *event =calloc(1, sizeof(ToxEvent_t));
@@ -206,12 +226,15 @@ void InitCallbacks()
 {
 	tox_callback_self_connection_status(Tox_comm->tox,
 	                                    cb_self_connection_status, 0);
+
 	tox_callback_friend_connection_status(Tox_comm->tox,
 	                                      cb_friend_connection_status, 0);
 	tox_callback_friend_name(Tox_comm->tox, cb_friend_name, 0);
 	tox_callback_friend_status_message(Tox_comm->tox, cb_friend_status_message,
 	                                   0);
 	tox_callback_friend_message(Tox_comm->tox, cb_friend_message, 0);
+	tox_callback_friend_request(Tox_comm->tox, cb_friend_request, 0);
+
 	tox_callback_group_invite(Tox_comm->tox, cb_group_invite, 0);
 	tox_callback_group_namelist_change(Tox_comm->tox, cb_group_namelist_change,
 	                                   0);

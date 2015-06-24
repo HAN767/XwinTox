@@ -18,7 +18,7 @@ uint8_t* hex_string_to_bin(const char *hex_string)
 	return ret;
 }
 
-char* bin_to_hex_string(uint8_t *bin, size_t len)
+char* bin_to_hex_string(const uint8_t *bin, size_t len)
 {
 	char *result =calloc((2 * len) + 1, sizeof(char));
 
