@@ -243,6 +243,10 @@ int Tox_comm_main()
 			{
 				Set_name_status(call->S1, call->S2);
 			}
+			else if(call->Func == ToxLeaveGroupchat)
+			{
+				tox_del_groupchat(Tox_comm->tox, call->I1);
+			}
 
 			if(call->S1) free(call->S1);
 

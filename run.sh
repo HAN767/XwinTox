@@ -15,7 +15,7 @@ sigint()
     done
 }
 
-trap sigint SIGINT SIGTERM SIGQUIT
+trap sigint INT
 
 toxaemia_src/Toxaemia &
 sleep 1

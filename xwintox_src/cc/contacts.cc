@@ -75,6 +75,8 @@ void GroupchatCreateSuccess(int num)
 		g->name =(char*)calloc(15, sizeof(char));
 		sprintf(g->name, "Groupchat %d", num + 1);
 		g->peers =strdup("");
+		g->peers_raw =0;
+		g->peers_raw_lens=0;
 		groupchats.push_back(g);
 		ContactListGUIUpdate();
 	}
@@ -115,8 +117,12 @@ char* GroupchatGetPeerName(int gnum, int pnum)
 	static char tmpname[128] = { 0 };
 	Groupchat_t *g =FindGroupchat(gnum);
 
+	if (g && g->peers_raw)
+	{
 	memcpy(tmpname, g->peers_raw + (pnum * 128), g->peers_raw_lens[pnum]);
 	tmpname[g->peers_raw_lens[pnum]] = '\0';
+	}
+	else dbg ("Corner case: groupchat or groupchat internal data\n");
 
 	return (char*)(&tmpname);
 }

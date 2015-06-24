@@ -246,6 +246,17 @@ void namechange()
 	savedata();
 }
 
+void leavegroupchat(char *Rmsg)
+{
+	strsep(&Rmsg, " ");
+
+	if(!toxleavegroupchat_1(strtol(Rmsg, 0, 10), clnt))
+	{
+		clnt_perror(clnt, __func__);
+		return;
+	}
+}
+
 int main()
 {
 	struct timeval tv = { 0 };
@@ -332,6 +343,10 @@ int main()
 		else if(strcmp(work, "namechange") == 0)
 		{
 			namechange();
+		}
+		else if (strncmp(work, "leavegroupchat", 14) == 0)
+		{
+			leavegroupchat(work);
 		}
 		else dbg("Unhandled request: %s\n", work);
 

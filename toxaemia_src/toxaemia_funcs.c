@@ -236,3 +236,15 @@ int* toxcreategroupchat_1_svc(struct svc_req *SvcReq)
 
 	return &ret;
 }
+
+void* toxleavegroupchat_1_svc(unsigned int num, struct svc_req *SvcReq)
+{
+	static int result =0;
+	Call_t *call =calloc(1, sizeof(Call_t));
+
+	call->Func =ToxLeaveGroupchat;
+	call->I1 =num;
+	List_add(&Calls, call);
+
+	return &result;
+}

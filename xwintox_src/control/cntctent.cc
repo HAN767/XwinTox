@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <vector>
 #include <FL/Fl_Box.H>
 
 #include "cc/svgs.h"
@@ -11,6 +12,66 @@
 #include "control/svgbox.h"
 
 extern int CGUIUPDFLAG;
+
+void ce_deletecontact(ContactsEntry *ce)
+{
+	vector <ContactsEntry*> *ref =&
+	                              ((ContactsList*) ce->parent())->entries;
+	ref->erase(std::remove(ref->begin(), ref->end(), ce),
+	           ref->end());
+	ce->parent()->remove(ce);
+	Fl::delete_widget(ce);
+
+	if(ce->type == 0)
+	{
+		DeleteContact(ce->contact->num);
+		Fl::delete_widget(FindContactMArea(ce->contact));
+	}
+	else
+	{
+		Groupchat_t *todel;
+		GMessageArea *mtodel;
+		char *amsg =(char*)calloc(255, sizeof(char));
+
+		sprintf(amsg, "leavegroupchat %d", ce->groupchat->num);
+		List_add(&APP->Comm->WorkQueue, (void*)amsg);
+
+		todel =ce->groupchat;
+		vector <Groupchat_t*> *ref=&groupchats;
+		vector <GMessageArea*> *mref =&Xw->contents->messageareas;
+
+		free(todel->name);
+
+		free(todel->peers);
+		if(todel->peers_raw)
+		{
+			free(todel->peers_raw);
+			free(todel->peers_raw_lens);
+		}
+
+		free(todel);
+		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
+
+		for(const auto messagearea : Xw->contents->messageareas)
+		{
+			if(messagearea->groupchat == todel) mtodel =messagearea;
+		}
+
+		mref->erase(std::remove(mref->begin(), mref->end(), mtodel),
+		            mref->end());
+
+		if(Xw->contents->currentarea == mtodel)
+		{
+			Xw->contents->NewCurrentArea(Xw->contents->addfriend);
+		}
+
+		Fl::delete_widget(mtodel);
+
+		CommWork();
+	}
+
+	CGUIUPDFLAG =1;
+}
 
 ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G,
                              short T)
@@ -150,15 +211,7 @@ int ContactsEntry::handle(int event)
 			if(!m) return 0;
 			else if(strcmp(m->label(), "Delete contact") == 0)
 			{
-				vector <ContactsEntry*> *ref =&
-				                              ((ContactsList*) parent())->entries;
-				ref->erase(std::remove(ref->begin(), ref->end(), this),
-				           ref->end());
-				DeleteContact(contact->num);
-				parent()->remove(this);
-				Fl::delete_widget(this);
-				Fl::delete_widget(FindContactMArea(contact));
-				CGUIUPDFLAG =1;
+				ce_deletecontact(this);
 				return 0;
 			}
 		}
