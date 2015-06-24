@@ -5,8 +5,6 @@
 
 #include "c/signal.h"
 
-extern Postbox_t *postbox;
-
 void sb_post(int mtype, PBMessage_t* msg, void* custom)
 {
 	if(mtype == PB_FRequest)
@@ -39,9 +37,9 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	contacts->end();
 
 	frbutton =new Fl_Button(0, 0, 0, 0);
-	f_reqs =new FriendRequests(0, 0, scale);
+	f_reqs =new FriendRequests(x() + 3, y() + 94 + 2, scale);
 	f_reqs->show();
-	f_reqs->hide();
+	//f_reqs->hide();
 	frbutton->labelsize(10 * scale);
 	frbutton->label("No Friend\nRequests");
 	frbutton->color(fl_rgb_color(107, 194, 96));

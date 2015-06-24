@@ -1,8 +1,14 @@
 #ifndef XWINTOX_H_
 #define XWINTOX_H_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "dictionary.h"
 #include "list.h"
+#include "signal.h"
 
 typedef struct Xwin_s
 {
@@ -50,12 +56,11 @@ typedef struct FriendRequest_s
 	char *pubkey, *message;
 } FriendRequest_t;
 
-#ifdef __cplusplus__
-extern "C" {
-#endif
-	extern XwinTox_instance_t *APP;
-	void CommWork();
-#ifdef __cplusplus__
+#ifdef __cplusplus
+extern Postbox_t *postbox;
+
+extern XwinTox_instance_t *APP;
+void CommWork();
 }
 #endif
 

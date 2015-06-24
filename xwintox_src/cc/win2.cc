@@ -155,6 +155,18 @@ char *GetDisplayStatus(Contact_t *contact, size_t LenLimit)
 	return status;
 }
 
+char *GetShortenedText(char* text, size_t LenLimit)
+{
+	static char name[255] = { 0 };
+
+	strncpy(name, text, LenLimit);
+	name[LenLimit-2] ='.';
+	name[LenLimit-1] ='.';
+	name[LenLimit] ='.';
+	name[LenLimit+1] = '\0';
+	return name;
+}
+
 void AddLine(ToxMessageType type, unsigned int id, unsigned int pid, char* msg)
 {
 	time_t rawtime;

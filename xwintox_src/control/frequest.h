@@ -13,7 +13,7 @@ extern "C"
 #include "xwintox.h"
 }
 
-const int frheight=112;
+const int frheight=84;
 
 class FriendRequests: public Fl_Box
 {
@@ -23,10 +23,13 @@ public:
 
 	void show();
 	void hide();
+	void draw();
+	void resize(int X, int Y, int W, int H);
 	/*int handle(int event);*/
 
+	Fl_Output *address;
 	Fl_Multiline_Output *message;
-	Fl_Button *accept, *reject;
+	Fl_Button *accept, *reject, *next;
 
 	vector <FriendRequest_t*> frs;
 	int selected, scale;
