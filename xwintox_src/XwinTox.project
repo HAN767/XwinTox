@@ -161,5 +161,7 @@
     <File Name="control/garea.cc"/>
     <File Name="control/garea.h"/>
     <File Name="Makefile"/>
+    <File Name="control/frequest.h"/>
+    <File Name="control/frequest.cc"/>
   </VirtualDirectory>
 </CodeLite_Project>

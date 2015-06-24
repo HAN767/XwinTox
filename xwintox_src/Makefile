@@ -17,7 +17,7 @@ OBJ_CXX = cc/res.cc cc/cxxmain.cc cc/contacts.cc cc/win2.cc control/gui.cc
 OBJ_CXX += control/msgarea.cc control/gaddfrnd.cc control/sidebar.cc
 OBJ_CXX += control/sbarbtm.cc control/sbartop.cc control/cntctlst.cc
 OBJ_CXX += control/cntctent.cc control/svgbox.cc control/statbox.cc
-OBJ_CXX += control/garea.cc
+OBJ_CXX += control/garea.cc control/frequest.cc
 
 CFLAGS = -I$(ROOTDIR)/xwintox_src/hdr -I$(ROOTDIR)/libsunshine_src/hdr 
 CFLAGS += -I$(ROOTDIR)/toxaemia_src/hdr -I$(ROOTDIR)/xwintox_src

@@ -45,6 +45,11 @@ typedef struct Groupchat_s
 	short *peers_raw_lens;
 } Groupchat_t;
 
+typedef struct FriendRequest_s
+{
+	char *pubkey, *message;
+} FriendRequest_t;
+
 #ifdef __cplusplus__
 extern "C" {
 #endif

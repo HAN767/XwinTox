@@ -17,6 +17,8 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	contacts->end();
 
 	frbutton =new Fl_Button(0, 0, 0, 0);
+	f_reqs =new FriendRequests(0, 0, scale);
+	f_reqs->show();
 	frbutton->labelsize(10 * scale);
 	frbutton->label("0 Friend\nRequests");
 	frbutton->color(fl_rgb_color(107, 194, 96));
@@ -28,9 +30,10 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 
 void Sidebar::resize(int X, int Y, int W, int H)
 {
+	f_reqs->hide();
 	Fl_Group::resize(Xw->basex * scale,Xw->basey * scale,
-	                                   (Xw->sblength * scale),
-	                                   Xw->h() - (Xw->basey * scale));
+	                 (Xw->sblength * scale),
+	                 Xw->h() - (Xw->basey * scale));
 	top_area->resize(Xw->basex * scale, Xw->basey * scale,
 	                 Xw->sblength * scale, 60 * scale);
 	bottom_area->resize(Xw->basex * scale,
@@ -39,7 +42,10 @@ void Sidebar::resize(int X, int Y, int W, int H)
 	                    Xw->h() - (Xw->basey * scale));
 
 	frbutton->resize(x() + w() - (72  * scale), y() + (64 * scale),
-							60 * scale, 30 * scale);
+	                 60 * scale, 30 * scale);
+
+	f_reqs->resize(x() + 3, y() + 94 + 2, (Xw->sblength * scale) - (15 * scale),
+	               frheight * scale);
 
 	contacts->resize(x(), y() + ((60 + top2_h) * scale), (Xw->sblength * scale),
 	                 h() - (36 * scale) - (60 * scale) - (top2_h * scale));

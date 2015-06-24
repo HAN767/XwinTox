@@ -6,6 +6,7 @@
 
 #include "control/sbarbtm.h"
 #include "control/sbartop.h"
+#include "control/frequest.h"
 #include "control/cntctlst.h"
 
 
@@ -20,6 +21,7 @@ public:
 	Sidebar_Top_Area *top_area;
 	/* top2*/
 	Fl_Button *frbutton;
+	FriendRequests *f_reqs;
 	/* end top2 */
 	ContactsList *contacts;
 	Sidebar_Bottom_Area *bottom_area;
