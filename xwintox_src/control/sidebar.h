@@ -1,6 +1,7 @@
 #ifndef SIDEBAR_H_
 #define SIDEBAR_H_
 
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>
 
 #include "control/sbarbtm.h"
@@ -17,10 +18,13 @@ public:
 	void resize(int X, int Y, int W, int H);
 
 	Sidebar_Top_Area *top_area;
+	/* top2*/
+	Fl_Button *frbutton;
+	/* end top2 */
 	ContactsList *contacts;
 	Sidebar_Bottom_Area *bottom_area;
 
-	int scale;
+	int scale, top2_h;
 };
 
 #endif

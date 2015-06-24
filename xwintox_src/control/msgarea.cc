@@ -107,6 +107,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 void GMessageArea::draw()
 {
+	fl_push_clip(x(), y(), w(), h());
 	if(mtype)
 	{
 		if(strcmp(gnames->value(), groupchat->peers))
@@ -149,4 +150,6 @@ void GMessageArea::draw()
 	fl_line(x(), y() + (60 * scale), Fl::w(), y() + (60 * scale));
 	fl_line(x(), h() + y() - (85 * scale), Fl::w(), h() + y() -
 	        (85 * scale));
+
+	fl_pop_clip();
 }

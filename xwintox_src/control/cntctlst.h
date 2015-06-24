@@ -1,6 +1,7 @@
 #ifndef CNTCTLST_H_
 #define CNTCTLST_H_
 
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Scroll.H>
 
 #include "control/cntctent.h"
@@ -20,7 +21,10 @@ public:
 
 	vector <ContactsEntry*> entries;
 
-	int selected, seltype, scale;
+	/* the purpose of 'startpoint' is to indicate where
+	 * the first ContactEntry should be drawn relative to
+	 * the y() of the contacts list*/
+	int startpoint, selected, seltype, scale;
 };
 
 #endif

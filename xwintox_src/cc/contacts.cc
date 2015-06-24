@@ -143,7 +143,7 @@ void ContactListGUIUpdate()
 		Xw->sidebar->contacts->clear_all();
 	}
 
-	int YM =0;
+	int YM =Xw->sidebar->contacts->startpoint;
 
 	for(const auto groupchat : groupchats)
 	{

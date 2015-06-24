@@ -10,7 +10,9 @@ ContactsList::ContactsList(int X, int Y, int W, int H, int S)
 	scale =S;
 	selected =-1;
 	color(fl_rgb_color(65, 65, 65));
-	type(6);
+	startpoint =0 * S;
+	
+	type(VERTICAL);
 }
 
 void ContactsList::draw()
@@ -26,6 +28,7 @@ void ContactsList::draw()
 void ContactsList::resize(int X, int Y, int W, int H)
 {
 	Fl_Scroll::resize(X, Y, W, H);
+	/**/
 
 	for(const auto entry : entries)
 	{
@@ -49,6 +52,8 @@ int ContactsList::handle(int event)
 	}
 
 	Fl_Scroll::handle(event);
+	//resize(x(), y(), w(), h());
+
 	return 0;
 }
 

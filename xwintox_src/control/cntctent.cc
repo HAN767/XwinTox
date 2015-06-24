@@ -43,6 +43,7 @@ void ce_deletecontact(ContactsEntry *ce)
 		free(todel->name);
 
 		free(todel->peers);
+
 		if(todel->peers_raw)
 		{
 			free(todel->peers_raw);
@@ -113,6 +114,8 @@ void ContactsEntry::draw()
 	int txt_color =255;
 	char *name, *status;
 
+	fl_push_clip(x(), y(), w(), h());
+
 	if(selected)
 	{
 		color(255);
@@ -140,11 +143,18 @@ void ContactsEntry::draw()
 
 		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 		       10 * scale, 0, 360);
+		icon->resize(x()+ (4 * scale), y()+ (2 * scale), 46 * scale, 46 *scale);
+		invicon->resize(x()+ (4 * scale), y()+ (2 * scale), 46 * scale,
+		                46 *scale);
 	}
 	else
 	{
 		name =groupchat->name;
 		status ="";
+
+		icon->resize(x()- (8 * scale), y()+ (2 * scale), 46 * scale, 46 * scale);
+		invicon->resize(x()+ (14 * scale), y()+ (12 * scale), 46 * scale,
+		                46 *scale);
 	}
 
 	fl_color(txt_color);
@@ -154,6 +164,8 @@ void ContactsEntry::draw()
 	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
 	icon->draw(); /* make it account for scrollbar::value(); */
 	invicon->draw();
+
+	fl_pop_clip();
 }
 
 int ContactsEntry::handle(int event)

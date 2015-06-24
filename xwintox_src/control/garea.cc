@@ -19,6 +19,7 @@ GArea::GArea(int S, const char *C) : Fl_Group(Xw->sblength * S,
 
 void GArea::draw()
 {
+	fl_push_clip(x(), y(), w(), h());
 	Fl_Group::draw();
 
 	fl_color(0);
@@ -28,4 +29,5 @@ void GArea::draw()
 	fl_color(fl_rgb_color(192, 192, 192));
 	fl_line(x(), y() + (60 * scale), Fl::w(), y() + (60 * scale));
 	fl_color(0);
+	fl_pop_clip();
 }
