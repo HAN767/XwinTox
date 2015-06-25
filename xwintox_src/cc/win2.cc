@@ -31,25 +31,6 @@ void NewGroupchatPressed(Fl_Widget *B, void*)
 	List_add(&APP->Comm->WorkQueue, (void*)amsg);
 }
 
-void AddFriendSendPressed(Fl_Widget* B , void*)
-{
-	char *amsg =(char*)calloc(255, sizeof(char));
-	char *bmsg =(char*)calloc(9, sizeof(char));
-	char *cmsg =(char*)calloc(14, sizeof(char));
-	const char *id = ((GAddFriend*)B->parent())->id->value();
-	const char *msg = ((GAddFriend*)B->parent())->message->value();
-	// add a validity check here later //
-
-	sprintf(amsg, "sendfriendrequest %s %s", id, msg);
-	strcpy(bmsg, "savedata");
-	strcpy(cmsg, "getfriendlist");//getfriendlist");
-
-	List_add(&APP->Comm->WorkQueue, (void*)amsg);
-	List_add(&APP->Comm->WorkQueue, (void*)bmsg);
-	List_add(&APP->Comm->WorkQueue, (void*)cmsg);
-	CommWork();
-}
-
 void SendMessagePressed(Fl_Widget* B , void*)
 {
 	char *amsg =(char*)calloc(1025, sizeof(char));
@@ -97,7 +78,6 @@ void WindowClosed(Fl_Widget *widget, void *)
 
 void InitGUICallbacks()
 {
-	Xw->contents->addfriend->send->callback(&AddFriendSendPressed);
 	Xw->sidebar->bottom_area->addfriend->callback(&AddFriendPressed);
 	Xw->sidebar->bottom_area->newgroup->callback(&NewGroupchatPressed);
 }
