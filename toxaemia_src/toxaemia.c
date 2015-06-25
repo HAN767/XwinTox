@@ -251,6 +251,19 @@ int Tox_comm_main()
 			{
 				tox_del_groupchat(Tox_comm->tox, call->I1);
 			}
+			else if(call->Func == ToxAddFriendNoRequest)
+			{
+				int ret;
+				TOX_ERR_FRIEND_ADD ferr;
+				uint8_t *pk =hex_string_to_bin(call->S1);
+				ret =tox_friend_add_norequest(Tox_comm->tox, pk, &ferr);
+				free(pk);
+				dbg("FriendNoReqError: %d. Address: %s\n", ferr, call->S1)
+				if(ferr == TOX_ERR_FRIEND_ADD_ALREADY_SENT) dbg("already\n");
+				if(ferr == TOX_ERR_FRIEND_ADD_BAD_CHECKSUM) dbg("bad checksum\n");
+
+				List_add(&Returns, ret);
+			}
 
 			if(call->S1) free(call->S1);
 

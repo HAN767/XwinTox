@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 #include <FL/fl_draw.H>
@@ -8,15 +9,12 @@ using namespace std;
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Multiline_Output.H>
 
-extern "C"
-{
 #include "xwintox.h"
-}
 
 #include "control/gui.h"
 #include "control/frequest.h"
-char *GetShortenedText(char* text, size_t LenLimit);
 
+char *GetShortenedText(char* text, size_t LenLimit);
 
 void frs_post(int mtype, PBMessage_t* msg, void* custom)
 {
@@ -36,22 +34,48 @@ void frs_post(int mtype, PBMessage_t* msg, void* custom)
 	}
 }
 
-void frnextcallback(Fl_Widget *w, void *fr)
+void frs_nextreq(FriendRequests *f)
 {
-	FriendRequests *f =(FriendRequests*)fr;
 	unsigned long cnt =f->frs.size();
 
 	if(f->frs.empty())
 	{
 		dbg("Select -1\n");
 		f->selected =-1;
+		f->message->value("");
+		goto redraw;
 	}
 
 	f->selected += 1;
 
 	if(f->selected >= cnt) f->selected =0;
 
+redraw:
+	dbg("F->Selected = %d\n", f->selected);
+
 	f->redraw();
+}
+
+void frnextcallback(Fl_Widget *w, void *fr)
+{
+	FriendRequests *f =(FriendRequests*)fr;
+
+	frs_nextreq(f);
+}
+
+void fracceptcallback(Fl_Widget *w, void *fr)
+{
+	char *icmsg =(char*)calloc(255, sizeof(char));
+	FriendRequests *f =(FriendRequests*)fr;
+	PBMessage_t *message =(PBMessage_t*)calloc(1, sizeof(PBMessage_t));
+
+	sprintf(icmsg, "addfriendnorequest %s", f->frs[f->selected]->pubkey);
+	List_add(&APP->Comm->WorkQueue, (void*)icmsg);
+	CommWork();
+
+	f->frs.erase(f->frs.begin() + f->selected);
+	frs_nextreq(f);
+	PB_Signal(postbox, PB_FReqServiced, message);
 }
 
 FriendRequests::FriendRequests(int X, int Y, int S)
@@ -70,6 +94,7 @@ FriendRequests::FriendRequests(int X, int Y, int S)
 	accept->labelsize(11.2 * scale);
 	accept->labelcolor(255);
 	accept->color(fl_rgb_color(107, 194, 96));
+	accept->callback(fracceptcallback, this);
 
 	reject->labelsize(11.2 * scale);
 	reject->labelcolor(255);
@@ -86,7 +111,7 @@ FriendRequests::FriendRequests(int X, int Y, int S)
 	message->value("");
 	message->wrap(1);
 
-	static FriendRequest_t test, test2;
+	/*static FriendRequest_t test, test2;
 	test.message="<SylvieLorxu> I would definitely not accept stqism as my boyfriend. Sorry, he's just not my type. ";
 	test.pubkey="Zetok";
 	test2.message="Not a friendo";
@@ -95,9 +120,9 @@ FriendRequests::FriendRequests(int X, int Y, int S)
 	frs.push_back(&test);
 	frs.push_back(&test2);
 	this->selected =0;
-	this->redraw();
+	this->redraw();*/
 
-	PB_Register(postbox, PB_FRequest, this, frs_post);
+	PB_Register(postbox, PB_FRequest | PB_FReqServiced, this, frs_post);
 }
 
 void FriendRequests::resize(int X, int Y, int W, int H)

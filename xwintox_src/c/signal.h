@@ -11,9 +11,10 @@ extern "C"
 
 typedef enum PBMTypes_e
 {
-	PB_FRequest =1
+	PB_FRequest =1,
+	PB_FReqServiced =2
 }
-             PBMTypes;
+PBMTypes;
 
 typedef struct PBMessage_s
 {

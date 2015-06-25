@@ -103,7 +103,7 @@ program TOXAEMIA_PROG {
 		ToxFriend_t ToxGetFriend(unsigned int) = 9;
 
 		/* ToxSendMessage
-		 * Sends a message to a contact or groupchat
+		 * Sends a message to a contact or groupchat.
 		 * unsigned int => Friend number to send message to
 		 * string<> => Message to send */
 		void ToxSendMessage(ToxMessageType, unsigned int, string<>) = 10;
@@ -112,6 +112,13 @@ program TOXAEMIA_PROG {
 		 * Deletes a contact.
 		 * unsigned int => Friend number to delete */
 		void ToxDeleteFriend(unsigned int) = 11;
+
+		/* ToxAddFriendNoRequest
+		 * Adds a friend without sending a request.
+		 * This is used to accept a friend request.
+		 * Returns number of new friend, or -1 for failure.
+		 * string<> => Tox ID to add */
+		int ToxAddFriendNoRequest(string<>) = 12;
 
 		/* ToxCreateGroupchat
 		 * Creates a new groupchat

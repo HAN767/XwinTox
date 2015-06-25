@@ -8,18 +8,18 @@
 
 void sb_post(int mtype, PBMessage_t* msg, void* custom)
 {
-	if(mtype == PB_FRequest)
-	{
-		static char newlabel[32];
-		Sidebar *me =(Sidebar*) custom;
-		me->frs +=1;
+	static char newlabel[32];
+	Sidebar *me =(Sidebar*) custom;
 
-		if(me->frs > 1) sprintf(newlabel, "%d Friend\n Requests", me->frs);
-		else sprintf(newlabel, "1 Friend\nRequest");
+	if(mtype == PB_FRequest) me->frs +=1;
+	else if(mtype == PB_FReqServiced) me->frs -=1;
 
-		me->frbutton->label(newlabel);
-	}
+	if(me->frs > 1) sprintf(newlabel, "%d Friend\n Requests", me->frs);
+	else if (me->frs == 1) sprintf(newlabel, "1 Friend\nRequest");
+	else sprintf(newlabel, "0 Friend\n Requests");
 
+	me->frbutton->label(newlabel);
+	me->frbutton->redraw();
 	dbg("Received post: %s, %s\n", msg->S1, msg->S2);
 }
 
@@ -57,7 +57,7 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	f_reqs =new FriendRequests(x() + 3, y() + 94 + 2, scale);
 
 	frbutton->labelsize(10 * scale);
-	frbutton->label("No Friend\nRequests");
+	frbutton->label("0 Friend\nRequests");
 	frbutton->color(fl_rgb_color(107, 194, 96));
 	frbutton->labelcolor(255);
 	frbutton->callback(frcallback);
@@ -65,7 +65,7 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	f_reqs->show();
 	f_reqs->hide();
 
-	PB_Register(postbox, PB_FRequest, this, sb_post);
+	PB_Register(postbox, PB_FRequest | PB_FReqServiced, this, sb_post);
 
 	resize(x(), y(), w(), h());
 	end();

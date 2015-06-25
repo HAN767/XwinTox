@@ -248,3 +248,22 @@ void* toxleavegroupchat_1_svc(unsigned int num, struct svc_req *SvcReq)
 
 	return &result;
 }
+
+int *toxaddfriendnorequest_1_svc(char* address, struct svc_req *SvcReq)
+{
+	static int result =-1;
+	Call_t *call =calloc(1, sizeof(Call_t));
+
+	call->Func =ToxAddFriendNoRequest;
+	call->S1 =address;
+	List_add(&Calls, call);
+
+	while(!Returns) usleep(1000);
+
+	result =(int)List_retrieve_and_remove_first(&Returns);
+
+	return &result;
+
+
+	return &result;
+}

@@ -57,6 +57,32 @@ int sendfriendrequest(char* Rmsg)
 	return 0;
 }
 
+int addfriendnorequest(char* Rmsg)
+{
+	char *id;
+	int *result;
+
+	id =Rmsg;
+
+	if((result =toxaddfriendnorequest_1(id, clnt)) == 0)
+	{
+		clnt_perror(clnt, __func__);
+		return 1;
+	}
+	else
+	{
+		ToxEvent_t *fadd =calloc(1, sizeof(ToxEvent_t));
+		fadd->type =FADDED;
+		fadd->paramid =*result;
+		fadd->param0 =1; /* 1 indicates internally generated, friend added
+							after successful request */
+		fadd->param1 =calloc(1, sizeof(char));
+		fadd->param2.param2_len =0;
+		List_add(&APP->Xwin->Events, fadd);
+	}
+
+	return 0;
+}
 
 int savedata()
 {
@@ -323,6 +349,11 @@ int main()
 		else if(strncmp(work, "sendfriendrequest", 17) == 0)
 		{
 			sendfriendrequest(work);
+		}
+		else if(strncmp(work, "addfriendnoreq", 14) == 0)
+		{
+			strsep((char**)&work, " ");
+			addfriendnorequest(work);
 		}
 		else if(strcmp(work, "getfriendlist") == 0)
 		{
