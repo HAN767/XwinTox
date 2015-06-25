@@ -1,6 +1,8 @@
 #include <vector>
 #include <algorithm>
 
+#include <FL/Fl.H>
+
 extern "C"
 {
 #include "misc.h"
@@ -28,24 +30,27 @@ void DeleteContact(int num)
 		vector <GMessageArea*> *mref =&Xw->contents->messageareas;
 		sprintf(amsg, "deletecontact %d", num);
 		List_add(&APP->Comm->WorkQueue, (void*)amsg);
-		free(todel->name);
-		free(todel->statusm);
-		free(todel->pubkey);
-		free(todel);
-		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
 
 		for(const auto messagearea : Xw->contents->messageareas)
 		{
 			if(messagearea->contact == todel) mtodel =messagearea;
 		}
 
-		mref->erase(std::remove(mref->begin(), mref->end(), mtodel),
-		            mref->end());
-
 		if(Xw->contents->currentarea == FindContactMArea(todel))
 		{
-			Xw->contents->currentarea =Xw->contents->addfriend;
+			dbg("Current area being changed\n");
+			Xw->contents->currentarea =(Xw->contents->addfriend);
 		}
+
+		mref->erase(std::remove(mref->begin(), mref->end(), mtodel),
+		            mref->end());
+		Fl::delete_widget(mtodel);
+
+		free(todel->name);
+		free(todel->statusm);
+		free(todel->pubkey);
+		free(todel);
+		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
 
 		CommWork();
 	}
@@ -117,12 +122,12 @@ char* GroupchatGetPeerName(int gnum, int pnum)
 	static char tmpname[128] = { 0 };
 	Groupchat_t *g =FindGroupchat(gnum);
 
-	if (g && g->peers_raw)
+	if(g && g->peers_raw)
 	{
-	memcpy(tmpname, g->peers_raw + (pnum * 128), g->peers_raw_lens[pnum]);
-	tmpname[g->peers_raw_lens[pnum]] = '\0';
+		memcpy(tmpname, g->peers_raw + (pnum * 128), g->peers_raw_lens[pnum]);
+		tmpname[g->peers_raw_lens[pnum]] = '\0';
 	}
-	else dbg ("Corner case: groupchat or groupchat internal data\n");
+	else dbg("Corner case: groupchat or groupchat internal data\n");
 
 	return (char*)(&tmpname);
 }
