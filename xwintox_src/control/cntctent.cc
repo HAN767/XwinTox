@@ -11,8 +11,6 @@
 #include "control/sidebar.h"
 #include "control/svgbox.h"
 
-extern int CGUIUPDFLAG;
-
 void ce_deletecontact(ContactsEntry *ce)
 {
 	vector <ContactsEntry*> *ref =&

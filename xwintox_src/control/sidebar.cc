@@ -1,9 +1,10 @@
 #include <stdio.h>
 
+#include "c/signal.h"
+#include "cc/contacts.h"
+
 #include "control/gui.h"
 #include "control/sidebar.h"
-
-#include "c/signal.h"
 
 void sb_post(int mtype, PBMessage_t* msg, void* custom)
 {
@@ -12,12 +13,28 @@ void sb_post(int mtype, PBMessage_t* msg, void* custom)
 		static char newlabel[32];
 		Sidebar *me =(Sidebar*) custom;
 		me->frs +=1;
+
 		if(me->frs > 1) sprintf(newlabel, "%d Friend\n Requests", me->frs);
 		else sprintf(newlabel, "1 Friend\nRequest");
 
 		me->frbutton->label(newlabel);
 	}
+
 	dbg("Received post: %s, %s\n", msg->S1, msg->S2);
+}
+
+void frcallback(Fl_Widget *w)
+{
+	Sidebar *s =((Sidebar*)w->parent());
+	FriendRequests *f =s->f_reqs;
+	dbg("FR Callback\n");
+
+	if(f->visible()) f->hide();
+	else f->show();
+
+	s->resize(s->x(), s->y(), s->w(), s->h());
+	CGUIUPDFLAG =1;
+	CommWork();
 }
 
 Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
@@ -38,13 +55,16 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 
 	frbutton =new Fl_Button(0, 0, 0, 0);
 	f_reqs =new FriendRequests(x() + 3, y() + 94 + 2, scale);
-	f_reqs->show();
-	//f_reqs->hide();
+
 	frbutton->labelsize(10 * scale);
 	frbutton->label("No Friend\nRequests");
 	frbutton->color(fl_rgb_color(107, 194, 96));
 	frbutton->labelcolor(255);
-	
+	frbutton->callback(frcallback);
+
+	f_reqs->show();
+	f_reqs->hide();
+
 	PB_Register(postbox, PB_FRequest, this, sb_post);
 
 	resize(x(), y(), w(), h());
@@ -66,8 +86,8 @@ void Sidebar::resize(int X, int Y, int W, int H)
 	frbutton->resize(x() + w() - (72  * scale), y() + (64 * scale),
 	                 60 * scale, 30 * scale);
 
-	f_reqs->resize(x() + 3, y() + 94 + 2, (Xw->sblength * scale) - (15 * scale),
-	               frheight * scale);
+	f_reqs->resize(x() + 3 * scale, y() + (94 + 2) * scale,
+	               (Xw->sblength * scale) - (15 * scale), frheight * scale);
 
 	contacts->resize(x(), y() + ((60 + top2_h) * scale), (Xw->sblength * scale),
 	                 h() - (36 * scale) - (60 * scale) - (top2_h * scale));

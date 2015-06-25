@@ -45,5 +45,6 @@ GMessageArea *FindGroupchatMArea(unsigned int id);
 char *GetDisplayName(Contact_t *contact, size_t LenLimit);
 char *GetDisplayStatus(Contact_t *contact, size_t LenLimit);
 
+extern int CGUIUPDFLAG;
 
 #endif

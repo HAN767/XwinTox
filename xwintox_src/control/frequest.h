@@ -13,7 +13,7 @@ extern "C"
 #include "xwintox.h"
 }
 
-const int frheight=84;
+const int frheight=88;
 
 class FriendRequests: public Fl_Box
 {
