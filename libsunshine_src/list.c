@@ -26,6 +26,8 @@ List_add(List_t *n, void* data)
 
 	mtx_lock(&n->Lock);
 
+	if(n == 0) n =List_new();
+
 	if(n->List == 0)
 	{
 		/* create new list */

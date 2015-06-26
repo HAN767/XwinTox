@@ -7,8 +7,9 @@
 #ifndef Dictionary_h
 #define Dictionary_h
 
+#include <threads.h>
+
 #include "list.h"
-#include "misc.h" /* threading support */
 
 typedef struct Dictionary_entry
 {
@@ -20,14 +21,14 @@ typedef struct Dictionary
 {
 	int size;
 	int count;
-	List_t **entries; /* array of list_t*s pointing to of dictionary_entry_ts */
-	_Lock_
+	List_t_ **entries; /* array of list_t*s pointing to of dictionary_entry_ts */
+	mtx_t *Lock;
 } Dictionary_t;
 
 #define DICTIONARY_ITERATE_OPEN(DICT) \
-	List_t *e, *next; \
+	List_t_ *e, *next; \
 	Dictionary_entry_t *entry; \
-	_Locked_Start(( DICT )->_Lock) \
+	mtx_lock(( DICT )->Lock); \
 	for (int i = 0; i < ( DICT )->size; i++) \
 	{ \
 		for (e = ( DICT )->entries[i]; e != 0; e = next) \
@@ -36,7 +37,7 @@ typedef struct Dictionary
 			entry =e->data; \
 			 
 
-#define DICTIONARY_ITERATE_CLOSE(DICT) _Locked_End(( DICT )->_Lock) } }
+#define DICTIONARY_ITERATE_CLOSE(DICT) } } mtx_unlock(( DICT )->Lock);
 
 Dictionary_t *Dictionary_new();
 void Dictionary_delete (Dictionary_t *dict);

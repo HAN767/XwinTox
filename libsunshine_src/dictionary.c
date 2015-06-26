@@ -15,8 +15,8 @@
 #include "dictionary.h"
 #include "ini/ini.h"
 
-#define _Lock_Dictionary _Locked_Start(dict->_Lock)
-#define _Unlock_Dictionary _Locked_End(dict->_Lock)
+#define _Lock_Dictionary mtx_lock(dict->Lock);
+#define _Unlock_Dictionary mtx_unlock(dict->Lock);
 
 /* internal functions */
 
@@ -44,8 +44,9 @@ resize (Dictionary_t *dict)
 {
 	Dictionary_t *newdict;
 	Dictionary_t tmp;
-	List_t *e;
+	List_t_ *e;
 	Dictionary_entry_t *entry;
+	mtx_t *lock =dict->Lock;
 
 	newdict = Dictionary_new (dict->size * 2);
 
@@ -61,9 +62,9 @@ resize (Dictionary_t *dict)
 	tmp =*dict;
 	*dict =*newdict;
 	*newdict =tmp;
-	
-	_Lock_Init(newdict->_Lock); /* to satisfy Dictionary_delete() */
+
 	Dictionary_delete (newdict);
+	dict->Lock =lock;
 	return dict;
 }
 
@@ -77,7 +78,8 @@ Dictionary_new (int size)
 	newdict->size =size;
 	newdict->entries =calloc (1, sizeof (List_t *) * newdict->size);
 
-	_Lock_Init (newdict->_Lock)
+	newdict->Lock =calloc(1, sizeof (mtx_t));
+	mtx_init(newdict->Lock, mtx_plain);
 
 	return newdict;
 }
@@ -102,7 +104,7 @@ void
 Dictionary_set (Dictionary_t *dict, const char *key, const char *value)
 {
 	Dictionary_entry_t *new, *e;
-	List_t *lentry, *l;
+	List_t_ *lentry, *l;
 	unsigned long hash;
 
 	_Lock_Dictionary
@@ -148,8 +150,10 @@ Dictionary_set (Dictionary_t *dict, const char *key, const char *value)
 const char*
 Dictionary_get (Dictionary_t *dict, const char *key)
 {
-	List_t *l;
+	List_t_ *l;
 	Dictionary_entry_t *e;
+
+	_Lock_Dictionary
 
 	for (l = dict->entries[jenkins_hash (key) % dict->size]; l != 0; l = l->Link)
 	{
@@ -158,18 +162,20 @@ Dictionary_get (Dictionary_t *dict, const char *key)
 
 		if (!strcmp (e->key, key))
 		{
+			_Unlock_Dictionary
 			return e->value;
 		}
 	}
 
+	_Unlock_Dictionary
 	return 0;
 }
 
 void
 Dictionary_unset (Dictionary_t *dict, const char *key)
 {
-	List_t **p;
-	List_t *e;
+	List_t_ **p;
+	List_t_ *e;
 	Dictionary_entry_t *entry;
 
 	_Lock_Dictionary
@@ -287,7 +293,7 @@ int
 Dictionary_write_to_file (Dictionary_t *dict, const char *filename)
 {
 	FILE* dictFILE;
-	List_t *secbuffer =0;
+	List_t *secbuffer =List_new();
 
 	DICTIONARY_ITERATE_OPEN (dict)
 		char *tofree, *section, *name, *secbuf, secbegin[255], secline[8192];
@@ -298,10 +304,9 @@ Dictionary_write_to_file (Dictionary_t *dict, const char *filename)
 
 		sprintf (secbegin, "[%s]\n", section); /* fine */
 
-		LIST_ITERATE (secbuffer)
-		{
+		LIST_ITERATE_OPEN(secbuffer)
 			if (!strncmp (e->data, secbegin, strlen (secbegin))) secbuf =e->data;
-		}
+		LIST_ITERATE_CLOSE(secbuffer)
 
 		if (!secbuf)
 		{
@@ -324,7 +329,9 @@ Dictionary_write_to_file (Dictionary_t *dict, const char *filename)
 		return 1;
 	}
 
-	LIST_ITERATE (secbuffer) fprintf (dictFILE, "%s", e->data);
+	LIST_ITERATE_OPEN(secbuffer)
+		fprintf (dictFILE, "%s", e->data);
+	LIST_ITERATE_CLOSE(secbuffer)
 
 	fclose (dictFILE);
 	return 0;
