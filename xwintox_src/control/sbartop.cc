@@ -2,7 +2,7 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Input.H>
 
-#include "cc/svgs.h"
+#include "xwin/svgs.h"
 
 #include "control/gui.h"
 #include "control/sbartop.h"

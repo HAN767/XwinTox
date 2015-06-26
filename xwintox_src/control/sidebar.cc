@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "c/signal.h"
-#include "cc/contacts.h"
+#include "postbox.h"
+#include "xwin/contacts.h"
 
 #include "control/gui.h"
 #include "control/sidebar.h"

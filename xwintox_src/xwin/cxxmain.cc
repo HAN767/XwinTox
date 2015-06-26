@@ -5,10 +5,10 @@ using namespace std;
 
 #include <FL/Fl.H>
 
-#include "c/signal.h"
+#include "postbox.h"
 
 #include "control/gui.h"
-#include "contacts.h"
+#include "xwin/contacts.h"
 
 extern "C"
 {
@@ -17,7 +17,7 @@ extern "C"
 #include "list.h"
 
 #include "toxaemia_rpc.h"
-#include "etc.h"
+#include "comm/etc.h"
 #include "xwintox.h"
 }
 

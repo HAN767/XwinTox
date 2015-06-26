@@ -1,4 +1,4 @@
-#include "cc/svgs.h"
+#include "xwin/svgs.h"
 
 #include "control/gui.h"
 #include "control/sbarbtm.h"

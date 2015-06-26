@@ -10,7 +10,7 @@ extern "C"
 #include "dictionary.h"
 #include "list.h"
 
-#include "signal.h"
+#include "postbox.h"
 
 typedef struct Xwin_s
 {

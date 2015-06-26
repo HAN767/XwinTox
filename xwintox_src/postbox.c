@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "signal.h"
+#include "postbox.h"
 
 Postbox_t *PB_New()
 {

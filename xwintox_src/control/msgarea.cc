@@ -1,7 +1,7 @@
 #include <FL/Fl_Multiline_Input.H>
 
-#include "cc/svgs.h"
-#include "cc/contacts.h"
+#include "xwin/svgs.h"
+#include "xwin/contacts.h"
 
 #include "control/gui.h"
 #include "control/msgarea.h"

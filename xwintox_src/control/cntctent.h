@@ -3,7 +3,7 @@
 
 #include <FL/Fl_Box.H>
 
-#include "cc/contacts.h"
+#include "xwin/contacts.h"
 
 class SVGBox;
 

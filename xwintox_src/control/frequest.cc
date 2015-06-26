@@ -11,6 +11,7 @@ using namespace std;
 #include <FL/Fl_Multiline_Output.H>
 
 #include "xwintox.h"
+#include "postbox.h"
 
 #include "control/gui.h"
 #include "control/frequest.h"

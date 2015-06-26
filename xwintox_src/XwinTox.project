@@ -22,28 +22,25 @@
     <Excludepaths/>
     <Ignorefiles/>
     <Extensions>
-      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;cc;x]]>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;cc;x;Makefile]]>
     </Extensions>
     <Topleveldir>../xwintox_src</Topleveldir>
   </Reconciliation>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="xwintox_src"/>
-  <VirtualDirectory Name="c">
-    <File Name="c/xwintox.h"/>
-    <File Name="c/etc.h"/>
-    <File Name="c/main.c"/>
-    <File Name="c/etc.c"/>
-    <File Name="c/signal.h"/>
-    <File Name="c/postbox.c"/>
+  <VirtualDirectory Name="comm">
+    <File Name="comm/etc.c"/>
+    <File Name="comm/etc.h"/>
+    <File Name="comm/main.c"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="cc">
-    <File Name="cc/contacts.cc"/>
-    <File Name="cc/cxxmain.cc"/>
-    <File Name="cc/svgs.h"/>
-    <File Name="cc/win2.cc"/>
-    <File Name="cc/res.cc"/>
-    <File Name="cc/contacts.h"/>
+  <VirtualDirectory Name="xwin">
+    <File Name="xwin/contacts.cc"/>
+    <File Name="xwin/contacts.h"/>
+    <File Name="xwin/cxxmain.cc"/>
+    <File Name="xwin/res.cc"/>
+    <File Name="xwin/svgs.h"/>
+    <File Name="xwin/win2.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">
     <File Name="nanosvg/nanosvgrast.h"/>
