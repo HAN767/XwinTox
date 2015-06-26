@@ -7,20 +7,26 @@
 #ifndef List_h
 #define List_h
 
-#include "misc.h" /* threading support */
+#include <threads.h>
 
-typedef struct List
+typedef struct List_s_
 {
-    void* data; // change
-    struct List *Link;
-	_Lock_
+    void* data;
+    struct List_s_ *Link;
+} List_t_;
+
+typedef struct List_s
+{
+	List_t_ *List;
+	mtx_t Lock;
 } List_t;
 
-void List_add(List_t **n, void *data);
-void List_del(List_t **n, void *data);
-void List_print(List_t **n);
 
-void* List_retrieve_and_remove_first(List_t **n);
+void List_add(List_t *n, void *data);
+void List_del(List_t *n, void *data);
+void List_print(List_t *n);
+
+void* List_retrieve_and_remove_first(List_t *n);
 
 /* list_iterate is not thread safe */
 #define LIST_ITERATE(list) \
