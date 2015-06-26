@@ -22,9 +22,6 @@ extern "C"
 }
 
 class XwinTox* Xw;
-extern "C" Xwin_t *Xwin;
-
-Postbox_t *postbox;
 
 int CGUIUPDFLAG =0;
 
@@ -69,8 +66,13 @@ void ProcessEvents()
 		}
 		else if(Event->type == FCONN)
 		{
-			FindContact(Event->paramid)->connected =Event->param0;
+			Contact_t *c;
+			if((c =FindContact(Event->paramid)) != 0)
+			{
+			c->connected =Event->param0;
 			FindContactEntry(Event->paramid)->redraw();
+			}
+			else dbg("corner case in friend connection\n");
 		}
 		else if(Event->type == FNAME)
 		{
@@ -88,7 +90,7 @@ void ProcessEvents()
 			message->S1 =strdup(msg1);
 			message->S2 =strdup(pbmsg);
 			free(tofree);
-			PB_Signal(postbox, PB_FRequest, message);
+			PB_Defer(APP->postbox, PB_FRequest, message);
 		}
 		else if(Event->type == FSTATUS)
 		{
@@ -119,8 +121,6 @@ extern "C" int CXXMain()
 	int scale =1;
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
-	
-	postbox =PB_New();
 
 	while((c =(Contact_t*)List_retrieve_and_remove_first(APP->Xwin->ICQueue))
 	        != 0)
@@ -138,7 +138,7 @@ extern "C" int CXXMain()
 	while(1)
 	{
 		Fl::wait(0.1);
-
+		PB_Despatch_Deferred(APP->postbox);
 		if(APP->Xwin->Events) ProcessEvents();
 
 		if(CGUIUPDFLAG)

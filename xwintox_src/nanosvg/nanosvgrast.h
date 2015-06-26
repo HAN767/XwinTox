@@ -3843,7 +3843,7 @@ static void nsvg__initPaint(NSVGcachedPaint* cache, NSVGpaint* paint, float opac
 }
 
 
-static void dumpEdges(NSVGrasterizer* r, const char* name)
+/*static void dumpEdges(NSVGrasterizer* r, const char* name)
 {
 	float xmin = 0, xmax = 0, ymin = 0, ymax = 0;
 	NSVGedge *e = NULL;
@@ -3881,7 +3881,7 @@ static void dumpEdges(NSVGrasterizer* r, const char* name)
 
 	fprintf(fp, "</svg>");
 	fclose(fp);
-}
+}*/
 
 
 void nsvgRasterize(NSVGrasterizer* r,

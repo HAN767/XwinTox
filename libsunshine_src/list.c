@@ -40,7 +40,7 @@ List_add(List_t *n, void* data)
 	else
 	{
 		t =n->List;
-		temp =malloc(sizeof(List_t));
+		temp =malloc(sizeof(List_t_));
 		while(t->Link != NULL)
 			t =t->Link;
 		temp->data =data;

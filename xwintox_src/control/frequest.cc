@@ -77,7 +77,7 @@ void fracceptcallback(Fl_Widget *w, void *fr)
 
 	f->frs.erase(f->frs.begin() + f->selected);
 	frs_nextreq(f);
-	PB_Signal(postbox, PB_FReqServiced, message);
+	PB_Signal(APP->postbox, PB_FReqServiced, message);
 }
 
 FriendRequests::FriendRequests(int X, int Y, int S)
@@ -124,7 +124,7 @@ FriendRequests::FriendRequests(int X, int Y, int S)
 	this->selected =0;
 	this->redraw();*/
 
-	PB_Register(postbox, PB_FRequest | PB_FReqServiced, this, frs_post);
+	PB_Register(APP->postbox, PB_FRequest | PB_FReqServiced, this, frs_post);
 }
 
 void FriendRequests::resize(int X, int Y, int W, int H)

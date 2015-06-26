@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
 
+#include <threads.h>
+
 #include "list.h"
 
 
@@ -14,7 +16,7 @@ typedef enum PBMTypes_e
 	PB_FRequest =1,
 	PB_FReqServiced =2
 }
-PBMTypes;
+                 PBMTypes;
 
 typedef struct PBMessage_s
 {
@@ -29,13 +31,23 @@ typedef struct PBRegistryEntry_s
 	void *custom;
 } PBRegistryEntry_t;
 
+typedef struct PBDeferred_s
+{
+	int mtype;
+	PBMessage_t *msg;
+} PBDeferred_t;
+
 typedef struct Postbox_s
 {
 	List_t *clients;
+	List_t *deferred;
+	mtx_t Lock;
 } Postbox_t;
 
 Postbox_t *PB_New();
+void PB_Defer(Postbox_t *pb, PBMTypes mtype, PBMessage_t *msg);
 void PB_Signal(Postbox_t *pb, PBMTypes mtype, PBMessage_t* msg);
+void PB_Despatch_Deferred(Postbox_t *pb);
 void PB_Register(Postbox_t *pb, int mtypes, void*,
                  void (*callback)(int, PBMessage_t*, void*));
 

@@ -76,7 +76,7 @@ Dictionary_new (int size)
 	Dictionary_t *newdict =calloc (1, sizeof (Dictionary_t));
 
 	newdict->size =size;
-	newdict->entries =calloc (1, sizeof (List_t *) * newdict->size);
+	newdict->entries =calloc (1, sizeof (List_t_ *) * newdict->size);
 
 	newdict->Lock =calloc(1, sizeof (mtx_t));
 	mtx_init(newdict->Lock, mtx_plain);

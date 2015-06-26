@@ -14,6 +14,7 @@
 
 #include "xwintox.h"
 #include "etc.h"
+#include "postbox.h"
 
 #define GTC(X) (char *)Dictionary_get (APP->Config, X )
 
@@ -302,6 +303,7 @@ int main()
 
 	APP->Config =Dictionary_new(24);
 	APP->ConfigFilename =get_config_filename();
+	APP->postbox =PB_New();
 
 	umask(S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 

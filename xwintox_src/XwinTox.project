@@ -28,7 +28,11 @@
   </Reconciliation>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="xwintox_src"/>
+  <VirtualDirectory Name="xwintox_src">
+    <File Name="postbox.c"/>
+    <File Name="postbox.h"/>
+    <File Name="xwintox.h"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="comm">
     <File Name="comm/etc.c"/>
     <File Name="comm/etc.h"/>

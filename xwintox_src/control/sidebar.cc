@@ -65,7 +65,7 @@ Sidebar::Sidebar(int S) : Fl_Group(Xw->basex * S,Xw->basey * S,
 	f_reqs->show();
 	f_reqs->hide();
 
-	PB_Register(postbox, PB_FRequest | PB_FReqServiced, this, sb_post);
+	PB_Register(APP->postbox, PB_FRequest | PB_FReqServiced, this, sb_post);
 
 	resize(x(), y(), w(), h());
 	end();

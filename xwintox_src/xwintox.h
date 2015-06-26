@@ -41,6 +41,8 @@ typedef struct XwinTox_instance_s
 	Comm_t *Comm;
 	Resolv_t *Resolv;
 
+	Postbox_t *postbox;
+
 	int Connected;
 
 	Dictionary_t *Config;
@@ -67,7 +69,6 @@ typedef struct FriendRequest_s
 } FriendRequest_t;
 
 extern XwinTox_instance_t *APP;
-extern Postbox_t *postbox;
 
 #ifdef __cplusplus
 void CommWork();
