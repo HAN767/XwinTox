@@ -55,7 +55,7 @@ PLATCFLAGS+= -D_GNU_SOURCE
 PLATLDFLAGS= -pthread -lstdc++ -lm 
 
 TOXINC= -I/usr/local/include
-TOXLIB= -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
+TOXLIB= -static -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
 
 FLTKINC= \$(shell fltk-config --cxxflags)
 FLTKLIB= \$(shell fltk-config --ldstaticflags) -lxcb
@@ -74,7 +74,7 @@ PLATCFLAGS= -I\$(ROOTDIR)/libsunshine_src/hdr/compat -fcolor-diagnostics
 PLATLDFLAGS= -pthread -lstdc++ -lm 
 
 TOXINC= -I/usr/local/include
-TOXLIB= -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
+TOXLIB= -static -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
 
 FLTKINC= \$(shell fltk-config --cxxflags)
 FLTKLIB= \$(shell fltk-config --ldstaticflags) -lxcb

@@ -31,6 +31,7 @@ int launch_tox_thread()
 {
 	dbg("Launching Tox thread\n");
 	Returns =List_new(); Events =List_new(); Calls =List_new();
+	Groupchats =List_new();
 	cnd_init(&Tox_comm->ConnectedCnd);
 	mtx_init(&Tox_comm->ConnectedMtx, mtx_plain);
 
