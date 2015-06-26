@@ -21,6 +21,7 @@ XwinTox_instance_t *APP;
 CLIENT *clnt;
 
 extern int CXXMain();
+extern int Resolv_main();
 
 int sendfriendrequest(char* Rmsg)
 {
@@ -292,10 +293,12 @@ int main()
 	APP =calloc(1, sizeof(XwinTox_instance_t));
 	APP->Comm =calloc(1, sizeof(Comm_t));
 	APP->Xwin =calloc(1, sizeof(Xwin_t));
+	APP->Resolv =calloc(1, sizeof(Resolv_t));
 
 	APP->Comm->WorkQueue =List_new();
 	APP->Xwin->Events =List_new();
 	APP->Xwin->ICQueue =List_new();
+	APP->Resolv->Calls =List_new();
 
 	APP->Config =Dictionary_new(24);
 	APP->ConfigFilename =get_config_filename();
@@ -320,8 +323,10 @@ int main()
 
 	mtx_init(&APP->Comm->WorkMtx, mtx_plain);
 	mtx_init(&APP->Xwin->EventsMtx, mtx_plain);
-	thrd_create(&APP->Xwin->Thrd, CXXMain, 0);
+	mtx_init(&APP->Resolv->Run, mtx_plain);
 
+	thrd_create(&APP->Xwin->Thrd, CXXMain, 0);
+	thrd_create(&APP->Resolv->Thread, Resolv_main, 0);
 
 	APP->Connected = !toxconnect_1(
 	                     (int)atoi(Dictionary_get(APP->Config, "Tox.BootstrapPort")),

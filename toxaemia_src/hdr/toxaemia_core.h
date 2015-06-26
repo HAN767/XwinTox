@@ -5,6 +5,7 @@
 
 #include <tox/tox.h>
 
+#include "misc.h"
 #include "list.h"
 
 #include "toxaemia_rpc.h"
@@ -29,13 +30,6 @@ typedef struct Tox_comm_s
 	ToxSaveData_t SaveData;
 	mtx_t SaveDataMtx;
 } Tox_comm_t;
-
-typedef struct Call_s
-{
-	unsigned long Func;
-	char *S1, *S2;
-	int I1, I2;
-} Call_t;
 
 extern Tox_comm_t *Tox_comm;
 extern int Tox_thread_launched;

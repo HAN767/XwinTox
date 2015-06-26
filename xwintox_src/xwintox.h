@@ -20,6 +20,13 @@ typedef struct Xwin_s
 	mtx_t EventsMtx;
 } Xwin_t;
 
+typedef struct Resolv_s
+{
+	thrd_t Thread;
+	List_t *Calls;
+	mtx_t Run; /* this is unlocked to complete a request */
+} Resolv_t;
+
 typedef struct Comm_s
 {
 	int WantQuit;
@@ -32,6 +39,7 @@ typedef struct XwinTox_instance_s
 {
 	Xwin_t *Xwin;
 	Comm_t *Comm;
+	Resolv_t *Resolv;
 
 	int Connected;
 
@@ -58,10 +66,10 @@ typedef struct FriendRequest_s
 	char *pubkey, *message;
 } FriendRequest_t;
 
-#ifdef __cplusplus
+extern XwinTox_instance_t *APP;
 extern Postbox_t *postbox;
 
-extern XwinTox_instance_t *APP;
+#ifdef __cplusplus
 void CommWork();
 }
 #endif

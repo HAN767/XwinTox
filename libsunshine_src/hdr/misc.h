@@ -20,6 +20,13 @@
 #define dbg(format,args...)        \
 	dbg2(__func__, format, ## args);
 
+typedef struct Call_s
+{
+	unsigned long Func;
+	char *S1, *S2;
+	int I1, I2;
+} Call_t;
+
 void dbg2(const char *funcname, const char *format,  ...);
 
 #endif

@@ -110,4 +110,6 @@
   <VirtualDirectory Name="hdr">
     <File Name="hdr/toxaemia_core.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
