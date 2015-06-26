@@ -325,7 +325,8 @@ int main()
 
 	mtx_init(&APP->Comm->WorkMtx, mtx_plain);
 	mtx_init(&APP->Xwin->EventsMtx, mtx_plain);
-	mtx_init(&APP->Resolv->Run, mtx_plain);
+	mtx_init(&APP->Resolv->CallsMtx, mtx_plain);
+	cnd_init(&APP->Resolv->CallsCnd);
 
 	thrd_create(&APP->Xwin->Thrd, CXXMain, 0);
 	thrd_create(&APP->Resolv->Thread, Resolv_main, 0);

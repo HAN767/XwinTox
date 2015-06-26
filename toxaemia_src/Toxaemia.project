@@ -100,11 +100,9 @@
   </Settings>
   <VirtualDirectory Name="toxaemia_src">
     <File Name="toxaemia_funcs.c"/>
-    <File Name="toxaemia_util.h"/>
     <File Name="toxaemia_tox_callbacks.c"/>
     <File Name="toxaemia.c"/>
     <File Name="Makefile"/>
-    <File Name="toxaemia_util.c"/>
     <File Name="toxaemia.x"/>
   </VirtualDirectory>
   <VirtualDirectory Name="hdr">

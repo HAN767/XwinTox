@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "toxaemia_util.h"
+#include "hexstring.h"
 
-uint8_t* hex_string_to_bin(const char *hex_string)
+uint8_t *hex_string_to_bin(const char *hex_string)
 {
 	size_t i, len =strlen(hex_string) / 2;
 	uint8_t *ret =calloc(len, 1);
@@ -18,7 +18,7 @@ uint8_t* hex_string_to_bin(const char *hex_string)
 	return ret;
 }
 
-char* bin_to_hex_string(const uint8_t *bin, size_t len)
+char *bin_to_hex_string(const uint8_t *bin, size_t len)
 {
 	char *result =calloc((2 * len) + 1, sizeof(char));
 
@@ -30,3 +30,4 @@ char* bin_to_hex_string(const uint8_t *bin, size_t len)
 	result[(2 * len) +1] ='\0';
 	return result;
 }
+

@@ -12,9 +12,9 @@
 
 #include "list.h"
 #include "misc.h"
+#include "hexstring.h"
 
 #include "toxaemia_core.h"
-#include "toxaemia_util.h"
 
 extern short F_online[65535];
 extern List_t *Groupchats;

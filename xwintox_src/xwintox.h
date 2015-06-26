@@ -24,7 +24,9 @@ typedef struct Resolv_s
 {
 	thrd_t Thread;
 	List_t *Calls;
-	mtx_t Run; /* this is unlocked to complete a request */
+	short CallsCnt;
+	mtx_t CallsMtx;
+	cnd_t CallsCnd;
 } Resolv_t;
 
 typedef struct Comm_s

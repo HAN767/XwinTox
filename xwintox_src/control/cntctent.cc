@@ -148,7 +148,7 @@ void ContactsEntry::draw()
 	else
 	{
 		name =groupchat->name;
-		status ="";
+		status =(char*)"";
 
 		icon->resize(x()- (8 * scale), y()+ (2 * scale), 46 * scale, 46 * scale);
 		invicon->resize(x()+ (14 * scale), y()+ (12 * scale), 46 * scale,

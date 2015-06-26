@@ -169,5 +169,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="resolv">
     <File Name="resolv/toxdns.c"/>
+    <File Name="resolv/dresolv.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

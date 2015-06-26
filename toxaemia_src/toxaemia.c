@@ -8,10 +8,10 @@
 
 #include "misc.h"
 #include "list.h"
+#include "hexstring.h"
 
 #include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
-#include "toxaemia_util.h"
 
 Tox_comm_t *Tox_comm;
 int Tox_thread_launched =0;

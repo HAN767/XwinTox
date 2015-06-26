@@ -4,6 +4,8 @@
 #include <FL/Fl_Multiline_Input.H>
 #include <FL/fl_draw.H>
 
+#include "resolv/dresolv.h"
+
 #include "control/gui.h"
 #include "control/gaddfrnd.h"
 
@@ -21,9 +23,6 @@ void removespaces(char * s)
 void af_pressed(Fl_Widget *w, void *custom)
 {
 	GAddFriend *g =(GAddFriend*)custom;
-	char *amsg =(char*)calloc(255, sizeof(char));
-	char *bmsg =(char*)calloc(9, sizeof(char));
-	char *cmsg =(char*)calloc(14, sizeof(char));
 	char *id =strdup(g->id->value());
 	const char *msg =g->message->value();
 
@@ -34,17 +33,32 @@ void af_pressed(Fl_Widget *w, void *custom)
 	{
 		/* a regular tox key */
 		dbg("Regular Tox key\n");
+		char *amsg =(char*)calloc(255, sizeof(char));
+		char *bmsg =(char*)calloc(9, sizeof(char));
+		char *cmsg =(char*)calloc(14, sizeof(char));
+
+		sprintf(amsg, "sendfriendrequest %s %s", id, msg);
+		free (id);
+		strcpy(bmsg, "savedata");
+		strcpy(cmsg, "getfriendlist");
+
+		List_add(APP->Comm->WorkQueue, (void*)amsg);
+		List_add(APP->Comm->WorkQueue, (void*)bmsg);
+		List_add(APP->Comm->WorkQueue, (void*)cmsg);
+		CommWork();
+		return;
+	}
+	else if (strchr(id, '@'))
+	{
+		dbg("ToxDNS ID\n");
+		Call_t *call =(Call_t*)calloc(1, sizeof(Call_t));
+		call->Func =R_DNSResolve;
+		call->S1 =id;
+		List_add(APP->Resolv->Calls, call);
+		ResolvAddWork(1);
+		return;
 	}
 
-	sprintf(amsg, "sendfriendrequest %s %s", id, msg);
-	free (id);
-	strcpy(bmsg, "savedata");
-	strcpy(cmsg, "getfriendlist");
-
-	List_add(APP->Comm->WorkQueue, (void*)amsg);
-	List_add(APP->Comm->WorkQueue, (void*)bmsg);
-	List_add(APP->Comm->WorkQueue, (void*)cmsg);
-	CommWork();
 }
 
 GAddFriend::GAddFriend(int S) : GArea(S, "Add Friends")

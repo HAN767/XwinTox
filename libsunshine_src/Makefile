@@ -5,7 +5,7 @@
 include $(ROOTDIR)/Makefile.cfg
 
 STLIB=libsunshine.ar
-OBJ_C= list.c misc.c dictionary.c ini/ini.c
+OBJ_C= list.c misc.c dictionary.c hexstring.c ini/ini.c
 
 CFLAGS = -I$(ROOTDIR)/libsunshine_src/hdr -O0 -g -fPIC
 
