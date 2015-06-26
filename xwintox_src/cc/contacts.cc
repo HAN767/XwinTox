@@ -29,7 +29,7 @@ void DeleteContact(int num)
 		vector <Contact_t*> *ref=&contactlist->contacts;
 		vector <GMessageArea*> *mref =&Xw->contents->messageareas;
 		sprintf(amsg, "deletecontact %d", num);
-		List_add(&APP->Comm->WorkQueue, (void*)amsg);
+		List_add(APP->Comm->WorkQueue, (void*)amsg);
 
 		for(const auto messagearea : Xw->contents->messageareas)
 		{

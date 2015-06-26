@@ -6,8 +6,10 @@ extern "C"
 {
 #endif
 
+#include "misc.h"
 #include "dictionary.h"
 #include "list.h"
+
 #include "signal.h"
 
 typedef struct Xwin_s

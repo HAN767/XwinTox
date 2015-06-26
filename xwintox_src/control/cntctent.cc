@@ -32,7 +32,7 @@ void ce_deletecontact(ContactsEntry *ce)
 		char *amsg =(char*)calloc(255, sizeof(char));
 
 		sprintf(amsg, "leavegroupchat %d", ce->groupchat->num);
-		List_add(&APP->Comm->WorkQueue, (void*)amsg);
+		List_add(APP->Comm->WorkQueue, (void*)amsg);
 
 		todel =ce->groupchat;
 		vector <Groupchat_t*> *ref=&groupchats;

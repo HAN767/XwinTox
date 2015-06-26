@@ -41,9 +41,9 @@ void af_pressed(Fl_Widget *w, void *custom)
 	strcpy(bmsg, "savedata");
 	strcpy(cmsg, "getfriendlist");
 
-	List_add(&APP->Comm->WorkQueue, (void*)amsg);
-	List_add(&APP->Comm->WorkQueue, (void*)bmsg);
-	List_add(&APP->Comm->WorkQueue, (void*)cmsg);
+	List_add(APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)bmsg);
+	List_add(APP->Comm->WorkQueue, (void*)cmsg);
 	CommWork();
 }
 

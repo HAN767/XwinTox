@@ -28,7 +28,7 @@ void NewGroupchatPressed(Fl_Widget *B, void*)
 	char *amsg =(char*)calloc(13, sizeof(char));
 	strcpy(amsg, "newgroupchat");
 	dbg("New groupchat\n");
-	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)amsg);
 }
 
 void SendMessagePressed(Fl_Widget* B , void*)
@@ -61,7 +61,7 @@ void SendMessagePressed(Fl_Widget* B , void*)
 		//FindGroupchatMArea(id)->moutbuffer->append(nmsg);
 	}
 
-	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)amsg);
 	CommWork();
 }
 
@@ -72,7 +72,7 @@ void WindowClosed(Fl_Widget *widget, void *)
 
 	sprintf(amsg, "quit");
 
-	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)amsg);
 	CommWork();
 }
 

@@ -70,7 +70,7 @@ void fracceptcallback(Fl_Widget *w, void *fr)
 	PBMessage_t *message =(PBMessage_t*)calloc(1, sizeof(PBMessage_t));
 
 	sprintf(icmsg, "addfriendnorequest %s", f->frs[f->selected]->pubkey);
-	List_add(&APP->Comm->WorkQueue, (void*)icmsg);
+	List_add(APP->Comm->WorkQueue, (void*)icmsg);
 	CommWork();
 
 	f->frs.erase(f->frs.begin() + f->selected);

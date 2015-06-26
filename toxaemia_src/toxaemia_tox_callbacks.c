@@ -11,6 +11,7 @@
 #include <tox/tox.h>
 
 #include "list.h"
+#include "misc.h"
 
 #include "toxaemia_core.h"
 #include "toxaemia_util.h"
@@ -58,7 +59,7 @@ void cb_friend_connection_status(Tox *tox, uint32_t friend_number,
 
 	dbg("ID %d status %d\n", friend_number, connection_status);
 
-	List_add(&Events, event);
+	List_add(Events, event);
 
 }
 
@@ -76,7 +77,7 @@ void cb_friend_name(Tox *tox, uint32_t friend_number, const uint8_t *name,
 
 	strncpy(nname, (char*) name, length);
 	nname[length+1] ='\0';
-	List_add(&Events, event);
+	List_add(Events, event);
 }
 
 void cb_friend_status_message(Tox *tox, uint32_t friend_number,
@@ -94,7 +95,7 @@ void cb_friend_status_message(Tox *tox, uint32_t friend_number,
 
 	strncpy(nstatus, (char*) status, length);
 	nstatus[length+1] ='\0';
-	List_add(&Events, event);
+	List_add(Events, event);
 }
 
 void cb_friend_request(Tox *tox, const uint8_t *public_key,
@@ -113,7 +114,7 @@ void cb_friend_request(Tox *tox, const uint8_t *public_key,
 	sprintf(nbundle, "%s %s", s_pubkey, s_message);
 	dbg("Friend request: %s", nbundle);
 	free (s_message); free(s_pubkey);
-	List_add(&Events, event);
+	List_add(Events, event);
 }
 
 void cb_friend_message(Tox *tox, uint32_t friend_number, TOX_MESSAGE_TYPE type,
@@ -132,7 +133,7 @@ void cb_friend_message(Tox *tox, uint32_t friend_number, TOX_MESSAGE_TYPE type,
 	event->param3.param3_len =0;
 
 	dbg("Message from ID %d: %s\n", event->paramid, nmessage);
-	List_add(&Events, event);
+	List_add(Events, event);
 }
 
 void cb_group_invite(Tox *tox, int32_t friendnumber, uint8_t type,
@@ -143,14 +144,14 @@ void cb_group_invite(Tox *tox, int32_t friendnumber, uint8_t type,
 	if(gid != -1)
 	{
 		ToxEvent_t *event = calloc(1, sizeof(ToxEvent_t));
-		List_add(&Groupchats, (void*) gid);
+		List_add(Groupchats, (void*) gid);
 		dbg("Joined groupchat %d\n", gid);
 		event->type =GNEW;
 		event->paramid =gid;
 		event->param1 =calloc(1, sizeof(char));
 		event->param2.param2_len =0;
 		event->param3.param3_len =0;
-		List_add(&Events, event);
+		List_add(Events, event);
 	}
 }
 
@@ -202,7 +203,7 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 	event->param3.param3_val =calloc(numpeers, sizeof(short));
 	memcpy(event->param3.param3_val, peerlens, sizeof(short) * numpeers);
 	event->param3.param3_len =numpeers;
-	List_add(&Events, event);
+	List_add(Events, event);
 }
 
 void cb_group_message(Tox *tox, int groupnumber, int peernumber,
@@ -219,7 +220,7 @@ void cb_group_message(Tox *tox, int groupnumber, int peernumber,
 	event->param3.param3_len =0;
 
 	dbg("Group message: %s\n", msg);
-	List_add(&Events, event);
+	List_add(Events, event);
 }
 
 void InitCallbacks()

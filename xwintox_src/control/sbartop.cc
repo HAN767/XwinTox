@@ -54,5 +54,5 @@ void namechangecb(Fl_Widget *w, long which)
 	if (which) Dictionary_set(APP->Config, "Tox.Name", f->value());
 	else Dictionary_set(APP->Config, "Tox.Status", f->value());
 	
-	List_add(&APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)amsg);
 }

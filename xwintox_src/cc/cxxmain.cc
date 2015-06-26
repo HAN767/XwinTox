@@ -44,7 +44,7 @@ void SaveData()
 {
 	char *amsg =(char*)calloc(9, sizeof(char));
 	strcpy(amsg, "savedata");
-	List_add(&APP->Comm->WorkQueue, amsg);
+	List_add(APP->Comm->WorkQueue, amsg);
 }
 
 void ProcessEvents()
@@ -52,7 +52,7 @@ void ProcessEvents()
 	ToxEvent_t *Event;
 
 	while((Event =(ToxEvent_t*)
-	              List_retrieve_and_remove_first(&APP->Xwin->Events)) != 0)
+	              List_retrieve_and_remove_first(APP->Xwin->Events)) != 0)
 	{
 		dbg("Event: Type %d ParamID %d Param0 %d Param1 %s\n", Event->type,
 		    Event->paramid, Event->param0, Event->param1);
@@ -120,9 +120,9 @@ extern "C" int CXXMain()
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
 	
-	postbox =(Postbox_t*)calloc(1, sizeof(Postbox_t));
+	postbox =PB_New();
 
-	while((c =(Contact_t*)List_retrieve_and_remove_first(&APP->Xwin->ICQueue))
+	while((c =(Contact_t*)List_retrieve_and_remove_first(APP->Xwin->ICQueue))
 	        != 0)
 	{
 		contactlist->contacts.push_back(c);

@@ -19,6 +19,9 @@ int Tox_thread_launched =0;
 short F_online[65535] = { 0 };
 
 List_t *Groupchats =0;
+List_t *Returns =0;
+List_t *Events =0;
+List_t *Calls =0;
 
 void InitCallbacks();
 
@@ -27,6 +30,7 @@ int Tox_comm_main();
 int launch_tox_thread()
 {
 	dbg("Launching Tox thread\n");
+	Returns =List_new(); Events =List_new(); Calls =List_new();
 	cnd_init(&Tox_comm->ConnectedCnd);
 	mtx_init(&Tox_comm->ConnectedMtx, mtx_plain);
 
@@ -84,8 +88,8 @@ void Send_friend_request(char* id, char* message)
 	                      strlen(message), &err);
 	dbg("ID %s, Msg %s, Error %d\n", id, message, err);
 
-	if(err == TOX_ERR_FRIEND_ADD_OK) List_add(&Returns, (void*)newid);
-	else List_add(&Returns, (void*)-1);
+	if(err == TOX_ERR_FRIEND_ADD_OK) List_add(Returns, (void*)newid);
+	else List_add(Returns, (void*)-1);
 
 }
 
@@ -93,11 +97,11 @@ void Deliver_friend_list()
 {
 	unsigned int *data;
 
-	List_add(&Returns, (void*) tox_self_get_friend_list_size(Tox_comm->tox));
+	List_add(Returns, (void*) tox_self_get_friend_list_size(Tox_comm->tox));
 
-	data =calloc((int) Returns->data, sizeof(unsigned int));
+	data =calloc((int) Returns->List->data, sizeof(unsigned int));
 	tox_self_get_friend_list(Tox_comm->tox, data);
-	List_add(&Returns, data);
+	List_add(Returns, data);
 }
 
 void Deliver_friend(unsigned int num)
@@ -124,11 +128,11 @@ void Deliver_friend(unsigned int num)
 
 	status =tox_friend_get_status(Tox_comm->tox, num, &err);
 
-	List_add(&Returns, name);
-	List_add(&Returns, statusm);
-	List_add(&Returns, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE));
-	List_add(&Returns, (void*)status);
-	List_add(&Returns, (void*) F_online[num]);
+	List_add(Returns, name);
+	List_add(Returns, statusm);
+	List_add(Returns, bin_to_hex_string(pubkey, TOX_PUBLIC_KEY_SIZE));
+	List_add(Returns, (void*)status);
+	List_add(Returns, (void*) F_online[num]);
 }
 
 void Send_message(ToxMessageType type, unsigned int num, char* message)
@@ -147,7 +151,7 @@ void Send_message(ToxMessageType type, unsigned int num, char* message)
 
 void Create_group_chat()
 {
-	List_add(&Returns, (void*)tox_add_groupchat(Tox_comm->tox));
+	List_add(Returns, (void*)tox_add_groupchat(Tox_comm->tox));
 }
 
 /* new call structure */
@@ -199,9 +203,9 @@ int Tox_comm_main()
 
 	while(1)
 	{
-		if(Tox_comm->ICQueue)
+		if(Tox_comm->ICQueue->List)
 		{
-			char* Rmsg =List_retrieve_and_remove_first(&Tox_comm->ICQueue);
+			char* Rmsg =List_retrieve_and_remove_first(Tox_comm->ICQueue);
 			char* tofree =Rmsg;
 
 			if(!strcmp(Rmsg, "getsavedata"))	Deliver_save_data();
@@ -239,9 +243,9 @@ int Tox_comm_main()
 			free(tofree);
 		}
 
-		if(Calls)
+		if(Calls->List)
 		{
-			Call_t *call =List_retrieve_and_remove_first(&Calls);
+			Call_t *call =List_retrieve_and_remove_first(Calls);
 
 			if(call->Func ==ToxSetNameStatus)
 			{
@@ -262,7 +266,7 @@ int Tox_comm_main()
 				if(ferr == TOX_ERR_FRIEND_ADD_ALREADY_SENT) dbg("already\n");
 				if(ferr == TOX_ERR_FRIEND_ADD_BAD_CHECKSUM) dbg("bad checksum\n");
 
-				List_add(&Returns, ret);
+				List_add(Returns, ret);
 			}
 
 			if(call->S1) free(call->S1);

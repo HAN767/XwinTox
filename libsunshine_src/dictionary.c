@@ -312,7 +312,7 @@ Dictionary_write_to_file (Dictionary_t *dict, const char *filename)
 		{
 			secbuf =calloc (8192, sizeof (char));
 			sprintf (secbuf, "%s", secbegin);
-			List_add (&secbuffer, secbuf);
+			List_add (secbuffer, secbuf);
 		}
 
 		sprintf (secline, "%s=%s\n", name, entry->value);

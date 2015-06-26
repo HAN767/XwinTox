@@ -34,6 +34,7 @@ typedef struct Postbox_s
 	List_t *clients;
 } Postbox_t;
 
+Postbox_t *PB_New();
 void PB_Signal(Postbox_t *pb, PBMTypes mtype, PBMessage_t* msg);
 void PB_Register(Postbox_t *pb, int mtypes, void*,
                  void (*callback)(int, PBMessage_t*, void*));

@@ -2,17 +2,23 @@
 
 #include "signal.h"
 
+Postbox_t *PB_New()
+{
+	Postbox_t *newpb =calloc(1, sizeof(Postbox_t));
+	newpb->clients =List_new();
+	return newpb;
+}
+
 void PB_Signal(Postbox_t *pb, PBMTypes mtype, PBMessage_t* msg)
 {
-	LIST_ITERATE(pb->clients)
-	{
+	LIST_ITERATE_OPEN(pb->clients)
 		if(((PBRegistryEntry_t*) e_data)->mtypes & mtype)
 		{
 			((PBRegistryEntry_t*) e_data)->
 			callback(mtype, msg,
 			         ((PBRegistryEntry_t*) e_data)->custom);
 		}
-	}
+	LIST_ITERATE_CLOSE(pb->clients)
 
 	if(msg->S1) free(msg->S1);
 
@@ -28,5 +34,5 @@ void PB_Register(Postbox_t *pb, int mtypes, void* custom,
 	e->mtypes =mtypes;
 	e->callback =callback;
 	e->custom =custom;
-	List_add(&pb->clients, e);
+	List_add(pb->clients, e);
 }

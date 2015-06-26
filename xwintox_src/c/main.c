@@ -51,7 +51,7 @@ int sendfriendrequest(char* Rmsg)
 							after successful request */
 		fadd->param1 =calloc(1, sizeof(char));
 		fadd->param2.param2_len =0;
-		List_add(&APP->Xwin->Events, fadd);
+		List_add(APP->Xwin->Events, fadd);
 	}
 
 	return 0;
@@ -78,7 +78,7 @@ int addfriendnorequest(char* Rmsg)
 							after successful request */
 		fadd->param1 =calloc(1, sizeof(char));
 		fadd->param2.param2_len =0;
-		List_add(&APP->Xwin->Events, fadd);
+		List_add(APP->Xwin->Events, fadd);
 	}
 
 	return 0;
@@ -179,7 +179,7 @@ void getfriendlist()
 		c->num =tst->Data.Data_val[0];
 		printf("Friend ID: %d, name %s, status %s, pubkey %s\n",
 		       tst->Data.Data_val[0], c->name, c->statusm, c->pubkey);
-		List_add(&APP->Xwin->ICQueue, c);
+		List_add(APP->Xwin->ICQueue, c);
 		dbg("Alternative pathway completed\n");
 		return;
 	}
@@ -196,7 +196,7 @@ void getfriendlist()
 		c->num =tst->Data.Data_val[i];
 		printf("Friend ID: %d, name %s, status %s, pubkey %s\n",
 		       tst->Data.Data_val[i], c->name, c->statusm, c->pubkey);
-		List_add(&APP->Xwin->ICQueue, c);
+		List_add(APP->Xwin->ICQueue, c);
 		dbg("Primary pathway completed\n");
 	}
 }
@@ -252,7 +252,7 @@ void newgroupchat()
 							after successful request */
 		fadd->param1 =calloc(1, sizeof(char));
 		fadd->param2.param2_len =0;
-		List_add(&APP->Xwin->Events, fadd);
+		List_add(APP->Xwin->Events, fadd);
 	}
 
 	dbg("Groupchat: %d\n", *res);
@@ -292,6 +292,10 @@ int main()
 	APP =calloc(1, sizeof(XwinTox_instance_t));
 	APP->Comm =calloc(1, sizeof(Comm_t));
 	APP->Xwin =calloc(1, sizeof(Xwin_t));
+
+	APP->Comm->WorkQueue =List_new();
+	APP->Xwin->Events =List_new();
+	APP->Xwin->ICQueue =List_new();
 
 	APP->Config =Dictionary_new(24);
 	APP->ConfigFilename =get_config_filename();
@@ -337,7 +341,7 @@ int main()
 		mtx_lock(&APP->Comm->WorkMtx);
 		mtx_lock(&APP->Xwin->EventsMtx);
 
-		work =List_retrieve_and_remove_first(&APP->Comm->WorkQueue);
+		work =List_retrieve_and_remove_first(APP->Comm->WorkQueue);
 		tofree =work;
 
 		if(!work) goto nowork;
@@ -407,7 +411,7 @@ nowork:
 				       Event->param3.param3_len * sizeof(short));
 				NEvent->param3.param3_len =Event->param3.param3_len;
 
-				List_add(&APP->Xwin->Events, NEvent);
+				List_add(APP->Xwin->Events, NEvent);
 			}
 
 			gettimeofday(&tv, NULL);
