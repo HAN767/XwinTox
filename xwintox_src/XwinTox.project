@@ -171,4 +171,8 @@
     <File Name="resolv/toxdns.c"/>
     <File Name="resolv/dresolv.h"/>
   </VirtualDirectory>
+  <VirtualDirectory Name="evcomm">
+    <File Name="evcomm/evcomm.h"/>
+    <File Name="evcomm/evcomm.c"/>
+  </VirtualDirectory>
 </CodeLite_Project>

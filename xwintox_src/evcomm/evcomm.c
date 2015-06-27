@@ -11,28 +11,34 @@
 #include "evcomm.h"
 
 #define RETRY \
-	sleep (5); \
-	goto reconnect;
+	{ sleep (5); \
+		goto reconnect; }
 
-int readit(char* handle, char* buf, int len)
+int readit(void* handle, void* buf, int len)
 {
-	int sockfd =*handle;
+	int sockfd =*(int*)handle;
 	int err =recv(sockfd, buf, len, 0);
-	dbg("Err: %d, buf: %s", err, buf);
+	dbg("Err: %d\n", err);
+
+	if(err == 0) err =-1;
+
 	return err;
 }
 
-int writeit(char* handle, char* buf, int len)
+int writeit(void* handle, void* buf, int len)
 {
-	int sockfd =*handle;
+	int sockfd =*(int*)handle;
 	int err =send(sockfd, buf, len, 0);
-	dbg("Err: %d, buf: %s", err, buf);
+	dbg("Err: %d\n", err);
+
+	if(err == 0) err =-1;
+
 	return err;
 }
 
 int Evcomm_main(void *data)
 {
-	int ready =0, err;
+	int ready =0, err, zeroflag;
 	struct addrinfo hints, *res, *resfree;
 	char *remote ="localhost", *port ="5554";
 	fd_set recvfds;
@@ -62,6 +68,7 @@ reconnect:
 		if(connect(evcomm->recv_fd, res->ai_addr, res->ai_addrlen)==0)
 		{
 			dbg("Events channel connected\n");
+			freeaddrinfo(resfree);
 			goto net;
 		}
 
@@ -71,12 +78,18 @@ reconnect:
 		}
 
 		close(evcomm->recv_fd); /* ignore */
-
 	}
 	while((res=res->ai_next)!= NULL);
+
+	freeaddrinfo(resfree);
 	RETRY
 
 net:
+
+	evcomm->xdr_recv.x_op =XDR_DECODE;
+	xdrrec_create(&evcomm->xdr_recv, 0, 0, &evcomm->recv_fd, readit, writeit);
+	zeroflag =0;
+
 	while(1)
 	{
 		FD_ZERO(&recvfds);
@@ -86,20 +99,40 @@ net:
 
 		if(ready < 0)
 		{
+			dbg("Ready < 0\n");
+
 			if(errno == EINTR) continue;  /* interruption, probably signal */
 			else break; /* disconnected */
 		}
+		else if(ready == 0)
+		{
+			zeroflag++;
+
+			if(zeroflag > 5)
+			{
+				xdr_destroy(&evcomm->xdr_recv);
+				close(evcomm->recv_fd);
+				RETRY
+			}
+		}
 		else do
 			{
+				int val;
+
 				if(!xdrrec_skiprecord(&evcomm->xdr_recv))
 				{
 					dbg("xdr skip record failed\n");
-					break;
+					xdr_destroy(&evcomm->xdr_recv);
+					close(evcomm->recv_fd);
+					RETRY
 				}
 
-				dbg("Process XDRs here\n");
+				if(!xdr_int(&evcomm->xdr_recv,&val))
+				{
+					dbg("xdr_int read failed\n");
+				}
 			}
-			while(!xdrrec_eof(&evcomm->xdr_recv));
+			while(!xdrrec_eof(&evcomm->xdr_recv) && ready != 0);
 	}
 
 	return 0;
