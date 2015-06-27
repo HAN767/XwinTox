@@ -16,7 +16,6 @@ configureit:
 	@./configure
 
 buildxwintox: buildtoxaemia buildlibsunshine toxaemia_src/toxaemia_clnt.c
-
 	cd xwintox_src && env ROOTDIR=$(shell pwd) $(MAKE) all
 
 buildtoxaemia: buildlibsunshine

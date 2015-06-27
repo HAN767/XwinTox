@@ -12,7 +12,7 @@ CC=clang
 CXX=clang++
 MAKE=/usr/local/bin/gmake
 
-PLATCFLAGS= -fcolor-diagnostics
+PLATCFLAGS= -fcolor-diagnostics -Wno-int-to-void-pointer-cast
 PLATLDFLAGS= -lstdthreads -lm  -lc++
 
 TOXINC+= -I/usr/local/include

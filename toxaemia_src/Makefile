@@ -12,7 +12,7 @@ OBJ_C = toxaemia.c toxaemia_svc.c $(ROOTDIR)/libsunshine_src/libsunshine.ar
 OBJ_C += toxaemia_xdr.c toxaemia_funcs.c toxaemia_tox_callbacks.c
 
 CFLAGS = -I$(ROOTDIR)/libsunshine_src/hdr -O0 -g -Ihdr -DRPC_SVC_FG
-CFLAGS += -DXWTOXVERSION=\"$(VERSION)\" $(TOXINC)
+CFLAGS += -DXWTOXVERSION=\"$(VERSION)\" $(TOXINC) -Wno-unused-variable
 LDFLAGS = $(TOXLIB)
 
 build: $(RPC:%.x=hdr/%_rpc.h) $(RPC:%.x=%_svc.c) $(RPC:%.x=%_xdr.c) \

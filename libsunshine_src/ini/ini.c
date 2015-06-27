@@ -8,7 +8,8 @@ http://code.google.com/p/inih/
 */
 
 #include <stdio.h>
-//#include <ctype.h>
+//#include <ctype.h> breaks gcc for some reason
+int isspace(int c);
 #include <string.h>
 
 #include "ini.h"

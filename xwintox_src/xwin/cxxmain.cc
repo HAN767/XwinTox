@@ -90,7 +90,7 @@ void ProcessEvents()
 			message->S1 =strdup(msg1);
 			message->S2 =strdup(pbmsg);
 			free(tofree);
-			PB_Defer(APP->postbox, PB_FRequest, message);
+			PB_Defer(APP->events, PB_FRequest, message);
 		}
 		else if(Event->type == FSTATUS)
 		{
@@ -138,7 +138,7 @@ extern "C" int CXXMain()
 	while(1)
 	{
 		Fl::wait(0.1);
-		PB_Despatch_Deferred(APP->postbox);
+		PB_Despatch_Deferred(APP->events);
 		if(APP->Xwin->Events) ProcessEvents();
 
 		if(CGUIUPDFLAG)

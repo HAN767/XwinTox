@@ -267,7 +267,7 @@ int Tox_comm_main()
 				if(ferr == TOX_ERR_FRIEND_ADD_ALREADY_SENT) dbg("already\n");
 				if(ferr == TOX_ERR_FRIEND_ADD_BAD_CHECKSUM) dbg("bad checksum\n");
 
-				List_add(Returns, ret);
+				List_add(Returns, (void*)ret);
 			}
 
 			if(call->S1) free(call->S1);

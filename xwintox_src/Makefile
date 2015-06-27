@@ -11,7 +11,7 @@ VERSION = 1
 
 OBJ_C =  comm/main.c comm/etc.c
 OBJ_C += ../toxaemia_src/toxaemia_clnt.c ../toxaemia_src/toxaemia_xdr.c
-OBJ_C += nanosvg/nsvgwrapper.c postbox.c resolv/toxdns.c
+OBJ_C += nanosvg/nsvgwrapper.c postbox.c resolv/toxdns.c evcomm/evcomm.c
 OBJ_C += $(ROOTDIR)/libsunshine_src/libsunshine.ar
 
 OBJ_CXX = xwin/res.cc xwin/cxxmain.cc xwin/contacts.cc xwin/win2.cc control/gui.cc

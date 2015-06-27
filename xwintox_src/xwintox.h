@@ -43,7 +43,7 @@ typedef struct XwinTox_instance_s
 	Comm_t *Comm;
 	Resolv_t *Resolv;
 
-	Postbox_t *postbox;
+	Postbox_t *events;
 
 	int Connected;
 
