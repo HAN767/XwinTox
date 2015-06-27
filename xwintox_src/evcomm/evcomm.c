@@ -1,11 +1,18 @@
 #include <errno.h>
+#include <netdb.h>
 #include <stdio.h>
+#include <strings.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/select.h>
+#include <unistd.h>
 
 #include "misc.h"
 #include "evcomm.h"
+
+#define RETRY \
+	sleep (5); \
+	goto reconnect;
 
 int readit(char* handle, char* buf, int len)
 {
@@ -23,11 +30,53 @@ int writeit(char* handle, char* buf, int len)
 	return err;
 }
 
-int Evcomm_main(Evcomm_t *evcomm)
+int Evcomm_main(void *data)
 {
-	int ready =0;
+	int ready =0, err;
+	struct addrinfo hints, *res, *resfree;
+	char *remote ="localhost", *port ="5554";
 	fd_set recvfds;
+	Evcomm_t *evcomm =data;
 
+reconnect:
+	bzero(&hints, sizeof(struct addrinfo));
+	hints.ai_family=AF_UNSPEC;
+	hints.ai_socktype=SOCK_STREAM;
+	hints.ai_protocol=IPPROTO_TCP;
+
+	if((err =getaddrinfo(remote, port, &hints, &res)) != 0)
+	{
+		dbg("getaddrinfo error for %s:%s; %s", remote, port, gai_strerror(err));
+		RETRY
+	}
+
+	resfree=res;
+
+	do
+	{
+		evcomm->recv_fd =socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+
+		if(evcomm->recv_fd < 0)
+			continue;  /*ignore Ip addr*/
+
+		if(connect(evcomm->recv_fd, res->ai_addr, res->ai_addrlen)==0)
+		{
+			dbg("Events channel connected\n");
+			goto net;
+		}
+
+		else
+		{
+			perror("connecting stream socket");
+		}
+
+		close(evcomm->recv_fd); /* ignore */
+
+	}
+	while((res=res->ai_next)!= NULL);
+	RETRY
+
+net:
 	while(1)
 	{
 		FD_ZERO(&recvfds);
@@ -35,21 +84,22 @@ int Evcomm_main(Evcomm_t *evcomm)
 
 		ready = select(evcomm->recv_fd + 1, &recvfds, NULL, NULL, NULL);
 
-		if (ready < 0)
+		if(ready < 0)
 		{
-			if (errno == EINTR) continue; /* interruption, probably signal */
+			if(errno == EINTR) continue;  /* interruption, probably signal */
 			else break; /* disconnected */
 		}
 		else do
-		{
-			if (!xdrrec_skiprecord(&evcomm->xdr_recv))
 			{
-				dbg("xdr skip record failed\n");
-				break;
+				if(!xdrrec_skiprecord(&evcomm->xdr_recv))
+				{
+					dbg("xdr skip record failed\n");
+					break;
+				}
+
+				dbg("Process XDRs here\n");
 			}
-			dbg("Process XDRs here\n");
-		} 
-		while (!xdrrec_eof(&evcomm->xdr_recv));
+			while(!xdrrec_eof(&evcomm->xdr_recv));
 	}
 
 	return 0;

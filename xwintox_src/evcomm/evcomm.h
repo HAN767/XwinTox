@@ -17,6 +17,8 @@ typedef struct Evcomm_s
 	XDR xdr_recv;
 } Evcomm_t;
 
+int Evcomm_main(void *data);
+
 #ifdef __cplusplus
 }
 #endif

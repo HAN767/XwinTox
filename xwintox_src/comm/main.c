@@ -295,6 +295,7 @@ int main()
 	APP->Comm =calloc(1, sizeof(Comm_t));
 	APP->Xwin =calloc(1, sizeof(Xwin_t));
 	APP->Resolv =calloc(1, sizeof(Resolv_t));
+	APP->Evcomm =calloc(1, sizeof(Evcomm_t));
 
 	APP->Comm->WorkQueue =List_new();
 	APP->Xwin->Events =List_new();
@@ -328,6 +329,7 @@ int main()
 	mtx_init(&APP->Resolv->CallsMtx, mtx_plain);
 	cnd_init(&APP->Resolv->CallsCnd);
 
+	thrd_create(&APP->Evcomm->Thread, Evcomm_main, APP->Evcomm);
 	thrd_create(&APP->Xwin->Thrd, CXXMain, 0);
 	thrd_create(&APP->Resolv->Thread, Resolv_main, 0);
 

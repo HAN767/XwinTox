@@ -11,6 +11,7 @@ extern "C"
 #include "list.h"
 
 #include "postbox.h"
+#include "evcomm/evcomm.h"
 
 typedef struct Xwin_s
 {
@@ -42,6 +43,7 @@ typedef struct XwinTox_instance_s
 	Xwin_t *Xwin;
 	Comm_t *Comm;
 	Resolv_t *Resolv;
+	Evcomm_t *Evcomm;
 
 	Postbox_t *events;
 
