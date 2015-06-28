@@ -10,6 +10,14 @@ extern "C"
 #include "dictionary.h"
 #include "list.h"
 
+typedef enum PBMTypes_e
+{
+	PB_FRequest =1,
+	PB_FReqServiced =2,
+	PB_DNSResolved =4
+}
+                 PBMTypes;
+
 #include "postbox.h"
 #include "evcomm/evcomm.h"
 

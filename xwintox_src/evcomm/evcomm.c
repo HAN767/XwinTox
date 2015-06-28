@@ -85,7 +85,6 @@ reconnect:
 	RETRY
 
 net:
-
 	evcomm->xdr_recv.x_op =XDR_DECODE;
 	xdrrec_create(&evcomm->xdr_recv, 0, 0, &evcomm->recv_fd, readit, writeit);
 	zeroflag =0;

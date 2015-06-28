@@ -16,7 +16,7 @@ Postbox_t *PB_New()
 	return newpb;
 }
 
-void PB_Signal(Postbox_t *pb, PBMTypes mtype, PBMessage_t *msg)
+void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
 	LIST_ITERATE_OPEN(pb->clients)
 
@@ -62,7 +62,7 @@ void PB_Despatch_Deferred(Postbox_t *pb)
 	}
 }
 
-void PB_Defer(Postbox_t *pb, PBMTypes mtype, PBMessage_t *msg)
+void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
 	PBDeferred_t *newdf =calloc(1, sizeof(PBDeferred_t));
 

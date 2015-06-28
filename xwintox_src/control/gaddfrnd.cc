@@ -9,6 +9,34 @@
 #include "control/gui.h"
 #include "control/gaddfrnd.h"
 
+void af_sendrequest(const char* id, const char* msg)
+{
+	char *amsg =(char*)calloc(1011, sizeof(char));
+	char *bmsg =(char*)calloc(9, sizeof(char));
+	char *cmsg =(char*)calloc(14, sizeof(char));
+
+	sprintf(amsg, "sendfriendrequest %s %s", id, msg);
+	strcpy(bmsg, "savedata");
+	strcpy(cmsg, "getfriendlist");
+
+	List_add(APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)bmsg);
+	List_add(APP->Comm->WorkQueue, (void*)cmsg);
+	CommWork();
+}
+
+void af_post(int mtype, PBMessage_t* msg, void* custom)
+{
+	GAddFriend *g =(GAddFriend*)custom;
+	dbg("Post: %d\n", mtype);
+
+	if(mtype == PB_DNSResolved)
+	{
+		af_sendrequest(msg->S1, g->message->value());
+		g->id->value("");
+	}
+}
+
 void removespaces(char * s)
 {
     char *p =s;
@@ -33,19 +61,9 @@ void af_pressed(Fl_Widget *w, void *custom)
 	{
 		/* a regular tox key */
 		dbg("Regular Tox key\n");
-		char *amsg =(char*)calloc(255, sizeof(char));
-		char *bmsg =(char*)calloc(9, sizeof(char));
-		char *cmsg =(char*)calloc(14, sizeof(char));
-
-		sprintf(amsg, "sendfriendrequest %s %s", id, msg);
-		free (id);
-		strcpy(bmsg, "savedata");
-		strcpy(cmsg, "getfriendlist");
-
-		List_add(APP->Comm->WorkQueue, (void*)amsg);
-		List_add(APP->Comm->WorkQueue, (void*)bmsg);
-		List_add(APP->Comm->WorkQueue, (void*)cmsg);
-		CommWork();
+		af_sendrequest(id, msg);
+		g->id->value("");
+		free(id);
 		return;
 	}
 	else if (strchr(id, '@'))
@@ -84,6 +102,8 @@ GAddFriend::GAddFriend(int S) : GArea(S, "Add Friends")
 	send->labelcolor(255);
 	send->labelsize(14 * S);
 	send->callback(af_pressed, this);
+
+	PB_Register(APP->events, PB_DNSResolved, this, af_post);
 
 	end();
 }

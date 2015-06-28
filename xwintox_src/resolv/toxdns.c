@@ -107,9 +107,12 @@ void Resolv_DNSResolve(char* address)
 	}
 	else
 	{
+		PBMessage_t *pbmsg =calloc(1, sizeof(PBMessage_t));
 		char *toxid =bin_to_hex_string(tox_id, TOX_ADDRESS_SIZE);
+
+		pbmsg->S1 =toxid;
 		dbg("Tox ID: %s\n", toxid);
-		free (toxid);
+		PB_Defer(APP->events, PB_DNSResolved, pbmsg);
 		return;
 	}
 
