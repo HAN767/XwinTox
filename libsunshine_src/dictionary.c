@@ -110,7 +110,7 @@ Dictionary_set (Dictionary_t *dict, const char *key, const char *value)
 	_Lock_Dictionary
 
 	new =calloc (1, sizeof (Dictionary_entry_t));
-	lentry =calloc (1, sizeof (List_t));
+	lentry =calloc (1, sizeof (List_t_));
 
 	new->key =strdup (key);
 	new->value =strdup (value);

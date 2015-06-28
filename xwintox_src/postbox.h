@@ -1,5 +1,5 @@
-#ifndef _SIGNAL_H
-#define _SIGNAL_H
+#ifndef _POSTBOX_H_
+#define _POSTBOX_H_
 
 #ifdef __cplusplus
 extern "C"

@@ -52,13 +52,13 @@ MAKE=/usr/bin/make
 
 PLATCFLAGS= -I\$(ROOTDIR)/libsunshine_src/hdr/compat -std=c11
 PLATCFLAGS+= -D_GNU_SOURCE
-PLATLDFLAGS= -pthread -lstdc++ -lm 
+PLATLDFLAGS= -pthread -lstdc++ -lm -static-libgcc
 
 TOXINC= -I/usr/local/include
-TOXLIB= -static -L/usr/local/lib -ltoxcore -ltoxdns -lsodium
+TOXLIB= -L/usr/local/lib  -Wl,-Bstatic -ltoxcore -ltoxdns -lsodium -Wl,-Bdynamic
 
 FLTKINC= \$(shell fltk-config --cxxflags)
-FLTKLIB= \$(shell fltk-config --ldstaticflags) -lxcb
+FLTKLIB= \$(shell fltk-config --ldstaticflags) -lresolv -lxcb -lXau -lXdmcp
 EOF
 }
 

@@ -46,6 +46,7 @@ typedef struct Comm_s
 	List_t *WorkQueue;
 } Comm_t;
 
+
 typedef struct XwinTox_instance_s
 {
 	Xwin_t *Xwin;

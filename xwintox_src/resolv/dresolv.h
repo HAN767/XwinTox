@@ -1,6 +1,7 @@
 #ifndef _DRESOLV_H_
 #define _DRESOLV_H_
 
+#include <stdint.h>
 #include <threads.h>
 
 typedef enum ResolvCalls_e
@@ -12,7 +13,7 @@ typedef struct Tox3_s
 {
 	const char *name;
 	uint8_t key[32];
-} Tox3_t; 
+} Tox3_t;
 
 #define ResolvAddWork(CNT) \
 	mtx_lock(&APP->Resolv->CallsMtx); \
