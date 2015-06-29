@@ -58,7 +58,7 @@ int Evclient_main(void *custom)
 				dbg("Call: %d\n", ev->T, ev->ID);
 				Ev_free(ev);
 			}
-
+		evclient->Evcount--;
 		mtx_unlock(&evclient->Evlock);
 	}
 
