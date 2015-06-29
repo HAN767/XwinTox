@@ -37,8 +37,10 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	gnames =new Fl_Multiline_Output(0,0, w() - (65 * scale), (28 * scale));
 	moutput =new Fl_Text_Display(0, 0, 0, 0);
 	moutbuffer =new Fl_Text_Buffer();
-	send =new Fl_Button(0, 0, (64 * scale), (74 * scale) , "Send");
+	send =new Fl_Button(0, 0, (60 * scale), (74 * scale) , "Send");
 	message =new Fl_Multiline_Input(0, 0, (w() - (110 * S)), (74 * S));
+	attach =new SVGBox(0, 0, 37 * scale, 37 * scale, scale, attachsvg, 1);
+	emoji =new SVGBox(0, 0, 37 * scale, 37 * scale, scale, emojisvg, 1);
 
 	names->textsize(9.5 * scale);
 	names->textcolor(fl_rgb_color(56, 56, 56));
@@ -67,6 +69,14 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 	moutput->textsize(12 * S);
 	moutput->buffer(moutbuffer);
 
+	attach->color(fl_rgb_color(107, 194, 96));
+	attach->box(FL_BORDER_BOX);
+	attach->show();
+
+	emoji->color(fl_rgb_color(107, 194, 96));
+	emoji->box(FL_BORDER_BOX);
+	emoji->show();
+
 	resize(0, 0, 0, 0);
 	end();
 }
@@ -91,6 +101,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 		               - (70 * scale), (32 * scale));
 		moutput->resize(x() + (10 * scale), y() + (65 * scale),
 		                w() - (110 * scale), h() - ((84 + 65)  * scale));
+
 	}
 	else
 	{
@@ -98,9 +109,13 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 		                w() - (20 * scale), h() - ((84 + 65)  * scale));
 	}
 
-	send->position(x() + (w() - 74 * scale), y() + (h() - (80 * scale)));
-	message->resize(x() + (10 * scale), y() + h() - (80 * scale),
+	send->position(x() + (w() - 64 * scale), y() + (h() - (80 * scale)));
+	message->resize(x() + (5 * scale), y() + h() - (80 * scale),
 	                (w() - (110 * scale)), (74 * scale));
+	emoji->resize(x() + (w() - (105 * scale)), y() + h() - (80 * scale),
+					37 * scale, 37 * scale);
+	attach->resize(x() + (w() - (105 * scale)), y() + h() - (43 * scale),
+					37 * scale, 37 * scale);
 
 
 }
@@ -118,6 +133,8 @@ void GMessageArea::draw()
 	}
 
 	Fl_Group::draw();
+	emoji->show();
+	attach->show();
 
 	fl_color(0);
 

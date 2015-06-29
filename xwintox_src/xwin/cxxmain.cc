@@ -118,7 +118,7 @@ void ProcessEvents()
 
 extern "C" int CXXMain()
 {
-	int scale =1;
+	int scale =2;
 	Contact_t *c;
 	contactlist =(ContactList_t*)calloc(1, sizeof(ContactList_t));
 

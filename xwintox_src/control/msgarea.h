@@ -7,6 +7,8 @@
 #include <FL/Fl_Text_Display.H>
 #include <FL/Fl_Select_Browser.H>
 
+#include "control/svgbox.h"
+
 class GMessageArea: public Fl_Group
 {
 public:
@@ -22,6 +24,8 @@ public:
 	Fl_Text_Display *moutput;
 	Fl_Text_Buffer *moutbuffer;
 	Fl_Input *message;
+	SVGBox *attach;
+	SVGBox *emoji;
 	Fl_Button *send;
 
 	int scale;
