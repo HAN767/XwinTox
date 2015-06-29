@@ -13,7 +13,7 @@
 #include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
 
-Tox_comm_t *Tox_comm;
+Tox_comm_t *Tox_comm =0;
 int Tox_thread_launched =0;
 
 short F_online[65535] = { 0 };

@@ -1,11 +1,47 @@
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #include "evserv.h"
 #include "misc.h"
 
+int readit(void* handle, void* buf, int len)
+{
+	int sockfd =*(int*)handle;
+	int err =recv(sockfd, buf, len, 0);
+	dbg("Err: %d\n", err);
+
+	if(err == 0) err =-1;
+
+	return err;
+}
+
+int writeit(void* handle, void* buf, int len)
+{
+	int sockfd =*(int*)handle;
+	int err =send(sockfd, buf, len, 0);
+	dbg("Err: %d\n", err);
+
+	if(err == 0) err =-1;
+
+	return err;
+}
+
 int Evclient_main(void *custom)
 {
+	Evclient_t *evclient =custom;
+
+	evclient->xdr_write.x_op =XDR_DECODE;
+	xdrrec_create(&evclient->xdr_write, 0, 0, &evclient->fd, readit, writeit);
+
+	while (1) { sleep(1); }
+
+	xdr_destroy(&evclient->xdr_write);
+	close(evclient->fd);
 	return 0;
 }
 
@@ -45,7 +81,7 @@ int Evserv_main(void *custom)
 		evc->fd =accept(evserv->fd, (struct sockaddr *) &client, &client_len);
 
 		if(evc->fd < 0)
-		{	
+		{
 			dbg("Could not establish new connection\n");
 			free(evc);
 		}
@@ -54,7 +90,7 @@ int Evserv_main(void *custom)
 
 		List_add(evserv->Clients, evc);
 		thrd_create(&evc->Thread, Evclient_main, evc);
-
+		dbg("New client to Evserv: %s\n", inet_ntoa(client.sin_addr))
 	}
 
 	return 0;

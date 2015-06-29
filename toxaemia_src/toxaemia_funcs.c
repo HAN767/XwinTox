@@ -13,10 +13,24 @@
 
 #include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
+#include "evserv/evserv.h"
 
+Evserv_t *Evserv =0;
+
+void ctorEvserv()
+{
+	if(!Evserv)
+	{
+		Evserv =calloc(1, sizeof(Evserv_t));
+		Evserv->Events =List_new();
+		Evserv->Clients =List_new();
+		thrd_create(&Evserv->Thread, Evserv_main, Evserv);
+	}
+}
 
 void ctorTox_comm_onlycreate()
 {
+	ctorEvserv();
 	if(!Tox_comm)
 	{
 		Tox_comm =calloc(1, sizeof(Tox_comm_t));
@@ -26,11 +40,7 @@ void ctorTox_comm_onlycreate()
 
 void ctorTox_comm()
 {
-	if(!Tox_comm)
-	{
-		Tox_comm =calloc(1, sizeof(Tox_comm_t));
-		mtx_init(&Tox_comm->SaveDataMtx, mtx_plain);
-	}
+	ctorTox_comm_onlycreate();
 
 	Tox_comm->ICQueue =List_new();
 
