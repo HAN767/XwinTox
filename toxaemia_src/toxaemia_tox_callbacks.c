@@ -15,6 +15,8 @@
 #include "hexstring.h"
 
 #include "toxaemia_core.h"
+#include "toxaemia_rpc.h"
+#include "evserv/evserv.h"
 
 extern short F_online[65535];
 extern List_t *Groupchats;
@@ -35,6 +37,11 @@ void cb_self_connection_status(Tox *tox, TOX_CONNECTION connection_status,
 	mtx_unlock(&Tox_comm->ConnectedMtx);
 
 	dbg("Connection status changed: %s\n", status);
+	Event_t *ev =calloc(1, sizeof(Event_t));
+	ev->T =5; ev->ID=4;
+	Ev_pack(ev);
+	Evserv_send_event(Evserv, ev);
+
 }
 
 void cb_friend_connection_status(Tox *tox, uint32_t friend_number,

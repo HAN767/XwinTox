@@ -28,6 +28,7 @@ typedef struct Evserv_s
 } Evserv_t;
 
 int Evserv_main(void *custom);
+void Ev_pack(Event_t *ev);
 void Ev_free(Event_t *ev);
 Event_t *Ev_copy(Event_t *ev);
 void Evserv_send_event(Evserv_t *evserv, Event_t *ev);

@@ -24,7 +24,7 @@ int writeit(void* handle, void* buf, int len)
 {
 	int sockfd =*(int*)handle;
 	int err =send(sockfd, buf, len, 0);
-	dbg("Err: %d\n", err);
+	dbg("Evserv writeclient err: %d\n", err);
 
 	if(err == 0) err =-1;
 
@@ -35,7 +35,7 @@ int Evclient_main(void *custom)
 {
 	Evclient_t *evclient =custom;
 
-	evclient->xdr_write.x_op =XDR_DECODE;
+	evclient->xdr_write.x_op =XDR_ENCODE;
 	xdrrec_create(&evclient->xdr_write, 0, 0, &evclient->fd, readit, writeit);
 
 	while(1)
@@ -51,6 +51,10 @@ int Evclient_main(void *custom)
 		if(evclient->Events->List) while((ev =List_retrieve_and_remove_first(
 			        evclient->Events)) != 0)
 			{
+				evclient->xdr_write.x_op =XDR_ENCODE;
+				if(xdr_Event_t(&evclient->xdr_write, ev) == FALSE) 
+				{ dbg("putting: xdr_Event_t failed.\n"); }
+				xdrrec_endofrecord(&evclient->xdr_write, TRUE);
 				dbg("Call: %d\n", ev->T, ev->ID);
 				Ev_free(ev);
 			}
@@ -121,10 +125,16 @@ Event_t *Ev_copy(Event_t *ev)
 	return ev;
 }
 
+void Ev_pack(Event_t *ev)
+{
+	if(!ev->S1) ev->S1 =malloc(4);
+	if(!ev->S2) ev->S2 =malloc(4);
+}
+
 void Ev_free(Event_t *ev)
 {
-	if(ev->S1) free(ev->S1);
-	if(ev->S2) free(ev->S2);
+	free(ev->S1);
+	free(ev->S2);
 	free(ev);
 	return;
 }
