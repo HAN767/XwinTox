@@ -110,4 +110,8 @@
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
+  <VirtualDirectory Name="evserv">
+    <File Name="evserv/evserv.h"/>
+    <File Name="evserv/evserv.c"/>
+  </VirtualDirectory>
 </CodeLite_Project>

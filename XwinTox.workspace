@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="XwinTox" Database="">
-  <Project Name="Toxaemia" Path="toxaemia_src/Toxaemia.project" Active="No"/>
   <Project Name="XwinTox" Path="xwintox_src/XwinTox.project" Active="Yes"/>
+  <Project Name="Toxaemia" Path="toxaemia_src/Toxaemia.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Default" Selected="yes">
-      <Project Name="Toxaemia" ConfigName="Debug"/>
       <Project Name="XwinTox" ConfigName="Debug"/>
+      <Project Name="Toxaemia" ConfigName="Debug"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

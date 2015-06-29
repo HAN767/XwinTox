@@ -51,8 +51,6 @@
     <File Name="nanosvg/nsvgwrapper.c"/>
     <File Name="nanosvg/nsvgwrap.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -175,4 +173,6 @@
     <File Name="evcomm/evcomm.h"/>
     <File Name="evcomm/evcomm.c"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
