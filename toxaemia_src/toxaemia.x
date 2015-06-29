@@ -49,10 +49,24 @@ enum ToxMessageType
 	MGCHAT =2
 };
 
+struct Event_s
+{
+	int T;
+	int ID;
+	string S1<>;
+	string S2<>;
+	int I1;
+	int I2;
+	short SI1<>;
+	short SI2<>;
+	opaque O<>;
+};
+
 typedef struct ToxSaveData_s ToxSaveData_t;
 typedef struct ToxFriends_s ToxFriends_t;
 typedef struct ToxFriend_s ToxFriend_t;
 typedef struct ToxEvent_s ToxEvent_t;
+typedef struct Event_s Event_t;
 
 program TOXAEMIA_PROG {
 	version TOXAEMIA_VERS1 {

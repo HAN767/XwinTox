@@ -38,7 +38,25 @@ int Evclient_main(void *custom)
 	evclient->xdr_write.x_op =XDR_DECODE;
 	xdrrec_create(&evclient->xdr_write, 0, 0, &evclient->fd, readit, writeit);
 
-	while (1) { sleep(1); }
+	while(1)
+	{
+		Event_t *ev;
+		mtx_lock(&evclient->Evlock);
+
+		while(!evclient->Evcount)
+		{
+			cnd_wait(&evclient->Evcond, &evclient->Evlock);
+		}
+
+		if(evclient->Events->List) while((ev =List_retrieve_and_remove_first(
+			        evclient->Events)) != 0)
+			{
+				dbg("Call: %d\n", ev->T, ev->ID);
+				Ev_free(ev);
+			}
+
+		mtx_unlock(&evclient->Evlock);
+	}
 
 	xdr_destroy(&evclient->xdr_write);
 	close(evclient->fd);
@@ -86,7 +104,9 @@ int Evserv_main(void *custom)
 			free(evc);
 		}
 
-		evc->Messages =List_new();
+		evc->Events =List_new();
+		mtx_init(&evc->Evlock, mtx_plain);
+		cnd_init(&evc->Evcond);
 
 		List_add(evserv->Clients, evc);
 		thrd_create(&evc->Thread, Evclient_main, evc);
@@ -94,4 +114,33 @@ int Evserv_main(void *custom)
 	}
 
 	return 0;
+}
+
+Event_t *Ev_copy(Event_t *ev)
+{
+	return ev;
+}
+
+void Ev_free(Event_t *ev)
+{
+	if(ev->S1) free(ev->S1);
+	if(ev->S2) free(ev->S2);
+	free(ev);
+	return;
+}
+
+#define EVClientAddWork(CNT) \
+	mtx_lock(&c->Evlock); \
+	c->Evcount +=CNT ; \
+	cnd_broadcast(&c->Evcond); \
+	mtx_unlock(&c->Evlock);
+
+void Evserv_send_event(Evserv_t *evserv, Event_t *ev)
+{
+	LIST_ITERATE_OPEN(evserv->Clients)
+	Evclient_t *c =e_data;
+	List_add(c->Events, Ev_copy(ev));
+	EVClientAddWork(1)
+	LIST_ITERATE_CLOSE(evserv->Clients)
+	return;
 }

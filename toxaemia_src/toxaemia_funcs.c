@@ -22,7 +22,6 @@ void ctorEvserv()
 	if(!Evserv)
 	{
 		Evserv =calloc(1, sizeof(Evserv_t));
-		Evserv->Events =List_new();
 		Evserv->Clients =List_new();
 		thrd_create(&Evserv->Thread, Evserv_main, Evserv);
 	}

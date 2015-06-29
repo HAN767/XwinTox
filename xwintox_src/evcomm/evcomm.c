@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <strings.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -116,7 +117,7 @@ net:
 		}
 		else do
 			{
-				int val;
+				Event_t *event =calloc(1, sizeof(Event_t));
 
 				if(!xdrrec_skiprecord(&evcomm->xdr_recv))
 				{
@@ -126,10 +127,11 @@ net:
 					RETRY
 				}
 
-				if(!xdr_int(&evcomm->xdr_recv,&val))
+				if(!xdr_Event_t(&evcomm->xdr_recv, event))
 				{
-					dbg("xdr_int read failed\n");
+					dbg("xdr_ToxEvent_t read failed\n");
 				}
+				else dbg("Tox event: %d, %d, %d", event->T, event->ID, event->I1);
 			}
 			while(!xdrrec_eof(&evcomm->xdr_recv) && ready != 0);
 	}
