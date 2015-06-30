@@ -131,7 +131,7 @@ net:
 				{
 					dbg("xdr_ToxEvent_t read failed\n");
 				}
-				else dbg("Tox event: %d, %d, %d", event->T, event->ID, event->I1);
+				else dbg("Tox event: %d, %d, %d, %s", event->T, event->ID, event->I1, event->S1);
 			}
 			while(!xdrrec_eof(&evcomm->xdr_recv) && ready != 0);
 	}

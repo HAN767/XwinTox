@@ -16,7 +16,7 @@
 
 #include "toxaemia_core.h"
 #include "toxaemia_rpc.h"
-#include "evserv/evserv.h"
+#include "xdrserv/xdrserv.h"
 
 extern short F_online[65535];
 extern List_t *Groupchats;
@@ -38,9 +38,10 @@ void cb_self_connection_status(Tox *tox, TOX_CONNECTION connection_status,
 
 	dbg("Connection status changed: %s\n", status);
 	Event_t *ev =calloc(1, sizeof(Event_t));
-	ev->T =5; ev->ID=4;
+	ev->T =5;
+	ev->ID=4;
 	Ev_pack(ev);
-	Evserv_send_event(Evserv, ev);
+	Xdrserv_send(Evserv, ev);
 
 }
 
@@ -120,7 +121,8 @@ void cb_friend_request(Tox *tox, const uint8_t *public_key,
 
 	sprintf(nbundle, "%s %s", s_pubkey, s_message);
 	dbg("Friend request: %s", nbundle);
-	free (s_message); free(s_pubkey);
+	free(s_message);
+	free(s_pubkey);
 	List_add(Events, event);
 }
 
@@ -141,6 +143,26 @@ void cb_friend_message(Tox *tox, uint32_t friend_number, TOX_MESSAGE_TYPE type,
 
 	dbg("Message from ID %d: %s\n", event->paramid, nmessage);
 	List_add(Events, event);
+}
+
+void  cb_file_recv(Tox *tox, uint32_t friend_number, uint32_t file_number,
+                   uint32_t kind, uint64_t file_size, const uint8_t *filename,
+                   size_t filename_length, void *user_data)
+{
+	Event_t *ev;
+	if (kind != TOX_FILE_KIND_DATA) return;
+
+	dbg("File reception request from %d\n", friend_number);
+	ev =calloc(1, sizeof(Event_t));
+
+	ev->T =TREQUEST;
+	ev->ID =friend_number;
+	ev->I1 =file_number;
+	ev->I2 =file_size;
+	ev->S1 =strndup((const char*)filename, filename_length + 1);
+
+	Ev_pack(ev);
+	Xdrserv_send(Evserv, ev);
 }
 
 void cb_group_invite(Tox *tox, int32_t friendnumber, uint8_t type,
@@ -196,7 +218,8 @@ void cb_group_namelist_change(Tox *tox, int groupnum, int peernum,
 
 		if(i < (numpeers - 1)) gpos +=sprintf(gnames+gpos, "%s, ", tmpname);
 		else gpos +=sprintf(gnames+gpos, "%s", tmpname);
-		free (tmpname);
+
+		free(tmpname);
 	}
 
 	ToxEvent_t *event =calloc(1, sizeof(ToxEvent_t));
@@ -242,6 +265,8 @@ void InitCallbacks()
 	                                   0);
 	tox_callback_friend_message(Tox_comm->tox, cb_friend_message, 0);
 	tox_callback_friend_request(Tox_comm->tox, cb_friend_request, 0);
+
+	tox_callback_file_recv(Tox_comm->tox, cb_file_recv, 0);
 
 	tox_callback_group_invite(Tox_comm->tox, cb_group_invite, 0);
 	tox_callback_group_namelist_change(Tox_comm->tox, cb_group_namelist_change,

@@ -26,6 +26,7 @@ enum ToxEventType
 	FMESSAGE =5,
 	FREQUEST =6,
 	FADDED =7,
+	TREQUEST=10,
 	GTITLE =21,
 	GMESSAGE =22,
 	GINVITE =23,
@@ -61,6 +62,10 @@ struct Event_s
 	short SI2<>;
 	opaque O<>;
 };
+
+/* TREQUEST = File delivery request
+ * ID = Friend number. I1 = File number.
+ * I2 = File length. S1 = File name. */
 
 typedef struct ToxSaveData_s ToxSaveData_t;
 typedef struct ToxFriends_s ToxFriends_t;

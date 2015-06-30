@@ -9,7 +9,7 @@
 #include "list.h"
 
 #include "toxaemia_rpc.h"
-#include "evserv/evserv.h"
+#include "xdrserv/xdrserv.h"
 
 typedef struct Tox_comm_s
 {
@@ -34,7 +34,7 @@ typedef struct Tox_comm_s
 
 extern Tox_comm_t *Tox_comm;
 extern int Tox_thread_launched;
-extern Evserv_t *Evserv;
+extern Xdrserv_t *Evserv;
 extern List_t *Calls;
 extern List_t *Returns;
 extern List_t *Events;

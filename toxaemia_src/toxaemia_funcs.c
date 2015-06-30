@@ -13,17 +13,20 @@
 
 #include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
-#include "evserv/evserv.h"
+#include "xdrserv/xdrserv.h"
+#include "xdrserv/evserv.h"
 
-Evserv_t *Evserv =0;
+Xdrserv_t *Evserv =0;
 
 void ctorEvserv()
 {
 	if(!Evserv)
 	{
-		Evserv =calloc(1, sizeof(Evserv_t));
+		Evserv =calloc(1, sizeof(Xdrserv_t));
 		Evserv->Clients =List_new();
-		thrd_create(&Evserv->Thread, Evserv_main, Evserv);
+		Evserv->port =5554;
+		Evserv->ops =&Evops;
+		thrd_create(&Evserv->Thread, Xdrserv_main, Evserv);
 	}
 }
 
