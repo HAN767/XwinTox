@@ -11,14 +11,14 @@ VERSION = 1
 
 OBJ_C =  comm/main.c comm/etc.c
 OBJ_C += ../toxaemia_src/toxaemia_clnt.c ../toxaemia_src/toxaemia_xdr.c
-OBJ_C += nanosvg/nsvgwrapper.c postbox.c resolv/toxdns.c evcomm/evcomm.c
+OBJ_C += nanosvg/nsvgwrapper.c postbox.c resolv/toxdns.c xdrcomm/xdrcomm.c
 OBJ_C += $(ROOTDIR)/libsunshine_src/libsunshine.ar
 
 OBJ_CXX = xwin/res.cc xwin/cxxmain.cc xwin/contacts.cc xwin/win2.cc control/gui.cc
 OBJ_CXX += control/msgarea.cc control/gaddfrnd.cc control/sidebar.cc
 OBJ_CXX += control/sbarbtm.cc control/sbartop.cc control/cntctlst.cc
 OBJ_CXX += control/cntctent.cc control/svgbox.cc control/statbox.cc
-OBJ_CXX += control/garea.cc control/frequest.cc
+OBJ_CXX += control/garea.cc control/frequest.cc control/gtrnsfer.cc
 
 CFLAGS = -I$(ROOTDIR)/xwintox_src/hdr -I$(ROOTDIR)/libsunshine_src/hdr 
 CFLAGS += -I$(ROOTDIR)/toxaemia_src/hdr -I$(ROOTDIR)/xwintox_src

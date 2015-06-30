@@ -10,14 +10,15 @@ extern "C"
 
 #include "toxaemia_rpc.h"
 
-typedef struct Evcomm_s
+typedef struct Xdrcomm_s
 {
 	thrd_t Thread;
+	char *port;
 	int recv_fd;
 	XDR xdr_recv;
-} Evcomm_t;
+} Xdrcomm_t;
 
-int Evcomm_main(void *data);
+int Xdrcomm_main(void *data);
 
 #ifdef __cplusplus
 }

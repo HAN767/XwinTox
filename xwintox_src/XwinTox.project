@@ -145,6 +145,8 @@
     <File Name="control/msgarea.h"/>
     <File Name="control/gaddfrnd.cc"/>
     <File Name="control/gaddfrnd.h"/>
+    <File Name="control/gtrnsfer.cc"/>
+    <File Name="control/gtrnsfer.h"/>
     <File Name="control/sidebar.h"/>
     <File Name="control/sidebar.cc"/>
     <File Name="control/sbarbtm.cc"/>
@@ -170,8 +172,8 @@
     <File Name="resolv/dresolv.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="evcomm">
-    <File Name="evcomm/evcomm.h"/>
-    <File Name="evcomm/evcomm.c"/>
+    <File Name="xdrcomm/xdrcomm.h"/>
+    <File Name="xdrcomm/xdrcomm.c"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

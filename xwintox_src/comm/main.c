@@ -295,12 +295,15 @@ int main()
 	APP->Comm =calloc(1, sizeof(Comm_t));
 	APP->Xwin =calloc(1, sizeof(Xwin_t));
 	APP->Resolv =calloc(1, sizeof(Resolv_t));
-	APP->Evcomm =calloc(1, sizeof(Evcomm_t));
+	APP->Evcomm =calloc(1, sizeof(Xdrcomm_t));
+	APP->Filecomm =calloc(1, sizeof(Xdrcomm_t));
 
 	APP->Comm->WorkQueue =List_new();
 	APP->Xwin->Events =List_new();
 	APP->Xwin->ICQueue =List_new();
 	APP->Resolv->Calls =List_new();
+	APP->Evcomm->port ="5554";
+	APP->Filecomm->port ="5556";
 
 	APP->Config =Dictionary_new(24);
 	APP->ConfigFilename =get_config_filename();
@@ -329,7 +332,7 @@ int main()
 	mtx_init(&APP->Resolv->CallsMtx, mtx_plain);
 	cnd_init(&APP->Resolv->CallsCnd);
 
-	thrd_create(&APP->Evcomm->Thread, Evcomm_main, APP->Evcomm);
+	thrd_create(&APP->Evcomm->Thread, Xdrcomm_main, APP->Evcomm);
 	thrd_create(&APP->Xwin->Thrd, CXXMain, 0);
 	thrd_create(&APP->Resolv->Thread, Resolv_main, 0);
 

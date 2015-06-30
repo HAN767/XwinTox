@@ -18,6 +18,7 @@ extern "C"
 void AddFriendPressed(Fl_Widget* B , void*)
 {
 	Xw->contents->NewCurrentArea(Xw->contents->addfriend);
+	Xw->sidebar->bottom_area->deselect_all();
 	B->box(FL_FLAT_BOX);
 	B->color(fl_rgb_color(68, 68, 67));
 	Xw->sidebar->contacts->deselect_all();

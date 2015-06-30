@@ -6,6 +6,7 @@
 
 #include "control/sidebar.h"
 #include "control/gaddfrnd.h"
+#include "control/gtrnsfer.h"
 
 class XWContents: public Fl_Box
 {
@@ -19,9 +20,9 @@ public:
 
 	Fl_Box *fake;
 	GAddFriend *addfriend;
+	GTransfers *transfers;
 
 	vector <GMessageArea*> messageareas;
-
 
 	Fl_Group *currentarea;
 	Fl_Group *newcurrentarea;

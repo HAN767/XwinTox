@@ -13,6 +13,8 @@ XWContents::XWContents(int S) : Fl_Box(Xw->sblength * S,Xw->basey * S,
 	color(4);
 
 	addfriend =new GAddFriend(S);
+	transfers =new GTransfers(S);
+	transfers->hide();
 	currentarea =addfriend;
 	Xw->sidebar->bottom_area->addfriend->box(FL_FLAT_BOX);
 	Xw->sidebar->bottom_area->addfriend->color(fl_rgb_color(68, 68, 67));

@@ -115,5 +115,7 @@
     <File Name="xdrserv/xdrserv.c"/>
     <File Name="xdrserv/evserv.c"/>
     <File Name="xdrserv/evserv.h"/>
+    <File Name="xdrserv/fileserv.c"/>
+    <File Name="xdrserv/fileserv.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

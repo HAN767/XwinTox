@@ -19,7 +19,7 @@ typedef enum PBMTypes_e
                  PBMTypes;
 
 #include "postbox.h"
-#include "evcomm/evcomm.h"
+#include "xdrcomm/xdrcomm.h"
 
 typedef struct Xwin_s
 {
@@ -52,7 +52,7 @@ typedef struct XwinTox_instance_s
 	Xwin_t *Xwin;
 	Comm_t *Comm;
 	Resolv_t *Resolv;
-	Evcomm_t *Evcomm;
+	Xdrcomm_t *Evcomm, *Filecomm;
 
 	Postbox_t *events;
 

@@ -13,7 +13,7 @@ int Xdr_readit(void* handle, void* buf, int len)
 {
 	int sockfd =*(int*)handle;
 	int err =recv(sockfd, buf, len, 0);
-	dbg("Err: %d\n", err);
+	dbg("Xdrserv read err: %d\n", err);
 
 	if(err == 0) err =-1;
 

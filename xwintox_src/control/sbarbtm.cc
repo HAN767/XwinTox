@@ -4,6 +4,14 @@
 #include "control/sbarbtm.h"
 #include "control/svgbox.h"
 
+void transferspressed(Fl_Widget* B , void*)
+{
+	Xw->contents->NewCurrentArea(Xw->contents->transfers);
+	Xw->sidebar->bottom_area->deselect_all();
+	Xw->sidebar->contacts->deselect_all();
+	Xw->sidebar->bottom_area->transfers->color(fl_rgb_color(68, 68, 67));
+}
+
 Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group(Xw->basex * S,
 	        Xw->h() - (36 * S) - (Xw->basey * S), (Xw->sblength * S),
 	        Xw->h() - (Xw->basey * S))
@@ -17,7 +25,9 @@ Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group(Xw->basex * S,
 	newgroup =new SVGBox(0, 0, 112 * S , 36 * S, S, groupsvg, 0.5);
 	transfers =new SVGBox(0, 0, 168 * S , 36 * S, S, transfersvg, 0.5);
 	settings =new SVGBox(0, 0, 212 * S , 36 * S, S, settingssvg, 0.5);
-	addfriend->show(); newgroup->show(); transfers->show(); settings->show();
+	addfriend->show(); newgroup->show(); transfers->show();settings->show();
+
+	transfers->callback(transferspressed);
 
 	end();
 }
@@ -33,8 +43,10 @@ void Sidebar_Bottom_Area::resize(int X, int Y, int W, int H)
 
 void Sidebar_Bottom_Area::deselect_all()
 {
-	addfriend->box(FL_NO_BOX);
-	newgroup->box(FL_NO_BOX);
-	transfers->box(FL_NO_BOX);
-	settings->box(FL_NO_BOX);
+	addfriend->box(FL_FLAT_BOX);
+	addfriend->color(fl_rgb_color(28, 28, 28));
+	transfers->box(FL_FLAT_BOX);
+	transfers->color(fl_rgb_color(28, 28, 28));
+	settings->box(FL_FLAT_BOX);
+	settings->color(fl_rgb_color(28, 28, 28));
 }

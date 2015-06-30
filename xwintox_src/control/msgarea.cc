@@ -113,7 +113,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 	message->resize(x() + (5 * scale), y() + h() - (80 * scale),
 	                (w() - (110 * scale)), (74 * scale));
 	emoji->resize(x() + (w() - (105 * scale)), y() + h() - (80 * scale),
-					37 * scale, 37 * scale);
+					37 * scale, 38 * scale);
 	attach->resize(x() + (w() - (105 * scale)), y() + h() - (43 * scale),
 					37 * scale, 37 * scale);
 

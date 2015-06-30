@@ -38,10 +38,6 @@ typedef struct Xdrserv_s
 int Xdrserv_main(void *custom);
 int Xdr_readit(void* handle, void* buf, int len);
 int Xdr_writeit(void* handle, void* buf, int len);
-
-void Ev_pack(Event_t *ev);
-void Ev_free(Event_t *ev);
-Event_t *Ev_copy(Event_t *ev);
 void Xdrserv_send(Xdrserv_t *evserv, void *ev);
 
 
