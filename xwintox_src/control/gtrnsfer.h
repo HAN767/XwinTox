@@ -6,6 +6,7 @@
 #include <FL/Fl_Group.H>
 
 #include "control/garea.h"
+#include "control/translst.h"
 
 class GTransfers: public GArea
 {
@@ -15,6 +16,8 @@ public:
 
 	void resize(int X, int Y, int W, int H);
 	void draw();
+
+	TransfersList *list;
 };
 
 #endif
