@@ -175,7 +175,7 @@
     <File Name="resolv/toxdns.c"/>
     <File Name="resolv/dresolv.h"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="evcomm">
+  <VirtualDirectory Name="Xdrcomm">
     <File Name="xdrcomm/xdrcomm.h"/>
     <File Name="xdrcomm/xdrcomm.c"/>
   </VirtualDirectory>

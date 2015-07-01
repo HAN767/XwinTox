@@ -10,7 +10,7 @@ TransfersList::TransfersList(int X, int Y, int W, int H, int S)
 	scale =S;
 	startpoint =0 * S;
 	
-	type(VERTICAL);
+	type(VERTICAL_ALWAYS);
 }
 
 void TransfersList::draw()

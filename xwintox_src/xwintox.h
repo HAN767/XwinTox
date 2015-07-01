@@ -14,9 +14,9 @@ typedef enum PBMTypes_e
 {
 	PB_FRequest =1,
 	PB_FReqServiced =2,
-	PB_DNSResolved =4
-}
-                 PBMTypes;
+	PB_DNSResolved =4,
+	PB_TRequest =8,
+} PBMTypes_e;
 
 #include "postbox.h"
 #include "xdrcomm/xdrcomm.h"

@@ -12,29 +12,13 @@ extern "C"
 
 #include "control/cntctent.h"
 
-typedef enum TransferState_e
-{
-    TR_Waiting,
-    TR_Active,
-    TR_Pause
-} TransferState_e;
-
 typedef struct ContactList_s
 {
 	vector <Contact_t*> contacts;
 } ContactList_t;
 
-typedef struct Transfer_s
-{
-	TransferState_e state;
-	char *filename;
-	Contact_t *contact;
-	int num, size, pos, dir; /* dir = 0 means receive, 1 means send */
-} Transfer_t;
-
 extern ContactList_t *contactlist;
 extern vector <Groupchat_t*> groupchats;
-extern vector <Transfer_t*> transfers;
 
 void FriendRequestSuccess(int num);
 void DeleteContact(int num);

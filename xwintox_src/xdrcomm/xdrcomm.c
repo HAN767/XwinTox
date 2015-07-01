@@ -2,6 +2,7 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <strings.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -10,6 +11,8 @@
 
 #include "misc.h"
 #include "xdrcomm.h"
+#include "xwintox.h"
+#include "postbox.h"
 
 #define RETRY \
 	{ sleep (5); \
@@ -35,6 +38,31 @@ int writeit(void* handle, void* buf, int len)
 	if(err == 0) err =-1;
 
 	return err;
+}
+
+void Ev_free(Event_t *ev)
+{
+	free(ev->S1);
+	free(ev->S2);
+	free(ev);
+	return;
+}
+
+void Xdrcomm_despatchevent(Event_t *event)
+{
+	dbg("Tox event: %d, %d, %d, %s", event->T, event->ID, event->I1, event->S1);
+
+	if(event->T == TREQUEST)
+	{
+		PBMessage_t *msg =calloc(1, sizeof(PBMessage_t*));
+		msg->I1 =event->ID;
+		msg->I2 =event->I1;
+		msg->I3 =event->I2;
+		msg->S1 =strdup(event->S1);
+		PB_Defer(APP->events, PB_TRequest, msg);
+	}
+
+	Ev_free(event);
 }
 
 int Xdrcomm_main(void *data)
@@ -131,7 +159,7 @@ net:
 				{
 					dbg("xdr_ToxEvent_t read failed\n");
 				}
-				else dbg("Tox event: %d, %d, %d, %s", event->T, event->ID, event->I1, event->S1);
+				else Xdrcomm_despatchevent(event);
 			}
 			while(!xdrrec_eof(&Xdrcomm->xdr_recv) && ready != 0);
 	}
