@@ -50,7 +50,8 @@ void Ev_free(Event_t *ev)
 
 void Xdrcomm_despatchevent(Event_t *event)
 {
-	dbg("Tox event: %d, %d, %d, %s", event->T, event->ID, event->I1, event->S1);
+	dbg("Tox event: T:%d, A:%d, %d, %s\n", event->T, event->ID, event->I1,
+	    event->S1);
 
 	if(event->T == TREQUEST)
 	{

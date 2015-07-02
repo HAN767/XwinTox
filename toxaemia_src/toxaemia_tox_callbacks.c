@@ -17,6 +17,7 @@
 #include "toxaemia_core.h"
 #include "toxaemia_rpc.h"
 #include "xdrserv/xdrserv.h"
+#include "xdrserv/evserv.h"
 
 extern short F_online[65535];
 extern List_t *Groupchats;
@@ -152,7 +153,7 @@ void  cb_file_recv(Tox *tox, uint32_t friend_number, uint32_t file_number,
 	Event_t *ev;
 	if (kind != TOX_FILE_KIND_DATA) return;
 
-	dbg("File reception request from %d\n", friend_number);
+	dbg("File reception request from %d, num %d\n", friend_number, file_number);
 	ev =calloc(1, sizeof(Event_t));
 
 	ev->T =TREQUEST;
