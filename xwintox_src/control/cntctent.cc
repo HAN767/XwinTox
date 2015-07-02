@@ -28,7 +28,7 @@ void ce_deletecontact(ContactsEntry *ce)
 	else
 	{
 		Groupchat_t *todel;
-		GMessageArea *mtodel;
+		GMessageArea *mtodel =0;
 		char *amsg =(char*)calloc(255, sizeof(char));
 
 		sprintf(amsg, "leavegroupchat %d", ce->groupchat->num);

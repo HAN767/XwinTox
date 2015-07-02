@@ -8,6 +8,8 @@
 
 #include "control/gui.h"
 #include "control/gtrnsfer.h"
+#include "control/translst.h"
+#include "control/transent.h"
 
 void gt_post(int mtype, PBMessage_t* msg, void* custom)
 {
@@ -15,9 +17,17 @@ void gt_post(int mtype, PBMessage_t* msg, void* custom)
 
 	if(mtype == PB_TRequest)
 	{
-		dbg("File transfer request");
+		Transfer_t *newtransfer =new Transfer_t;
+		newtransfer->state =TR_Waiting;
+		newtransfer->dir =TR_Recv;
+		newtransfer->contact =FindContact(msg->I1);
+		newtransfer->num =msg->I2;
+		newtransfer->size =msg->I3;
+		newtransfer->filename =strdup(msg->S1);
+		g->transfers.push_back(newtransfer);
+		dbg("Transfer: %s from %s\n", newtransfer->filename, newtransfer->contact->name);
 	}
-	g->redraw();
+	g->regen_gui();
 }
 
 GTransfers::GTransfers(int S) : GArea(S, "File Transfers")
@@ -44,4 +54,20 @@ void GTransfers::resize(int X, int Y, int W, int H)
 void GTransfers::draw()
 {
 	GArea::draw();
+}
+
+void GTransfers::regen_gui()
+{
+	int YM =list->y(), XM =list->x(), inv =0;
+	for (const auto t : transfers)
+	{
+		TransfersEntry *te =new TransfersEntry(XM, YM, scale, t, inv);
+		dbg("Regen for Trans %d %d\n", t->contact->num, t->num);
+
+		list->add(te);
+		te->show();
+		YM += 50;
+		inv =1 - inv;
+	}
+	return;
 }

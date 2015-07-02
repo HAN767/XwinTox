@@ -54,7 +54,7 @@ void Xdrcomm_despatchevent(Event_t *event)
 
 	if(event->T == TREQUEST)
 	{
-		PBMessage_t *msg =calloc(1, sizeof(PBMessage_t*));
+		PBMessage_t *msg =calloc(1, sizeof(PBMessage_t));
 		msg->I1 =event->ID;
 		msg->I2 =event->I1;
 		msg->I3 =event->I2;

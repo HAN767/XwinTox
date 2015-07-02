@@ -15,14 +15,22 @@ typedef enum TransferState_e
     TR_Pause
 } TransferState_e;
 
+typedef enum TransferDir_e
+{
+	TR_Recv,
+	TR_Send
+} TransferDir_e;
+
 typedef struct Transfer_s
 {
 	TransferState_e state;
+	TransferDir_e dir;
 	char *filename;
 	Contact_t *contact;
-	int num, size, pos, dir; /* dir = 0 means receive, 1 means send */
+	int num, size, pos; /* dir = 0 means receive, 1 means send */
 } Transfer_t;
 
+class TransfersList;
 
 class GTransfers: public GArea
 {
@@ -32,6 +40,8 @@ public:
 
 	void resize(int X, int Y, int W, int H);
 	void draw();
+
+	void regen_gui();
 
 	TransfersList *list;
 	vector <Transfer_t*> transfers;

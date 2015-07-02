@@ -76,6 +76,11 @@ void af_pressed(Fl_Widget *w, void *custom)
 		ResolvAddWork(1);
 		return;
 	}
+	else
+	{
+		dbg("ID unrecognised");
+		free(id);
+	}
 
 }
 
