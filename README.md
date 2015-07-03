@@ -13,12 +13,16 @@ binary in one thread of another binary, and implementing the user interface in
 another thread of that latter binary. *XwinTox* is the user interface side; 
 *Toxaemia* is the service that communicates with Tox.
 
-XwinTox and Toxaemia are free software; XwinTox and Toxaemia are available under 
-the Peer Production Licence (see CPYRIGHT) and may be used under the provisions 
-of the GPL version 3.0 or later, which may be found in full form in CPYRIGHT.ALT 
-within the toxaemia_src folder. LibSunshine, the Sunshine Software Support Library,
-may be used under the provisions of the ZLib Licence, a copy of which is included 
-within the file CPYRIGHT in the libsunshine_src folder.
+XwinTox's development team rejects the bourgeois notion of commercial exploitation
+as being a freedom in itself; we note that while the GPL and Stallman's principles
+in general are a good thing that have promoted within software a greater level of
+the freedoms all are entitled to, it has not gone far enough: it is too easy for
+corporate entities to eke out a hegemonic position within free software projects.
+Regardless, XwinTox and Toxaemia are free software; XwinTox and Toxaemia may be 
+used under the provisions of the GPL version 3.0 or later, which may be found in 
+full form in CPYRIGHT.ALT within the toxaemia_src folder. LibSunshine, the Sunshine
+Software Support Library, may be used under the provisions of the ZLib Licence, a 
+copy of which is included within the file CPYRIGHT in the libsunshine_src folder.
 
 
 Building
