@@ -59,6 +59,7 @@ void GTransfers::draw()
 void GTransfers::regen_gui()
 {
 	int YM =list->y(), XM =list->x(), inv =0;
+
 	for (const auto t : transfers)
 	{
 		TransfersEntry *te =new TransfersEntry(XM, YM, scale, t, inv);
@@ -69,5 +70,9 @@ void GTransfers::regen_gui()
 		YM += 50;
 		inv =1 - inv;
 	}
+
+	list->redraw();
+	redraw();
+	
 	return;
 }

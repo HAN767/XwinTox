@@ -16,6 +16,7 @@ public:
 	TransfersEntry(int X, int Y, int S, Transfer_t *T, int I);
 
 	void draw();
+	void resize(int X, int Y, int W, int H);
 
 	Fl_Button *accept, *reject;
 
