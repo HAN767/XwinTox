@@ -17,12 +17,12 @@ XwinTox's development team rejects the bourgeois notion of commercial exploitati
 as being a freedom in itself; we note that while the GPL and Stallman's principles
 in general are a good thing that have promoted within software a greater level of
 the freedoms all are entitled to, it has not gone far enough: it is too easy for
-corporate entities to eke out a hegemonic position within free software projects.
+corporate entities to carve out a hegemonic position within free software projects.
 Regardless, XwinTox and Toxaemia are free software; XwinTox and Toxaemia may be 
 used under the provisions of the GPL version 3.0 or later, which may be found in 
-full form in CPYRIGHT.ALT within the toxaemia_src folder. LibSunshine, the Sunshine
-Software Support Library, may be used under the provisions of the ZLib Licence, a 
-copy of which is included within the file CPYRIGHT in the libsunshine_src folder.
+full form in the file CPYRIGHT. LibSunshine, the Sunshine Software Support Library,
+may be used under the provisions of the ZLib Licence, a copy of which is included
+within the file CPYRIGHT in the libsunshine_src folder.
 
 
 Building
