@@ -23,7 +23,8 @@ public:
 	Fl_Button *accept, *reject;
 
 	Transfer_t *transfer;
-	int scale, inv;
+	int scale, inv, dl;
+	char date[255] = { 0 };
 };
 
 #endif
