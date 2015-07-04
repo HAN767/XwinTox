@@ -1,6 +1,8 @@
 #ifndef GTRNSFER_H_
 #define GTRNSFER_H_
 
+#include <time.h>
+
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>
@@ -28,6 +30,7 @@ typedef struct Transfer_s
 	char *filename;
 	Contact_t *contact;
 	int num, size, pos; /* dir = 0 means receive, 1 means send */
+	struct tm *time;
 } Transfer_t;
 
 class TransfersList;

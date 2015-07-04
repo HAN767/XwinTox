@@ -18,6 +18,10 @@ void gt_post(int mtype, PBMessage_t* msg, void* custom)
 	if(mtype == PB_TRequest)
 	{
 		Transfer_t *newtransfer =new Transfer_t;
+		time_t rawtime;
+
+		time(&rawtime);
+		newtransfer->time =localtime(&rawtime);
 		newtransfer->state =TR_Waiting;
 		newtransfer->dir =TR_Recv;
 		newtransfer->contact =FindContact(msg->I1);

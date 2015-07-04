@@ -11,19 +11,20 @@
 
 const char *GetDisplaySize(unsigned int bytes)
 {
-	static char dsize[255] ={ 0 };
-	const char *suffixes[5] ={ "B", "KB", "MB", "GB", "TB" };
+	static char dsize[255] = { 0 };
+	const char *suffixes[5] = { "B", "KB", "MB", "GB", "TB" };
 	double s =bytes;
 	int o =0, p = 2;
 
-	while (s >= 1024 && o + 1 < bytes)
+	while(s >= 1024 && o + 1 < bytes)
 	{
 		o ++;
 		s =s / 1024;
 	}
 
-    if (s - floor(s) == 0.0) p = 0;
-	else if (s - floor(s) <= 0.1) p = 1;
+	if(s - floor(s) == 0.0) p = 0;
+	else if(s - floor(s) <= 0.1) p = 1;
+
 	sprintf(dsize, "%.*f %s", p, s, suffixes[o]);
 	return dsize;
 }
@@ -64,18 +65,30 @@ void TransfersEntry::resize(int X, int Y, int W, int H)
 
 void TransfersEntry::draw()
 {
+	int cut, dl;
 	char from[255] = { 0 };
+	char date[255] = { 0 };
 
 	sprintf(from, "From: %s", GetDisplayName(transfer->contact, 100));
+	strftime(date, 255, "%d/%b/%y %H:%M", transfer->time);
 
 	Fl_Group::draw();
 
-	fl_color(fl_rgb_color(110, 100, 118));
-	fl_font(FL_HELVETICA_BOLD, 12 * scale);
-	fl_draw(transfer->filename, x() + (10 * scale), y() + (16 * scale));
-
 	fl_font(FL_HELVETICA, 11 * scale);
+	fl_color(fl_rgb_color(110, 110, 118));
+	fl_draw(date, x() + (10 * scale), y() + (16 * scale));
+	dl =fl_width(date) + 20;
 	fl_draw(from, x() + (10 * scale), y() + (30 * scale));
-
 	fl_draw(GetDisplaySize(transfer->size), x() + (10 * scale), y() + (44 * scale));
+
+	fl_color(fl_rgb_color(85, 85, 100));
+	fl_font(FL_HELVETICA_BOLD, 12 * scale);
+
+	for(cut =255;
+	        cut > 0 &&
+	        fl_width(GetShortenedText(transfer->filename, cut)) > w() - 80 -dl;
+	        cut = cut - 5);
+
+	fl_draw(GetShortenedText(transfer->filename, cut),
+	        x() + dl, y() + (16 * scale));
 }

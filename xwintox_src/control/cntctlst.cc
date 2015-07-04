@@ -49,7 +49,6 @@ int ContactsList::handle(int event)
 				entry->redraw();
 				entry->icon->redraw();
 			}
-			return 1;
 		}
 	}
 

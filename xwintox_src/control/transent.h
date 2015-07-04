@@ -3,6 +3,7 @@
 
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>
+#include <FL/Fl_Progress.H>
 
 #include "xwintox.h"
 #include "gtrnsfer.h"
@@ -18,6 +19,7 @@ public:
 	void draw();
 	void resize(int X, int Y, int W, int H);
 
+	Fl_Progress *progress;
 	Fl_Button *accept, *reject;
 
 	Transfer_t *transfer;

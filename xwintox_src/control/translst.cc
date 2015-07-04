@@ -46,7 +46,6 @@ int TransfersList::handle(int event)
 			{
 				entry->redraw();
 			}
-			return 1;
 		}
 	}
 
