@@ -60,11 +60,15 @@ void GTransfers::regen_gui()
 {
 	int YM =list->y(), XM =list->x(), inv =0;
 
+	/* delete the old ones */
+	list->clear_all();
+
 	for (const auto t : transfers)
 	{
 		TransfersEntry *te =new TransfersEntry(XM, YM, scale, t, inv);
 		dbg("Regen for Trans %d %d\n", t->contact->num, t->num);
 
+		list->entries.push_back(te);
 		list->add(te);
 		te->show();
 		YM += 50;

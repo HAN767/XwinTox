@@ -11,6 +11,7 @@ TransfersList::TransfersList(int X, int Y, int W, int H, int S)
 	startpoint =0 * S;
 	
 	type(VERTICAL_ALWAYS);
+	end();
 }
 
 void TransfersList::draw()
@@ -26,6 +27,12 @@ void TransfersList::draw()
 void TransfersList::resize(int X, int Y, int W, int H)
 {
 	Fl_Scroll::resize(X, Y, W, H);
+
+	for(const auto entry : entries)
+	{
+		entry->resize(entry->x(), entry->y(), W, entry->h());
+		entry->redraw();
+	}
 }
 
 int TransfersList::handle(int event)
@@ -39,12 +46,11 @@ int TransfersList::handle(int event)
 			{
 				entry->redraw();
 			}
+			return 1;
 		}
 	}
 
-	Fl_Scroll::handle(event);
-
-	return 0;
+	return Fl_Scroll::handle(event);
 }
 
 void TransfersList::clear_all()

@@ -11,8 +11,9 @@ ContactsList::ContactsList(int X, int Y, int W, int H, int S)
 	selected =-1;
 	color(fl_rgb_color(65, 65, 65));
 	startpoint =0 * S;
-	
+
 	type(VERTICAL);
+	end();
 }
 
 void ContactsList::draw()
@@ -48,13 +49,11 @@ int ContactsList::handle(int event)
 				entry->redraw();
 				entry->icon->redraw();
 			}
+			return 1;
 		}
 	}
 
-	Fl_Scroll::handle(event);
-	//resize(x(), y(), w(), h());
-
-	return 0;
+	return Fl_Scroll::handle(event);
 }
 
 void ContactsList::clear_all()
