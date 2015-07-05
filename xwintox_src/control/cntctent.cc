@@ -29,10 +29,11 @@ void ce_deletecontact(ContactsEntry *ce)
 	{
 		Groupchat_t *todel;
 		GMessageArea *mtodel =0;
-		char *amsg =(char*)calloc(255, sizeof(char));
+		Event_t *e =Ev_new();
 
-		sprintf(amsg, "leavegroupchat %d", ce->groupchat->num);
-		List_add(APP->Comm->WorkQueue, (void*)amsg);
+		e->T =Comm_LeaveGroupchat;
+		e->ID =ce->groupchat->num;
+		List_add(APP->Comm->WorkQueue, (void*)e);
 
 		todel =ce->groupchat;
 		vector <Groupchat_t*> *ref=&groupchats;

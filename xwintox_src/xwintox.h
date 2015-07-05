@@ -21,6 +21,26 @@ typedef enum PBMTypes_e
 #include "postbox.h"
 #include "xdrcomm/xdrcomm.h"
 
+typedef enum CommEventTypes_e
+{
+/* Misc and friend handling */
+	Comm_Quit,
+	Comm_SaveData,
+	Comm_ChangeName,
+
+	Comm_GetFriendList,
+	Comm_SendFriendRequest,
+	Comm_AddFriendNoReq,
+	Comm_DeleteFriend,
+
+/* Messaging */
+	Comm_SendMessage,
+
+/* Groupchats */
+	Comm_NewGroupchat,
+	Comm_LeaveGroupchat,
+} CommEventTypes_e;
+
 typedef struct Xwin_s
 {
 	thrd_t Thrd;

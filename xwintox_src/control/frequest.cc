@@ -67,12 +67,13 @@ void frnextcallback(Fl_Widget *w, void *fr)
 
 void fracceptcallback(Fl_Widget *w, void *fr)
 {
-	char *icmsg =(char*)calloc(255, sizeof(char));
 	FriendRequests *f =(FriendRequests*)fr;
 	PBMessage_t *message =(PBMessage_t*)calloc(1, sizeof(PBMessage_t));
+	Event_t *e =Ev_new();
 
-	sprintf(icmsg, "addfriendnorequest %s", f->frs[f->selected]->pubkey);
-	List_add(APP->Comm->WorkQueue, (void*)icmsg);
+	e->T =Comm_AddFriendNoReq;
+	e->S1 =strdup(f->frs[f->selected]->pubkey);
+	List_add(APP->Comm->WorkQueue, (void*)e);
 	CommWork();
 
 	f->frs.erase(f->frs.begin() + f->selected);

@@ -34,6 +34,7 @@ typedef struct Call_s
 
 void dbg2(const char *funcname, const char *format,  ...);
 typedef struct Event_s Event_t;
+Event_t *Ev_new();
 Event_t *Ev_copy(Event_t *ev);
 void Ev_pack(Event_t *ev);
 void Ev_free(Event_t *ev);

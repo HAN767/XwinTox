@@ -24,14 +24,9 @@ CLIENT *clnt;
 extern int CXXMain();
 extern int Resolv_main();
 
-int sendfriendrequest(char* Rmsg)
+int sendfriendrequest(char *id, char *msg)
 {
-	char *id;
 	int *result;
-
-	strsep(&Rmsg, " ");
-	id =Rmsg;
-	strsep(&Rmsg, " ");
 
 	/* try to add tox ID */
 	if(strlen(id) == 72)
@@ -39,7 +34,7 @@ int sendfriendrequest(char* Rmsg)
 		dbg("Adding regular Tox ID\n");
 	}
 
-	if((result =toxsendfriendrequest_1(id, Rmsg, clnt)) == 0)
+	if((result =toxsendfriendrequest_1(id, msg, clnt)) == 0)
 	{
 		clnt_perror(clnt, "Sendfriendrequest");
 		return 1;
@@ -59,12 +54,9 @@ int sendfriendrequest(char* Rmsg)
 	return 0;
 }
 
-int addfriendnorequest(char* Rmsg)
+int addfriendnorequest(char *id)
 {
-	char *id;
 	int *result;
-
-	id =Rmsg;
 
 	if((result =toxaddfriendnorequest_1(id, clnt)) == 0)
 	{
@@ -203,17 +195,9 @@ void getfriendlist()
 	}
 }
 
-int sendmessage(char* Rmsg)
+int sendmessage(int type, int id, char* msg)
 {
-	char *type, *id;
-
-	strsep(&Rmsg, " ");
-	type =Rmsg;
-	strsep(&Rmsg, " ");
-	id =Rmsg;
-	strsep(&Rmsg, " ");
-
-	if(!toxsendmessage_1(strtol(type, 0, 10), strtol(id, 0, 10), Rmsg, clnt))
+	if(!toxsendmessage_1(type, id, msg, clnt))
 	{
 		clnt_perror(clnt, "Sendmessage");
 		return 1;
@@ -222,11 +206,9 @@ int sendmessage(char* Rmsg)
 	return 0;
 }
 
-int deletefriend(char* Rmsg)
+int deletefriend(int id)
 {
-	strsep(&Rmsg, " ");
-
-	if(!toxdeletefriend_1(strtol(Rmsg, 0, 10), clnt))
+	if(!toxdeletefriend_1(id, clnt))
 	{
 		clnt_perror(clnt, "Deletecontact");
 		return 1;
@@ -274,11 +256,9 @@ void namechange()
 	savedata();
 }
 
-void leavegroupchat(char *Rmsg)
+void leavegroupchat(int id)
 {
-	strsep(&Rmsg, " ");
-
-	if(!toxleavegroupchat_1(strtol(Rmsg, 0, 10), clnt))
+	if(!toxleavegroupchat_1(id, clnt))
 	{
 		clnt_perror(clnt, __func__);
 		return;
@@ -348,57 +328,35 @@ int main()
 
 	while(!APP->Comm->WantQuit)
 	{
-		Event_t *work, *tofree =0;
+		Event_t *w, *tofree =0;
 		ToxEvent_t *Event;
 
 		mtx_lock(&APP->Comm->WorkMtx);
 		mtx_lock(&APP->Xwin->EventsMtx);
 
-		work =List_retrieve_and_remove_first(APP->Comm->WorkQueue);
-		tofree =work;
+		w =List_retrieve_and_remove_first(APP->Comm->WorkQueue);
+		tofree =w;
 
-		if(!work) goto nowork;
+		if(!w) goto nowork;
 
-		if(strcmp(work, "savedata") == 0)
+		switch(w->T)
 		{
-			savedata();
-		}
-		else if(strncmp(work, "sendfriendrequest", 17) == 0)
-		{
-			sendfriendrequest(work);
-		}
-		else if(strncmp(work, "addfriendnoreq", 14) == 0)
-		{
-			strsep((char**)&work, " ");
-			addfriendnorequest(work);
-		}
-		else if(strcmp(work, "getfriendlist") == 0)
-		{
-			getfriendlist();
-		}
-		else if(strncmp(work, "sendmessage", 11) == 0)
-		{
-			sendmessage(work);
-		}
-		else if(strncmp(work, "deletecontact", 13) == 0)
-		{
-			deletefriend(work);
-		}
-		else if(strcmp(work, "newgroupchat") == 0)
-		{
-			newgroupchat();
-		}
-		else if(strcmp(work, "namechange") == 0)
-		{
-			namechange();
-		}
-		else if (strncmp(work, "leavegroupchat", 14) == 0)
-		{
-			leavegroupchat(work);
-		}
-		else dbg("Unhandled request: %s\n", work);
+		case Comm_SaveData: savedata(); break;
+		case Comm_ChangeName: namechange(); break;
 
-		free(tofree);
+		case Comm_GetFriendList: getfriendlist(); break;
+		case Comm_SendFriendRequest: sendfriendrequest(w->S1, w->S2); break;
+		case Comm_AddFriendNoReq: addfriendnorequest(w->S1); break;
+		case Comm_DeleteFriend: deletefriend(w->ID); break;
+
+		case Comm_SendMessage: sendmessage(w->I1, w->ID, w->S1); break;
+
+		case Comm_NewGroupchat: newgroupchat(); break;
+		case Comm_LeaveGroupchat: leavegroupchat(w->ID); break;
+		default: dbg("Unhandled request: %s\n", w);
+		}
+
+		Ev_free(tofree);
 
 nowork:
 		gettimeofday(&newtv, NULL);

@@ -22,14 +22,16 @@ void DeleteContact(int num)
 {
 	Contact_t *todel;
 	GMessageArea *mtodel;
-	char *amsg =(char*)calloc(255, sizeof(char));
 
 	if((todel =FindContact(num)) != 0)
 	{
 		vector <Contact_t*> *ref=&contactlist->contacts;
 		vector <GMessageArea*> *mref =&Xw->contents->messageareas;
-		sprintf(amsg, "deletecontact %d", num);
-		List_add(APP->Comm->WorkQueue, (void*)amsg);
+		Event_t *e =Ev_new();
+
+		e->T =Comm_DeleteFriend;
+		e->ID =num;
+		List_add(APP->Comm->WorkQueue, (void*)e);
 
 		for(const auto messagearea : Xw->contents->messageareas)
 		{

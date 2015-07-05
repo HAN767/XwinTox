@@ -4,8 +4,9 @@
  * Miscellaneous utility functionality
  */
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define DEF_EV
 #include "misc.h"
@@ -22,6 +23,11 @@ dbg2(const char *funcname, const char *format,  ...)
 }
 
 /* Events type manipulation */
+Event_t *Ev_new()
+{
+	return (Event_t*)calloc(1, sizeof(Event_t));
+}
+
 Event_t *Ev_copy(Event_t *ev)
 {
 	return ev;

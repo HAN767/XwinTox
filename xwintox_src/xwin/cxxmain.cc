@@ -39,9 +39,9 @@ void CommWork()
 
 void SaveData()
 {
-	char *amsg =(char*)calloc(9, sizeof(char));
-	strcpy(amsg, "savedata");
-	List_add(APP->Comm->WorkQueue, amsg);
+	Event_t *e =Ev_new();
+	e->T =Comm_SaveData;
+	List_add(APP->Comm->WorkQueue, (void*)e);
 }
 
 void ProcessEvents()

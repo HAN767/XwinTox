@@ -11,17 +11,20 @@
 
 void af_sendrequest(const char* id, const char* msg)
 {
-	char *amsg =(char*)calloc(1011, sizeof(char));
-	char *bmsg =(char*)calloc(9, sizeof(char));
-	char *cmsg =(char*)calloc(14, sizeof(char));
+	Event_t *e1 =Ev_new();
+	Event_t *e2 =Ev_new();
+	Event_t *e3 =Ev_new();
 
-	sprintf(amsg, "sendfriendrequest %s %s", id, msg);
-	strcpy(bmsg, "savedata");
-	strcpy(cmsg, "getfriendlist");
+	e1->T =Comm_SendFriendRequest;
+	e1->S1 =strdup(id);
+	e1->S2 =strdup(msg);
 
-	List_add(APP->Comm->WorkQueue, (void*)amsg);
-	List_add(APP->Comm->WorkQueue, (void*)bmsg);
-	List_add(APP->Comm->WorkQueue, (void*)cmsg);
+	e2->T =Comm_SaveData;
+
+	e3->T =Comm_GetFriendList;
+
+	List_add(APP->Comm->WorkQueue, (void*)e1);
+	List_add(APP->Comm->WorkQueue, (void*)e2);
 	CommWork();
 }
 
