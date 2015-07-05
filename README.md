@@ -1,11 +1,13 @@
-XwinTox and Toxaemia
+XwinTox
 ==============
+
+![XwinTox Logo](res/Logo.png)
 
 Overview
 --------------
 
-*XwinTox* (and its counterpart, *Toxaemia*,) is a different Tox client: 
-a radical one. 
+*XwinTox* (and its incorporated counterpart, *Toxaemia*,) is a different 
+Tox client: a radical one. 
 
 It maintains a true division between interface and logic by placing libToxCore 
 communication in one binary, processing messages received from the libToxCore 
@@ -23,6 +25,10 @@ used under the provisions of the GPL version 3.0 or later, which may be found in
 full form in the file CPYRIGHT. LibSunshine, the Sunshine Software Support Library,
 may be used under the provisions of the ZLib Licence, a copy of which is included
 within the file CPYRIGHT in the libsunshine_src folder.
+
+Screenshot
+--------------
+![XwinTox screenshot](http://i.imgur.com/DkVPkA5.png)
 
 
 Building
