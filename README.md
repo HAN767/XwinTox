@@ -1,7 +1,7 @@
 XwinTox
 ==============
 
-![XwinTox Logo](res/logo.png)
+![XwinTox Logo](res/Logo.png)
 
 Overview
 --------------
