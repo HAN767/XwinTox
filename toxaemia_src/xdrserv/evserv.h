@@ -1,11 +1,9 @@
 #ifndef __EVSERV__H__
 #define __EVSERV__H__
 
-#include "xdrserv.h"
+#include "misc.h"
 
-Event_t *Ev_copy(Event_t *ev);
-void Ev_pack(Event_t *ev);
-void Ev_free(Event_t *ev);
+#include "xdrserv.h"
 
 extern Xdrops_t Evops;
 

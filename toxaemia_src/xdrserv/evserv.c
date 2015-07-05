@@ -52,23 +52,3 @@ int Evclient_main(void *custom)
 	close(Xdrclient->fd);
 	return 0;
 }
-
-Event_t *Ev_copy(Event_t *ev)
-{
-	return ev;
-}
-
-void Ev_pack(Event_t *ev)
-{
-	if(!ev->S1) ev->S1 =malloc(4);
-
-	if(!ev->S2) ev->S2 =malloc(4);
-}
-
-void Ev_free(Event_t *ev)
-{
-	free(ev->S1);
-	free(ev->S2);
-	free(ev);
-	return;
-}

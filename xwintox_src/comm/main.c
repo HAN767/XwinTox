@@ -348,7 +348,7 @@ int main()
 
 	while(!APP->Comm->WantQuit)
 	{
-		void* work, *tofree =0;
+		Event_t *work, *tofree =0;
 		ToxEvent_t *Event;
 
 		mtx_lock(&APP->Comm->WorkMtx);

@@ -40,14 +40,6 @@ int writeit(void* handle, void* buf, int len)
 	return err;
 }
 
-void Ev_free(Event_t *ev)
-{
-	free(ev->S1);
-	free(ev->S2);
-	free(ev);
-	return;
-}
-
 void Xdrcomm_despatchevent(Event_t *event)
 {
 	dbg("Tox event: T:%d, A:%d, %d, %s\n", event->T, event->ID, event->I1,
