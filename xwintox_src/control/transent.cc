@@ -29,6 +29,18 @@ const char *GetDisplaySize(unsigned int bytes)
 	return dsize;
 }
 
+void teAcceptPressed(Fl_Widget *w)
+{
+	TransfersEntry *te =(TransfersEntry*)w;
+	char *amsg =(char*)calloc(255, sizeof(char));
+
+	sprintf(amsg, "accepttransfer %d %d", te->transfer->contact->num,
+			te->transfer->num);
+
+	List_add(APP->Comm->WorkQueue, (void*)amsg);
+	CommWork();
+}
+
 TransfersEntry::TransfersEntry(int X, int Y, int S, Transfer_t *T, int I)
 	: Fl_Group(X, Y, Xw->w() - (Xw->sblength * S), 50 * S)
 {
@@ -50,6 +62,8 @@ TransfersEntry::TransfersEntry(int X, int Y, int S, Transfer_t *T, int I)
 
 	accept->labelsize(11 * scale);
 	reject->labelsize(11 * scale);
+
+	accept->callback(teAcceptPressed);
 
 	progress->selection_color(fl_rgb_color(118, 202, 116));
 	progress->labelcolor(fl_rgb_color(85, 85, 100));
