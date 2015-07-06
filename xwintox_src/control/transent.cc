@@ -32,12 +32,13 @@ const char *GetDisplaySize(unsigned int bytes)
 void teAcceptPressed(Fl_Widget *w)
 {
 	TransfersEntry *te =(TransfersEntry*)w;
-	char *amsg =(char*)calloc(255, sizeof(char));
+	Event_t *e =Ev_new();
 
-	sprintf(amsg, "accepttransfer %d %d", te->transfer->contact->num,
-			te->transfer->num);
+	e->T =Comm_ResumeTransfer;
+	e->ID =te->transfer->num;
+	e->I1 =te->transfer->contact->num;
 
-	List_add(APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)e);
 	CommWork();
 }
 

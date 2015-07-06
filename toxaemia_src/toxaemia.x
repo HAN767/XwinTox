@@ -26,7 +26,8 @@ enum ToxEventType
 	FMESSAGE =5,
 	FREQUEST =6,
 	FADDED =7,
-	TREQUEST=10,
+	TREQUEST =10,
+	TCONTROL =11,
 	GTITLE =21,
 	GMESSAGE =22,
 	GINVITE =23,
@@ -63,9 +64,19 @@ struct Event_s
 	opaque O<>;
 };
 
+enum TransferControl_e
+{
+	TC_Resume,
+	TC_Pause,
+	TC_Cancel
+};
+
 /* TREQUEST = File delivery request
  * ID = Friend number. I1 = File number.
  * I2 = File length. S1 = File name. */
+/* TCONTROL = File control
+ * ID = Friend number. I1 = File number.
+ * I2 = (Enum TransferControl) Control ID */
 
 typedef struct ToxSaveData_s ToxSaveData_t;
 typedef struct ToxFriends_s ToxFriends_t;
@@ -138,6 +149,12 @@ program TOXAEMIA_PROG {
 		 * Returns number of new friend, or -1 for failure.
 		 * string<> => Tox ID to add */
 		int ToxAddFriendNoRequest(string<>) = 12;
+
+		/* ToxResumeTransfer
+		 * Resumes or starts a file transfer
+		 * unsigned int => File transfer number
+		 * unsigned int => Friend number for file transfer */
+		void ToxResumeTransfer(unsigned int, unsigned int) = 30;
 
 		/* ToxCreateGroupchat
 		 * Creates a new groupchat

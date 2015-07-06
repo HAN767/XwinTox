@@ -39,6 +39,9 @@ typedef enum CommEventTypes_e
 /* Groupchats */
 	Comm_NewGroupchat,
 	Comm_LeaveGroupchat,
+
+/* File transfers */
+	Comm_ResumeTransfer,
 } CommEventTypes_e;
 
 typedef struct Xwin_s

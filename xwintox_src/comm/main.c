@@ -265,6 +265,15 @@ void leavegroupchat(int id)
 	}
 }
 
+void resumetransfer(int tid, int fid)
+{
+	if(!toxresumetransfer_1(tid, fid, clnt))
+	{
+		clnt_perror(clnt, __func__);
+		return;
+	}
+}
+
 int main()
 {
 	struct timeval tv = { 0 };
@@ -341,19 +350,48 @@ int main()
 
 		switch(w->T)
 		{
-		case Comm_SaveData: savedata(); break;
-		case Comm_ChangeName: namechange(); break;
+		case Comm_SaveData:
+			savedata();
+			break;
 
-		case Comm_GetFriendList: getfriendlist(); break;
-		case Comm_SendFriendRequest: sendfriendrequest(w->S1, w->S2); break;
-		case Comm_AddFriendNoReq: addfriendnorequest(w->S1); break;
-		case Comm_DeleteFriend: deletefriend(w->ID); break;
+		case Comm_ChangeName:
+			namechange();
+			break;
 
-		case Comm_SendMessage: sendmessage(w->I1, w->ID, w->S1); break;
+		case Comm_GetFriendList:
+			getfriendlist();
+			break;
 
-		case Comm_NewGroupchat: newgroupchat(); break;
-		case Comm_LeaveGroupchat: leavegroupchat(w->ID); break;
-		default: dbg("Unhandled request: %s\n", w);
+		case Comm_SendFriendRequest:
+			sendfriendrequest(w->S1, w->S2);
+			break;
+
+		case Comm_AddFriendNoReq:
+			addfriendnorequest(w->S1);
+			break;
+
+		case Comm_DeleteFriend:
+			deletefriend(w->ID);
+			break;
+
+		case Comm_SendMessage:
+			sendmessage(w->I1, w->ID, w->S1);
+			break;
+
+		case Comm_NewGroupchat:
+			newgroupchat();
+			break;
+
+		case Comm_LeaveGroupchat:
+			leavegroupchat(w->ID);
+			break;
+
+		case Comm_ResumeTransfer:
+			resumetransfer(w->ID, w->I1);
+			break;
+
+		default:
+			dbg("Unhandled request: %d\n", w->ID);
 		}
 
 		Ev_free(tofree);

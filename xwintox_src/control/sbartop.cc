@@ -46,13 +46,14 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group(Xw->basex * S,
 
 void namechangecb(Fl_Widget *w, long which)
 {
-	char *amsg =(char*)calloc(11, sizeof(char));
 	Fl_Input *f =(Fl_Input*)w;
+	Event_t *e =Ev_new();
 	
-	strcpy(amsg, "namechange");
+	e->T =Comm_ChangeName;
 
 	if (which) Dictionary_set(APP->Config, "Tox.Name", f->value());
 	else Dictionary_set(APP->Config, "Tox.Status", f->value());
 	
-	List_add(APP->Comm->WorkQueue, (void*)amsg);
+	List_add(APP->Comm->WorkQueue, (void*)e);
+	CommWork();
 }

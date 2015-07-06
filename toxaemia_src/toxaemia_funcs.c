@@ -274,3 +274,17 @@ int *toxaddfriendnorequest_1_svc(char* address, struct svc_req *SvcReq)
 
 	return &ret;
 }
+
+void *toxresumetransfer_1_svc(unsigned int tnum, unsigned int fnum,
+struct svc_req *SvcReq)
+{
+	static int ret =0;
+	Call_t *call =calloc(1, sizeof(Call_t));
+
+	call->Func =ToxResumeTransfer;
+	call->I1 =tnum;
+	call->I2 =fnum;
+	List_add(Calls, call);
+
+	return &ret;
+}

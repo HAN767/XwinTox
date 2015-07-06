@@ -12,6 +12,8 @@
 
 #include "toxaemia_rpc.h"
 #include "toxaemia_core.h"
+#include "xdrserv/xdrserv.h"
+#include "xdrserv/evserv.h"
 
 Tox_comm_t *Tox_comm =0;
 int Tox_thread_launched =0;
@@ -163,6 +165,30 @@ void Set_name_status(char* name, char* status)
 	tox_self_set_name(Tox_comm->tox, (uint8_t*)name, strlen(name), 0);
 	tox_self_set_status_message(Tox_comm->tox, (uint8_t*)
 	                            status, strlen(status), 0);
+}
+
+void File_control(TOX_FILE_CONTROL c, int tid, int fid)
+{
+	TOX_ERR_FILE_CONTROL err;
+
+	dbg("Control file transfers: Friend %d trans %d control %d:", c, tid, fid);
+
+	if(tox_file_control(Tox_comm->tox, fid, tid, c, &err))
+	{
+		Event_t *ev =calloc(1, sizeof(Event_t));
+
+		dbg("success\n");
+
+		ev->T =TCONTROL;
+		ev->ID =fid;
+		ev->I1 =tid;
+		if (c == TOX_FILE_CONTROL_RESUME) ev->I2 =TC_Resume;
+		else if (c == TOX_FILE_CONTROL_PAUSE) ev->I2 =TC_Pause;
+		else if (c == TOX_FILE_CONTROL_CANCEL) ev->I2 =TC_Cancel;
+
+		Ev_pack(ev);
+		Xdrserv_send(Evserv, ev);
+	}
 }
 
 int Tox_comm_main()
