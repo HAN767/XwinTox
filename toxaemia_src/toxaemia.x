@@ -28,6 +28,7 @@ enum ToxEventType
 	FADDED =7,
 	TREQUEST =10,
 	TCONTROL =11,
+	TDATA =12,
 	GTITLE =21,
 	GMESSAGE =22,
 	GINVITE =23,
@@ -77,6 +78,9 @@ enum TransferControl_e
 /* TCONTROL = File control
  * ID = Friend number. I1 = File number.
  * I2 = (Enum TransferControl) Control ID */
+/* TDATA = File data delivery
+ * ID = Friend number. I1 = File number.
+ * I2 = Position. O = Data */
 
 typedef struct ToxSaveData_s ToxSaveData_t;
 typedef struct ToxFriends_s ToxFriends_t;

@@ -44,6 +44,7 @@ void Ev_free(Event_t *ev)
 {
 	free(ev->S1);
 	free(ev->S2);
+	if(ev->O.O_len) free (ev->O.O_val);
 	free(ev);
 	return;
 }

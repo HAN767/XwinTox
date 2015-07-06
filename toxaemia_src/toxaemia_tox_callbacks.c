@@ -151,7 +151,8 @@ void  cb_file_recv(Tox *tox, uint32_t friend_number, uint32_t file_number,
                    size_t filename_length, void *user_data)
 {
 	Event_t *ev;
-	if (kind != TOX_FILE_KIND_DATA) return;
+
+	if(kind != TOX_FILE_KIND_DATA) return;
 
 	dbg("File reception request from %d, num %d\n", friend_number, file_number);
 	ev =calloc(1, sizeof(Event_t));
@@ -161,6 +162,46 @@ void  cb_file_recv(Tox *tox, uint32_t friend_number, uint32_t file_number,
 	ev->I1 =file_number;
 	ev->I2 =file_size;
 	ev->S1 =strndup((const char*)filename, filename_length + 1);
+
+	Ev_pack(ev);
+	Xdrserv_send(Evserv, ev);
+}
+
+void cb_file_recv_control(Tox *tox, uint32_t friend_number,uint32_t file_number,
+                          TOX_FILE_CONTROL c, void *user_data)
+{
+	Event_t *ev;
+
+	dbg("File recv ctrl: %d, num %d\n", friend_number, file_number);
+	ev =calloc(1, sizeof(Event_t));
+
+	ev->T =TCONTROL;
+	ev->ID =friend_number;
+	ev->I1 =file_number;
+
+	if(c == TOX_FILE_CONTROL_RESUME) ev->I2 =TC_Resume;
+	else if(c == TOX_FILE_CONTROL_PAUSE) ev->I2 =TC_Pause;
+	else if(c == TOX_FILE_CONTROL_CANCEL) ev->I2 =TC_Cancel;
+
+	Ev_pack(ev);
+	Xdrserv_send(Evserv, ev);
+}
+
+void cb_file_recv_chunk(Tox *tox, uint32_t friendnumber, uint32_t filenumber,
+                         uint64_t position, const uint8_t *data, size_t length,
+                         void *user_data)
+{
+	Event_t *ev =calloc(1, sizeof(Event_t));
+	uint8_t *ndata =malloc(length);
+
+	memcpy(ndata, data, length);
+
+	ev->T =TDATA;
+	ev->ID =friendnumber;
+	ev->I1 =filenumber;
+	ev->I2 =position;
+	ev->O.O_len =length;
+	ev->O.O_val =(void*)ndata;
 
 	Ev_pack(ev);
 	Xdrserv_send(Evserv, ev);
@@ -268,6 +309,8 @@ void InitCallbacks()
 	tox_callback_friend_request(Tox_comm->tox, cb_friend_request, 0);
 
 	tox_callback_file_recv(Tox_comm->tox, cb_file_recv, 0);
+	tox_callback_file_recv_control(Tox_comm->tox, cb_file_recv_control, 0);
+	tox_callback_file_recv_chunk(Tox_comm->tox, cb_file_recv_chunk, 0);
 
 	tox_callback_group_invite(Tox_comm->tox, cb_group_invite, 0);
 	tox_callback_group_namelist_change(Tox_comm->tox, cb_group_namelist_change,

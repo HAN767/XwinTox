@@ -281,6 +281,8 @@ struct svc_req *SvcReq)
 	static int ret =0;
 	Call_t *call =calloc(1, sizeof(Call_t));
 
+	dbg("Resume transfer.\n");
+
 	call->Func =ToxResumeTransfer;
 	call->I1 =tnum;
 	call->I2 =fnum;

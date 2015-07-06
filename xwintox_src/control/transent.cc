@@ -29,9 +29,27 @@ const char *GetDisplaySize(unsigned int bytes)
 	return dsize;
 }
 
+void teRecvPost(int mtype, PBMessage_t* msg, void* custom)
+{
+	TransfersEntry *te =(TransfersEntry*)custom;
+
+	if(mtype == PB_TControl && msg->I1 == te->transfer->contact->num && 
+	   msg->I2 == te->transfer->num)
+	{
+		dbg("Transfer %d:%d: enter new state: ", msg->I1, msg->I2);
+		switch (msg->I3)
+		{
+		case TC_Resume:
+			dbg("resume\n");
+			te->progress->activate();
+			te->accept->deactivate();
+		}
+	}
+}
+
 void teAcceptPressed(Fl_Widget *w)
 {
-	TransfersEntry *te =(TransfersEntry*)w;
+	TransfersEntry *te =(TransfersEntry*)w->parent();
 	Event_t *e =Ev_new();
 
 	e->T =Comm_ResumeTransfer;
@@ -72,11 +90,14 @@ TransfersEntry::TransfersEntry(int X, int Y, int S, Transfer_t *T, int I)
 	progress->value(transfer->pos);
 	progress->labelsize(11.2 * scale);
 	progress->labelfont(FL_HELVETICA_BOLD);
+	progress->deactivate();
 
 	box(FL_FLAT_BOX);
 
 	if(I == 1) color(fl_rgb_color(198, 199, 214));
 	else color(fl_rgb_color(239, 239, 239));
+
+	PB_Register(APP->events, PB_TControl, this, teRecvPost);
 
 	resize(X, Y, w(), h());
 	end();

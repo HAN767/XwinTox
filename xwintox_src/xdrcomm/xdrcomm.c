@@ -42,7 +42,7 @@ int writeit(void* handle, void* buf, int len)
 
 void Xdrcomm_despatchevent(Event_t *event)
 {
-	dbg("Tox event: T:%d, A:%d, %d, %s\n", event->T, event->ID, event->I1,
+	dbg("Tox event: T:%d, ID:%d, I1=%d\n", event->T, event->ID, event->I1,
 	    event->S1);
 
 	if(event->T == TREQUEST)
@@ -53,6 +53,14 @@ void Xdrcomm_despatchevent(Event_t *event)
 		msg->I3 =event->I2;
 		msg->S1 =strdup(event->S1);
 		PB_Defer(APP->events, PB_TRequest, msg);
+	}
+	if(event->T == TCONTROL)
+	{
+		PBMessage_t *msg =calloc(1, sizeof(PBMessage_t));
+		msg->I1 =event->ID;
+		msg->I2 =event->I1;
+		msg->I3 =event->I2;
+		PB_Defer(APP->events, PB_TControl, msg);
 	}
 
 	Ev_free(event);

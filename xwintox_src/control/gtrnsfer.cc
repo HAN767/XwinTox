@@ -31,7 +31,9 @@ void gt_post(int mtype, PBMessage_t* msg, void* custom)
 		g->transfers.push_back(newtransfer);
 		dbg("Transfer: %s from %s\n", newtransfer->filename, newtransfer->contact->name);
 	}
-	g->regen_gui();
+
+	g->regengui =1;
+	g->redraw();
 }
 
 GTransfers::GTransfers(int S) : GArea(S, "File Transfers")
@@ -57,6 +59,12 @@ void GTransfers::resize(int X, int Y, int W, int H)
 
 void GTransfers::draw()
 {
+	if(regengui)
+	{
+		regengui =0;
+		regen_gui();
+	}
+
 	GArea::draw();
 }
 
@@ -67,7 +75,7 @@ void GTransfers::regen_gui()
 	/* delete the old ones */
 	list->clear_all();
 
-	for (const auto t : transfers)
+	for(const auto t : transfers)
 	{
 		TransfersEntry *te =new TransfersEntry(XM, YM, scale, t, inv);
 		dbg("Regen for Trans %d %d\n", t->contact->num, t->num);
@@ -81,6 +89,6 @@ void GTransfers::regen_gui()
 
 	list->redraw();
 	redraw();
-	
+
 	return;
 }

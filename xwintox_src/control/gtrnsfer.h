@@ -48,6 +48,7 @@ public:
 
 	TransfersList *list;
 	vector <Transfer_t*> transfers;
+	int regengui;
 };
 
 #endif

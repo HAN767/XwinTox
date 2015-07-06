@@ -171,7 +171,7 @@ void File_control(TOX_FILE_CONTROL c, int tid, int fid)
 {
 	TOX_ERR_FILE_CONTROL err;
 
-	dbg("Control file transfers: Friend %d trans %d control %d:", c, tid, fid);
+	dbg("Control file transfers: Trans%d:%d control %d:", fid, tid, c);
 
 	if(tox_file_control(Tox_comm->tox, fid, tid, c, &err))
 	{
@@ -294,6 +294,10 @@ int Tox_comm_main()
 				if(ferr == TOX_ERR_FRIEND_ADD_BAD_CHECKSUM) dbg("bad checksum\n");
 
 				List_add(Returns, (void*)ret);
+			}
+			else if(call->Func == ToxResumeTransfer)
+			{
+				File_control(TOX_FILE_CONTROL_RESUME, call->I1, call->I2);
 			}
 
 			if(call->S1) free(call->S1);
