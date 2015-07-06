@@ -37,3 +37,4 @@
 # SunshinePro D-Make custom file
 *.plt
 *.cst
+old/*
