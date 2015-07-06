@@ -24,8 +24,8 @@ extern "C"
 
 typedef struct PBMessage_s
 {
-	char *S1, *S2, *S3;
-	int I1, I2, I3;
+	char *S1, *S2, *S3, *S4;
+	int I1, I2, I3, I4;
 } PBMessage_t;
 
 typedef struct PBRegistryEntry_s

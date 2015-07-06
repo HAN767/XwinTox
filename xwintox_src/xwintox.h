@@ -17,6 +17,7 @@ typedef enum PBMTypes_e
 	PB_DNSResolved =4,
 	PB_TRequest =8,
 	PB_TControl =16,
+	PB_TData =32,
 } PBMTypes_e;
 
 #include "postbox.h"

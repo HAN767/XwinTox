@@ -3,6 +3,11 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Group.H>
 
+extern "C"
+{
+#include "comm/etc.h"
+}
+
 #include "xwintox.h"
 
 #include "control/gui.h"
@@ -45,12 +50,37 @@ void teRecvPost(int mtype, PBMessage_t* msg, void* custom)
 			te->accept->deactivate();
 		}
 	}
+	else if(mtype == PB_TData && msg->I1 == te->transfer->contact->num && 
+	   msg->I2 == te->transfer->num)
+	{
+		if (msg->I4)
+		{
+			fseek(te->transfer->file, msg->I3, SEEK_SET);
+			if (fwrite(msg->S1, msg->I4, 1, te->transfer->file) != 1)
+			{
+				dbg("failed to write file data\n");
+			}
+			te->transfer->pos =msg->I3;
+		}
+		else
+		{
+			fclose(te->transfer->file);
+			te->accept->deactivate();
+			te->reject->deactivate();
+			te->progress->value(te->transfer->size);
+		}
+	}
+	te->redraw();
 }
 
 void teAcceptPressed(Fl_Widget *w)
 {
+	char path[255] = { 0 };
 	TransfersEntry *te =(TransfersEntry*)w->parent();
 	Event_t *e =Ev_new();
+
+	snprintf(path, 255, "%s/%s", get_home_folder(), te->transfer->filename);
+	te->transfer->file =fopen(path, "wb");
 
 	e->T =Comm_ResumeTransfer;
 	e->ID =te->transfer->num;
@@ -86,8 +116,9 @@ TransfersEntry::TransfersEntry(int X, int Y, int S, Transfer_t *T, int I)
 
 	progress->selection_color(fl_rgb_color(118, 202, 116));
 	progress->labelcolor(fl_rgb_color(85, 85, 100));
-	progress->maximum(transfer->size);
-	progress->value(transfer->pos);
+	progress->minimum(0);
+	progress->maximum(1000);
+	progress->value((transfer->pos / transfer->size) * 1000);
 	progress->labelsize(11.2 * scale);
 	progress->labelfont(FL_HELVETICA_BOLD);
 	progress->deactivate();
@@ -97,7 +128,7 @@ TransfersEntry::TransfersEntry(int X, int Y, int S, Transfer_t *T, int I)
 	if(I == 1) color(fl_rgb_color(198, 199, 214));
 	else color(fl_rgb_color(239, 239, 239));
 
-	PB_Register(APP->events, PB_TControl, this, teRecvPost);
+	PB_Register(APP->events, PB_TControl | PB_TData, this, teRecvPost);
 
 	resize(X, Y, w(), h());
 	end();
@@ -117,7 +148,14 @@ void TransfersEntry::resize(int X, int Y, int W, int H)
 void TransfersEntry::draw()
 {
 	int cut;
-	char from[255] = { 0 };
+	char from[255] ={ 0 };
+	char proglabel[255] ={ 0 };
+
+	sprintf(proglabel, "%d%%", (transfer->pos / transfer->size) * 100);
+
+	progress->value((transfer->pos / transfer->size) * 1000);
+	progress->label(proglabel);
+	progress->redraw();
 
 	sprintf(from, "From: %s", GetDisplayName(transfer->contact, 100));
 

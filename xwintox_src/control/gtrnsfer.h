@@ -26,11 +26,12 @@ typedef enum TransferDir_e
 typedef struct Transfer_s
 {
 	TransferState_e state;
-	TransferDir_e dir;
+	TransferDir_e dir; /* dir = 0 means receive, 1 means send */
 	char *filename;
 	Contact_t *contact;
-	int num, size, pos; /* dir = 0 means receive, 1 means send */
+	unsigned int num, size, pos, donebytes;
 	struct tm *time;
+	FILE* file;
 } Transfer_t;
 
 class TransfersList;
