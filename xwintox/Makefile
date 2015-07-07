@@ -13,4 +13,6 @@ PKG_CONFIG_DEPS= libtoxcore
 
 CPPFLAGS += -I. -I${srcdir}
 
-.include <mkc.mk>
+.include "../mk/c11thread.mk"
+
+.include <mkc.prog.mk>
