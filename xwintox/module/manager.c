@@ -4,7 +4,7 @@
 
 #include "misc.h"
 
-#include "Module/Manager.h"
+#include "module/manager.h"
 
 ModuleManager_t *pmmManager;
 

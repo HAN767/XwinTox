@@ -1,7 +1,8 @@
 #include "misc.h"
 
 #include "Module/Module.h"
-#include "Module/Manager.h"
+#include "AOM/IMComm.h"
+#include "module/manager.h"
 
 int main(int argc, char *argv[])
 {
