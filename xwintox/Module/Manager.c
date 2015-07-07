@@ -1,3 +1,5 @@
+#include <dlfcn.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "misc.h"
@@ -26,18 +28,41 @@ void ModuleManager_init()
 	pmmManager->psrvServices.fnCall =ModuleManager_call;
 }
 
-int ModuleManager_initialiseModule(XWF_Module_t *modNew, XWF_Init_f fnInit)
+int ModuleManager_loadDynamicModule(const char *pszPath)
 {
-	int iRet =fnInit(modNew, &pmmManager->psrvServices);
+	XWF_Module_t *pmodNew =malloc(sizeof(XWF_Module_t));
+	const char *pszDLError;
+	XWF_Init_f fnInit;
+
+	pmodNew->enModtype =XWF_Dynamic;
+	pmodNew->hdlLib =dlopen(pszPath, RTLD_LAZY | RTLD_GLOBAL);
+	if ((pszDLError =dlerror()) != NULL) goto dlerror;
+
+	fnInit =dlsym(pmodNew->hdlLib, "XWF_Init");
+	if ((pszDLError =dlerror()) != NULL) goto dlerror;
+
+	if (ModuleManager_initialiseModule(pmodNew, fnInit) != 0) goto error;
+
+dlerror:
+	dbg("Failed to load dynamic module (%s)\n", pszDLError);
+error:
+	dbg("Unloading dynamic module (%s) due to error.\n", pszPath);
+	free(pmodNew);
+	return -1;
+}
+
+int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
+{
+	int iRet =fnInit(pmodNew, &pmmManager->psrvServices);
 
 	if(!iRet)
 	{
-		dbg("Module %s loaded successfully.\n", modNew->pszName);
+		dbg("Module %s loaded successfully.\n", pmodNew->pszName);
 		return 0;
 	}
 	else if(iRet == 1)
 	{
-		dbg("Module %s loaded with errors.\n", modNew->pszName);
+		dbg("Module %s loaded with errors.\n", pmodNew->pszName);
 		return 0;
 	}
 	else

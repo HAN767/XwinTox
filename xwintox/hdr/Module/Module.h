@@ -27,6 +27,7 @@ typedef struct XWF_Module_s
 	const char *pszName;
 	XWF_Exit_f fnExit;
 	XWF_Modtype_e enModtype;
+	void *hdlLib;
 } XWF_Module_t;
 
 struct XWF_Services_s;
