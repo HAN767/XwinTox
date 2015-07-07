@@ -238,6 +238,36 @@ Dictionary_set_if_exists (Dictionary_t *dict, const char *key, const char *value
 	else return 1;
 }
 
+/* Dictionary_set_pointer
+ * sets value for a pointer
+ */
+void
+Dictionary_set_pointer (Dictionary_t *dict, const char *key, void *pvValue)
+{
+	const char szValue[255];
+
+	snprintf((char*)szValue, 255, "%p", pvValue);
+
+	Dictionary_set (dict, key, szValue);
+}
+
+/* Dictionary_get_pointer
+ * gets value from an entry that stores a pointer
+ */
+void
+*Dictionary_get_pointer (Dictionary_t *dict, const char *key)
+{
+	void *pvValue;
+	const char *pszValue =Dictionary_get(dict, key);
+
+	if(!pszValue) return 0;
+	else
+	{
+		sscanf(pszValue, "%p", &pvValue);
+		return pvValue;
+	}
+}
+
 /* Utility function for Dictionary_load_from_file()
  */
 int

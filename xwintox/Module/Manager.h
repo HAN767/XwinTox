@@ -2,14 +2,16 @@
 #define __MANAGER__H__
 
 #include "list.h"
+#include "dictionary.h"
 
 typedef struct ModuleManager_s
 {
-	/* list_t of modules */
+	List_t *lstpmodModules;
 
 	/* dictionary(store addresses of object_t's as sprintf %ul'd strings? 
-	  maybe list_t, schlower) of non-wildcar modules */
-	/* list_t of wildcard modules */
+	  maybe list_t, schlower) of non-wildcar objects */
+	Dictionary_t *dictpobjObjects;
+	List_t *lstpobjWildcards;
 } ModuleManager_t;
 	
 
