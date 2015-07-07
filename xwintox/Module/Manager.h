@@ -26,8 +26,8 @@ ModuleManager_t *ModuleManager_getInstance();
 void ModuleManager_init();
 void ModuleManager_shutdown();
 
-int ModuleManager_loadDynamicModule(const char *path);
-void *ModuleManager_createObject(const char *type);
+int ModuleManager_loadDynamicModule(const char *pszPath);
+void *ModuleManager_createObject(const char *pszType);
 
 int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered);
 
