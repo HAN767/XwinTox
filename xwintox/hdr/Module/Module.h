@@ -83,6 +83,6 @@ typedef struct XWF_Services_s
  * It returns either 0 for success, 1 for non-critical failure,
  * or 2 for critical failure. A critical failure leads to an
  * unloading of the module, so delete all resources held first. */
-typedef XWF_Module_t (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
+typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
 
 #endif
