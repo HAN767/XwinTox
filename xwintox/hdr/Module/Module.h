@@ -10,6 +10,12 @@ typedef enum XWF_Lang
 	XWF_Lang_Script,
 } XWF_Lang_e;
 
+typedef enum XWF_Modtype
+{
+	XWF_Dynamic,
+	XWF_Static,
+} XWF_Modtype_e;
+
 /* The function type of a module's exit function. */
 typedef int (*XWF_Exit_f)();
 
@@ -20,6 +26,7 @@ typedef struct XWF_Module_s
 {
 	const char *pszName;
 	XWF_Exit_f fnExit;
+	XWF_Modtype_e enModtype;
 } XWF_Module_t;
 
 struct XWF_Services_s;
@@ -30,11 +37,11 @@ struct XWF_Services_s;
 typedef struct XWF_ObjectParams_s
 {
 	const char *pszObjType;
-	const struct XWF_Services *psrvServices;
+	const struct XWF_Services_s *psrvServices;
 } XWF_ObjectParams_t;
 
 /* The create and destroy function types for an object. */
-typedef void *(*XWF_Create_f)(struct XWF_Services_s *);
+typedef void *(*XWF_Create_f)(XWF_ObjectParams_t *);
 typedef int (*XWF_Destroy_f)(void *);
 
 /* The parameters a module must pass while registering with
@@ -73,8 +80,9 @@ typedef struct XWF_Services_s
 } XWF_Services_t;
 
 /* The function type of a module's initialisation function.
- * It returns either a pointer to an XWF_Module_t detailing
- * the module, or 0 for failure. */
-typedef XWF_Module_t (*XWF_Init_f)(const XWF_Services_t*);
+ * It returns either 0 for success, 1 for non-critical failure,
+ * or 2 for critical failure. A critical failure leads to an
+ * unloading of the module, so delete all resources held first. */
+typedef XWF_Module_t (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
 
 #endif

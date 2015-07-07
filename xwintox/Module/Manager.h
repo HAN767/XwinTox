@@ -4,16 +4,32 @@
 #include "list.h"
 #include "dictionary.h"
 
+#include "Module/Module.h"
+
 typedef struct ModuleManager_s
 {
+/* Public: */
+	/* Modules that have been loaded. */
 	List_t *lstpmodModules;
 
-	/* dictionary(store addresses of object_t's as sprintf %ul'd strings? 
-	  maybe list_t, schlower) of non-wildcar objects */
+	/* Objects which handle on specific type. */
 	Dictionary_t *dictpobjObjects;
+	/* Objects registered with the wildcard - they handle any type. */
 	List_t *lstpobjWildcards;
+
+/* Private: */
+	/* Pointer to the XWFramework Manager's Services structure. */
+	XWF_Services_t *psrvServices;
 } ModuleManager_t;
-	
+
+ModuleManager_t *ModuleManager_getInstance();
+void ModuleManager_init();
+void ModuleManager_shutdown();
+
+int ModuleManager_loadDynamicModule(const char *path);
+void *ModuleManager_createObject(const char *type);
+
+int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered);
 
 #endif
 
