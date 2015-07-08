@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 {
 	dbg("XwinTox Frameworks 2.0_%s\n", XWVERS);
 	ModuleManager_init();
-	ModuleManager_loadDynamicModule("/home/david/.histfile");
+	ModuleManager_loadDynamicModule
+	("/ws/tox/XwinTox/imcomm_tox/libimcomm_tox.so");
 	return 0;
 }

@@ -38,10 +38,12 @@ int ModuleManager_loadDynamicModule(const char *pszPath)
 	pmodNew->hdlLib =dlopen(pszPath, RTLD_LAZY | RTLD_GLOBAL);
 	if ((pszDLError =dlerror()) != NULL) goto dlerror;
 
-	fnInit =dlsym(pmodNew->hdlLib, "XWF_Init");
+	fnInit =dlsym(pmodNew->hdlLib, "XWF_init");
 	if ((pszDLError =dlerror()) != NULL) goto dlerror;
 
 	if (ModuleManager_initialiseModule(pmodNew, fnInit) != 0) goto error;
+
+	return 0;
 
 dlerror:
 	dbg("Failed to load dynamic module (%s)\n", pszDLError);
@@ -57,12 +59,12 @@ int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 
 	if(!iRet)
 	{
-		dbg("Module %s loaded successfully.\n", pmodNew->pszName);
+		dbg("Module <%s> loaded successfully.\n", pmodNew->pszName);
 		return 0;
 	}
 	else if(iRet == 1)
 	{
-		dbg("Module %s loaded with errors.\n", pmodNew->pszName);
+		dbg("Module <%s> loaded with errors.\n", pmodNew->pszName);
 		return 0;
 	}
 	else

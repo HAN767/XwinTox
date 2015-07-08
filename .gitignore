@@ -38,3 +38,12 @@
 *.plt
 *.cst
 old/*
+*.d
+Obj/*
+*.depend
+*.err
+*.res
+*.core
+*_mkc_*
+*.os
+xwintox/xwintox
