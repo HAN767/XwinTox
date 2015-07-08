@@ -36,12 +36,14 @@ int ModuleManager_loadDynamicModule(const char *pszPath)
 
 	pmodNew->enModtype =XWF_Dynamic;
 	pmodNew->hdlLib =dlopen(pszPath, RTLD_LAZY | RTLD_GLOBAL);
-	if ((pszDLError =dlerror()) != NULL) goto dlerror;
+
+	if((pszDLError =dlerror()) != NULL) goto dlerror;
 
 	fnInit =dlsym(pmodNew->hdlLib, "XWF_init");
-	if ((pszDLError =dlerror()) != NULL) goto dlerror;
 
-	if (ModuleManager_initialiseModule(pmodNew, fnInit) != 0) goto error;
+	if((pszDLError =dlerror()) != NULL) goto dlerror;
+
+	if(ModuleManager_initialiseModule(pmodNew, fnInit) != 0) goto error;
 
 	return 0;
 
@@ -76,20 +78,40 @@ int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 
 int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered)
 {
+	const char *pszLang ="Unknown";
+
+	switch(pobjRegistered->enLang)
+	{
+	case XWF_Lang_C:
+		pszLang ="C-language";
+		break;
+
+	case XWF_Lang_CXX:
+		pszLang ="C++-language";
+		break;
+
+	case XWF_Lang_Script:
+		pszLang ="Script-language";
+		break;
+	}
+
 	if(strcmp(pobjRegistered->pszType, "*") == 0)
 	{
-		dbg("Adding new wildcard object\n");
+		dbg("Adding new %s wildcard object provided by %s\n", pszLang,
+		    pobjRegistered->pmodProvider->pszName);
 		List_add(pmmManager->lstpobjWildcards, (void*)pobjRegistered);
 		return 0;
 	}
-	else if(Dictionary_get(pmmManager->dictpobjObjects, pobjRegistered->pszType))
+	else if(Dictionary_get(pmmManager->dictpobjObjects,
+	                       pobjRegistered->pszType))
 	{
 		dbg("Object already exists: %s\n", pobjRegistered->pszType);
 		return -1;
 	}
 	else
 	{
-		dbg("Adding new object: %s\n", pobjRegistered->pszType);
+		dbg("Adding new %s object <%s> provided by %s\n", pszLang,
+		    pobjRegistered->pszType, pobjRegistered->pmodProvider->pszName);
 		return 0;
 	}
 }
