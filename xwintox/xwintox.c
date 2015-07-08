@@ -10,5 +10,7 @@ int main(int argc, char *argv[])
 	ModuleManager_init();
 	ModuleManager_loadDynamicModule
 	("/ws/tox/XwinTox/imcomm_tox/libimcomm_tox.so");
+
+	ModuleManager_createObject("IM");
 	return 0;
 }

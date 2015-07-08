@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libsunshine" InternalType="">
+  <Reconciliation>
+    <Regexes/>
+    <Excludepaths/>
+    <Ignorefiles/>
+    <Extensions>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp]]>
+    </Extensions>
+    <Topleveldir>../libsunshine</Topleveldir>
+  </Reconciliation>
   <VirtualDirectory Name="hdr">
     <VirtualDirectory Name="compat">
       <File Name="hdr/compat/threads.h"/>
@@ -8,6 +17,7 @@
     <File Name="hdr/misc.h"/>
     <File Name="hdr/hexstring.h"/>
     <File Name="hdr/dictionary.h"/>
+    <File Name="hdr/postbox.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
@@ -105,6 +115,7 @@
     <File Name="dictionary.c"/>
     <File Name="hexstring.c"/>
     <File Name="Makefile"/>
+    <File Name="postbox.c"/>
   </VirtualDirectory>
   <VirtualDirectory Name="ini">
     <File Name="ini/ini.c"/>

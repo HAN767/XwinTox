@@ -40,18 +40,23 @@ typedef struct Dictionary
 #define DICTIONARY_ITERATE_CLOSE(DICT) } } mtx_unlock(( DICT )->Lock);
 
 Dictionary_t *Dictionary_new();
-void Dictionary_delete (Dictionary_t *dict);
-void Dictionary_set (Dictionary_t *dict, const char *key, const char *value);
-const char *Dictionary_get (Dictionary_t *dict, const char *key);
-void Dictionary_unset (Dictionary_t *dict, const char *key);
+void Dictionary_delete(Dictionary_t *dict);
+void Dictionary_set(Dictionary_t *dict, const char *key, const char *value);
+const char *Dictionary_get(Dictionary_t *dict, const char *key);
+void Dictionary_unset(Dictionary_t *dict, const char *key);
 
-const char *Dictionary_set_aux (Dictionary_t *dict, const char *key,
-                                const char *value);
-int Dictionary_set_if_exists (Dictionary_t *dict, const char *key,
-                                const char *value);
+const char *Dictionary_set_aux(Dictionary_t *dict, const char *key,
+                               const char *value);
+int Dictionary_set_if_exists(Dictionary_t *dict, const char *key,
+                             const char *value);
 
-int Dictionary_load_from_file (Dictionary_t *dict, const char *filename, 
-								int createifnotexist);
-int Dictionary_write_to_file (Dictionary_t *dict, const char *filename);
+void Dictionary_set_pointer(Dictionary_t *dict, const char *key,
+                             const void *pvValue);
+void *Dictionary_get_pointer(Dictionary_t *dict, const char *key);
+
+
+int Dictionary_load_from_file(Dictionary_t *dict, const char *filename,
+                              int createifnotexist);
+int Dictionary_write_to_file(Dictionary_t *dict, const char *filename);
 
 #endif

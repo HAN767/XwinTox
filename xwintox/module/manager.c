@@ -55,6 +55,24 @@ error:
 	return -1;
 }
 
+void *ModuleManager_createObject(const char *pszType)
+{
+	XWF_ObjectParams_t obpParams;
+	XWF_Object_t *pobjHandler;
+
+	obpParams.pszObjType =pszType;
+	obpParams.psrvServices =&pmmManager->psrvServices;
+
+	if((pobjHandler =Dictionary_get_pointer
+	                 (pmmManager->dictpobjObjects, pszType)) != 0)
+	{
+		void *pobjCreated =pobjHandler->fnCreate(&obpParams);
+		if (pobjCreated) return pobjCreated;
+	}
+
+	return 0; /* no module can create such an object */
+}
+
 int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 {
 	int iRet =fnInit(pmodNew, &pmmManager->psrvServices);
@@ -97,7 +115,7 @@ int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered)
 
 	if(strcmp(pobjRegistered->pszType, "*") == 0)
 	{
-		dbg("Adding new %s wildcard object provided by %s\n", pszLang,
+		dbg("Adding new %s wildcard object provided by <%s>\n", pszLang,
 		    pobjRegistered->pmodProvider->pszName);
 		List_add(pmmManager->lstpobjWildcards, (void*)pobjRegistered);
 		return 0;
@@ -105,13 +123,15 @@ int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered)
 	else if(Dictionary_get(pmmManager->dictpobjObjects,
 	                       pobjRegistered->pszType))
 	{
-		dbg("Object already exists: %s\n", pobjRegistered->pszType);
+		dbg("Object already exists: <%s>\n", pobjRegistered->pszType);
 		return -1;
 	}
 	else
 	{
-		dbg("Adding new %s object <%s> provided by %s\n", pszLang,
+		dbg("Adding new %s object <%s> provided by <%s>\n", pszLang,
 		    pobjRegistered->pszType, pobjRegistered->pmodProvider->pszName);
+		Dictionary_set_pointer(pmmManager->dictpobjObjects,
+		                       pobjRegistered->pszType, pobjRegistered);
 		return 0;
 	}
 }
