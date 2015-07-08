@@ -104,6 +104,8 @@
     <File Name="IMCommTox.h"/>
     <File Name="IMCommTox.c"/>
     <File Name="../xwintox/module/manager.c"/>
+    <File Name="mctfuncs.c"/>
+    <File Name="mctfuncs.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

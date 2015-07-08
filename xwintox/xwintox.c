@@ -16,6 +16,7 @@ void default_config(Dictionary_t *conf);
 int main(int argc, char *argv[])
 {
 	char szConfigFilename[255];
+	IMComm_t *pimcM;
 
 	dbg("XwinTox Frameworks 2.0_%s\n", XWVERS);
 
@@ -30,6 +31,9 @@ int main(int argc, char *argv[])
 	("/ws/tox/XwinTox/imcomm_tox/libimcomm_tox.so");
 
 	App.pimcIM =ModuleManager_createObject("IM");
+	pimcM =App.pimcIM->pobjObject;
+
+	pimcM->fnConnect(pimcM);
 
 	ModuleManager_destroyObject(App.pimcIM);
 	Dictionary_write_to_file(App.dictConfig, szConfigFilename);
@@ -43,6 +47,12 @@ void *AppCall(const void *pobjSource, const char *pszService,
 	{
 		static char szPath[255];
 		snprintf(szPath, 255, "%s/.XwinTox/%s.ini", get_home_folder(), pvParams);
+		return szPath;
+	}
+	else if(strcmp(pszService, "GetDataFilename") == 0)
+	{
+		static char szPath[255];
+		snprintf(szPath, 255, "%s/.XwinTox/%s.dat", get_home_folder(), pvParams);
 		return szPath;
 	}
 	else
