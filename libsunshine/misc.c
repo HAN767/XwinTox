@@ -4,9 +4,15 @@
  * Miscellaneous utility functionality
  */
 
+#include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <unistd.h>
 
 #define DEF_EV
 #include "misc.h"
@@ -47,4 +53,40 @@ void Ev_free(Event_t *ev)
 	if(ev->O.O_len) free (ev->O.O_val);
 	free(ev);
 	return;
+}
+
+/* Files */
+int create_folder_if_not_exist(const char *path)
+{
+	int error;
+
+	if((error =mkdir(path, 0700)) == -1)
+	{
+		struct stat s;
+
+		if(errno == EEXIST && ! stat(path, &s) &&
+		        s.st_mode & S_IFDIR)
+		{
+			return 0;
+		}
+		else
+		{
+			dbg("Failed to create config folder: %s", strerror(errno));
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+const char *get_home_folder()
+{
+	const char *homefolder;
+
+	if((homefolder =getenv("HOME")) == NULL)
+	{
+		homefolder =getpwuid(getuid())->pw_dir;
+	}
+
+	return homefolder;
 }

@@ -39,6 +39,9 @@ Event_t *Ev_copy(Event_t *ev);
 void Ev_pack(Event_t *ev);
 void Ev_free(Event_t *ev);
 
+int create_folder_if_not_exist(const char *path);
+const char *get_home_folder();
+
 #ifdef DEF_EV
 
 typedef unsigned int u_int;

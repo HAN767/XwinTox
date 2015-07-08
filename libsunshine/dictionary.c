@@ -87,16 +87,22 @@ Dictionary_new (int size)
 void
 Dictionary_delete (Dictionary_t *dict)
 {
-	DICTIONARY_ITERATE_OPEN (dict)
-	free (entry->key);
-	free (entry->value);
-	free (entry);
-	free (e);
-	DICTIONARY_ITERATE_CLOSE (dict)
-
+	List_t_ *e, *next;
+	Dictionary_entry_t *entry;
+	for (int i = 0; i < ( dict )->size; i++)
+	{
+		for (e = ( dict )->entries[i]; e != 0; e = next)
+		{
+			next =e->Link;
+			entry =e->data;
+			free (entry->key);
+			free (entry->value);
+			free (entry);
+			free (e);
+		}
+	}
 
 	free (dict->entries);
-
 	free (dict);
 }
 

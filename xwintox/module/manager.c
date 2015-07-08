@@ -30,6 +30,11 @@ void ModuleManager_init(void *pappApp, XWF_Call_f fnAppCall)
 	pmmManager->fnAppCall =fnAppCall;
 }
 
+void ModuleManager_destroy()
+{
+	Dictionary_delete(pmmManager->dictpobjObjects);
+}
+
 int ModuleManager_loadDynamicModule(const char *pszPath)
 {
 	XWF_Module_t *pmodNew =malloc(sizeof(XWF_Module_t));
@@ -57,7 +62,7 @@ error:
 	return -1;
 }
 
-void *ModuleManager_createObject(const char *pszType)
+XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
 {
 	XWF_ObjectParams_t obpParams;
 	XWF_Object_t *pobjHandler;
@@ -68,11 +73,26 @@ void *ModuleManager_createObject(const char *pszType)
 	if((pobjHandler =Dictionary_get_pointer
 	                 (pmmManager->dictpobjObjects, pszType)) != 0)
 	{
-		void *pobjCreated =pobjHandler->fnCreate(&obpParams);
-		if (pobjCreated) return pobjCreated;
+		XWF_Object_Handle_t *pobjhCreated =malloc(sizeof(XWF_Object_Handle_t));
+		pobjhCreated->pxwoObject =pobjHandler;
+		pobjhCreated->pobjObject =pobjHandler->fnCreate(&obpParams);
+
+		if(pobjhCreated->pobjObject) return pobjhCreated;
+		else free(pobjhCreated);
 	}
 
 	return 0; /* no module can create such an object */
+}
+
+int ModuleManager_destroyObject(XWF_Object_Handle_t *pobjhToDelete)
+{
+	if(!pobjhToDelete) return -1;
+	else
+	{
+		pobjhToDelete->pxwoObject->fnDestroy(pobjhToDelete->pobjObject);
+		free(pobjhToDelete);
+		return 0;
+	}
 }
 
 int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
@@ -138,11 +158,12 @@ int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered)
 	}
 }
 
-void *ModuleManager_call(const char *pszService, const void *pvParams)
+void *ModuleManager_call(const void *pobjSource, const char *pszService,
+                         const void *pvParams)
 {
 	if(strncmp(pszService, "APP", 3) == 0)
 	{
-		return pmmManager->fnAppCall(pszService + 4, pvParams);
+		return pmmManager->fnAppCall(pobjSource, pszService + 4, pvParams);
 	}
 
 	return 0;

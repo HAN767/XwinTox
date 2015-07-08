@@ -5,7 +5,8 @@
 
 typedef struct XWT_s
 {
-	IMComm_t *pimcIM;
+	Dictionary_t *dictConfig;
+	XWF_Object_Handle_t *pimcIM;
 } XWT_t;
 
 #endif

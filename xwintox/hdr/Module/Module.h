@@ -69,7 +69,7 @@ typedef int (*XWF_RegisterObj_f)(const XWF_Object_t *pobjRegistered);
  * or a service provided by another object. 
  * The syntax is SYSTEM/ServiceName for system services, and
  * ObjType/ServiceName for other objects. */
-typedef void *(*XWF_Call_f)(const char *pszService, const void *pvParams);
+typedef void *(*XWF_Call_f)(const void *, const char *, const void *);
 
 /* This structure provides modules with services from the 
  * module manager. */
@@ -86,5 +86,13 @@ typedef struct XWF_Services_s
  * or 2 for critical failure. A critical failure leads to an
  * unloading of the module, so delete all resources held first. */
 typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
+
+/* This is a handle to an object.
+ * It includes a pointer to the XWF Object for use by the framework. */
+typedef struct XWF_Object_Handle_s
+{
+	XWF_Object_t *pxwoObject;
+	void *pobjObject;
+} XWF_Object_Handle_t;
 
 #endif
