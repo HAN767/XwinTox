@@ -10,8 +10,6 @@ SRCS.xwintox+=	module/manager.c
 INCSSRCDIR = hdr
 INCS = Module/Module.h
 
-PKG_CONFIG_DEPS= libtoxcore
-
 PATH.self := ${.PARSEDIR:tA}
 CPPFLAGS += -I${PATH.self} -I${PATH.self}/hdr
 CPPFLAGS += -I. -DXWVERS=\"${VERS}\"

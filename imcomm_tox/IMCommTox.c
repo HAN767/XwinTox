@@ -12,6 +12,7 @@ void *IMCommTox_create(XWF_ObjectParams_t *pobpParams)
 	IMComm_t *pimcNew =calloc(1, sizeof(IMComm_t));
 
 	pimcNew->pbEvents =PB_New();
+	pobpParams->psrvServices->fnCall("APP/Test", 0);
 	return pimcNew;
 }
 

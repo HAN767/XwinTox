@@ -69,13 +69,14 @@ typedef int (*XWF_RegisterObj_f)(const XWF_Object_t *pobjRegistered);
  * or a service provided by another object. 
  * The syntax is SYSTEM/ServiceName for system services, and
  * ObjType/ServiceName for other objects. */
-typedef int (*XWF_Call_f)(const char *pszService, void *pvParams);
+typedef void *(*XWF_Call_f)(const char *pszService, const void *pvParams);
 
 /* This structure provides modules with services from the 
  * module manager. */
 typedef struct XWF_Services_s
 {
 	unsigned int uiVersion;
+	void *pappApp;
 	XWF_RegisterObj_f fnRegisterObj;
 	XWF_Call_f fnCall;
 } XWF_Services_t;

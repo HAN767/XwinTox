@@ -40,6 +40,8 @@
   <VirtualDirectory Name="xwintox">
     <File Name="Makefile"/>
     <File Name="xwintox.c"/>
+    <File Name="xwintox"/>
+    <File Name="xwt.h"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
@@ -129,8 +131,8 @@
     </Configuration>
   </Settings>
   <VirtualDirectory Name="module">
-    <File Name="module/manager.c"/>
     <File Name="module/manager.h"/>
+    <File Name="module/manager.c"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

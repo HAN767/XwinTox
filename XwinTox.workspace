@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="XwinTox" Database="">
-  <Project Name="xwintox" Path="xwintox/xwintox.project" Active="No"/>
-  <Project Name="libsunshine" Path="libsunshine/libsunshine.project" Active="Yes"/>
+  <Project Name="libsunshine" Path="libsunshine/libsunshine.project" Active="No"/>
   <Project Name="imcomm_tox" Path="imcomm_tox/imcomm_tox.project" Active="No"/>
+  <Project Name="xwintox" Path="xwintox/xwintox.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
-      <Project Name="xwintox" ConfigName="Debug"/>
       <Project Name="libsunshine" ConfigName="Debug"/>
       <Project Name="imcomm_tox" ConfigName="Debug"/>
+      <Project Name="xwintox" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
-      <Project Name="xwintox" ConfigName="Release"/>
       <Project Name="libsunshine" ConfigName="Release"/>
       <Project Name="imcomm_tox" ConfigName="Release"/>
+      <Project Name="xwintox" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

@@ -103,6 +103,7 @@
     <File Name="imcomm_tox.c"/>
     <File Name="IMCommTox.h"/>
     <File Name="IMCommTox.c"/>
+    <File Name="../xwintox/module/manager.c"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

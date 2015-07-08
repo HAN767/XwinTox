@@ -15,7 +15,7 @@ ModuleManager_t *ModuleManager_getInstance()
 	return &mmManager;
 }
 
-void ModuleManager_init()
+void ModuleManager_init(void *pappApp, XWF_Call_f fnAppCall)
 {
 	pmmManager =ModuleManager_getInstance();
 
@@ -24,8 +24,10 @@ void ModuleManager_init()
 	pmmManager->dictpobjObjects =Dictionary_new();
 
 	pmmManager->psrvServices.uiVersion =1;
+	pmmManager->psrvServices.pappApp =pappApp;
 	pmmManager->psrvServices.fnRegisterObj =ModuleManager_registerObject;
 	pmmManager->psrvServices.fnCall =ModuleManager_call;
+	pmmManager->fnAppCall =fnAppCall;
 }
 
 int ModuleManager_loadDynamicModule(const char *pszPath)
@@ -136,13 +138,12 @@ int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered)
 	}
 }
 
-int ModuleManager_call(const char *pszService, void *pvParams)
+void *ModuleManager_call(const char *pszService, const void *pvParams)
 {
-	if(strncmp(pszService, "SYSTEM", 6) == 0)
+	if(strncmp(pszService, "APP", 3) == 0)
 	{
-		dbg("System call: %s\n", pszService);
-		return 0;
+		return pmmManager->fnAppCall(pszService + 4, pvParams);
 	}
 
-	return -1;
+	return 0;
 }

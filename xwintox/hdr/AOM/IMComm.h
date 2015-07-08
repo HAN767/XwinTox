@@ -17,6 +17,8 @@ typedef struct IMComm_s
 {
 	Postbox_t *pbEvents;
 	Connect_f fnConnect;
+
+	void *pvPrivate; /* implementation-specific private storage */
 } IMComm_t;
 
 #endif
