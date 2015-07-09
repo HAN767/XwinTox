@@ -15,16 +15,14 @@ ModuleManager_t *ModuleManager_getInstance()
 	return &mmManager;
 }
 
-void ModuleManager_init(void *pappApp, XWF_Call_f fnAppCall)
+void ModuleManager_init(XWF_Call_f fnAppCall)
 {
 	pmmManager =ModuleManager_getInstance();
 
 	pmmManager->lstpmodModules =List_new();
 	pmmManager->lstpobjWildcards =List_new();
 	pmmManager->dictpobjObjects =Dictionary_new();
-
 	pmmManager->psrvServices.uiVersion =1;
-	pmmManager->psrvServices.pappApp =pappApp;
 	pmmManager->psrvServices.fnRegisterObj =ModuleManager_registerObject;
 	pmmManager->psrvServices.fnCall =ModuleManager_call;
 	pmmManager->fnAppCall =fnAppCall;
@@ -74,6 +72,7 @@ XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
 	                 (pmmManager->dictpobjObjects, pszType)) != 0)
 	{
 		XWF_Object_Handle_t *pobjhCreated =malloc(sizeof(XWF_Object_Handle_t));
+		obpParams.pobjhHandle =pobjhCreated;
 		pobjhCreated->pxwoObject =pobjHandler;
 		pobjhCreated->pobjObject =pobjHandler->fnCreate(&obpParams);
 
@@ -158,12 +157,13 @@ int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered)
 	}
 }
 
-void *ModuleManager_call(const void *pobjSource, const char *pszService,
+void *ModuleManager_call(const XWF_Object_Handle_t *pobjhSource,
+                         const char *pszService,
                          const void *pvParams)
 {
 	if(strncmp(pszService, "APP", 3) == 0)
 	{
-		return pmmManager->fnAppCall(pobjSource, pszService + 4, pvParams);
+		return pmmManager->fnAppCall(pobjhSource, pszService + 4, pvParams);
 	}
 
 	return 0;

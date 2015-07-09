@@ -16,7 +16,6 @@ typedef int (*Connect_f)(struct IMComm_s *);
  * make these public APIs message through to it. */
 typedef struct IMComm_s
 {
-	Postbox_t *pbEvents;
 	Connect_f fnConnect;
 
 	char *pszName;

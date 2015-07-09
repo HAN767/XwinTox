@@ -42,7 +42,6 @@
     <File Name="xwintox.c"/>
     <File Name="xwintox"/>
     <File Name="xwt.h"/>
-    <File Name="../imcomm_tox/IMCommTox.c"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

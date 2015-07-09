@@ -101,10 +101,11 @@
   <VirtualDirectory Name="imcomm_tox">
     <File Name="Makefile"/>
     <File Name="imcomm_tox.c"/>
-    <File Name="IMCommTox.h"/>
     <File Name="../xwintox/module/manager.c"/>
     <File Name="mctfuncs.c"/>
     <File Name="mctfuncs.h"/>
+    <File Name="MCommTox.h"/>
+    <File Name="MCommTox.c"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

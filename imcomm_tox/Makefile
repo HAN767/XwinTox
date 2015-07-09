@@ -3,7 +3,7 @@
 #
 
 LIB 	=	imcomm_tox
-SRCS	=	imcomm_tox.c IMCommTox.c mctfuncs.c
+SRCS	=	imcomm_tox.c MCommTox.c mctfuncs.c
 
 SHLIB_MAJOR	=	1
 

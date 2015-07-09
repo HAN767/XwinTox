@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "AOM/IMComm.h"
-#include "IMCommTox.h"
+#include "MCommTox.h"
 #include "mctfuncs.h"
 #include "hexstring.h"
 #include "misc.h"
@@ -42,8 +42,10 @@ int MCT_Connect(IMComm_t *pimcSelf)
 		return -1;
 	}
 
-	tox_self_set_name(TOXINST, (uint8_t*)pimcSelf->pszName, strlen(pimcSelf->pszName), NULL);
-	tox_self_set_status_message(TOXINST, (uint8_t*)pimcSelf->pszStatus, strlen((char*)(pimcSelf->pszStatus)),
+	tox_self_set_name(TOXINST, (uint8_t*)pimcSelf->pszName,
+	                  strlen(pimcSelf->pszName), NULL);
+	tox_self_set_status_message(TOXINST, (uint8_t*)pimcSelf->pszStatus,
+	                            strlen((char*)(pimcSelf->pszStatus)),
 	                            NULL);
 
 	tox_self_set_status(TOXINST, TOX_USER_STATUS_NONE);

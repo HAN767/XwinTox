@@ -11,7 +11,7 @@
 #include "misc.h"
 #include "postbox.h"
 
-#include "IMCommTox.h"
+#include "MCommTox.h"
 #include "mctfuncs.h"
 
 void default_config(Dictionary_t *conf);
@@ -19,24 +19,23 @@ MCT_Data_t loaddata(const char *szFile);
 
 const XWF_Services_t *psrvSvcs;
 
-void *IMCommTox_create(XWF_ObjectParams_t *pobpParams)
+void *MCommTox_create(XWF_ObjectParams_t *pobpParams)
 {
 	IMComm_t *pimcNew =calloc(1, sizeof(IMComm_t));
 
 	dbg("Initialising new MComm for Tox\n");
 
-	pimcNew->pbEvents =PB_New();
 	pimcNew->dictConfig =Dictionary_new();
-	pimcNew->pvPrivate =calloc(1, sizeof(IMCommTox_Private_t));
-	strncpy(pimcNew->szConfigFile, pobpParams->psrvServices->fnCall(pimcNew,
-	        "APP/GetConfigFilename", "toxconf"), 255);
+	pimcNew->pvPrivate =calloc(1, sizeof(MCommTox_Private_t));
+	strncpy(pimcNew->szConfigFile, pobpParams->psrvServices->fnCall(
+	            pobpParams->pobjhHandle,
+	            "APP/GetConfigFilename", "toxconf"), 255);
 
 	Dictionary_load_from_file(pimcNew->dictConfig,pimcNew->szConfigFile,1);
 	default_config(pimcNew->dictConfig);
 
 	PRIVATE(pimcNew)->datToxSave =loaddata(pobpParams->psrvServices->fnCall(
-	        pimcNew,
-	        "APP/GetDataFilename", "toxsave"));
+	        pobpParams->pobjhHandle, "APP/GetDataFilename", "toxsave"));
 
 	mtx_init(&PRIVATE(pimcNew)->mtxToxAccess, mtx_plain);
 
@@ -45,7 +44,7 @@ void *IMCommTox_create(XWF_ObjectParams_t *pobpParams)
 	return pimcNew;
 }
 
-int IMCommTox_destroy(void *pvToDestroy)
+int MCommTox_destroy(void *pvToDestroy)
 {
 	IMComm_t *pimcToDestroy =(IMComm_t*) pvToDestroy;
 

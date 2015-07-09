@@ -1,6 +1,7 @@
 #ifndef __MANAGER__H__
 #define __MANAGER__H__
 
+#include "postbox.h"
 #include "list.h"
 #include "dictionary.h"
 
@@ -22,10 +23,12 @@ typedef struct ModuleManager_s
 	XWF_Services_t psrvServices;
 	/* Application-specific call handler */
 	XWF_Call_f fnAppCall;
+	/* Global postbox */
+	Postbox_t *pbGlobal;
 } ModuleManager_t;
 
 ModuleManager_t *ModuleManager_getInstance();
-void ModuleManager_init(void *pappApp, XWF_Call_f fnAppCall);
+void ModuleManager_init(XWF_Call_f fnAppCall);
 void ModuleManager_shutdown();
 
 int ModuleManager_loadDynamicModule(const char *pszPath);
@@ -35,7 +38,7 @@ int ModuleManager_destroyObject(XWF_Object_Handle_t *pobjhToDelete);
 /* Private: */
 int ModuleManager_initialiseModule(XWF_Module_t *modNew, XWF_Init_f fnInit);
 int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered);
-void *ModuleManager_call(const void *pobjSource,
+void *ModuleManager_call(const XWF_Object_Handle_t  *pobjhSource,
                          const char *pszService, const void *pvParams);
 
 #endif
