@@ -25,6 +25,7 @@ int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServices)
 	objIM->fnDestroy =IMCommTox_destroy;
 
 	psrvServices->fnRegisterObj(objIM);
+	psrvSvcs =psrvServices;
 
 	return 0;
 }

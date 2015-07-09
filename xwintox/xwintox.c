@@ -32,6 +32,8 @@ int main(int argc, char *argv[])
 
 	App.pimcIM =ModuleManager_createObject("IM");
 	pimcM =App.pimcIM->pobjObject;
+	pimcM->pszName =strdup(Dictionary_get(App.dictConfig, "XwinTox.Name"));
+	pimcM->pszStatus =strdup(Dictionary_get(App.dictConfig, "XwinTox.Status"));
 
 	pimcM->fnConnect(pimcM);
 
@@ -54,6 +56,10 @@ void *AppCall(const void *pobjSource, const char *pszService,
 		static char szPath[255];
 		snprintf(szPath, 255, "%s/.XwinTox/%s.dat", get_home_folder(), pvParams);
 		return szPath;
+	}
+	else if(strcmp(pszService, "GetDictionaryEntry") == 0)
+	{
+		return (void*)Dictionary_get(App.dictConfig, pvParams);
 	}
 	else
 	{

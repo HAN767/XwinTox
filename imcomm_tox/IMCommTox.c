@@ -17,6 +17,8 @@
 void default_config(Dictionary_t *conf);
 MCT_Data_t loaddata(const char *szFile);
 
+const XWF_Services_t *psrvSvcs;
+
 void *IMCommTox_create(XWF_ObjectParams_t *pobpParams)
 {
 	IMComm_t *pimcNew =calloc(1, sizeof(IMComm_t));
@@ -54,6 +56,7 @@ int IMCommTox_destroy(void *pvToDestroy)
 		Dictionary_write_to_file(pimcToDestroy->dictConfig,
 		                         pimcToDestroy->szConfigFile);
 		Dictionary_delete(pimcToDestroy->dictConfig);
+		free(PRIVATE(pimcToDestroy)->datToxSave.pbData);
 		free(pimcToDestroy);
 		return 0;
 	}

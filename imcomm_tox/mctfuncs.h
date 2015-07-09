@@ -3,7 +3,7 @@
 
 #include "AOM/IMComm.h"
 
-void MCT_Connect(IMComm_t *pimcSelf);
+int MCT_Connect(IMComm_t *pimcSelf);
 
 #endif
 

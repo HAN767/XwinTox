@@ -5,7 +5,7 @@
 #include "postbox.h"
 
 struct IMComm_s;
-typedef void (*Connect_f)(struct IMComm_s *);
+typedef int (*Connect_f)(struct IMComm_s *);
 
 /* The structure of an MComm.
  * An MComm communicates with an IM network.
@@ -18,6 +18,9 @@ typedef struct IMComm_s
 {
 	Postbox_t *pbEvents;
 	Connect_f fnConnect;
+
+	char *pszName;
+	char *pszStatus;
 
 	char szConfigFile[255]; /* implementation-specific configuration file */
 	Dictionary_t *dictConfig; /* store implementation-specific config here */
