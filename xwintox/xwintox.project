@@ -32,6 +32,8 @@
     </VirtualDirectory>
     <VirtualDirectory Name="AOM">
       <File Name="hdr/AOM/IMComm.h"/>
+      <File Name="hdr/AOM/IGUICxx.h"/>
+      <File Name="hdr/AOM/IGUI.h"/>
     </VirtualDirectory>
     <File Name="hdr/xwintox.h"/>
   </VirtualDirectory>

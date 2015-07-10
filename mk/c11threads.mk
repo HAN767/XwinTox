@@ -15,4 +15,10 @@ HAVE_HEADER.threads_h != env ${mkc.environ} mkc_check_header threads.h
 .if !${HAVE_HEADER.threads_h}
 CFLAGS	+=	-I${PATH.thrcompat}
 LDFLAGS	+=	-lpthreads
+echoit	= "Using compatibility (POSIX) header for C11 threads"
 .endif
+
+testthreads:
+	@echo $(echoit)
+
+all: testthreads

@@ -14,7 +14,7 @@ public:
 	int start();
 
 private:
-	thrd_t thrdGUI;
+	thrd_t thrdGUI_;
 };
 
 #endif

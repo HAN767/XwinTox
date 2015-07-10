@@ -10,9 +10,8 @@ class GUICxxInterfaceT
 public:
 	GUICxxInterfaceT() : fnCall_(NULL)
 	{
-		hCGUI =new IGUI_t;
-		hCGUI->hCXXObj =this;
-		hCGUI->fnStart = staticStart;
+		hCGUI_.hCXXObj =this;
+		hCGUI_.fnStart =staticStart;
 	}
 	virtual ~GUICxxInterfaceT()
 	{
@@ -28,9 +27,9 @@ public:
 	}
 	static void * create(XWF_ObjectParams_t *pobpParams)
 	{
-		T *GUI = new T(pobpParams);
-		GUI->fnCall_ = pobpParams->psrvServices->fnCall;
-		return GUI->hCGUI;
+		T *GUI =new T(pobpParams);
+		GUI->fnCall_ =pobpParams->psrvServices->fnCall;
+		return &GUI->hCGUI_;
 	}
 	static int destroy(void *pobjToDestroy)
 	{
@@ -38,7 +37,7 @@ public:
 		if(!pguiToDestroy)
 			return -1;
 
-		free (pguiToDestroy->hCXXObj);
+		delete((T*)pguiToDestroy->hCXXObj);
 		delete pguiToDestroy;
 		return 0;
 	}
@@ -54,7 +53,7 @@ public:
 
 private:
 	XWF_Call_f fnCall_;
-	IGUI_t *hCGUI;
+	IGUI_t hCGUI_;
 };
 
 #endif
