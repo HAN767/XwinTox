@@ -1241,7 +1241,6 @@ static float nsvg__convertToPixels(NSVGparser* p, float val, const char* units, 
 			return val * p->dpi;
 		} else if (units[0] == '%') {
 			if (p != NULL) {
-				attr = nsvg__getAttr(p);
 				if (dir == 0)
 					return (val/100.0f) * nsvg__actualWidth(p);
 				else if (dir == 1)
@@ -2587,9 +2586,6 @@ static void nsvg__scaleToViewbox(NSVGparser* p, const char* units)
 		}
 
 	}
-
-	sx *= us;
-	sy *= us;
 }
 
 NSVGimage* nsvgParse(char* input, const char* units, float dpi)
@@ -2897,21 +2893,16 @@ static void nsvg__addPathPoint(NSVGrasterizer* r, float x, float y, int flags)
 {
 	NSVGpoint* pt;
 
-	if (r->npoints > 0) {
-		pt = &r->points[r->npoints-1];
-		if (nsvg__ptEquals(pt->x,pt->y, x,y, r->distTol)) {
-			pt->flags |= flags;
-			return;
-		}
-	}
-
 	if (r->npoints+1 > r->cpoints) {
 		r->cpoints = r->cpoints > 0 ? r->cpoints * 2 : 64;
 		r->points = (NSVGpoint*)realloc(r->points, sizeof(NSVGpoint) * r->cpoints);
 		if (r->points == NULL) return;
 	}
 
+	if (r->points == NULL) return;
+
 	pt = &r->points[r->npoints];
+
 	pt->x = x;
 	pt->y = y;
 	pt->flags = flags;
@@ -3148,8 +3139,8 @@ static void nsvg__miterJoin(NSVGrasterizer* r, NSVGpoint* left, NSVGpoint* right
 	float ly0, ry0, ly1, ry1;
 
 	if (p1->flags & NSVG_PT_LEFT) {
-		lx0 = lx1 = p1->x - p1->dmx * w;
-		ly0 = ly1 = p1->y - p1->dmy * w;
+		lx1 = p1->x - p1->dmx * w;
+		ly1 = p1->y - p1->dmy * w;
 		nsvg__addEdge(r, lx1, ly1, left->x, left->y);
 
 		rx0 = p1->x + (dlx0 * w);
@@ -3166,8 +3157,8 @@ static void nsvg__miterJoin(NSVGrasterizer* r, NSVGpoint* left, NSVGpoint* right
 		nsvg__addEdge(r, lx0, ly0, left->x, left->y);
 		nsvg__addEdge(r, lx1, ly1, lx0, ly0);
 
-		rx0 = rx1 = p1->x + p1->dmx * w;
-		ry0 = ry1 = p1->y + p1->dmy * w;
+		rx1 = p1->x + p1->dmx * w;
+		ry1 = p1->y + p1->dmy * w;
 		nsvg__addEdge(r, right->x, right->y, rx1, ry1);
 	}
 
@@ -3806,7 +3797,7 @@ static void nsvg__initPaint(NSVGcachedPaint* cache, NSVGpaint* paint, float opac
 		for (i = 0; i < 256; i++)
 			cache->colors[i] = nsvg__applyOpacity(grad->stops[i].color, opacity);
 	} else {
-		unsigned int ca, cb;
+		unsigned int ca, cb =0.0;
 		float ua, ub, du, u;
 		int ia, ib, count;
 
