@@ -5,6 +5,7 @@
 #include <FL/FL.H>
 #endif
 
+#include "list.h"
 #include "postbox.h"
 
 Postbox_t *PB_New()
@@ -20,7 +21,7 @@ void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
 	LIST_ITERATE_OPEN(pb->clients)
 
-	if(((PBRegistryEntry_t*) e_data)->mtypes & mtype)
+	if(((PBRegistryEntry_t*) e_data)->mtype == mtype)
 	{
 		((PBRegistryEntry_t*) e_data)->
 		callback(mtype, msg,
@@ -29,15 +30,52 @@ void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t *msg)
 
 	LIST_ITERATE_CLOSE(pb->clients)
 
-	if(msg->S1) free(msg->S1);
+	PB_Free_Message(msg);
+}
 
-	if(msg->S2) free(msg->S2);
+typedef struct PB_Thread_Msg_s
+{
+	thrd_t thrd;
+	int mtype;
+	Shared_Ptr_t *sprMsg;
+	PBCallback_f fnCB;
+	void *pvCustom;
+} PB_Thread_Msg_t;
 
-	free(msg);
+int PB_Despatch_Deferred_Thread(void *pvCustom)
+{
+	PB_Thread_Msg_t *tMsg =(PB_Thread_Msg_t*)pvCustom;
+
+	tMsg->fnCB(tMsg->mtype, tMsg->sprMsg->pvData, tMsg->pvCustom);
+
+	PBM_DEC(tMsg->sprMsg);
+	free(tMsg);
+	thrd_exit(0);
+}
+
+void PB_Signal_Multithread(Postbox_t *pb, int mtype, PBMessage_t *msg)
+{
+	List_t *lstHandlers;
+	Shared_Ptr_t *sprMsg =Shared_Ptr_new(msg);
+
+	LIST_ITERATE_OPEN(pb->clients)
+
+	if(((PBRegistryEntry_t*) e_data)->mtype == mtype)
+	{
+		PB_Thread_Msg_t *pbtMsg =malloc(sizeof(PB_Thread_Msg_t));
+		pbtMsg->mtype =mtype;
+		pbtMsg->sprMsg =sprMsg;
+		pbtMsg->fnCB =((PBRegistryEntry_t*) e_data)->callback;
+		pbtMsg->pvCustom =((PBRegistryEntry_t*) e_data)->custom;
+		if (thrd_create(&pbtMsg->thrd, PB_Despatch_Deferred_Thread,
+								  pbtMsg)) PBM_INC(sprMsg);
+	}
+	LIST_ITERATE_CLOSE(pb->clients)
 }
 
 /* note: implement a second PB_Signal that launches a seperate thread 
  * for despatch later */
+
 
 void PB_Despatch_Deferred(Postbox_t *pb)
 {
@@ -47,7 +85,7 @@ void PB_Despatch_Deferred(Postbox_t *pb)
 	{
 		LIST_ITERATE_OPEN(pb->clients)
 
-		if(((PBRegistryEntry_t*) e_data)->mtypes & d->mtype)
+		if(((PBRegistryEntry_t*) e_data)->mtype == d->mtype)
 		{
 			((PBRegistryEntry_t*) e_data)->
 			callback(d->mtype, d->msg,
@@ -56,11 +94,7 @@ void PB_Despatch_Deferred(Postbox_t *pb)
 
 		LIST_ITERATE_CLOSE(pb->clients)
 
-		if(d->msg->S1) free(d->msg->S1);
-
-		if(d->msg->S2) free(d->msg->S2);
-
-		free(d->msg);
+		PB_Free_Message(d->msg);
 		free(d);
 	}
 }
@@ -78,11 +112,11 @@ void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg)
 #endif
 }
 
-void PB_Register(Postbox_t *pb, int mtypes, void* custom,
+void PB_Register(Postbox_t *pb, int mtype, void* custom,
                  void (*callback)(int, PBMessage_t*, void*))
 {
 	PBRegistryEntry_t *e =calloc(1, sizeof(PBRegistryEntry_t));
-	e->mtypes =mtypes;
+	e->mtype =mtype;
 	e->callback =callback;
 	e->custom =custom;
 	List_add(pb->clients, e);

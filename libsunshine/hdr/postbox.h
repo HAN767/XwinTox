@@ -8,19 +8,8 @@ extern "C"
 
 #include <threads.h>
 
+#include "sptr.h"
 #include "list.h"
-
-
-/* Define a PBMTypes enum before including this
- * it should look like:
- *
- * typedef enum PBMTypes_e
- * {
- * 	PB_Typ1 =1,
- * 	PB_Typ2 =2
- * }
- *               PBMTypes;
- */
 
 typedef struct PBMessage_s
 {
@@ -28,10 +17,12 @@ typedef struct PBMessage_s
 	int I1, I2, I3, I4;
 } PBMessage_t;
 
+typedef void (*PBCallback_f)(int, PBMessage_t*, void*);
+
 typedef struct PBRegistryEntry_s
 {
-	int mtypes;
-	void (*callback)(int, PBMessage_t*, void*);
+	int mtype;
+	PBCallback_f callback;
 	void *custom;
 } PBRegistryEntry_t;
 
@@ -48,12 +39,46 @@ typedef struct Postbox_s
 	mtx_t Lock;
 } Postbox_t;
 
+typedef struct PBC_s
+{
+	int mtype;
+	PBMessage_t *msg;
+} PBC_t; /* provided for convenience */
+
 Postbox_t *PB_New();
 void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t* msg);
 void PB_Despatch_Deferred(Postbox_t *pb);
-void PB_Register(Postbox_t *pb, int mtypes, void*,
+void PB_Register(Postbox_t *pb, int mtype, void*,
                  void (*callback)(int, PBMessage_t*, void*));
+
+static inline void PB_Free_Message(PBMessage_t *pmsgMsg)
+{
+		if(pmsgMsg->S1) free(pmsgMsg->S1);
+		if(pmsgMsg->S2) free(pmsgMsg->S2);
+		if(pmsgMsg->S3) free(pmsgMsg->S3);
+		if(pmsgMsg->S4) free(pmsgMsg->S4);
+		free(pmsgMsg);
+}
+
+/* This section is for refcnting. Postbox private. */
+#define PBM_INC(X) Shared_Ptr_inc(X)
+static inline void PBM_DEC(Shared_Ptr_t *psprSptr)
+{
+	mtx_lock(&psprSptr->mtxCnt);
+	psprSptr->wCnt -=1;
+	if(psprSptr->wCnt == 0)
+	{
+		PB_Free_Message((PBMessage_t*)psprSptr->pvData);
+		free(psprSptr);
+	}
+	else
+	{
+		mtx_unlock(&psprSptr->mtxCnt);
+	}
+	return;
+}
+
 
 #ifdef __cplusplus
 }
