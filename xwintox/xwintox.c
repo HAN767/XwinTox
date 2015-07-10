@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "misc.h"
 
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
 	pimcM->fnConnect(pimcM);
 	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
 
+	while(1) { sleep(1); }
 	ModuleManager_destroyObject(App.pimcIM);
 	Dictionary_write_to_file(App.dictConfig, szConfigFilename);
 	return 0;

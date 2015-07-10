@@ -3,6 +3,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include <FL/Fl.H>
+
 #include "Module/Module.h"
 #include "AOM/IGUICxx.h"
 #include "dictionary.h"
@@ -10,14 +12,32 @@
 #include "postbox.h"
 
 #include "GUIFLTK.h"
+#include "control/xwin.h"
+
+GUIFLTK *pgflCurrent;
 
 GUIFLTK::GUIFLTK(XWF_ObjectParams_t *)
 {
 	dbg("Initialising a new GUI for FLTK\n");
+	pgflCurrent =this;
+
+	Xw_ =new XwinTox(640, 480, "XwinTox", 1);
 }
 
 int GUIFLTK::start()
 {
-	dbg("Although I am a C++ object, implementing what appears to me to be a standard interface class-template, I have been called from C, having been dynamically instantiated, using the native C object API, with no changes.\n");
+	Xw_->show();
+	thrd_create(&thrdFLTK_, fltkloop, 0);
+	return 0;
+}
+
+int GUIFLTK::fltkloop(void *)
+{
+	while(1)
+	{
+		Fl::lock();
+		Fl::wait(0.1);
+		Fl::unlock();
+	}
 	return 0;
 }
