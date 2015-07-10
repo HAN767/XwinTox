@@ -1,6 +1,11 @@
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /* Which language is the module written in?
  * This enumerates the types possible. */
 typedef enum XWF_Lang
@@ -96,5 +101,9 @@ typedef struct XWF_Services_s
  * or 2 for critical failure. A critical failure leads to an
  * unloading of the module, so delete all resources held first. */
 typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

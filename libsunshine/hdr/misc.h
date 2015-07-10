@@ -32,6 +32,12 @@ typedef struct Call_s
 	int I1, I2;
 } Call_t;
 
+typedef struct Bytes_s
+{
+	char *pbData;
+	unsigned int wLength;
+} Bytes_t;
+
 void dbg2(const char *funcname, const char *format,  ...);
 typedef struct Event_s Event_t;
 Event_t *Ev_new();

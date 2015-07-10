@@ -62,13 +62,17 @@ int main(int argc, char *argv[])
 	ModuleManager_init(AppCall);
 	ModuleManager_loadDynamicModule
 	("/ws/tox/XwinTox/imcomm_tox/libimcomm_tox.so");
+	ModuleManager_loadDynamicModule
+	("/ws/tox/XwinTox/gui_fltk/libgui_fltk.so");
 
 	App.pimcIM =ModuleManager_createObject("MESSENGER");
+	App.pguiGUI =ModuleManager_createObject("GUI");
 	pimcM =App.pimcIM->pobjObject;
 	pimcM->pszName =strdup(Dictionary_get(App.dictConfig, "XwinTox.Name"));
 	pimcM->pszStatus =strdup(Dictionary_get(App.dictConfig, "XwinTox.Status"));
 
 	pimcM->fnConnect(pimcM);
+	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
 
 	ModuleManager_destroyObject(App.pimcIM);
 	Dictionary_write_to_file(App.dictConfig, szConfigFilename);

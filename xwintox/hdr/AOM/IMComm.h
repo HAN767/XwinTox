@@ -2,18 +2,17 @@
 #define __IMCOMM__H__
 
 #include "dictionary.h"
-#include "postbox.h"
 
 struct IMComm_s;
 typedef int (*Connect_f)(struct IMComm_s *);
 
-/* The structure of an MComm.
+/* The interface for an MComm.
  * An MComm communicates with an IM network.
- * This is the public interface. The methods and variables
- * within are likely to be accessed from across different threads.
+ * This is the framework-public interface. The methods within are 
+ * likely to be called from across different threads.
  * As such, it is wise to create a seperate thread 
  * (multiple, in fact) for actual IM network communication, and
- * make these public APIs message through to it. */
+ * make these public APIs message through to it, or use locking. */
 typedef struct IMComm_s
 {
 	Connect_f fnConnect;

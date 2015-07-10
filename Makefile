@@ -4,6 +4,7 @@
 
 LIBDEPS	=	libsunshine:xwintox
 LIBDEPS	+=	libsunshine:imcomm_tox
+LIBDEPS +=	libsunshine:gui_fltk
 
 .include <mkc.init.mk>
 
