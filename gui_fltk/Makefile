@@ -2,10 +2,11 @@
 # XwinTox
 #
 
-LIB 	=	gui_fltk
-SRCS	=	GUI_FLTK.cc GUIFLTK.cc
-SRCS	+=	nanosvg/nsvgwrap.c nanosvg/res.cc control/svgbox.cc
-SRCS	+=	control/xwin.cc control/sidebar.cc control/sbarbtm.cc
+LIB   =	gui_fltk
+SRCS  =	GUI_FLTK.cc GUIFLTK.cc
+SRCS +=	nanosvg/nsvgwrap.c nanosvg/res.cc control/svgbox.cc
+SRCS +=	control/xwin.cc control/sidebar.cc control/sbarbtm.cc control/sbartop.cc
+SRCS += control/statbox.cc
 
 SHLIB_MAJOR	=	1
 

@@ -45,7 +45,7 @@ Sidebar::Sidebar(int X, int Y, int W, int H, int S) : Fl_Group(X, Y, W, H)
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
-	//top_area =new Sidebar_Top_Area(S);
+	top_area =new Sidebar_Top_Area(S);
 	bottom_area =new Sidebar_Bottom_Area(S);
 	/*contacts =new ContactsList(0, 0, 1, 1, S);
 	contacts->end();
@@ -71,7 +71,7 @@ Sidebar::Sidebar(int X, int Y, int W, int H, int S) : Fl_Group(X, Y, W, H)
 void Sidebar::resize(int X, int Y, int W, int H)
 {
 	Fl_Group::resize(X, Y, W, H);
-	//top_area->resize(X, Y, W, 60 * scale);
+	top_area->resize(X, Y, W, 60 * scale);
 	bottom_area->resize(X, Y + H - (36 * scale) , W, 36 * scale);/*
 
 	frbutton->resize(X + W - (72  * scale), y() + (64 * scale),

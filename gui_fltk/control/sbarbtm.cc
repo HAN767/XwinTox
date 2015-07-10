@@ -32,10 +32,7 @@ Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group(0, 0, 1, 1)
 
 void Sidebar_Bottom_Area::resize(int X, int Y, int W, int H)
 {
-	dbg("X: %d Y: %d W: %d H: %d\n", X, Y, W, H);
 	Fl_Group::resize(X, Y, W, H);
-	//X -=112;
-	//Y -=18; /* this is odd */
 	addfriend->resize(X, Y, 56 * scale, 36 * scale);
 	newgroup->resize(X + (56 * scale), Y, 56 * scale, H);
 	transfers->resize(X + (112 * scale), Y, 56 * scale, H);
