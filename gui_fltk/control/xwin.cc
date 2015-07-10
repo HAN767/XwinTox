@@ -2,6 +2,7 @@
 #include <FL/Fl_Group.H>
 
 #include "control/xwin.h"
+#include "control/sidebar.h"
 //#include "control/svgbox.h"
 
 XWContents::XWContents(int X, int Y, int W, int H, int S) : Fl_Box(X, Y, W, H)
@@ -59,7 +60,7 @@ XwinTox::XwinTox(int w, int h, const char* c, int S)
 
 void XwinTox::init2()
 {
-	//sidebar =new Sidebar(scale);
+	sidebar =new Sidebar(0, 0, 1, 1, scale);
 	contents =new XWContents(0, 0, 1, 1, scale);
 	resizable(contents);
 	resize(x(), y(), w(), h());
@@ -71,4 +72,6 @@ void XwinTox::resize(int X, int Y, int W, int H)
 	contents->resize(sblength * scale, basey * scale,
 	                                       w() - (sblength * scale),
 	                                       h() - (basey * scale));
+	sidebar->resize(basex * scale, basey * scale, sblength * scale,
+	                 H - (basey * scale));
 }

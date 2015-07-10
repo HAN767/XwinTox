@@ -5,8 +5,8 @@
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
 
-/*#include "control/sidebar.h"
-#include "control/gaddfrnd.h"
+#include "control/sidebar.h"
+/*#include "control/gaddfrnd.h"
 #include "control/gtrnsfer.h"*/
 
 class XWContents: public Fl_Box
@@ -40,7 +40,7 @@ public:
 	void resize(int X, int Y, int W, int H);
 
 	Fl_Menu_Bar *mbar;
-	//Sidebar *sidebar;
+	Sidebar *sidebar;
 	XWContents *contents;
 	//GAddFriend *addfriend;
 

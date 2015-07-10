@@ -4,7 +4,8 @@
 
 LIB 	=	gui_fltk
 SRCS	=	GUI_FLTK.cc GUIFLTK.cc
-SRCS	+=	control/xwin.cc
+SRCS	+=	nanosvg/nsvgwrap.c nanosvg/res.cc control/svgbox.cc
+SRCS	+=	control/xwin.cc control/sidebar.cc control/sbarbtm.cc
 
 SHLIB_MAJOR	=	1
 
