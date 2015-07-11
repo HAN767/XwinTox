@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="gui_fltk" InternalType="">
+  <Reconciliation>
+    <Regexes/>
+    <Excludepaths/>
+    <Ignorefiles/>
+    <Extensions>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp]]>
+    </Extensions>
+    <Topleveldir>../gui_fltk</Topleveldir>
+  </Reconciliation>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -92,8 +101,41 @@
   <VirtualDirectory Name="gui_fltk">
     <File Name="GUI_FLTK.cc"/>
     <File Name="GUIFLTK.cc"/>
-    <File Name="Makefile"/>
     <File Name="GUIFLTK.h"/>
+    <File Name="Makefile.kmk"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="control">
+    <File Name="control/statbox.h"/>
+    <File Name="control/svgbox.cc"/>
+    <File Name="control/msgarea.cc"/>
+    <File Name="control/cntctent.h"/>
+    <File Name="control/svgbox.h"/>
+    <File Name="control/msgarea.h"/>
+    <File Name="control/cntctent.cc"/>
+    <File Name="control/frequest.cc"/>
+    <File Name="control/cntctlst.cc"/>
+    <File Name="control/xwin.h"/>
+    <File Name="control/xwin.cc"/>
+    <File Name="control/sidebar.cc"/>
+    <File Name="control/sbarbtm.h"/>
+    <File Name="control/sbartop.cc"/>
+    <File Name="control/gaddfrnd.cc"/>
+    <File Name="control/sbartop.h"/>
+    <File Name="control/gaddfrnd.h"/>
+    <File Name="control/sidebar.h"/>
+    <File Name="control/cntctlst.h"/>
+    <File Name="control/frequest.h"/>
+    <File Name="control/sbarbtm.cc"/>
+    <File Name="control/garea.h"/>
+    <File Name="control/garea.cc"/>
+    <File Name="control/statbox.cc"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="nanosvg">
+    <File Name="nanosvg/nsvgwrap.c"/>
+    <File Name="nanosvg/res.cc"/>
+    <File Name="nanosvg/svgs.h"/>
+    <File Name="nanosvg/nsvgwrap.h"/>
+    <File Name="nanosvg/nanosvgrast.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

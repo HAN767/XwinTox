@@ -18,6 +18,7 @@
     <File Name="hdr/hexstring.h"/>
     <File Name="hdr/dictionary.h"/>
     <File Name="hdr/postbox.h"/>
+    <File Name="hdr/sptr.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
@@ -114,8 +115,8 @@
     <File Name="misc.c"/>
     <File Name="dictionary.c"/>
     <File Name="hexstring.c"/>
-    <File Name="Makefile"/>
     <File Name="postbox.c"/>
+    <File Name="Makefile.kmk"/>
   </VirtualDirectory>
   <VirtualDirectory Name="ini">
     <File Name="ini/ini.c"/>
