@@ -37,7 +37,7 @@ int ModuleManager_destroyObject(XWF_Object_Handle_t *pobjhToDelete);
 
 /* Private: */
 int ModuleManager_initialiseModule(XWF_Module_t *modNew, XWF_Init_f fnInit);
-int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered);
+int ModuleManager_registerClass(const XWF_Class_t *pobjRegistered);
 void *ModuleManager_call(const XWF_Object_Handle_t  *pobjhSource,
                          const char *pszService, const void *pvParams);
 

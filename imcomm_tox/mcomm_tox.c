@@ -13,18 +13,19 @@ int XWF_exit()
 
 int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServices)
 {
-	XWF_Object_t *objIM =malloc(sizeof(XWF_Object_t));
+	XWF_Class_t *classIM =malloc(sizeof(XWF_Class_t));
 
 	pmodSelf->pszName ="MComm for Tox IM";
 	pmodSelf->fnExit =XWF_exit;
 
-	objIM->pszType ="MESSENGER";
-	objIM->enLang =XWF_Lang_C;
-	objIM->pmodProvider =pmodSelf;
-	objIM->fnCreate =MCommTox_create;
-	objIM->fnDestroy =MCommTox_destroy;
+	classIM->pszType ="MESSENGER";
+	classIM->enLang =XWF_Lang_C;
+	classIM->pmodProvider =pmodSelf;
+	classIM->fnCreate =MCommTox_create;
+	classIM->fnDestroy =MCommTox_destroy;
+	classIM->psrvSvcs =psrvServices;
 
-	psrvServices->fnRegisterObj(objIM);
+	psrvServices->fnRegisterClass(classIM);
 	psrvSvcs =psrvServices;
 
 	return 0;

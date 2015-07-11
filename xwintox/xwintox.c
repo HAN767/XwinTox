@@ -68,11 +68,11 @@ int main(int argc, char *argv[])
 
 	App.pimcIM =ModuleManager_createObject("MESSENGER");
 	App.pguiGUI =ModuleManager_createObject("GUI");
-	pimcM =App.pimcIM->pobjObject;
+	pimcM =App.pimcIM->hObj;
 	pimcM->pszName =strdup(Dictionary_get(App.dictConfig, "XwinTox.Name"));
 	pimcM->pszStatus =strdup(Dictionary_get(App.dictConfig, "XwinTox.Status"));
 
-	pimcM->fnConnect(pimcM);
+	pimcM->fnConnect(App.pimcIM);
 	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
 
 	while(1) { sleep(1); }

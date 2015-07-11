@@ -7,10 +7,12 @@
 #include "hexstring.h"
 #include "misc.h"
 
+#define PREP IMComm_t *pimcSelf =hobjSelf->hObj;
 #define TOXINST PRIVATE(pimcSelf)->ptoxTox
 
-int MCT_Connect(IMComm_t *pimcSelf)
+int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 {
+	PREP
 	TOX_ERR_NEW txnerrTnerr;
 	TOX_ERR_BOOTSTRAP txberrTberr;
 	struct Tox_Options *ptxoTopts =tox_options_new(0);

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "misc.h"
+#include "postbox.h"
 
 #include "module/manager.h"
 
@@ -19,11 +20,12 @@ void ModuleManager_init(XWF_Call_f fnAppCall)
 {
 	pmmManager =ModuleManager_getInstance();
 
+	pmmManager->pbGlobal =PB_New();
 	pmmManager->lstpmodModules =List_new();
 	pmmManager->lstpobjWildcards =List_new();
 	pmmManager->dictpobjObjects =Dictionary_new();
 	pmmManager->psrvServices.uiVersion =1;
-	pmmManager->psrvServices.fnRegisterObj =ModuleManager_registerObject;
+	pmmManager->psrvServices.fnRegisterClass =ModuleManager_registerClass;
 	pmmManager->psrvServices.fnCall =ModuleManager_call;
 	pmmManager->fnAppCall =fnAppCall;
 }
@@ -63,7 +65,7 @@ error:
 XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
 {
 	XWF_ObjectParams_t obpParams;
-	XWF_Object_t *pobjHandler;
+	XWF_Class_t *pobjHandler;
 
 	obpParams.pszObjType =pszType;
 	obpParams.psrvServices =&pmmManager->psrvServices;
@@ -73,10 +75,10 @@ XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
 	{
 		XWF_Object_Handle_t *pobjhCreated =malloc(sizeof(XWF_Object_Handle_t));
 		obpParams.pobjhHandle =pobjhCreated;
-		pobjhCreated->pxwoObject =pobjHandler;
-		pobjhCreated->pobjObject =pobjHandler->fnCreate(&obpParams);
+		pobjhCreated->pxwoClass =pobjHandler;
+		pobjhCreated->hObj =pobjHandler->fnCreate(&obpParams);
 
-		if(pobjhCreated->pobjObject) return pobjhCreated;
+		if(pobjhCreated->hObj) return pobjhCreated;
 		else free(pobjhCreated);
 	}
 
@@ -88,7 +90,7 @@ int ModuleManager_destroyObject(XWF_Object_Handle_t *pobjhToDelete)
 	if(!pobjhToDelete) return -1;
 	else
 	{
-		pobjhToDelete->pxwoObject->fnDestroy(pobjhToDelete->pobjObject);
+		pobjhToDelete->pxwoClass->fnDestroy(pobjhToDelete->hObj);
 		free(pobjhToDelete);
 		return 0;
 	}
@@ -115,7 +117,7 @@ int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 	}
 }
 
-int ModuleManager_registerObject(const XWF_Object_t *pobjRegistered)
+int ModuleManager_registerClass(const XWF_Class_t *pobjRegistered)
 {
 	const char *pszLang ="Unknown";
 

@@ -99,7 +99,6 @@
     </Configuration>
   </Settings>
   <VirtualDirectory Name="imcomm_tox">
-    <File Name="../xwintox/module/manager.c"/>
     <File Name="mctfuncs.c"/>
     <File Name="mctfuncs.h"/>
     <File Name="MCommTox.h"/>

@@ -44,6 +44,12 @@
     <File Name="xwt.h"/>
     <File Name="Makefile.kmk"/>
   </VirtualDirectory>
+  <VirtualDirectory Name="module">
+    <File Name="module/manager.h"/>
+    <File Name="module/manager.c"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -73,8 +79,8 @@
       <PostBuild/>
       <CustomBuild Enabled="yes">
         <RebuildCommand/>
-        <CleanCommand>mkcmake cleandir</CleanCommand>
-        <BuildCommand>mkcmake</BuildCommand>
+        <CleanCommand>kmk clean</CleanCommand>
+        <BuildCommand>kmk</BuildCommand>
         <PreprocessFileCommand/>
         <SingleFileCommand/>
         <MakefileGenerationCommand/>
@@ -131,10 +137,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <VirtualDirectory Name="module">
-    <File Name="module/manager.h"/>
-    <File Name="module/manager.c"/>
-  </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

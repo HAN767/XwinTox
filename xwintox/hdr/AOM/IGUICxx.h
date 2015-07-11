@@ -23,7 +23,7 @@ public:
 	static GUICxxInterfaceT *getSelf(XWF_Object_Handle_t *pguiSelf)
 	{
 		return static_cast<GUICxxInterfaceT *> 
-		(((IGUI_t*)pguiSelf->pobjObject)->hCXXObj);
+		(((IGUI_t*)pguiSelf->hObj)->hCXXObj);
 	}
 	static void * create(XWF_ObjectParams_t *pobpParams)
 	{

@@ -3,8 +3,8 @@
 
 #include "dictionary.h"
 
-struct IMComm_s;
-typedef int (*Connect_f)(struct IMComm_s *);
+struct XWF_Object_Handle_s;
+typedef int (*Connect_f)(struct XWF_Object_Handle_s *);
 
 /* The interface for an MComm.
  * An MComm communicates with an IM network.

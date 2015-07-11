@@ -52,11 +52,13 @@ typedef struct XWF_ObjectParams_s
 typedef void *(*XWF_Create_f)(XWF_ObjectParams_t *);
 typedef int (*XWF_Destroy_f)(void *);
 
+struct XWF_Services_s;
+
 /* The parameters a module must pass while registering with
  * the module manager.
  * Note: uiVersion refers to the module manager version that
  * the object was written for. */
-typedef struct XWF_Object_s
+typedef struct XWF_Class_s
 {
 	const char *pszType;
 	unsigned int uiVersion;
@@ -64,14 +66,15 @@ typedef struct XWF_Object_s
 	XWF_Destroy_f fnDestroy;
 	XWF_Lang_e enLang;
 	XWF_Module_t *pmodProvider;
-} XWF_Object_t;
+	const struct XWF_Services_s *psrvSvcs;
+} XWF_Class_t;
 
 /* This is a handle to an object.
  * It includes a pointer to the XWF Object for use by the framework. */
 typedef struct XWF_Object_Handle_s
 {
-	XWF_Object_t *pxwoObject;
-	void *pobjObject;
+	XWF_Class_t *pxwoClass;
+	void *hObj;
 } XWF_Object_Handle_t;
 
 /* This function allows a module to register an object with
@@ -79,7 +82,7 @@ typedef struct XWF_Object_Handle_s
  * can create, or can pass '*' - this will cause fnCreate to
  * be called for any attempted object creation, regardless of
  * type, by the module manager. */
-typedef int (*XWF_RegisterObj_f)(const XWF_Object_t *pobjRegistered);
+typedef int (*XWF_RegisterClass_f)(const XWF_Class_t *pobjRegistered);
 /* This function allows a module to call either a system service,
  * or a service provided by another object.
  * The syntax is SYSTEM/ServiceName for system services, and
@@ -92,7 +95,7 @@ typedef void *(*XWF_Call_f)(const XWF_Object_Handle_t *, const char *,
 typedef struct XWF_Services_s
 {
 	unsigned int uiVersion;
-	XWF_RegisterObj_f fnRegisterObj;
+	XWF_RegisterClass_f fnRegisterClass;
 	XWF_Call_f fnCall;
 } XWF_Services_t;
 

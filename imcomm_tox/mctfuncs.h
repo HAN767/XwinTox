@@ -3,7 +3,7 @@
 
 #include "AOM/IMComm.h"
 
-int MCT_Connect(IMComm_t *pimcSelf);
+int MCT_Connect(XWF_Object_Handle_t *hobjSelf);
 
 #endif
 

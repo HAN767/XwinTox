@@ -13,7 +13,7 @@ extern "C" int XWF_exit()
 
 extern "C" int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServices)
 {
-	XWF_Object_t *objGUI =new XWF_Object_t;
+	XWF_Class_t *objGUI =new XWF_Class_t;
 
 	pmodSelf->pszName ="GUI for FLTK";
 	pmodSelf->fnExit =XWF_exit;
@@ -24,6 +24,6 @@ extern "C" int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServic
 	objGUI->fnCreate =GUIFLTK::create;
 	objGUI->fnDestroy =GUIFLTK::destroy;
 
-	psrvServices->fnRegisterObj(objGUI);
+	psrvServices->fnRegisterClass(objGUI);
 	return 0;
 }

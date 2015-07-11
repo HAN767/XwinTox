@@ -21,6 +21,6 @@ typedef struct IGUI_s
 	void *hCXXObj; /* used for C++ wrapper */
 } IGUI_t;
 
-#define GUIOBJ(X) ((IGUI_t*) X->pobjObject)
+#define GUIOBJ(X) ((IGUI_t*) X->hObj)
 
 #endif
