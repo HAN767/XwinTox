@@ -62,9 +62,9 @@ int main(int argc, char *argv[])
 
 	ModuleManager_init(AppCall);
 	ModuleManager_loadDynamicModule
-	("/ws/tox/XwinTox/imcomm_tox/libimcomm_tox.so");
+	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/imcomm_tox.so");
 	ModuleManager_loadDynamicModule
-	("/ws/tox/XwinTox/gui_fltk/libgui_fltk.so");
+	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/GUI_FLTK.so");
 
 	App.pimcIM =ModuleManager_createObject("MESSENGER");
 	App.pguiGUI =ModuleManager_createObject("GUI");

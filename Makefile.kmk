@@ -1,0 +1,10 @@
+
+SUB_DEPTH = .
+include $(KBUILD_PATH)/subheader.kmk
+
+include $(PATH_CURRENT)/libsunshine/Makefile.kmk
+include $(PATH_CURRENT)/xwintox/Makefile.kmk
+include $(PATH_CURRENT)/imcomm_tox/Makefile.kmk
+include $(PATH_CURRENT)/gui_fltk/Makefile.kmk
+
+include $(FILE_KBUILD_SUB_FOOTER)
