@@ -2,13 +2,10 @@
 #include <FL/Fl_Group.H>
 #include <FL/fl_draw.H>
 
-#include "control/gui.h"
+#include "control/xwin.h"
 
 
-GArea::GArea(int S, const char *C) : Fl_Group(Xw->sblength * S,
-	        Xw->basey * S,
-	        Xw->w() - (Xw->sblength * S),
-	        Xw->h()- (Xw->basey * S))
+GArea::GArea(int S, const char *C) : Fl_Group(0, 0, 1, 1)
 {
 	caption =C;
 	scale =S;

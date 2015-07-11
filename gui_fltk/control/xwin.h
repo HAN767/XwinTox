@@ -6,8 +6,8 @@
 #include <FL/Fl_Box.H>
 
 #include "control/sidebar.h"
-/*#include "control/gaddfrnd.h"
-#include "control/gtrnsfer.h"*/
+#include "control/gaddfrnd.h"
+/*#include "control/gtrnsfer.h"*/
 
 class XWContents: public Fl_Box
 {
@@ -20,8 +20,8 @@ public:
 	void NewCurrentArea(Fl_Group* G);
 
 	Fl_Box *fake;
-	/*GAddFriend *addfriend;
-	GTransfers *transfers;
+	GAddFriend *addfriend;
+	/*GTransfers *transfers;
 
 	vector <GMessageArea*> messageareas;*/
 

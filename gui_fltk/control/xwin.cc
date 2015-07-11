@@ -11,8 +11,8 @@ XWContents::XWContents(int X, int Y, int W, int H, int S) : Fl_Box(X, Y, W, H)
 	box(FL_FLAT_BOX);
 	color(4);
 
-	/*addfriend =new GAddFriend(S);
-	transfers =new GTransfers(S);
+	addfriend =new GAddFriend(S);
+	/*transfers =new GTransfers(S);
 	transfers->hide();
 	currentarea =addfriend;
 	Xw->sidebar->bottom_area->addfriend->box(FL_FLAT_BOX);
@@ -70,8 +70,9 @@ void XwinTox::resize(int X, int Y, int W, int H)
 {
 	Fl_Double_Window::resize(X, Y, W, H);
 	contents->resize(sblength * scale, basey * scale,
-	                                       w() - (sblength * scale),
-	                                       h() - (basey * scale));
+	                 w() - (sblength * scale), h() - (basey * scale));
 	sidebar->resize(basex * scale, basey * scale, sblength * scale,
-	                 H - (basey * scale));
+	                H - (basey * scale));
+	contents->addfriend->resize(sblength * scale, basey * scale,
+	                  W - (sblength * scale), H- (basey * scale));
 }

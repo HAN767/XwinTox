@@ -25,4 +25,7 @@ typedef struct IMComm_s
 	void *pvPrivate; /* implementation-specific private storage */
 } IMComm_t;
 
+#define IMCOBJ(X) ((IMComm_t*) X->hObj)
+
+
 #endif

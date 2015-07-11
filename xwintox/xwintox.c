@@ -50,7 +50,6 @@ static void default_config(Dictionary_t *conf)
 int main(int argc, char *argv[])
 {
 	char szConfigFilename[255];
-	IMComm_t *pimcM;
 
 	dbg("XwinTox Frameworks 2.0_%s\n", XWVERS);
 
@@ -68,14 +67,19 @@ int main(int argc, char *argv[])
 
 	App.pimcIM =ModuleManager_createObject("MESSENGER");
 	App.pguiGUI =ModuleManager_createObject("GUI");
-	pimcM =App.pimcIM->hObj;
-	pimcM->pszName =strdup(Dictionary_get(App.dictConfig, "XwinTox.Name"));
-	pimcM->pszStatus =strdup(Dictionary_get(App.dictConfig, "XwinTox.Status"));
+	IMCOBJ(App.pimcIM)->pszName =strdup(Dictionary_get(App.dictConfig,
+	                                    "XwinTox.Name"));
+	IMCOBJ(App.pimcIM)->pszStatus =strdup(Dictionary_get(App.dictConfig,
+	                                      "XwinTox.Status"));
 
-	pimcM->fnConnect(App.pimcIM);
+	IMCOBJ(App.pimcIM)->fnConnect(App.pimcIM);
 	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
 
-	while(1) { sleep(1); }
+	while(1)
+	{
+		sleep(1);
+	}
+
 	ModuleManager_destroyObject(App.pimcIM);
 	Dictionary_write_to_file(App.dictConfig, szConfigFilename);
 	return 0;

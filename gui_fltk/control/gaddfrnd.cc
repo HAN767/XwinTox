@@ -4,14 +4,16 @@
 #include <FL/Fl_Multiline_Input.H>
 #include <FL/fl_draw.H>
 
-#include "resolv/dresolv.h"
+#include "misc.h"
+#include "postbox.h"
+//#include "resolv/dresolv.h"
 
-#include "control/gui.h"
+#include "control/xwin.h"
 #include "control/gaddfrnd.h"
 
 void af_sendrequest(const char* id, const char* msg)
 {
-	Event_t *e1 =Ev_new();
+/*	Event_t *e1 =Ev_new();
 	Event_t *e2 =Ev_new();
 	Event_t *e3 =Ev_new();
 
@@ -25,19 +27,19 @@ void af_sendrequest(const char* id, const char* msg)
 
 	List_add(APP->Comm->WorkQueue, (void*)e1);
 	List_add(APP->Comm->WorkQueue, (void*)e2);
-	CommWork();
+	CommWork();*/
 }
 
 void af_post(int mtype, PBMessage_t* msg, void* custom)
 {
-	GAddFriend *g =(GAddFriend*)custom;
+	/*GAddFriend *g =(GAddFriend*)custom;
 	dbg("Post: %d\n", mtype);
 
 	if(mtype == PB_DNSResolved)
 	{
 		af_sendrequest(msg->S1, g->message->value());
 		g->id->value("");
-	}
+	}*/
 }
 
 void removespaces(char * s)
@@ -72,11 +74,11 @@ void af_pressed(Fl_Widget *w, void *custom)
 	else if (strchr(id, '@'))
 	{
 		dbg("ToxDNS ID\n");
-		Call_t *call =(Call_t*)calloc(1, sizeof(Call_t));
+	/*	Call_t *call =(Call_t*)calloc(1, sizeof(Call_t));
 		call->Func =R_DNSResolve;
 		call->S1 =id;
 		List_add(APP->Resolv->Calls, call);
-		ResolvAddWork(1);
+		ResolvAddWork(1);*/
 		return;
 	}
 	else
@@ -111,17 +113,14 @@ GAddFriend::GAddFriend(int S) : GArea(S, "Add Friends")
 	send->labelsize(14 * S);
 	send->callback(af_pressed, this);
 
-	PB_Register(APP->events, PB_DNSResolved, this, af_post);
+	//PB_Register(APP->events, PB_DNSResolved, this, af_post);
 
 	end();
 }
 
 void GAddFriend::resize(int X, int Y, int W, int H)
 {
-	Fl_Group::resize(Xw->sblength * scale,
-	                 Xw->basey * scale,
-	                 Xw->w() - (Xw->sblength * scale),
-	                 Xw->h()- (Xw->basey * scale));
+	Fl_Group::resize(X, Y, W, H);
 	id->resize(x() + (10 * scale), y() + (90 * scale),
 	           (x() + w() - (224 * scale) - (20 * scale)),
 	           24 * scale);
