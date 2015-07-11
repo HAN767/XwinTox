@@ -1,0 +1,17 @@
+# 
+# LibSunshine
+#
+
+SUB_DEPTH = ..
+include $(KBUILD_PATH)/subheader.kmk
+
+LIBRARIES += libsunshine
+
+# for PIC
+libsunshine_TEMPLATE = XwDLL
+libsunshine_INCS = . hdr
+libsunshine_SOURCES	=	dictionary.c hexstring.c list.c misc.c \
+ 						postbox.c ini/ini.c
+libsunshine_CFLAGS = -std=c11 
+
+include $(FILE_KBUILD_SUB_FOOTER)

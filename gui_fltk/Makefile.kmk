@@ -1,0 +1,24 @@
+SUB_DEPTH = ..
+include $(KBUILD_PATH)/subheader.kmk
+
+DLLS += GUI_FLTK
+
+TEMPLATE_gui_fltk				= GUI for FLTK DLL
+TEMPLATE_gui_fltk_EXTENDS		= XwDLL
+TEMPLATE_gui_fltk_EXTENDS_BY	= appending
+TEMPLATE_gui_fltk_CFLAGS		= $(FLTK_CFLAGS)
+TEMPLATE_gui_fltk_CXXFLAGS		= $(FLTK_CFLAGS)
+TEMPLATE_gui_fltk_LDFLAGS		= $(FLTK_LDFLAGS)
+
+GUI_FLTK_TEMPLATE = gui_fltk
+GUI_FLTK_SOURCES  = GUI_FLTK.cc GUIFLTK.cc
+GUI_FLTK_SOURCES += nanosvg/nsvgwrap.c nanosvg/res.cc control/svgbox.cc
+GUI_FLTK_SOURCES += control/xwin.cc control/sidebar.cc control/sbarbtm.cc
+GUI_FLTK_SOURCES += control/sbartop.cc control/statbox.cc
+GUI_FLTK_INCS = $(PATH_ROOT)/libsunshine/hdr \
+		$(PATH_ROOT)/xwintox/hdr \
+		hdr \
+		.
+GUI_FLTK_LIBS = $(libsunshine_1_TARGET) $(CXX_LIBS) $(FLTK_LIB)
+
+include $(FILE_KBUILD_SUB_FOOTER)

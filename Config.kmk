@@ -1,0 +1,27 @@
+TEMPLATE_XwinTox = XwinTox base template
+TEMPLATE_XwinTox_TOOL = GCC
+
+TEMPLATE_XwDLL = XwinTox DLL template
+TEMPLATE_XwDLL_EXTENDS = XwinTox
+TEMPLATE_XwDLL_EXTENDS_BY = appending
+TEMPLATE_XwDLL_CFLAGS = -fPIC
+TEMPLATE_XwDLL_CXXFLAGS = -fPIC
+TEMPLATE_XwDLL_LDFLAGS = -fPIC
+
+if "$(KBUILD_TARGET)" == "freebsd"
+TEMPLATE_XwinTox_LIBS += stdthreads
+endif # FreeBSD
+
+## C++ ##
+# if GCC
+CXX_LIBS = stdc++ 
+
+PKGCONF		= pkg-config
+FLTKCONF	?= fltk-config
+
+TOX_CFLAGS = $(shell $(PKGCONF) libtoxcore --cflags)
+TOX_LDFLAGS = $(shell $(PKGCONF) libtoxcore --libs)
+
+FLTK_CFLAGS = $(shell $(FLTKCONF) --cflags)
+FLTK_LDFLAGS = $(shell $(FLTKCONF) --ldstaticflags)
+FLTK_LIB = $(shell $(FLTKCONF) --libs)
