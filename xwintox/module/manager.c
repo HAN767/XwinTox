@@ -25,8 +25,9 @@ void ModuleManager_init(XWF_Call_f fnAppCall)
 	pmmManager->lstpobjWildcards =List_new();
 	pmmManager->dictpobjObjects =Dictionary_new();
 	pmmManager->psrvServices.uiVersion =1;
-	pmmManager->psrvServices.fnRegisterClass =ModuleManager_registerClass;
-	pmmManager->psrvServices.fnCall =ModuleManager_call;
+	pmmManager->psrvServices.fnRegisterClass =ModuleManager_registerClass_;
+	pmmManager->psrvServices.fnCall =ModuleManager_call_;
+	pmmManager->psrvServices.fnDispatch =ModuleManager_dispatch_;
 	pmmManager->fnAppCall =fnAppCall;
 }
 
@@ -50,7 +51,7 @@ int ModuleManager_loadDynamicModule(const char *pszPath)
 
 	if((pszDLError =dlerror()) != NULL) goto dlerror;
 
-	if(ModuleManager_initialiseModule(pmodNew, fnInit) != 0) goto error;
+	if(ModuleManager_initialiseModule_(pmodNew, fnInit) != 0) goto error;
 
 	return 0;
 
@@ -96,7 +97,7 @@ int ModuleManager_destroyObject(XWF_Object_Handle_t *pobjhToDelete)
 	}
 }
 
-int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
+int ModuleManager_initialiseModule_(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 {
 	int iRet =fnInit(pmodNew, &pmmManager->psrvServices);
 
@@ -117,7 +118,7 @@ int ModuleManager_initialiseModule(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 	}
 }
 
-int ModuleManager_registerClass(const XWF_Class_t *pobjRegistered)
+int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered)
 {
 	const char *pszLang ="Unknown";
 
@@ -159,7 +160,7 @@ int ModuleManager_registerClass(const XWF_Class_t *pobjRegistered)
 	}
 }
 
-void *ModuleManager_call(const XWF_Object_Handle_t *pobjhSource,
+void *ModuleManager_call_(const XWF_Object_Handle_t *pobjhSource,
                          const char *pszService,
                          const void *pvParams)
 {
@@ -168,5 +169,12 @@ void *ModuleManager_call(const XWF_Object_Handle_t *pobjhSource,
 		return pmmManager->fnAppCall(pobjhSource, pszService + 4, pvParams);
 	}
 
+	return 0;
+}
+
+int ModuleManager_dispatch_(const XWF_Object_Handle_t *hObject, int iType,
+                            PBMessage_t *ppbmMsg)
+{
+	PB_Signal_Multithreaded(pmmManager->pbGlobal, iType, ppbmMsg);
 	return 0;
 }

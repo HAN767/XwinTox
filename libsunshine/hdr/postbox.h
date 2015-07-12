@@ -48,6 +48,7 @@ typedef struct PBC_s
 Postbox_t *PB_New();
 void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t* msg);
+void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Despatch_Deferred(Postbox_t *pb);
 void PB_Register(Postbox_t *pb, int mtype, void*,
                  void (*callback)(int, PBMessage_t*, void*));

@@ -17,7 +17,7 @@ static inline Shared_Ptr_t* Shared_Ptr_new(void *pvData)
 	Shared_Ptr_t *psprNew =(Shared_Ptr_t *)malloc(sizeof(Shared_Ptr_t));
 	
 	psprNew->pvData =pvData;
-	psprNew->wCnt =0;
+	psprNew->wCnt =1;
 	mtx_init(&psprNew->mtxCnt, mtx_plain);
 
 	return psprNew;

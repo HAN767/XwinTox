@@ -53,13 +53,12 @@ int PB_Despatch_Deferred_Thread(void *pvCustom)
 	thrd_exit(0);
 }
 
-void PB_Signal_Multithread(Postbox_t *pb, int mtype, PBMessage_t *msg)
+void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
 	List_t *lstHandlers;
 	Shared_Ptr_t *sprMsg =Shared_Ptr_new(msg);
 
 	LIST_ITERATE_OPEN(pb->clients)
-
 	if(((PBRegistryEntry_t*) e_data)->mtype == mtype)
 	{
 		PB_Thread_Msg_t *pbtMsg =malloc(sizeof(PB_Thread_Msg_t));
@@ -71,11 +70,9 @@ void PB_Signal_Multithread(Postbox_t *pb, int mtype, PBMessage_t *msg)
 								  pbtMsg)) PBM_INC(sprMsg);
 	}
 	LIST_ITERATE_CLOSE(pb->clients)
+
+	PBM_DEC(sprMsg);
 }
-
-/* note: implement a second PB_Signal that launches a seperate thread 
- * for despatch later */
-
 
 void PB_Despatch_Deferred(Postbox_t *pb)
 {

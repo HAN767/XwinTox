@@ -21,7 +21,7 @@ GUIFLTK::GUIFLTK(XWF_ObjectParams_t *)
 	dbg("Initialising a new GUI for FLTK\n");
 	pgflCurrent =this;
 
-	Xw_ =new XwinTox(640, 480, "XwinTox", 1);
+	Xw_ =new XwinTox(640, 480, "XwinTox", 2);//1);
 }
 
 int GUIFLTK::start()
