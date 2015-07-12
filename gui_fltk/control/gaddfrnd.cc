@@ -6,28 +6,27 @@
 
 #include "misc.h"
 #include "postbox.h"
-//#include "resolv/dresolv.h"
 
 #include "control/xwin.h"
 #include "control/gaddfrnd.h"
 
 void af_sendrequest(const char* id, const char* msg)
 {
-/*	Event_t *e1 =Ev_new();
-	Event_t *e2 =Ev_new();
-	Event_t *e3 =Ev_new();
+	/*	Event_t *e1 =Ev_new();
+		Event_t *e2 =Ev_new();
+		Event_t *e3 =Ev_new();
 
-	e1->T =Comm_SendFriendRequest;
-	e1->S1 =strdup(id);
-	e1->S2 =strdup(msg);
+		e1->T =Comm_SendFriendRequest;
+		e1->S1 =strdup(id);
+		e1->S2 =strdup(msg);
 
-	e2->T =Comm_SaveData;
+		e2->T =Comm_SaveData;
 
-	e3->T =Comm_GetFriendList;
+		e3->T =Comm_GetFriendList;
 
-	List_add(APP->Comm->WorkQueue, (void*)e1);
-	List_add(APP->Comm->WorkQueue, (void*)e2);
-	CommWork();*/
+		List_add(APP->Comm->WorkQueue, (void*)e1);
+		List_add(APP->Comm->WorkQueue, (void*)e2);
+		CommWork();*/
 }
 
 void af_post(int mtype, PBMessage_t* msg, void* custom)
@@ -44,13 +43,14 @@ void af_post(int mtype, PBMessage_t* msg, void* custom)
 
 void removespaces(char * s)
 {
-    char *p =s;
-    int l =strlen(p);
+	char *p =s;
+	int l =strlen(p);
 
-    while(isspace(p[l - 1])) p[--l] =0;
-    while(*p && isspace(*p)) ++p, --l;
+	while(isspace(p[l - 1])) p[--l] =0;
 
-    memmove(s, p, l + 1);
+	while(*p && isspace(*p)) ++p, --l;
+
+	memmove(s, p, l + 1);
 }
 
 void af_pressed(Fl_Widget *w, void *custom)
@@ -62,7 +62,7 @@ void af_pressed(Fl_Widget *w, void *custom)
 	removespaces(id);
 
 	/* try to identify what type of request this is */
-	if ((strlen(id) == 76) && !strchr(id, '@'))
+	if((strlen(id) == 76) && !strchr(id, '@'))
 	{
 		/* a regular tox key */
 		dbg("Regular Tox key\n");
@@ -71,14 +71,14 @@ void af_pressed(Fl_Widget *w, void *custom)
 		free(id);
 		return;
 	}
-	else if (strchr(id, '@'))
+	else if(strchr(id, '@'))
 	{
 		dbg("ToxDNS ID\n");
-	/*	Call_t *call =(Call_t*)calloc(1, sizeof(Call_t));
-		call->Func =R_DNSResolve;
-		call->S1 =id;
-		List_add(APP->Resolv->Calls, call);
-		ResolvAddWork(1);*/
+		/*	Call_t *call =(Call_t*)calloc(1, sizeof(Call_t));
+			call->Func =R_DNSResolve;
+			call->S1 =id;
+			List_add(APP->Resolv->Calls, call);
+			ResolvAddWork(1);*/
 		return;
 	}
 	else
@@ -89,9 +89,11 @@ void af_pressed(Fl_Widget *w, void *custom)
 
 }
 
-GAddFriend::GAddFriend(int S) : GArea(S, "Add Friends")
+GAddFriend::GAddFriend(const XWF_hObj_t* hObj, int S) :
+	GArea(hObj, S, "Add Friends")
 {
 	scale = S;
+
 	id =new Fl_Input(x() + (10 * S), y() + (90 * S),
 	                 (x() + w() - (224 * S) - (20 * S)),
 	                 24 * S);

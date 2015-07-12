@@ -4,11 +4,12 @@
 
 #include "control/xwin.h"
 
-
-GArea::GArea(int S, const char *C) : Fl_Group(0, 0, 1, 1)
+GArea::GArea(const XWF_hObj_t* hObj, int S, const char *C) :
+	Fl_Group(0, 0, 1, 1)
 {
 	caption =C;
 	scale =S;
+	hObj_ =hObj;
 
 	box(FL_FLAT_BOX);
 	color(255);

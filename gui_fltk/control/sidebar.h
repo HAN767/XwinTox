@@ -14,7 +14,7 @@ class Sidebar: public Fl_Group
 {
 public:
 	// Ctor
-	Sidebar(int X, int Y, int W, int H, int S);
+	Sidebar(const XWF_hObj_t* hObj, int S);
 
 	void resize(int X, int Y, int W, int H);
 
@@ -27,6 +27,9 @@ public:
 	Sidebar_Bottom_Area *bottom_area;
 
 	int scale, top2_h, frs;
+
+private:
+	const XWF_hObj_t* hObj_;
 };
 
 #endif

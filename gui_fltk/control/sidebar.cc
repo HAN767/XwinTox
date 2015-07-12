@@ -37,16 +37,17 @@ void frcallback(Fl_Widget *w)
 	//CommWork();
 }
 
-Sidebar::Sidebar(int X, int Y, int W, int H, int S) : Fl_Group(X, Y, W, H)
+Sidebar::Sidebar(const XWF_hObj_t* hObj, int S) : Fl_Group(0, 0, 0, 0)
 {
 	scale =S;
 	top2_h =38;
 	frs =0;
+	hObj_ =hObj;
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
-	top_area =new Sidebar_Top_Area(S);
-	bottom_area =new Sidebar_Bottom_Area(S);
+	top_area =new Sidebar_Top_Area(hObj_, S);
+	bottom_area =new Sidebar_Bottom_Area(hObj_, S);
 	/*contacts =new ContactsList(0, 0, 1, 1, S);
 	contacts->end();
 

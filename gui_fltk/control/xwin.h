@@ -5,6 +5,8 @@
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
 
+#include "Module/Module.h"
+
 #include "control/sidebar.h"
 #include "control/gaddfrnd.h"
 /*#include "control/gtrnsfer.h"*/
@@ -13,7 +15,7 @@ class XWContents: public Fl_Box
 {
 public:
 	// Ctor
-	XWContents(int X, int Y, int W, int H, int S);
+	XWContents(const XWF_hObj_t* hObj, int S);
 
 	void draw();
 
@@ -28,6 +30,9 @@ public:
 	Fl_Group *currentarea;
 	Fl_Group *newcurrentarea;
 	int scale;
+
+private:
+	const XWF_hObj_t *hObj_;
 };
 
 class XwinTox : public Fl_Double_Window
@@ -44,8 +49,9 @@ public:
 	XWContents *contents;
 
 	int scale, sblength, basex, basey;
-};
 
-//extern class XwinTox *Xw;
+private:
+	const XWF_hObj_t *hObj_;
+};
 
 #endif

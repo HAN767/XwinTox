@@ -11,7 +11,7 @@ class GAddFriend: public GArea
 {
 public:
 	// Ctor
-	GAddFriend(int S);
+	GAddFriend(const XWF_hObj_t* hObj, int S);
 
 	void resize(int X, int Y, int W, int H);
 	void draw();
@@ -21,6 +21,7 @@ public:
 	Fl_Button *send;
 
 	Fl_Group *fakebox;
+	const XWF_hObj_t* hObj_;
 };
 
 #endif

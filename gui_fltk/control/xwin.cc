@@ -5,13 +5,14 @@
 #include "control/sidebar.h"
 //#include "control/svgbox.h"
 
-XWContents::XWContents(int X, int Y, int W, int H, int S) : Fl_Box(X, Y, W, H)
+XWContents::XWContents(const XWF_hObj_t* hObj, int S) : Fl_Box(0, 0, 1, 1)
 {
 	scale =S;
 	box(FL_FLAT_BOX);
 	color(4);
+	hObj_ =hObj;
 
-	addfriend =new GAddFriend(S);
+	addfriend =new GAddFriend(hObj_, S);
 	/*transfers =new GTransfers(S);
 	transfers->hide();
 	currentarea =addfriend;
@@ -36,6 +37,7 @@ XwinTox::XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S)
 	: Fl_Double_Window(w, h, c)
 {
 	scale =S;
+	hObj_ =hObj;
 	basex =0;
 	basey =0;
 	sblength =224;
@@ -60,8 +62,8 @@ XwinTox::XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S)
 
 void XwinTox::init2()
 {
-	sidebar =new Sidebar(0, 0, 1, 1, scale);
-	contents =new XWContents(0, 0, 1, 1, scale);
+	sidebar =new Sidebar(hObj_, scale);
+	contents =new XWContents(hObj_, scale);
 	resizable(contents);
 	resize(x(), y(), w(), h());
 }
@@ -74,5 +76,5 @@ void XwinTox::resize(int X, int Y, int W, int H)
 	sidebar->resize(basex * scale, basey * scale, sblength * scale,
 	                H - (basey * scale));
 	contents->addfriend->resize(sblength * scale, basey * scale,
-	                  W - (sblength * scale), H- (basey * scale));
+	                            W - (sblength * scale), H- (basey * scale));
 }

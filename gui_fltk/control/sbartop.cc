@@ -6,12 +6,14 @@
 #include "nanosvg/svgs.h"
 #include "control/sbartop.h"
 #include "control/svgbox.h"
-#//include "control/statbox.h"
+#include "control/statbox.h"
 
 void namechangecb(Fl_Widget *w, long which);
 
-Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group(0, 0, 1, 1)
+Sidebar_Top_Area::Sidebar_Top_Area(const XWF_hObj_t* hObj, int S) :
+	Fl_Group(0, 0, 1, 1)
 {
+	hObj_ =hObj;
 	scale =S;
 
 	box(FL_FLAT_BOX);
@@ -61,12 +63,12 @@ void namechangecb(Fl_Widget *w, long which)
 {
 	/*Fl_Input *f =(Fl_Input*)w;
 	Event_t *e =Ev_new();
-	
+
 	e->T =Comm_ChangeName;
 
 	if (which) Dictionary_set(APP->Config, "Tox.Name", f->value());
 	else Dictionary_set(APP->Config, "Tox.Status", f->value());
-	
+
 	List_add(APP->Comm->WorkQueue, (void*)e);
 	CommWork();*/
 }

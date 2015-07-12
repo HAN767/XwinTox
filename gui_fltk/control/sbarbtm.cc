@@ -12,8 +12,10 @@ void transferspressed(Fl_Widget* B , void*)
 	Xw->sidebar->bottom_area->transfers->color(fl_rgb_color(68, 68, 67));*/
 }
 
-Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group(0, 0, 1, 1)
+Sidebar_Bottom_Area::Sidebar_Bottom_Area(const XWF_hObj_t* hObj, int S) :
+	Fl_Group(0, 0, 1, 1)
 {
+	hObj_ =hObj;
 	scale =S;
 
 	box(FL_FLAT_BOX);
@@ -23,7 +25,10 @@ Sidebar_Bottom_Area::Sidebar_Bottom_Area(int S) : Fl_Group(0, 0, 1, 1)
 	newgroup =new SVGBox(0, 0, 56 * S , 36 * S, S, groupsvg, 0.5);
 	transfers =new SVGBox(0, 0, 56 * S , 36 * S, S, transfersvg, 0.5);
 	settings =new SVGBox(0, 0, 56 * S , 36 * S, S, settingssvg, 0.5);
-	addfriend->show(); newgroup->show(); transfers->show();settings->show();
+	addfriend->show();
+	newgroup->show();
+	transfers->show();
+	settings->show();
 
 	//transfers->callback(transferspressed);
 	deselect_all();

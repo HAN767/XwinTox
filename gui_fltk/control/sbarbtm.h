@@ -3,13 +3,15 @@
 
 #include <FL/Fl_Group.H>
 
+#include "xwintox.h"
+
 #include "control/svgbox.h"
 
 class Sidebar_Bottom_Area: public Fl_Group
 {
 public:
 	// Ctor
-	Sidebar_Bottom_Area(int S);
+	Sidebar_Bottom_Area(const XWF_hObj_t* hObj, int S);
 
 	void resize(int X, int Y, int W, int H);
 
@@ -21,6 +23,9 @@ public:
 	SVGBox *settings;
 
 	int scale;
+
+private:
+	const XWF_hObj_t* hObj_;
 };
 
 
