@@ -12,9 +12,16 @@ if "$(KBUILD_TARGET)" == "freebsd"
 TEMPLATE_XwinTox_LIBS += stdthreads
 endif # FreeBSD
 
+if "$(KBUILD_TARGET)" == "linux"
+TEMPLATE_XwinTox_CFLAGS += -I$(PATH_ROOT)/libsunshine/hdr/compat
+TEMPLATE_XwinTox_LIBS += pthread
+endif # Linux
+
 ## C++ ##
 # if GCC
 CXX_LIBS = stdc++ 
+
+## libraries ##
 
 PKGCONF		= pkg-config
 FLTKCONF	?= fltk-config
