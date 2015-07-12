@@ -8,7 +8,7 @@ template <typename T>
 class GUICxxInterfaceT
 {
 public:
-	GUICxxInterfaceT() : fnCall_(NULL)
+	GUICxxInterfaceT()// : pSvcs(NULL)
 	{
 		hCGUI_.hCXXObj =this;
 		hCGUI_.fnStart =staticStart;
@@ -28,7 +28,6 @@ public:
 	static void * create(XWF_ObjectParams_t *pobpParams)
 	{
 		T *GUI =new T(pobpParams);
-		GUI->fnCall_ =pobpParams->psrvServices->fnCall;
 		return &GUI->hCGUI_;
 	}
 	static int destroy(void *pobjToDestroy)
@@ -52,7 +51,6 @@ public:
 	}
 
 private:
-	XWF_Call_f fnCall_;
 	IGUI_t hCGUI_;
 };
 

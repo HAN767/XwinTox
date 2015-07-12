@@ -17,8 +17,6 @@
 void default_config(Dictionary_t *conf);
 MCT_Data_t loaddata(const char *szFile);
 
-const XWF_Services_t *psrvSvcs;
-
 void *MCommTox_create(XWF_ObjectParams_t *pobpParams)
 {
 	IMComm_t *pimcNew =calloc(1, sizeof(IMComm_t));

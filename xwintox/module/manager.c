@@ -77,6 +77,7 @@ XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
 		XWF_Object_Handle_t *pobjhCreated =malloc(sizeof(XWF_Object_Handle_t));
 		obpParams.pobjhHandle =pobjhCreated;
 		pobjhCreated->pxwoClass =pobjHandler;
+		pobjhCreated->pSvcs =&pmmManager->psrvServices;
 		pobjhCreated->hObj =pobjHandler->fnCreate(&obpParams);
 
 		if(pobjhCreated->hObj) return pobjhCreated;
@@ -139,7 +140,7 @@ int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered)
 
 	if(strcmp(pobjRegistered->pszType, "*") == 0)
 	{
-		dbg("Adding new %s wildcard object provided by <%s>\n", pszLang,
+		dbg("Adding new %s wildcard class provided by <%s>\n", pszLang,
 		    pobjRegistered->pmodProvider->pszName);
 		List_add(pmmManager->lstpobjWildcards, (void*)pobjRegistered);
 		return 0;
@@ -152,8 +153,9 @@ int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered)
 	}
 	else
 	{
-		dbg("Adding new %s object <%s> provided by <%s>\n", pszLang,
-		    pobjRegistered->pszType, pobjRegistered->pmodProvider->pszName);
+		dbg("Adding new %s class <%s> of subtype <%s> provided by <%s>\n",
+		    pszLang, pobjRegistered->pszType, pobjRegistered->pszSubtype,
+		    pobjRegistered->pmodProvider->pszName);
 		Dictionary_set_pointer(pmmManager->dictpobjObjects,
 		                       pobjRegistered->pszType, pobjRegistered);
 		return 0;

@@ -34,7 +34,7 @@ class XwinTox : public Fl_Double_Window
 {
 public:
 	// Ctor
-	XwinTox(int w, int h, const char* c, int S);
+	XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S);
 	void init2();
 
 	void resize(int X, int Y, int W, int H);
@@ -42,7 +42,6 @@ public:
 	Fl_Menu_Bar *mbar;
 	Sidebar *sidebar;
 	XWContents *contents;
-	//GAddFriend *addfriend;
 
 	int scale, sblength, basex, basey;
 };

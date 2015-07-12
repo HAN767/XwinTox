@@ -28,6 +28,4 @@ int MCommTox_destroy(void *pobjToDestroy);
 #define LOCK(IMC) mtx_lock(&PRIVATE(IMC)->mtxToxAccess);
 #define UNLOCK(IMC) mtx_unlock(&PRIVATE(IMC)->mtxToxAccess);
 
-extern const XWF_Services_t *psrvSvcs;
-
 #endif

@@ -19,6 +19,7 @@ extern "C" int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServic
 	pmodSelf->fnExit =XWF_exit;
 
 	objGUI->pszType ="GUI";
+	objGUI->pszSubtype ="FLTK";
 	objGUI->enLang =XWF_Lang_CXX;
 	objGUI->pmodProvider =pmodSelf;
 	objGUI->fnCreate =GUIFLTK::create;

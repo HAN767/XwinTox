@@ -6,6 +6,8 @@
 
 #include "MCOMMTOX.h"
 
+const XWF_Services_t *pSvcs;
+
 int XWF_exit()
 {
 	return 0;
@@ -19,14 +21,15 @@ int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServices)
 	pmodSelf->fnExit =XWF_exit;
 
 	classIM->pszType ="MESSENGER";
+	classIM->pszSubtype ="TOX";
 	classIM->enLang =XWF_Lang_C;
 	classIM->pmodProvider =pmodSelf;
 	classIM->fnCreate =MCommTox_create;
 	classIM->fnDestroy =MCommTox_destroy;
-	classIM->psrvSvcs =psrvServices;
+
+	pSvcs =psrvServices;
 
 	psrvServices->fnRegisterClass(classIM);
-	psrvSvcs =psrvServices;
 
 	return 0;
 }

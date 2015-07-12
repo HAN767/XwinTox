@@ -64,12 +64,12 @@ struct XWF_Services_s;
 typedef struct XWF_Class_s
 {
 	const char *pszType;
+	const char *pszSubtype;
 	unsigned int uiVersion;
 	XWF_Create_f fnCreate;
 	XWF_Destroy_f fnDestroy;
 	XWF_Lang_e enLang;
 	XWF_Module_t *pmodProvider;
-	const struct XWF_Services_s *psrvSvcs;
 } XWF_Class_t;
 
 /* This is a handle to an object.
@@ -78,7 +78,10 @@ typedef struct XWF_Object_Handle_s
 {
 	XWF_Class_t *pxwoClass;
 	void *hObj;
+	const struct XWF_Services_s *pSvcs;
 } XWF_Object_Handle_t;
+
+#define XWF_hObj_t XWF_Object_Handle_t /*short version for cleanliness*/
 
 /* This function allows a module to register an object with
  * the module manager. It should name either an object it

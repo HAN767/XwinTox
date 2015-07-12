@@ -98,14 +98,14 @@
       </Completion>
     </Configuration>
   </Settings>
-  <VirtualDirectory Name="imcomm_tox">
-    <File Name="mctfuncs.c"/>
-    <File Name="mctfuncs.h"/>
-    <File Name="MCommTox.h"/>
-    <File Name="MCommTox.c"/>
-    <File Name="mcomm_tox.c"/>
-    <File Name="../xwintox/Makefile.kmk"/>
-  </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
+  <VirtualDirectory Name="mcom_tox">
+    <File Name="MCOM_TOX.c"/>
+    <File Name="MCOMMTOX.h"/>
+    <File Name="MCOMMTOX.c"/>
+    <File Name="mctfuncs.c"/>
+    <File Name="mctfuncs.h"/>
+    <File Name="Makefile.kmk"/>
+  </VirtualDirectory>
 </CodeLite_Project>

@@ -11,7 +11,7 @@ typedef struct XWT_s
 	XWF_Object_Handle_t *pguiGUI;
 } XWT_t;
 
-typedef enum PB_Mtypes_e
+typedef enum XWMtypes_e
 {
 	/* Client related */
 	clCon,
@@ -34,7 +34,15 @@ typedef enum PB_Mtypes_e
 	ftRequest,
 	ftControl,
 	ftData,
-} PB_Mtypes_e;
+} XWMtypes_e;
+
+typedef struct XWContact_s
+{
+	unsigned int wNum, wStatus, wConnected;
+	char *pszName, *pszStatus, *pszID;
+	/* these allow the GUI or MCOMM to store extra data */
+	void *pMCHandle, *pGUIHandle;
+} XWContact_t;
 
 
 #endif

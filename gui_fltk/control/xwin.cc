@@ -32,7 +32,7 @@ void XWContents::draw()
 {
 }
 
-XwinTox::XwinTox(int w, int h, const char* c, int S)
+XwinTox::XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S)
 	: Fl_Double_Window(w, h, c)
 {
 	scale =S;
