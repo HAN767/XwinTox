@@ -38,7 +38,7 @@ typedef struct PB_Thread_Msg_s
 	thrd_t thrd;
 	int mtype;
 	Shared_Ptr_t *sprMsg;
-	PBCallback_f fnCB;
+	PB_Callback_f fnCB;
 	void *pvCustom;
 } PB_Thread_Msg_t;
 

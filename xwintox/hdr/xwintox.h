@@ -11,4 +11,30 @@ typedef struct XWT_s
 	XWF_Object_Handle_t *pguiGUI;
 } XWT_t;
 
+typedef enum PB_Mtypes_e
+{
+	/* Client related */
+	clCon,
+
+	/* Friends related */
+	frCon,
+	frName,
+	frStatusMsg,
+	frRequest,
+	frAdded,
+
+	/* Chatrooms related */
+	crNew,
+	crTitle,
+	crNames,
+	crMessage,
+	crInvite,
+
+	/* File transfers related */
+	ftRequest,
+	ftControl,
+	ftData,
+} PB_Mtypes_e;
+
+
 #endif

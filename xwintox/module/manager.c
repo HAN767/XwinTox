@@ -161,8 +161,8 @@ int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered)
 }
 
 void *ModuleManager_call_(const XWF_Object_Handle_t *pobjhSource,
-                         const char *pszService,
-                         const void *pvParams)
+                          const char *pszService,
+                          const void *pvParams)
 {
 	if(strncmp(pszService, "APP", 3) == 0)
 	{
@@ -170,6 +170,14 @@ void *ModuleManager_call_(const XWF_Object_Handle_t *pobjhSource,
 	}
 
 	return 0;
+}
+
+int ModuleManager_subscribe_(const XWF_Object_Handle_t *hObject, int mtype,
+                             void *custom, PB_Callback_f callback)
+{
+	dbg("Object of class %s subscribed to event type %d\n",
+	    hObject->pxwoClass->pszType, mtype);
+	PB_Register(pmmManager->pbGlobal, mtype, custom, callback);
 }
 
 int ModuleManager_dispatch_(const XWF_Object_Handle_t *hObject, int iType,

@@ -21,9 +21,15 @@ extern "C"
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
 
+#if defined(__GNUC__) || defined(__GNUG__) || defined(__clang__)
+#define PRINTFUNCNAME __PRETTY_FUNCTION__
+#else
+#define PRINTFUNCNAME __func__
+#endif
+
 
 #define dbg(format,args...)        \
-	dbg2(__func__, format, ## args);
+	dbg2(PRINTFUNCNAME, format, ## args);
 
 typedef struct Call_s
 {

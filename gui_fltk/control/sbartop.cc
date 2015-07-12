@@ -49,7 +49,7 @@ Sidebar_Top_Area::Sidebar_Top_Area(int S) : Fl_Group(0, 0, 1, 1)
 
 void Sidebar_Top_Area::resize(int X, int Y, int W, int H)
 {
-	dbg("X: %d Y: %d W: %d H: %d\n", X, Y, W, H);
+	//dbg("X: %d Y: %d W: %d H: %d\n", X, Y, W, H);
 	Fl_Group::resize(X, Y, W, H);
 	statusbox->resize(X + (192 * scale), Y + (10 * scale), 20 * scale, 40 * scale);
 	avbox->resize(X + (10 * scale), Y + (10 * scale), 39 * scale , 39 * scale);

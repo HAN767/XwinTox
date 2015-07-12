@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "AOM/IMComm.h"
-#include "MCommTox.h"
+#include "MCOMMTOX.h"
 #include "mctfuncs.h"
 #include "hexstring.h"
 #include "misc.h"

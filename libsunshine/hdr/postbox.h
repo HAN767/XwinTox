@@ -13,16 +13,17 @@ extern "C"
 
 typedef struct PBMessage_s
 {
+	const char *ORIGIN;
 	char *S1, *S2, *S3, *S4;
 	int I1, I2, I3, I4;
 } PBMessage_t;
 
-typedef void (*PBCallback_f)(int, PBMessage_t*, void*);
+typedef void (*PB_Callback_f)(int, PBMessage_t*, void*);
 
 typedef struct PBRegistryEntry_s
 {
 	int mtype;
-	PBCallback_f callback;
+	PB_Callback_f callback;
 	void *custom;
 } PBRegistryEntry_t;
 
@@ -50,8 +51,7 @@ void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t* msg);
 void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Despatch_Deferred(Postbox_t *pb);
-void PB_Register(Postbox_t *pb, int mtype, void*,
-                 void (*callback)(int, PBMessage_t*, void*));
+void PB_Register(Postbox_t *pb, int mtype, void *custom, PB_Callback_f);
 
 static inline void PB_Free_Message(PBMessage_t *pmsgMsg)
 {

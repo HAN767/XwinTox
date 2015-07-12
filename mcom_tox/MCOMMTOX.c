@@ -11,7 +11,7 @@
 #include "misc.h"
 #include "postbox.h"
 
-#include "MCommTox.h"
+#include "MCOMMTOX.h"
 #include "mctfuncs.h"
 
 void default_config(Dictionary_t *conf);

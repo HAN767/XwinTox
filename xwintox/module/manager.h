@@ -40,6 +40,8 @@ int ModuleManager_initialiseModule_(XWF_Module_t *modNew, XWF_Init_f fnInit);
 int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered);
 void *ModuleManager_call_(const XWF_Object_Handle_t  *pobjhSource,
                           const char *pszService, const void *pvParams);
+int ModuleManager_subscribe_(const XWF_Object_Handle_t *hObject, int mtype,
+                              void *custom, PB_Callback_f callback);
 int ModuleManager_dispatch_(const XWF_Object_Handle_t *hObject, int iType,
                             PBMessage_t *ppbmMsg);
 #endif

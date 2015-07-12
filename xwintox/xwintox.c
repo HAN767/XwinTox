@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 
 	ModuleManager_init(AppCall);
 	ModuleManager_loadDynamicModule
-	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/imcomm_tox.so");
+	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/mcom_tox.so");
 	ModuleManager_loadDynamicModule
 	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/GUI_FLTK.so");
 

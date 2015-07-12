@@ -12,10 +12,11 @@ extern "C"
  * This enumerates the types possible. */
 typedef enum XWF_Lang
 {
-    XWF_Lang_C,
-    XWF_Lang_CXX,
-    XWF_Lang_Script,
-} XWF_Lang_e;
+	XWF_Lang_C,
+	XWF_Lang_CXX,
+	XWF_Lang_Script,
+}
+XWF_Lang_e;
 
 typedef enum XWF_Modtype
 {
@@ -91,6 +92,12 @@ typedef int (*XWF_RegisterClass_f)(const XWF_Class_t *pobjRegistered);
  * ObjType/ServiceName for other objects. */
 typedef void *(*XWF_Call_f)(const XWF_Object_Handle_t *, const char *,
                             const void *);
+/* This function allows a module to subscribe to a message type.
+ * It may pass a custom parameter if desired.
+ * 0 is returned if the module is permitted to do so, and
+ * 1 is returned if the module is not permitted to. */
+typedef int (*XWF_Subscribe_f)(const XWF_Object_Handle_t *, int mtype,
+                              void *custom, PB_Callback_f);
 /* This function allows a module to despatch a message.
  * 0 is returned if the module is permitted to do so, and
  * 1 is returned if the module is not permitted to. */
@@ -103,6 +110,8 @@ typedef struct XWF_Services_s
 	unsigned int uiVersion;
 	XWF_RegisterClass_f fnRegisterClass;
 	XWF_Call_f fnCall;
+
+	XWF_Subscribe_f fnSubscribe;
 	XWF_Dispatch_f fnDispatch;
 } XWF_Services_t;
 

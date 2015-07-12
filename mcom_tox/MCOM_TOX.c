@@ -4,7 +4,7 @@
 #include "AOM/IMComm.h"
 #include "misc.h"
 
-#include "MCommTox.h"
+#include "MCOMMTOX.h"
 
 int XWF_exit()
 {
