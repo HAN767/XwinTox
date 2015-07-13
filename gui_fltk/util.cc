@@ -39,3 +39,64 @@ GMessageArea *FindContactMArea(XwinTox *Xw, unsigned int num)
 
 	return 0;
 }*/
+
+char *GetDisplayName(XWContact_t *contact, size_t LenLimit)
+{
+	static char name[255] = { 0 };
+
+	if(strlen(contact->pszName) == 0)
+	{
+		strncpy(name, contact->pszID, LenLimit);
+		name[LenLimit-2] ='.';
+		name[LenLimit-1] ='.';
+		name[LenLimit] ='.';
+		name[LenLimit+1] = '\0';
+
+	}
+	else if(strlen(contact->pszName) >= LenLimit)
+	{
+		strncpy(name, contact->pszName, LenLimit);
+		name[LenLimit-2] ='.';
+		name[LenLimit-1] ='.';
+		name[LenLimit] ='.';
+		name[LenLimit+1] = '\0';
+	}
+	else
+	{
+		strcpy(name, contact->pszName);
+	}
+
+	return name;
+}
+
+char *GetDisplayStatus(XWContact_t *contact, size_t LenLimit)
+{
+	static char status[255] = { 0 };
+
+	if(strlen(contact->pszStatus) >= LenLimit)
+	{
+		strcpy(status, GetShortenedText(contact->pszStatus, LenLimit));
+	}
+	else if(strlen(contact->pszStatus) > 0)
+	{
+		strcpy(status, contact->pszStatus);
+	}
+	else if(strlen(contact->pszStatus) == 0)
+	{
+		strcpy(status, "Unknown");
+	}
+
+	return status;
+}
+
+char *GetShortenedText(char* text, size_t LenLimit)
+{
+	static char name[255] = { 0 };
+
+	strncpy(name, text, LenLimit);
+	name[LenLimit-2] ='.';
+	name[LenLimit-1] ='.';
+	name[LenLimit] ='.';
+	name[LenLimit+1] = '\0';
+	return name;
+}

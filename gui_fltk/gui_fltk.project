@@ -103,6 +103,8 @@
     <File Name="GUIFLTK.cc"/>
     <File Name="GUIFLTK.h"/>
     <File Name="Makefile.kmk"/>
+    <File Name="util.cc"/>
+    <File Name="util.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="control">
     <File Name="control/statbox.h"/>

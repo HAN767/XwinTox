@@ -6,6 +6,7 @@
 #include "control/msgarea.h"
 #include "control/svgbox.h"
 #include "misc.h"
+#include "util.h"
 
 GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
                            XWGroupchat_t *G, short T) : Fl_Group(0, 0, 1, 1)
@@ -22,14 +23,14 @@ GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
 
 	if(!T)
 	{
-		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 1);
+		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.5);
 		icon->show();
 		groupchat =new XWGroupchat_t;
 		groupchat->wNum =65535;
 	}
 	else
 	{
-		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, groupsvg2, 1);
+		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, groupsvg2, 0.5);
 		icon->show();
 		contact =new XWContact_t;
 		contact->wNum =65535;
@@ -139,7 +140,7 @@ void GMessageArea::draw()
 
 	fl_color(0);
 
-	/*if(!mtype)
+	if(!mtype)
 	{
 		fl_font(FL_HELVETICA_BOLD, 12 * scale);
 		fl_draw(GetDisplayName(contact, 40), x() + (60 * scale),
@@ -151,7 +152,7 @@ void GMessageArea::draw()
 	}
 	else
 	{
-		char tmp[128];
+		/*char tmp[128];
 		sprintf(tmp, "%d peers in chat", groupchat->num_peers);
 		fl_font(FL_HELVETICA_BOLD, 12 * scale);
 		fl_draw(groupchat->name, x() + (60 * scale), y() + (26 * scale));
@@ -160,8 +161,8 @@ void GMessageArea::draw()
 		fl_draw(tmp, x() + (60 * scale), y() + (38 * scale));
 		fl_color(fl_rgb_color(192, 192, 192));
 		fl_line(x() + w() - (95 * scale), y() + (60 * scale),
-		        x() + w() - (95 * scale),y() + h() - ((85)  * scale));
-	}*/
+		        x() + w() - (95 * scale),y() + h() - ((85)  * scale));*/
+	}
 
 
 	fl_color(fl_rgb_color(192, 192, 192));

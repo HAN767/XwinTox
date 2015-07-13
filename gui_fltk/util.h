@@ -11,6 +11,9 @@ GMessageArea *FindContactMArea(XwinTox *Xw, XWContact_t *contact);
 GMessageArea *FindContactMArea(XwinTox *Xw, unsigned int id);
 //XWContact_t *FindContact(XwinTox *Xw, unsigned int id);
 
+char *GetDisplayName(XWContact_t *contact, size_t LenLimit);
+char *GetDisplayStatus(XWContact_t *contact, size_t LenLimit);
+char *GetShortenedText(char* text, size_t LenLimit);
 
 #endif
 
