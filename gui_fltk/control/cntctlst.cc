@@ -41,7 +41,6 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 			GMessageArea *newarea =new 
 						GMessageArea(self->hObj_, self->scale,  ctEntry, 0, 0);
 			newarea->hide();
-			//newarea->send->callback(&SendMessagePressed);
 
 			Xw->add(newarea);
 			Xw->contents->messageareas.push_back(newarea);
@@ -111,6 +110,7 @@ int ContactsList::handle(int event)
 	case FL_PUSH:
 		if(Fl::event_button() == FL_LEFT_MOUSE)
 		{
+			deselect_all();
 			for(const auto entry : entries)
 			{
 				entry->redraw();
