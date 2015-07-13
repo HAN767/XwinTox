@@ -3,16 +3,21 @@
 
 #include <FL/Fl_Box.H>
 
+#include "Module/Module.h"
+
 class StatusBox: public Fl_Box
 {
 public:
 	// Ctor
-	StatusBox(int X, int Y, int W, int H, int S);
+	StatusBox(const XWF_hObj_t* hObj, int S);
 
 	void draw();
 
 	int scale;
 	int status; /* 1 is green, 2 is red, 3 is yellow, 4 is grey */
+
+private:
+	const XWF_hObj_t* hObj_;
 };
 
 #endif

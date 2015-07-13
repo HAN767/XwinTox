@@ -19,7 +19,7 @@ Sidebar_Top_Area::Sidebar_Top_Area(const XWF_hObj_t* hObj, int S) :
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(28, 28, 28));
 
-	statusbox =new StatusBox(0, 0, 1, 1, S);
+	statusbox =new StatusBox(hObj_, S);
 	avbox =new SVGBox(0, 0, 40 * scale, 40 * scale, S,
 	                  default_av, 1);
 	name =new Fl_Input(0, 0, 1, 1);
