@@ -83,7 +83,6 @@ void XwinTox::resize(int X, int Y, int W, int H)
 	                            W - (sblength * scale), H- (basey * scale));
 	for (const auto entry : contents->messageareas)
 	{
-		dbg("Resize a message area\n");
 		entry->resize(sblength * scale, basey * scale,
 	                 w() - (sblength * scale), h() - (basey * scale));
 	}

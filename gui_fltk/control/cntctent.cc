@@ -144,8 +144,8 @@ void ContactsEntry::draw()
 
 	if(!type) /* todo: resize() calls to the svgbox, make it work */
 	{
-		name =contact->pszName;//GetDisplayName(contact, 16);
-		status =contact->pszStatus;//GetDisplayStatus(contact, 25);
+		name =GetDisplayName(contact, 16);
+		status =GetDisplayStatus(contact, 23);
 
 		if(contact->wConnected) fl_color(2);
 		else fl_color(FL_RED);

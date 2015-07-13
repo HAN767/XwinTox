@@ -17,6 +17,7 @@ void statbox_recv(int iType, PBMessage_t* msg, void* custom)
 		self->hObj_->pSvcs->fnDispatch(self->hObj_, clSaveData, msgNew);
 		Fl::lock();
 		self->redraw();
+		self->draw();
 		self->status =msg->I1;
 		Fl::unlock();
 	}

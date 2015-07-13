@@ -23,14 +23,14 @@ GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
 
 	if(!T)
 	{
-		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.5);
+		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 1);
 		icon->show();
 		groupchat =new XWGroupchat_t;
 		groupchat->wNum =65535;
 	}
 	else
 	{
-		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, groupsvg2, 0.5);
+		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, groupsvg2, 1);
 		icon->show();
 		contact =new XWContact_t;
 		contact->wNum =65535;
@@ -44,6 +44,9 @@ GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
 	message =new Fl_Multiline_Input(0, 0, (w() - (110 * S)), (74 * S));
 	attach =new SVGBox(0, 0, 37 * scale, 37 * scale, scale, attachsvg, 1);
 	emoji =new SVGBox(0, 0, 37 * scale, 37 * scale, scale, emojisvg, 1);
+
+	icon->box(FL_ENGRAVED_BOX);
+	icon->color(fl_rgb_color(130, 128, 133));
 
 	names->textsize(9.5 * scale);
 	names->textcolor(fl_rgb_color(56, 56, 56));
@@ -89,7 +92,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 	Fl_Group::resize(X, Y, W, H);
 
 
-	icon->position(x() + (12 * scale),  y() + (9 * scale));
+	icon->resize(X + (12 * scale), Y + (9 * scale), 40 * scale, 40 * scale);
 
 	if(mtype == 1)
 	{
@@ -109,7 +112,8 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 		                w() - (20 * scale), h() - ((84 + 65)  * scale));
 	}
 
-	send->position(x() + (w() - 64 * scale), y() + (h() - (80 * scale)));
+	send->resize(x() + (w() - 64 * scale), y() + (h() - (80 * scale)),
+				(60 * scale), (74 * scale));
 	message->resize(x() + (5 * scale), y() + h() - (80 * scale),
 	                (w() - (110 * scale)), (74 * scale));
 	emoji->resize(x() + (w() - (105 * scale)), y() + h() - (80 * scale),
@@ -122,7 +126,6 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 void GMessageArea::draw()
 {
-	dbg("Drawn\n");
 	fl_push_clip(x(), y(), w(), h());
 
 	if(mtype)
