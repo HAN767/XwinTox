@@ -185,6 +185,8 @@ int ModuleManager_subscribe_(const XWF_Object_Handle_t *hObject, int mtype,
 int ModuleManager_dispatch_(const XWF_Object_Handle_t *hObject, int iType,
                             PBMessage_t *ppbmMsg)
 {
+	dbg("Object %s.%s emits signal %d\n", hObject->pxwoClass->pszType,
+	    hObject->pxwoClass->pszSubtype, iType);
 	PB_Signal_Multithreaded(pmmManager->pbGlobal, iType, ppbmMsg);
 	return 0;
 }

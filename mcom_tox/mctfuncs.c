@@ -7,9 +7,6 @@
 #include "hexstring.h"
 #include "misc.h"
 
-#define PREP IMComm_t *pimcSelf =hobjSelf->hObj;
-#define TOXINST PRIVATE(pimcSelf)->ptoxTox
-
 int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 {
 	PREP
@@ -65,6 +62,10 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 	{
 		dbg("Failed to bootstrap\n");
 	}
+
+	registercallbacks(hobjSelf);
+
+	thrd_create(&PRIVATE(pimcSelf)->thrdTox, toxthread, hobjSelf);
 
 	UNLOCK(pimcSelf)
 	return 0;

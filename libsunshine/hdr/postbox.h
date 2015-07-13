@@ -53,13 +53,18 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Despatch_Deferred(Postbox_t *pb);
 void PB_Register(Postbox_t *pb, int mtype, void *custom, PB_Callback_f);
 
+static inline PBMessage_t *PB_New_Message()
+{
+	return (PBMessage_t*) calloc (1, sizeof(PBMessage_t));
+}
+
 static inline void PB_Free_Message(PBMessage_t *pmsgMsg)
 {
-		if(pmsgMsg->S1) free(pmsgMsg->S1);
-		if(pmsgMsg->S2) free(pmsgMsg->S2);
-		if(pmsgMsg->S3) free(pmsgMsg->S3);
-		if(pmsgMsg->S4) free(pmsgMsg->S4);
-		free(pmsgMsg);
+	if(pmsgMsg->S1) free(pmsgMsg->S1);
+	if(pmsgMsg->S2) free(pmsgMsg->S2);
+	if(pmsgMsg->S3) free(pmsgMsg->S3);
+	if(pmsgMsg->S4) free(pmsgMsg->S4);
+	free(pmsgMsg);
 }
 
 /* This section is for refcnting. Postbox private. */

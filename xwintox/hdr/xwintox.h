@@ -14,10 +14,10 @@ typedef struct XWT_s
 typedef enum XWMtypes_e
 {
 	/* Client related */
-	clCon,
+	clConn, /* I1 = 0 Offline, 1 Online */
 
 	/* Friends related */
-	frCon,
+	frConn,
 	frName,
 	frStatusMsg,
 	frRequest,

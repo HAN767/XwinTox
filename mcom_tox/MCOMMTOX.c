@@ -101,3 +101,17 @@ MCT_Data_t loaddata(const char *szFile)
 
 	return datRet;
 }
+
+int toxthread(void *custom)
+{
+	XWF_Object_Handle_t *hobjSelf =custom;
+	PREP
+
+	while (1)
+	{
+		LOCK(pimcSelf)
+		tox_iterate(TOXINST);
+		UNLOCK(pimcSelf)
+		usleep(tox_iteration_interval(TOXINST) * 1000);
+	}
+}

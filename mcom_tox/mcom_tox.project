@@ -107,5 +107,7 @@
     <File Name="mctfuncs.c"/>
     <File Name="mctfuncs.h"/>
     <File Name="Makefile.kmk"/>
+    <File Name="callback.c"/>
+    <File Name="callback.h"/>
   </VirtualDirectory>
 </CodeLite_Project>
