@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "AOM/IMComm.h"
 #include "MCOMMTOX.h"
 #include "xwintox.h"
+#include "callback.h"
 #include "mctfuncs.h"
 #include "hexstring.h"
 #include "misc.h"
@@ -114,7 +116,8 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 		dbg("Failed to bootstrap\n");
 	}
 
-	registercallbacks(hobjSelf);
+	register_callbacks(hobjSelf);
+	getfriends(PRIVATE(pimcSelf)->ptoxTox, pimcSelf->lstContacts);
 
 	thrd_create(&PRIVATE(pimcSelf)->thrdTox, toxthread, hobjSelf);
 

@@ -13,38 +13,39 @@ typedef struct XWT_s
 
 typedef enum XWMtypes_e
 {
-	/* Client related */
-	clConn, /* I1 = 0 Offline, 1 Online */
-	clInitContacts, /* I1 = number of contacts, S1 = pointer to array of
-					 * XWContact_t*s */
-	clSaveData,
+    /* Client related */
+    clConn, /* I1 = 0 Offline, 1 Online */
+    clContacts, /* V = pointer to List_t of XWContact_t*s */
 
-	/* Friends related */
-	frConn,
-	frName,
-	frStatusMsg,
-	frRequest,
-	frAdded,
+    clSaveData,
 
-	/* Chatrooms related */
-	crNew,
-	crTitle,
-	crNames,
-	crMessage,
-	crInvite,
+    /* Friends related */
+    frConn,
+    frName,
+    frStatusMsg,
+    frRequest,
+    frAdded,
 
-	/* File transfers related */
-	ftRequest,
-	ftControl,
-	ftData,
+	frDelete,
+	frMComDelete, /* issued by frDelete handler in GUI after it's cleared up */
+
+    /* Chatrooms related */
+    crNew,
+    crTitle,
+    crNames,
+    crMessage,
+    crInvite,
+
+    /* File transfers related */
+    ftRequest,
+    ftControl,
+    ftData,
 } XWMtypes_e;
 
 typedef struct XWContact_s
 {
 	unsigned int wNum, wStatus, wConnected;
 	char *pszName, *pszStatus, *pszID;
-	/* these allow the GUI or MCOMM to store extra data */
-	void *pMCHandle, *pGUIHandle;
 } XWContact_t;
 
 typedef struct XWGroupchat_s
@@ -52,6 +53,15 @@ typedef struct XWGroupchat_s
 	unsigned int wNum;
 	char *pszName, *arpszPeers[];
 } XWGroupchat_t;
+
+/* Frees an XWContact_t
+ * It is left to the MCOM and GUI modules to free their own stuff if they want*/
+static inline void freeContact(XWContact_t *ctToFree)
+{
+	if (ctToFree->pszName) free (ctToFree->pszName);
+	if (ctToFree->pszStatus) free (ctToFree->pszStatus);
+	if (ctToFree->pszID) free (ctToFree->pszID);
+}
 
 
 #endif

@@ -7,7 +7,7 @@
 #include "MCOMMTOX.h"
 #include "callback.h"
 
-void registercallbacks(XWF_Object_Handle_t *hobjSelf)
+void register_callbacks(XWF_Object_Handle_t *hobjSelf)
 {
 	PREP
 	tox_callback_self_connection_status(TOXINST, cb_self_connection_status, hobjSelf);

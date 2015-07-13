@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include <tox/tox.h>
 
@@ -11,6 +12,7 @@
 #include "dictionary.h"
 #include "misc.h"
 #include "postbox.h"
+#include "hexstring.h"
 
 #include "MCOMMTOX.h"
 #include "mctfuncs.h"
@@ -24,6 +26,7 @@ void *MCommTox_create(XWF_ObjectParams_t *pobpParams)
 
 	dbg("Initialising new MComm for Tox\n");
 
+	pimcNew->lstContacts =List_new();
 	pimcNew->dictConfig =Dictionary_new();
 	pimcNew->pvPrivate =calloc(1, sizeof(MCommTox_Private_t));
 	strncpy(pimcNew->szConfigFile, pobpParams->psrvServices->fnCall(
@@ -102,6 +105,41 @@ MCT_Data_t loaddata(const char *szFile)
 	fread(datRet.pbData, iLength, 1, hfSave);
 
 	return datRet;
+}
+
+void getfriends(Tox *tox, List_t *lstFriends)
+{
+	unsigned int wCount =(tox_self_get_friend_list_size(tox));
+	if (wCount < 1) return;
+	unsigned int *wNums =calloc(wCount, sizeof(unsigned int));
+
+	tox_self_get_friend_list(tox, wNums);
+
+	for(int i =0; i < wCount; i++)
+	{
+		unsigned int wSize, wNum =wNums[i];
+		char *pszText;
+		unsigned char *pbPubkey;
+		XWContact_t *ctNew =calloc(1, sizeof(XWContact_t));
+
+		wSize =tox_friend_get_name_size(tox, wNum, 0) + 1;
+		pszText =calloc(wSize, sizeof (char));
+		tox_friend_get_name(tox, wNum, (uint8_t*)pszText, 0);
+		pszText[wSize] ='\0';
+		ctNew->pszName =pszText;
+
+		wSize =tox_friend_get_status_message_size(tox, wNum, 0) + 1;
+		pszText =calloc(wSize, sizeof (char));
+		tox_friend_get_status_message(tox, wNum, (uint8_t*)pszText, 0);
+		pszText[wSize] ='\0';
+		ctNew->pszStatus =pszText;
+
+		pbPubkey =malloc(TOX_PUBLIC_KEY_SIZE);
+		tox_friend_get_public_key(tox, wNum, pbPubkey, 0);
+		ctNew->pszID =bin_to_hex_string(pbPubkey, TOX_PUBLIC_KEY_SIZE);
+
+		List_add(lstFriends, ctNew);
+	}
 }
 
 int toxthread(void *custom)

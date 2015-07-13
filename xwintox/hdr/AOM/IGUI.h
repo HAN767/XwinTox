@@ -17,7 +17,8 @@ typedef struct IGUI_s
 {
 	Start_f fnStart;
 
-	void *pvPrivate; /* implementation-specific private storage */
+	void *pvPrivate; /* implementation-specific private storage.
+					  * you probably only need it for C implementations */
 	void *hCXXObj; /* used for C++ wrapper */
 } IGUI_t;
 

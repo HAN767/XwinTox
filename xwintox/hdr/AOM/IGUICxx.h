@@ -42,6 +42,7 @@ public:
 	}
 	static int staticStart(XWF_Object_Handle_t *pguiSelf)
 	{
+		getSelf(pguiSelf)->hObj_ =pguiSelf;
 		return getSelf(pguiSelf)->start();
 	}
 
@@ -52,6 +53,7 @@ public:
 
 private:
 	IGUI_t hCGUI_;
+	XWF_Object_Handle_t *hObj_;
 };
 
 #endif

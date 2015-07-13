@@ -20,6 +20,8 @@ typedef struct IMComm_s
 	char *pszName;
 	char *pszStatus;
 
+	List_t *lstContacts;
+
 	char szConfigFile[255]; /* implementation-specific configuration file */
 	Dictionary_t *dictConfig; /* store implementation-specific config here */
 	void *pvPrivate; /* implementation-specific private storage */

@@ -24,6 +24,7 @@ typedef struct MCommTox_Private_s
 void *MCommTox_create(XWF_ObjectParams_t *pobpParams);
 int MCommTox_destroy(void *pobjToDestroy);
 
+void getfriends(Tox *tox, List_t *lstFriends);
 int toxthread(void *custom);
 
 /* internally used */
