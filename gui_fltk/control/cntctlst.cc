@@ -5,6 +5,46 @@
 #include "control/svgbox.h"
 
 #include "misc.h"
+#include "list.h"
+
+void updatecontacts(ContactsList *self, List_t *lstContacts)
+{
+	int iSel =-1;
+	int iSeltype =-1;
+	unsigned int wCurY;
+
+	if(self->selected >= 0)
+	{
+		iSel =self->selected;
+		iSeltype =self->seltype;
+	}
+
+	self->clear_all();
+
+	LIST_ITERATE_OPEN(lstContacts)
+		XWContact_t *ctEntry =(XWContact_t*) e_data;
+		dbg("Contact GUI \n");
+		ContactsEntry *newgui =new ContactsEntry(self->hObj_, self->x(),
+			self->y() + wCurY,
+			self->scale,
+			ctEntry, 0, 0);
+		self->add(newgui);
+		self->entries.push_back(newgui);
+		wCurY += (50 * self->scale);
+	LIST_ITERATE_CLOSE(lstContacts)
+
+}
+
+void CtList_recv(int iType, PBMessage_t* msg, void* custom)
+{
+	ContactsList *self =(ContactsList*) custom;
+	if (iType == clContacts)
+	{
+		Fl::lock();
+		updatecontacts(self, (List_t*)msg->V);
+		Fl::unlock();
+	}
+}
 
 ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
 	: Fl_Scroll(0, 0, 1, 1)
@@ -16,6 +56,8 @@ ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
 	startpoint =0 * S;
 
 	type(VERTICAL);
+	hObj->pSvcs->fnSubscribe(hObj, clContacts, this, CtList_recv);
+
 	end();
 }
 
@@ -35,7 +77,7 @@ void ContactsList::resize(int X, int Y, int W, int H)
 
 	for(const auto entry : entries)
 	{
-		entry->icon->draw();
+		//entry->icon->draw();
 	}
 }
 
@@ -60,6 +102,10 @@ int ContactsList::handle(int event)
 void ContactsList::clear_all()
 {
 	this->clear();
+	for(const auto entry : entries)
+	{
+		Fl::delete_widget(entry);
+	}
 	entries.clear();
 	this->redraw();
 	parent()->redraw();

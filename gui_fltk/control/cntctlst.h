@@ -30,7 +30,6 @@ public:
 	 * the y() of the contacts list*/
 	int startpoint, selected, seltype, scale;
 
-private:
 	const XWF_hObj_t *hObj_;
 };
 

@@ -87,24 +87,30 @@ ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
 
 	if(!T)
 	{
-		icon =new SVGBox(X+ (4 * S), Y+ (2 * S), 46 * S, 46 *S, S,
-		                 default_av, 0.35);
-		invicon =new SVGBox(X+ (4 * S), Y+ (2 * S), 46 * S, 46 *S, S,
-		                    default_av, 0.35);
+		icon =new SVGBox(X+ (4 * S), Y+ (2 * S), 40 * S, 40 *S, S,
+		                 default_av, 1);
+		invicon =new SVGBox(X+ (4 * S), Y+ (2 * S), 40 * S, 40 *S, S,
+		                    default_av, 1);
 		invicon->hide();
 		groupchat =new XWGroupchat_t;
 		groupchat->wNum =65535;
 	}
 	else
 	{
-		icon =new SVGBox(X- (8 * S), Y+ (2 * S), 46 * S, 46 *S, S,
+		icon =new SVGBox(X- (8 * S), Y+ (2 * S), 40 * S, 40 *S, S,
 		                 groupsvg, 0.63);
-		invicon =new SVGBox(X+ (14 * S), Y+ (12 * S), 46 * S, 46 *S, S,
+		invicon =new SVGBox(X+ (14 * S), Y+ (12 * S), 40 * S, 40 *S, S,
 		                    groupsvg2, 0.63);
 		invicon->hide();
 		contact =new XWContact_t;
 		contact->wNum =65535;
 	}
+
+	icon->box(FL_ENGRAVED_BOX);
+	icon->color(fl_rgb_color(130, 128, 133));
+
+	invicon->box(FL_ENGRAVED_BOX);
+	invicon->color(fl_rgb_color(130, 128, 133));
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
@@ -136,33 +142,33 @@ void ContactsEntry::draw()
 
 	if(!type) /* todo: resize() calls to the svgbox, make it work */
 	{
-		//name =GetDisplayName(contact, 16);
-		//status =GetDisplayStatus(contact, 25);
+		name =contact->pszName;//GetDisplayName(contact, 16);
+		status =contact->pszStatus;//GetDisplayStatus(contact, 25);
 
 		if(contact->wConnected) fl_color(2);
 		else fl_color(FL_RED);
 
 		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
 		       10 * scale, 0, 360);
-		icon->resize(x()+ (4 * scale), y()+ (2 * scale), 46 * scale, 46 *scale);
-		invicon->resize(x()+ (4 * scale), y()+ (2 * scale), 46 * scale,
-		                46 *scale);
+		icon->resize(x()+ (5 * scale), y()+ (5 * scale), 40 * scale, 40 *scale);
+		invicon->resize(x()+ (5 * scale), y()+ (5 * scale), 40 * scale,
+		                40 *scale);
 	}
 	else
 	{
 		name =groupchat->pszName;
 		status =(char*)"";
 
-		icon->resize(x()- (8 * scale), y()+ (2 * scale), 46 * scale, 46 * scale);
-		invicon->resize(x()+ (14 * scale), y()+ (12 * scale), 46 * scale,
-		                46 *scale);
+		icon->resize(x()- (8 * scale), y()+ (2 * scale), 40 * scale, 40 * scale);
+		invicon->resize(x()+ (14 * scale), y()+ (12 * scale), 40 * scale,
+		                40 *scale);
 	}
 
 	fl_color(txt_color);
 	fl_font(FL_HELVETICA, 12 * scale);
-	fl_draw(name, x() + (50 * scale), y() + (22 * scale));
+	fl_draw(name, x() + (54 * scale), y() + (22 * scale));
 	fl_font(FL_HELVETICA, 10 * scale);
-	fl_draw(status, x() + (50 * scale), y() + (36 * scale));
+	fl_draw(status, x() + (54 * scale), y() + (36 * scale));
 	icon->draw(); /* make it account for scrollbar::value(); */
 	invicon->draw();
 

@@ -66,6 +66,7 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 	TOX_ERR_NEW txnerrTnerr;
 	TOX_ERR_BOOTSTRAP txberrTberr;
 	struct Tox_Options *ptxoTopts =tox_options_new(0);
+	PBMessage_t *msgContacts =PB_New_Message();
 
 	LOCK(pimcSelf)
 
@@ -122,6 +123,8 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 	thrd_create(&PRIVATE(pimcSelf)->thrdTox, toxthread, hobjSelf);
 
 	SUBSCRIBE(clSaveData, hobjSelf, MCT_recv);
+	msgContacts->V =pimcSelf->lstContacts;
+	DISPATCH(clContacts, msgContacts);
 
 	UNLOCK(pimcSelf)
 	return 0;

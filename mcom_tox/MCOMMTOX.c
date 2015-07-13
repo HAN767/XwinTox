@@ -138,6 +138,7 @@ void getfriends(Tox *tox, List_t *lstFriends)
 		tox_friend_get_public_key(tox, wNum, pbPubkey, 0);
 		ctNew->pszID =bin_to_hex_string(pbPubkey, TOX_PUBLIC_KEY_SIZE);
 
+		dbg("Contact: Pubkey %s, name %s, status %s\n", ctNew->pszID, ctNew->pszName, ctNew->pszStatus);
 		List_add(lstFriends, ctNew);
 	}
 }
