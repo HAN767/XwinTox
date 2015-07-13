@@ -1,11 +1,12 @@
 #include <algorithm>
 #include <vector>
+
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Menu.H>
 
-#include "xwin/svgs.h"
-#include "xwin/contacts.h"
+#include "nanosvg/svgs.h"
+#include "xwintox.h"
 
-#include "control/gui.h"
 #include "control/msgarea.h"
 #include "control/cntctlst.h"
 #include "control/sidebar.h"
@@ -13,7 +14,7 @@
 
 void ce_deletecontact(ContactsEntry *ce)
 {
-	vector <ContactsEntry*> *ref =&
+	/*vector <ContactsEntry*> *ref =&
 	                              ((ContactsList*) ce->parent())->entries;
 	ref->erase(std::remove(ref->begin(), ref->end(), ce),
 	           ref->end());
@@ -70,13 +71,14 @@ void ce_deletecontact(ContactsEntry *ce)
 		CommWork();
 	}
 
-	CGUIUPDFLAG =1;
+	CGUIUPDFLAG =1;*/
 }
 
-ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G,
-                             short T)
+ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
+                             XWContact_t *C, XWGroupchat_t *G, short T)
 	: Fl_Box(X, Y, 224 * S, 50 * S)
 {
+	hObj_ =hObj;
 	scale =S;
 	contact =C;
 	groupchat =G;
@@ -90,8 +92,8 @@ ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G,
 		invicon =new SVGBox(X+ (4 * S), Y+ (2 * S), 46 * S, 46 *S, S,
 		                    default_av, 0.35);
 		invicon->hide();
-		groupchat =new Groupchat_t;
-		groupchat->num =65535;
+		groupchat =new XWGroupchat_t;
+		groupchat->wNum =65535;
 	}
 	else
 	{
@@ -100,8 +102,8 @@ ContactsEntry::ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G,
 		invicon =new SVGBox(X+ (14 * S), Y+ (12 * S), 46 * S, 46 *S, S,
 		                    groupsvg2, 0.63);
 		invicon->hide();
-		contact =new Contact_t;
-		contact->num =65535;
+		contact =new XWContact_t;
+		contact->wNum =65535;
 	}
 
 	box(FL_FLAT_BOX);
@@ -134,10 +136,10 @@ void ContactsEntry::draw()
 
 	if(!type) /* todo: resize() calls to the svgbox, make it work */
 	{
-		name =GetDisplayName(contact, 16);
-		status =GetDisplayStatus(contact, 25);
+		//name =GetDisplayName(contact, 16);
+		//status =GetDisplayStatus(contact, 25);
 
-		if(contact->connected) fl_color(2);
+		if(contact->wConnected) fl_color(2);
 		else fl_color(FL_RED);
 
 		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,
@@ -148,7 +150,7 @@ void ContactsEntry::draw()
 	}
 	else
 	{
-		name =groupchat->name;
+		name =groupchat->pszName;
 		status =(char*)"";
 
 		icon->resize(x()- (8 * scale), y()+ (2 * scale), 46 * scale, 46 * scale);
@@ -191,11 +193,11 @@ int ContactsEntry::handle(int event)
 
 			if(!type)
 			{
-				((ContactsList*) parent())->selected =contact->num;
+				((ContactsList*) parent())->selected =contact->wNum;
 			}
 			else
 			{
-				((ContactsList*) parent())->selected =groupchat->num;
+				((ContactsList*) parent())->selected =groupchat->wNum;
 			}
 
 			icon->hide();
@@ -203,11 +205,11 @@ int ContactsEntry::handle(int event)
 
 			if(!type)
 			{
-				Xw->contents->NewCurrentArea(FindContactMArea(contact));
+				//Xw->contents->NewCurrentArea(FindContactMArea(contact));
 			}
 			else
 			{
-				Xw->contents->NewCurrentArea(FindGroupchatMArea(groupchat));
+				//Xw->contents->NewCurrentArea(FindGroupchatMArea(groupchat));
 			}
 
 			return 1;

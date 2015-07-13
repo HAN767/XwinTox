@@ -3,10 +3,7 @@
 
 #include <FL/Fl_Box.H>
 
-//#include "xwin/contacts.h"
-
-typedef struct Contact_t Contact_t;
-typedef struct Groupchat_t Groupchat_t;
+#include "xwintox.h"
 
 class SVGBox;
 
@@ -14,7 +11,8 @@ class ContactsEntry: public Fl_Box
 {
 public:
 	// Ctor
-	ContactsEntry(int X, int Y, int S, Contact_t *C, Groupchat_t *G, short T);
+	ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S, XWContact_t *C,
+	              XWGroupchat_t *G, short T);
 
 	void draw();
 	int handle(int event);
@@ -23,9 +21,12 @@ public:
 	SVGBox *invicon;
 
 	short type; /* 0 = contact, 1 = groupchat */
-	//Contact_t *contact;
-	//Groupchat_t *groupchat;
+	XWContact_t *contact;
+	XWGroupchat_t *groupchat;
 	int selected, scale;
+
+private:
+	const XWF_hObj_t *hObj_;
 };
 
 #endif

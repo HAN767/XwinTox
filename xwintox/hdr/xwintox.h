@@ -44,5 +44,11 @@ typedef struct XWContact_s
 	void *pMCHandle, *pGUIHandle;
 } XWContact_t;
 
+typedef struct XWGroupchat_s
+{
+	unsigned int wNum;
+	char *pszName, *arpszPeers[];
+} XWGroupchat_t;
+
 
 #endif

@@ -48,10 +48,10 @@ Sidebar::Sidebar(const XWF_hObj_t* hObj, int S) : Fl_Group(0, 0, 0, 0)
 	color(fl_rgb_color(65, 65, 65));
 	top_area =new Sidebar_Top_Area(hObj_, S);
 	bottom_area =new Sidebar_Bottom_Area(hObj_, S);
-	/*contacts =new ContactsList(0, 0, 1, 1, S);
+	contacts =new ContactsList(hObj_, S);
 	contacts->end();
 
-	frbutton =new Fl_Button(0, 0, 0, 0);
+	/*frbutton =new Fl_Button(0, 0, 0, 0);
 	f_reqs =new FriendRequests(x() + 3, y() + 94 + 2, scale);
 
 	frbutton->labelsize(10 * scale);
@@ -78,8 +78,8 @@ void Sidebar::resize(int X, int Y, int W, int H)
 	frbutton->resize(X + W - (72  * scale), y() + (64 * scale),
 	                 60 * scale, 30 * scale);
 
-	f_reqs->resize(X + 3 * scale, Y + (96) * scale, W - (15 * scale), frheight * scale);
+	f_reqs->resize(X + 3 * scale, Y + (96) * scale, W - (15 * scale), frheight * scale);*/
 
-	contacts->resize(x(), y() + ((60 + top2_h) * scale), W,
-	                 h() - (36 * scale) - (60 * scale) - (top2_h * scale));*/
+	contacts->resize(X, Y + ((60 + top2_h) * scale), W,
+	                 H - (36 * scale) - (60 * scale) - (top2_h * scale));
 }

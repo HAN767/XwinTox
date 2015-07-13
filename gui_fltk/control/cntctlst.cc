@@ -4,9 +4,12 @@
 #include "control/cntctlst.h"
 #include "control/svgbox.h"
 
-ContactsList::ContactsList(int X, int Y, int W, int H, int S)
-	: Fl_Scroll(X, Y, W, H)
+#include "misc.h"
+
+ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
+	: Fl_Scroll(0, 0, 1, 1)
 {
+	hObj_ =hObj;
 	scale =S;
 	selected =-1;
 	color(fl_rgb_color(65, 65, 65));
@@ -20,7 +23,7 @@ void ContactsList::draw()
 {
 	Fl_Scroll::draw();
 
-	for(const auto entry : entries)
+	for(const ContactsEntry* entry : entries)
 	{
 		entry->icon->redraw();
 	}
@@ -29,7 +32,6 @@ void ContactsList::draw()
 void ContactsList::resize(int X, int Y, int W, int H)
 {
 	Fl_Scroll::resize(X, Y, W, H);
-	/**/
 
 	for(const auto entry : entries)
 	{

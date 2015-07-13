@@ -1,5 +1,9 @@
 TEMPLATE_XwinTox = XwinTox base template
 TEMPLATE_XwinTox_TOOL = GCC
+TEMPLATE_XwinTox_CXXFLAGS = -std=c++11
+#TEMPLATE_XwinTox_CFLAGS = $(CFLAGS) -fprofile-arcs -ftest-coverage --coverage -ggdb
+#TEMPLATE_XwinTox_CXXFLAGS = $(CFLAGS) -fprofile-arcs -ftest-coverage --coverage -ggdb
+#TEMPLATE_XwinTox_LDFLAGS = $(LDFLAGS) -lgcov -fprofile-arcs --coverage -ftest-coverage -ggdb
 
 TEMPLATE_XwDLL = XwinTox DLL template
 TEMPLATE_XwDLL_EXTENDS = XwinTox
