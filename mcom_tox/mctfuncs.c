@@ -13,7 +13,7 @@
 
 /* Signal handlers */
 
-void savedata(XWF_Object_Handle_t *hobjSelf)
+void savedata(XWF_hObj_t *hobjSelf)
 {
 	PREP
 	unsigned int wLen =tox_get_savedata_size(TOXINST);
@@ -24,7 +24,7 @@ void savedata(XWF_Object_Handle_t *hobjSelf)
 	tox_get_savedata(TOXINST, bData);
 	DUNLOCK
 
-	unlink (DPRIVATE->szToxSave);
+	unlink(DPRIVATE->szToxSave);
 	hfSave =fopen(DPRIVATE->szToxSave, "wb");
 
 	if(hfSave == NULL)
@@ -45,12 +45,27 @@ void savedata(XWF_Object_Handle_t *hobjSelf)
 	fclose(hfSave);
 }
 
+void frsendmessage(XWF_hObj_t *hobjSelf, unsigned int wNum, const char *pszMsg)
+{
+	PREP
+	dbg("Send message to %d\n", wNum);
+	DLOCK
+	tox_friend_send_message(TOXINST, wNum, TOX_MESSAGE_TYPE_NORMAL,
+	                        (uint8_t*) pszMsg, strlen(pszMsg), 0);
+	DUNLOCK
+
+}
+
 void MCT_recv(int iType, PBMessage_t* msg, void* custom)
 {
-	switch (iType)
+	switch(iType)
 	{
 	case clSaveData:
 		savedata(custom);
+		break;
+
+	case frSendMsg:
+		frsendmessage(custom, msg->I1, msg->S1);
 		break;
 
 	default:
@@ -123,6 +138,8 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 	thrd_create(&PRIVATE(pimcSelf)->thrdTox, toxthread, hobjSelf);
 
 	SUBSCRIBE(clSaveData, hobjSelf, MCT_recv);
+
+	SUBSCRIBE(frSendMsg, hobjSelf, MCT_recv);
 	msgContacts->V =pimcSelf->lstContacts;
 	DISPATCH(clContacts, msgContacts);
 

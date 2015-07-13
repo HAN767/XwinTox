@@ -109,11 +109,9 @@
   <VirtualDirectory Name="control">
     <File Name="control/statbox.h"/>
     <File Name="control/svgbox.cc"/>
-    <File Name="control/msgarea.cc"/>
     <File Name="control/cntctent.h"/>
     <File Name="control/svgbox.h"/>
     <File Name="control/msgarea.h"/>
-    <File Name="control/cntctent.cc"/>
     <File Name="control/frequest.cc"/>
     <File Name="control/cntctlst.cc"/>
     <File Name="control/xwin.h"/>
@@ -131,6 +129,8 @@
     <File Name="control/garea.h"/>
     <File Name="control/garea.cc"/>
     <File Name="control/statbox.cc"/>
+    <File Name="control/cntctent.cc"/>
+    <File Name="control/msgarea.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">
     <File Name="nanosvg/nsvgwrap.c"/>

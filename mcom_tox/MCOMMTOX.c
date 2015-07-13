@@ -122,6 +122,8 @@ void getfriends(Tox *tox, List_t *lstFriends)
 		unsigned char *pbPubkey;
 		XWContact_t *ctNew =calloc(1, sizeof(XWContact_t));
 
+		ctNew->wNum =wNum;
+
 		wSize =tox_friend_get_name_size(tox, wNum, 0) + 1;
 		pszText =calloc(wSize, sizeof (char));
 		tox_friend_get_name(tox, wNum, (uint8_t*)pszText, 0);

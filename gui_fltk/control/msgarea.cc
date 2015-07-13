@@ -3,15 +3,42 @@
 #include "nanosvg/svgs.h"
 #include "xwintox.h"
 
+#include "control/xwin.h"
 #include "control/msgarea.h"
 #include "control/svgbox.h"
 #include "misc.h"
 #include "util.h"
 
+void mareaSendPressed(Fl_Widget* B , void*)
+{
+	PBMessage_t *msgNew =PB_New_Message();
+	char nmsg[1024];
+	GMessageArea *cArea =((GMessageArea*)B->parent());
+	const char *msg =cArea->message->value();
+	XwinTox *Xw =getXwin(B);
+
+	snprintf(nmsg, 1024, "%s: %s\n", Xw->sidebar->top_area->name->value(),
+	        ((GMessageArea*)B->parent())->message->value());
+
+	if(!((GMessageArea*)B->parent())->mtype) /* contact */
+	{
+		unsigned wNum =cArea->contact->wNum;
+		msgNew->I1 =wNum;
+		msgNew->S1 =strdup(msg);
+		cArea->hObj_->pSvcs->fnDispatch(cArea->hObj_, frSendMsg, msgNew);
+
+		cArea->moutbuffer->append(nmsg);
+		cArea->message->value("");
+		cArea->message->take_focus();
+		cArea->moutput->scroll
+		(cArea->moutput->count_lines(0,
+		        cArea->moutbuffer->length(), 1), 0);
+	}
+}
+
 GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
                            XWGroupchat_t *G, short T) : Fl_Group(0, 0, 1, 1)
 {
-	dbg("Created\n");
 	hObj_ =hObj;
 	contact =C;
 	groupchat =G;
@@ -69,6 +96,7 @@ GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
 	send->color(fl_rgb_color(107, 194, 96));
 	send->labelcolor(255);
 	send->labelsize(14 * S);
+	send->callback(mareaSendPressed, this);
 
 	moutput->wrap_mode(moutput->WRAP_AT_BOUNDS, 0);
 	moutput->box(FL_NO_BOX);

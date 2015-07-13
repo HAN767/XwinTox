@@ -28,6 +28,7 @@ typedef enum XWMtypes_e
 
 	frDelete,
 	frMComDelete, /* issued by frDelete handler in GUI after it's cleared up */
+	frSendMsg,
 
     /* Chatrooms related */
     crNew,

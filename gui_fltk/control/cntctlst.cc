@@ -30,7 +30,7 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 
 	LIST_ITERATE_OPEN(lstContacts)
 		XWContact_t *ctEntry =(XWContact_t*) e_data;
-		dbg("Contact GUI \n");
+		dbg("Contact GUI. CTEntry num: %d \n", ctEntry->wNum);
 		ContactsEntry *newgui =new ContactsEntry(self->hObj_, self->x(),
 			self->y() + wCurY,
 			self->scale,

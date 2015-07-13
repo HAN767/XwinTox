@@ -55,4 +55,13 @@ private:
 	const XWF_hObj_t *hObj_;
 };
 
+static inline XwinTox *getXwin(Fl_Widget *p)
+{
+	XwinTox *Xw;
+
+    while (p->parent()) p =p->parent();
+	Xw =(XwinTox*)p;
+	return Xw;
+}
+
 #endif
