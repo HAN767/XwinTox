@@ -1,9 +1,11 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Scroll.H>
 
+#include "control/xwin.h"
 #include "control/cntctlst.h"
 #include "control/svgbox.h"
 
+#include "util.h"
 #include "misc.h"
 #include "list.h"
 
@@ -12,6 +14,11 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 	int iSel =-1;
 	int iSeltype =-1;
 	unsigned int wCurY;
+	XwinTox *Xw;
+
+	Fl_Widget *p =self;
+    while (p->parent()) p =p->parent();
+	Xw =(XwinTox*)p;
 
 	if(self->selected >= 0)
 	{
@@ -28,6 +35,18 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 			self->y() + wCurY,
 			self->scale,
 			ctEntry, 0, 0);
+
+		if(!FindContactMArea(Xw, ctEntry))
+		{
+			GMessageArea *newarea =new 
+						GMessageArea(self->hObj_, self->scale,  ctEntry, 0, 0);
+			newarea->hide();
+			//newarea->send->callback(&SendMessagePressed);
+
+			Xw->add(newarea);
+			Xw->contents->messageareas.push_back(newarea);
+		}
+
 		self->add(newgui);
 		self->entries.push_back(newgui);
 		wCurY += (50 * self->scale);
@@ -55,10 +74,14 @@ ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
 	color(fl_rgb_color(65, 65, 65));
 	startpoint =0 * S;
 
-	type(VERTICAL);
-	hObj->pSvcs->fnSubscribe(hObj, clContacts, this, CtList_recv);
+	Fl_Widget *p =this;
+    while (p->parent()) p =p->parent();
+	Xw =(XwinTox*)p;
 
+	type(VERTICAL);
 	end();
+
+	hObj->pSvcs->fnSubscribe(hObj, clContacts, this, CtList_recv);
 }
 
 void ContactsList::draw()

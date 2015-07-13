@@ -5,10 +5,12 @@
 
 #include "control/msgarea.h"
 #include "control/svgbox.h"
+#include "misc.h"
 
 GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
-                           XWGroupchat_t *G, short T) : Fl_Group(0, 0, 0, 0)
+                           XWGroupchat_t *G, short T) : Fl_Group(0, 0, 1, 1)
 {
+	dbg("Created\n");
 	hObj_ =hObj;
 	contact =C;
 	groupchat =G;
@@ -83,10 +85,7 @@ GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
 
 void GMessageArea::resize(int X, int Y, int W, int H)
 {
-/*	Fl_Group::resize(Xw->sblength * scale,
-	                 Xw->basey * scale,
-	                 Xw->w() - (Xw->sblength * scale),
-	                 Xw->h()- (Xw->basey * scale));*/
+	Fl_Group::resize(X, Y, W, H);
 
 
 	icon->position(x() + (12 * scale),  y() + (9 * scale));
@@ -122,6 +121,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 
 void GMessageArea::draw()
 {
+	dbg("Drawn\n");
 	fl_push_clip(x(), y(), w(), h());
 
 	if(mtype)

@@ -7,10 +7,12 @@
 #include "nanosvg/svgs.h"
 #include "xwintox.h"
 
+#include "control/xwin.h"
 #include "control/msgarea.h"
 #include "control/cntctlst.h"
 #include "control/sidebar.h"
 #include "control/svgbox.h"
+#include "util.h"
 
 void ce_deletecontact(ContactsEntry *ce)
 {
@@ -211,11 +213,12 @@ int ContactsEntry::handle(int event)
 
 			if(!type)
 			{
-				//Xw->contents->NewCurrentArea(FindContactMArea(contact));
+				((ContactsList*) parent())->Xw->contents->NewCurrentArea
+				(FindContactMArea(((ContactsList*) parent())->Xw, contact));
 			}
 			else
 			{
-				//Xw->contents->NewCurrentArea(FindGroupchatMArea(groupchat));
+				//Xw->contents->NewCurrentArea(Xw, FindGroupchatMArea(groupchat));
 			}
 
 			return 1;

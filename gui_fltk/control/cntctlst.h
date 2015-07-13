@@ -10,6 +10,8 @@
 
 using namespace std;
 
+class XwinTox;
+
 class ContactsList: public Fl_Scroll
 {
 public:
@@ -30,6 +32,7 @@ public:
 	 * the y() of the contacts list*/
 	int startpoint, selected, seltype, scale;
 
+	XwinTox *Xw;
 	const XWF_hObj_t *hObj_;
 };
 

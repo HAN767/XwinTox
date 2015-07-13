@@ -3,6 +3,7 @@
 
 #include "control/xwin.h"
 #include "control/sidebar.h"
+#include "misc.h"
 //#include "control/svgbox.h"
 
 XWContents::XWContents(const XWF_hObj_t* hObj, int S) : Fl_Box(0, 0, 1, 1)
@@ -14,19 +15,20 @@ XWContents::XWContents(const XWF_hObj_t* hObj, int S) : Fl_Box(0, 0, 1, 1)
 
 	addfriend =new GAddFriend(hObj_, S);
 	/*transfers =new GTransfers(S);
-	transfers->hide();
+	transfers->hide();*/
 	currentarea =addfriend;
-	Xw->sidebar->bottom_area->addfriend->box(FL_FLAT_BOX);
-	Xw->sidebar->bottom_area->addfriend->color(fl_rgb_color(68, 68, 67));*/
 }
 
 void XWContents::NewCurrentArea(Fl_Group *G)
 {
+	Fl_Widget *w =this->parent();
 	currentarea->hide();
 	this->newcurrentarea =G;
 	currentarea =newcurrentarea;
 	currentarea->show();
 	currentarea->redraw();
+
+	w->resize(w->x(), w->y(), w->w(), w->h());
 }
 
 void XWContents::draw()
@@ -64,6 +66,8 @@ void XwinTox::init2()
 {
 	sidebar =new Sidebar(hObj_, scale);
 	contents =new XWContents(hObj_, scale);
+	sidebar->bottom_area->addfriend->box(FL_FLAT_BOX);
+	sidebar->bottom_area->addfriend->color(fl_rgb_color(68, 68, 67));
 	resizable(contents);
 	resize(x(), y(), w(), h());
 }
@@ -77,4 +81,10 @@ void XwinTox::resize(int X, int Y, int W, int H)
 	                H - (basey * scale));
 	contents->addfriend->resize(sblength * scale, basey * scale,
 	                            W - (sblength * scale), H- (basey * scale));
+	for (const auto entry : contents->messageareas)
+	{
+		dbg("Resize a message area\n");
+		entry->resize(sblength * scale, basey * scale,
+	                 w() - (sblength * scale), h() - (basey * scale));
+	}
 }
