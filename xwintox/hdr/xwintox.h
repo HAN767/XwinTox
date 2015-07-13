@@ -15,6 +15,9 @@ typedef enum XWMtypes_e
 {
 	/* Client related */
 	clConn, /* I1 = 0 Offline, 1 Online */
+	clInitContacts, /* I1 = number of contacts, S1 = pointer to array of
+					 * XWContact_t*s */
+	clSaveData,
 
 	/* Friends related */
 	frConn,

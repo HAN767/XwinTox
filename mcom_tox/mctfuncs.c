@@ -1,11 +1,62 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "AOM/IMComm.h"
 #include "MCOMMTOX.h"
+#include "xwintox.h"
 #include "mctfuncs.h"
 #include "hexstring.h"
 #include "misc.h"
+
+/* Signal handlers */
+
+void savedata(XWF_Object_Handle_t *hobjSelf)
+{
+	PREP
+	unsigned int wLen =tox_get_savedata_size(TOXINST);
+	unsigned char *bData =calloc(wLen+1, sizeof(unsigned char));
+	FILE *hfSave;
+
+	DLOCK
+	tox_get_savedata(TOXINST, bData);
+	DUNLOCK
+
+	unlink (DPRIVATE->szToxSave);
+	hfSave =fopen(DPRIVATE->szToxSave, "wb");
+
+	if(hfSave == NULL)
+	{
+		dbg("Failed to open savefile %s\n", DPRIVATE->szToxSave);
+		return;
+	}
+
+	if(fwrite(bData, wLen, 1, hfSave) != 1)
+	{
+		dbg("Failed to save data to savefile %s\n", DPRIVATE->szToxSave);
+		fclose(hfSave);
+		return;
+	}
+
+	dbg("Saved Tox data of length %d to %s\n", wLen, DPRIVATE->szToxSave);
+
+	fclose(hfSave);
+}
+
+void MCT_recv(int iType, PBMessage_t* msg, void* custom)
+{
+	switch (iType)
+	{
+	case clSaveData:
+		savedata(custom);
+		break;
+
+	default:
+		dbg("Unhandled request: %d\n", iType);
+	}
+}
+
+/* Object functions */
 
 int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 {
@@ -66,6 +117,8 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 	registercallbacks(hobjSelf);
 
 	thrd_create(&PRIVATE(pimcSelf)->thrdTox, toxthread, hobjSelf);
+
+	SUBSCRIBE(clSaveData, hobjSelf, MCT_recv);
 
 	UNLOCK(pimcSelf)
 	return 0;

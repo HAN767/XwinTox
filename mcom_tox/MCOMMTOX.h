@@ -33,6 +33,8 @@ int toxthread(void *custom);
 
 #define PREP IMComm_t *pimcSelf =hobjSelf->hObj;
 #define TOXINST PRIVATE(pimcSelf)->ptoxTox
+#define SUBSCRIBE(TYP, CUSTOM, CALLBACK) \
+		hobjSelf->pSvcs->fnSubscribe(hobjSelf, TYP, CUSTOM, CALLBACK)
 #define DISPATCH(TYP, MSG) hobjSelf->pSvcs->fnDispatch(hobjSelf, TYP, MSG)
 
 #define DPRIVATE ((MCommTox_Private_t*)pimcSelf->pvPrivate)

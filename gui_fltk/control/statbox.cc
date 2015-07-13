@@ -13,6 +13,8 @@ void statbox_recv(int iType, PBMessage_t* msg, void* custom)
 	StatusBox *self =(StatusBox*) custom;
 	if (iType == clConn)
 	{
+		PBMessage_t *msgNew =PB_New_Message();
+		self->hObj_->pSvcs->fnDispatch(self->hObj_, clSaveData, msgNew);
 		Fl::lock();
 		self->redraw();
 		self->status =msg->I1;

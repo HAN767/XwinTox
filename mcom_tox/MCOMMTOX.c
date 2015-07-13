@@ -7,6 +7,7 @@
 
 #include "Module/Module.h"
 #include "AOM/IMComm.h"
+#include "xwintox.h"
 #include "dictionary.h"
 #include "misc.h"
 #include "postbox.h"
@@ -32,8 +33,9 @@ void *MCommTox_create(XWF_ObjectParams_t *pobpParams)
 	Dictionary_load_from_file(pimcNew->dictConfig,pimcNew->szConfigFile,1);
 	default_config(pimcNew->dictConfig);
 
-	PRIVATE(pimcNew)->datToxSave =loaddata(pobpParams->psrvServices->fnCall(
-	        pobpParams->pobjhHandle, "APP/GetDataFilename", "toxsave"));
+	strncpy(PRIVATE(pimcNew)->szToxSave, pobpParams->psrvServices->fnCall(
+	        pobpParams->pobjhHandle, "APP/GetDataFilename", "toxsave"), 255);
+	PRIVATE(pimcNew)->datToxSave =loaddata(PRIVATE(pimcNew)->szToxSave);
 
 	mtx_init(&PRIVATE(pimcNew)->mtxToxAccess, mtx_plain);
 
@@ -97,7 +99,7 @@ MCT_Data_t loaddata(const char *szFile)
 
 	datRet.pbData =malloc(iLength);
 	datRet.wLength =iLength;
-	fread(datRet.pbData, sizeof(datRet.pbData), 1, hfSave);
+	fread(datRet.pbData, iLength, 1, hfSave);
 
 	return datRet;
 }

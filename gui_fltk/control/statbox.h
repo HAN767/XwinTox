@@ -16,7 +16,6 @@ public:
 	int scale;
 	int status; /* 1 is green, 2 is red, 3 is yellow, 4 is grey */
 
-private:
 	const XWF_hObj_t* hObj_;
 };
 
