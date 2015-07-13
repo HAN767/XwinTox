@@ -13,7 +13,8 @@ class GMessageArea: public Fl_Group
 {
 public:
 	// Ctor
-	GMessageArea(int S, XWContact_t *C, XWGroupchat_t *G, short T);
+	GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C, XWGroupchat_t *G,
+	             short T);
 
 	void resize(int X, int Y, int W, int H);
 	void draw();
@@ -32,6 +33,7 @@ public:
 	short mtype;
 	XWContact_t *contact;
 	XWGroupchat_t *groupchat;
+	const XWF_hObj_t* hObj_;
 };
 
 #endif

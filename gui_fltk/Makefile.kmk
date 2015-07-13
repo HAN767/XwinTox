@@ -11,11 +11,12 @@ TEMPLATE_gui_fltk_CXXFLAGS		= $(FLTK_CFLAGS)
 TEMPLATE_gui_fltk_LDFLAGS		= $(FLTK_LDFLAGS)
 
 GUI_FLTK_TEMPLATE = gui_fltk
-GUI_FLTK_SOURCES  = GUI_FLTK.cc GUIFLTK.cc
+GUI_FLTK_SOURCES  = GUI_FLTK.cc GUIFLTK.cc util.cc
 GUI_FLTK_SOURCES += nanosvg/nsvgwrap.c nanosvg/res.cc control/svgbox.cc
 GUI_FLTK_SOURCES += control/xwin.cc control/sidebar.cc control/sbarbtm.cc
 GUI_FLTK_SOURCES += control/sbartop.cc control/statbox.cc control/garea.cc
 GUI_FLTK_SOURCES += control/gaddfrnd.cc control/cntctlst.cc control/cntctent.cc
+GUI_FLTK_SOURCES += control/msgarea.cc
 GUI_FLTK_INCS = $(PATH_ROOT)/libsunshine/hdr \
 		$(PATH_ROOT)/xwintox/hdr \
 		hdr \

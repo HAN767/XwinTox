@@ -1,15 +1,15 @@
 #include <FL/Fl_Multiline_Input.H>
 
-#include "xwin/svgs.h"
-#include "xwin/contacts.h"
+#include "nanosvg/svgs.h"
+#include "xwintox.h"
 
-#include "control/gui.h"
 #include "control/msgarea.h"
 #include "control/svgbox.h"
 
-GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
-	: Fl_Group(0, 0, 0, 0)
+GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
+                           XWGroupchat_t *G, short T) : Fl_Group(0, 0, 0, 0)
 {
+	hObj_ =hObj;
 	contact =C;
 	groupchat =G;
 	scale =S;
@@ -20,17 +20,17 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 
 	if(!T)
 	{
-		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 0.32);
+		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, default_av, 1);
 		icon->show();
-		groupchat =new Groupchat_t;
-		groupchat->num =65535;
+		groupchat =new XWGroupchat_t;
+		groupchat->wNum =65535;
 	}
 	else
 	{
 		icon = new SVGBox(0, 0,  40 * scale,  40 * scale, S, groupsvg2, 1);
 		icon->show();
-		contact =new Contact_t;
-		contact->num =65535;
+		contact =new XWContact_t;
+		contact->wNum =65535;
 	}
 
 	names =new Fl_Select_Browser(0, 0, 60 * scale, h() - 80 * scale);
@@ -83,10 +83,10 @@ GMessageArea::GMessageArea(int S, Contact_t *C, Groupchat_t *G, short T)
 
 void GMessageArea::resize(int X, int Y, int W, int H)
 {
-	Fl_Group::resize(Xw->sblength * scale,
+/*	Fl_Group::resize(Xw->sblength * scale,
 	                 Xw->basey * scale,
 	                 Xw->w() - (Xw->sblength * scale),
-	                 Xw->h()- (Xw->basey * scale));
+	                 Xw->h()- (Xw->basey * scale));*/
 
 
 	icon->position(x() + (12 * scale),  y() + (9 * scale));
@@ -113,9 +113,9 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 	message->resize(x() + (5 * scale), y() + h() - (80 * scale),
 	                (w() - (110 * scale)), (74 * scale));
 	emoji->resize(x() + (w() - (105 * scale)), y() + h() - (80 * scale),
-					37 * scale, 38 * scale);
+	              37 * scale, 38 * scale);
 	attach->resize(x() + (w() - (105 * scale)), y() + h() - (43 * scale),
-					37 * scale, 37 * scale);
+	               37 * scale, 37 * scale);
 
 
 }
@@ -123,11 +123,12 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 void GMessageArea::draw()
 {
 	fl_push_clip(x(), y(), w(), h());
+
 	if(mtype)
 	{
-		if(strcmp(gnames->value(), groupchat->peers))
+		if(strcmp(gnames->value(), *groupchat->arpszPeers))
 		{
-			gnames->value(groupchat->peers);
+			gnames->value(*groupchat->arpszPeers);
 			gnames->redraw();
 		}
 	}
@@ -138,7 +139,7 @@ void GMessageArea::draw()
 
 	fl_color(0);
 
-	if(!mtype)
+	/*if(!mtype)
 	{
 		fl_font(FL_HELVETICA_BOLD, 12 * scale);
 		fl_draw(GetDisplayName(contact, 40), x() + (60 * scale),
@@ -160,7 +161,7 @@ void GMessageArea::draw()
 		fl_color(fl_rgb_color(192, 192, 192));
 		fl_line(x() + w() - (95 * scale), y() + (60 * scale),
 		        x() + w() - (95 * scale),y() + h() - ((85)  * scale));
-	}
+	}*/
 
 
 	fl_color(fl_rgb_color(192, 192, 192));
