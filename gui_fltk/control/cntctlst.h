@@ -33,7 +33,7 @@ public:
 	int startpoint, selected, seltype, scale;
 
 	XwinTox *Xw;
-	List_t *lstContacts;
+	List_t *lstContacts, *lstChatrooms;
 	const XWF_hObj_t *hObj_;
 };
 

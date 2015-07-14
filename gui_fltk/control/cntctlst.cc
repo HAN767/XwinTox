@@ -77,6 +77,7 @@ ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
 	selected =-1;
 	color(fl_rgb_color(65, 65, 65));
 	startpoint =0 * S;
+	lstChatrooms =List_new();
 
 	Fl_Widget *p =this;
     while (p->parent()) p =p->parent();

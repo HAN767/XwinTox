@@ -131,6 +131,12 @@
     <File Name="control/statbox.cc"/>
     <File Name="control/cntctent.cc"/>
     <File Name="control/msgarea.cc"/>
+    <File Name="control/gtrnsfer.h"/>
+    <File Name="control/translst.h"/>
+    <File Name="control/transent.h"/>
+    <File Name="control/translst.cc"/>
+    <File Name="control/transent.cc"/>
+    <File Name="control/gtrnsfer.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">
     <File Name="nanosvg/nsvgwrap.c"/>

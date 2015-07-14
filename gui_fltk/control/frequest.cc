@@ -12,15 +12,16 @@ using namespace std;
 
 #include "xwintox.h"
 #include "postbox.h"
+#include "misc.h"
 
-#include "control/gui.h"
+#include "control/xwin.h"
 #include "control/frequest.h"
 
 char *GetShortenedText(char* text, size_t LenLimit);
 
 void frs_post(int mtype, PBMessage_t* msg, void* custom)
 {
-	FriendRequests* me =(FriendRequests*)custom;
+	/*FriendRequests* me =(FriendRequests*)custom;
 
 	if(mtype == PB_FRequest)
 	{
@@ -33,7 +34,7 @@ void frs_post(int mtype, PBMessage_t* msg, void* custom)
 		else me->next->activate();
 
 		me->redraw();
-	}
+	}*/
 }
 
 void frs_nextreq(FriendRequests *f)
@@ -67,7 +68,7 @@ void frnextcallback(Fl_Widget *w, void *fr)
 
 void fracceptcallback(Fl_Widget *w, void *fr)
 {
-	FriendRequests *f =(FriendRequests*)fr;
+	/*FriendRequests *f =(FriendRequests*)fr;
 	PBMessage_t *message =(PBMessage_t*)calloc(1, sizeof(PBMessage_t));
 	Event_t *e =Ev_new();
 
@@ -78,12 +79,13 @@ void fracceptcallback(Fl_Widget *w, void *fr)
 
 	f->frs.erase(f->frs.begin() + f->selected);
 	frs_nextreq(f);
-	PB_Signal(APP->events, PB_FReqServiced, message);
+	PB_Signal(APP->events, PB_FReqServiced, message);*/
 }
 
-FriendRequests::FriendRequests(int X, int Y, int S)
-	: Fl_Box(X, Y, (Xw->sblength * S) - 15, frheight * S)
+FriendRequests::FriendRequests(const XWF_hObj_t *hobj, int X, int Y, int S)
+	: Fl_Box(X, Y, (224 * S) - 15, frheight * S)
 {
+	hObj_ =hobj;
 	scale =S;
 	selected =-1;
 	box(FL_BORDER_BOX);
@@ -123,9 +125,9 @@ FriendRequests::FriendRequests(int X, int Y, int S)
 	frs.push_back(&test);
 	frs.push_back(&test2);
 	this->selected =0;
-	this->redraw();*/
+	this->redraw();
 
-	PB_Register(APP->events, PB_FRequest | PB_FReqServiced, this, frs_post);
+	PB_Register(APP->events, PB_FRequest | PB_FReqServiced, this, frs_post);*/
 }
 
 void FriendRequests::resize(int X, int Y, int W, int H)
@@ -157,13 +159,13 @@ void FriendRequests::draw()
 		if(frs.size() > 1) next->activate();
 		else next->deactivate();
 
-		sprintf(idtext, "Client ID: %s",
+/*		sprintf(idtext, "Client ID: %s",
 		        GetShortenedText(frs[selected]->pubkey, 20));
 		fl_font(fl_font(), 11.2 * scale);
 		fl_draw(idtext, x() + 4 * scale,
 		        y() + 14 * scale);
 		message->value(frs[selected]->message);
-		message->redraw();
+		message->redraw();*/
 	}
 	else
 	{

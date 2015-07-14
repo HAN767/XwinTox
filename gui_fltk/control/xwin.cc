@@ -15,8 +15,8 @@ XWContents::XWContents(const XWF_hObj_t* hObj, int S) : Fl_Box(0, 0, 1, 1)
 	hObj_ =hObj;
 
 	addfriend =new GAddFriend(hObj_, S);
-	/*transfers =new GTransfers(S);
-	transfers->hide();*/
+	transfers =new GTransfers(hObj_, S);
+	transfers->hide();
 	currentarea =addfriend;
 }
 
@@ -91,6 +91,8 @@ void XwinTox::resize(int X, int Y, int W, int H)
 	sidebar->resize(basex * scale, basey * scale, sblength * scale,
 	                H - (basey * scale));
 	contents->addfriend->resize(sblength * scale, basey * scale,
+	                            W - (sblength * scale), H- (basey * scale));
+	contents->transfers->resize(sblength * scale, basey * scale,
 	                            W - (sblength * scale), H- (basey * scale));
 	for (const auto entry : contents->messageareas)
 	{

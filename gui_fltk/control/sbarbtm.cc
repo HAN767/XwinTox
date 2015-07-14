@@ -3,13 +3,26 @@
 #include "nanosvg/svgs.h"
 #include "control/sbarbtm.h"
 #include "control/svgbox.h"
+#include "control/xwin.h"
 
 void transferspressed(Fl_Widget* B , void*)
 {
-	/*Xw->contents->NewCurrentArea(Xw->contents->transfers);
+	XwinTox *Xw =getXwin(B);
+
+	Xw->contents->NewCurrentArea(Xw->contents->transfers);
 	Xw->sidebar->bottom_area->deselect_all();
 	Xw->sidebar->contacts->deselect_all();
-	Xw->sidebar->bottom_area->transfers->color(fl_rgb_color(68, 68, 67));*/
+	Xw->sidebar->bottom_area->transfers->color(fl_rgb_color(68, 68, 67));
+}
+
+void addfriendpressed(Fl_Widget* B , void*)
+{
+	XwinTox *Xw =getXwin(B);
+
+	Xw->contents->NewCurrentArea(Xw->contents->addfriend);
+	Xw->sidebar->bottom_area->deselect_all();
+	Xw->sidebar->contacts->deselect_all();
+	Xw->sidebar->bottom_area->addfriend->color(fl_rgb_color(68, 68, 67));
 }
 
 Sidebar_Bottom_Area::Sidebar_Bottom_Area(const XWF_hObj_t* hObj, int S) :
@@ -30,7 +43,8 @@ Sidebar_Bottom_Area::Sidebar_Bottom_Area(const XWF_hObj_t* hObj, int S) :
 	transfers->show();
 	settings->show();
 
-	//transfers->callback(transferspressed);
+	addfriend->callback(addfriendpressed);
+	transfers->callback(transferspressed);
 	deselect_all();
 	end();
 }

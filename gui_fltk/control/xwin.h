@@ -12,7 +12,7 @@ class GUIFLTK;
 #include "control/sidebar.h"
 #include "control/gaddfrnd.h"
 #include "control/msgarea.h"
-/*#include "control/gtrnsfer.h"*/
+#include "control/gtrnsfer.h"
 
 typedef struct userdata
 {
@@ -33,7 +33,7 @@ public:
 
 	Fl_Box *fake;
 	GAddFriend *addfriend;
-	/*GTransfers *transfers;*/
+	GTransfers *transfers;
 
 	vector <GMessageArea*> messageareas;
 

@@ -27,7 +27,6 @@ void frcallback(Fl_Widget *w)
 {
 	Sidebar *s =((Sidebar*)w->parent());
 	FriendRequests *f =s->f_reqs;
-	dbg("FR Callback\n");
 
 	if(f->visible()) f->hide();
 	else f->show();
@@ -51,17 +50,17 @@ Sidebar::Sidebar(const XWF_hObj_t* hObj, int S) : Fl_Group(0, 0, 0, 0)
 	contacts =new ContactsList(hObj_, S);
 	contacts->end();
 
-	/*frbutton =new Fl_Button(0, 0, 0, 0);
-	f_reqs =new FriendRequests(x() + 3, y() + 94 + 2, scale);
+	frbutton =new Fl_Button(0, 0, 0, 0);
+	f_reqs =new FriendRequests(hObj, x() + 3, y() + 94 + 2, scale);
 
 	frbutton->labelsize(10 * scale);
 	frbutton->label("0 Friend\nRequests");
 	frbutton->color(fl_rgb_color(107, 194, 96));
 	frbutton->labelcolor(255);
-	frbutton->callback(frcallback);*/
+	frbutton->callback(frcallback);
 
-	//f_reqs->show();
-	//f_reqs->hide();
+	f_reqs->show();
+	f_reqs->hide();
 
 	//PB_Register(APP->events, PB_FRequest | PB_FReqServiced, this, sb_post);
 
@@ -73,12 +72,12 @@ void Sidebar::resize(int X, int Y, int W, int H)
 {
 	Fl_Group::resize(X, Y, W, H);
 	top_area->resize(X, Y, W, 60 * scale);
-	bottom_area->resize(X, Y + H - (36 * scale) , W, 36 * scale);/*
+	bottom_area->resize(X, Y + H - (36 * scale) , W, 36 * scale);
 
 	frbutton->resize(X + W - (72  * scale), y() + (64 * scale),
 	                 60 * scale, 30 * scale);
 
-	f_reqs->resize(X + 3 * scale, Y + (96) * scale, W - (15 * scale), frheight * scale);*/
+	f_reqs->resize(X + 3 * scale, Y + (96) * scale, W - (15 * scale), frheight * scale);
 
 	contacts->resize(X, Y + ((60 + top2_h) * scale), W,
 	                 H - (36 * scale) - (60 * scale) - (top2_h * scale));

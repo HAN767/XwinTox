@@ -8,18 +8,20 @@ using namespace std;
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Multiline_Output.H>
 
-extern "C"
-{
 #include "xwintox.h"
-}
 
 const int frheight=88;
+
+typedef struct FriendRequest_t
+{
+	int no;
+} FriendRequest_t;
 
 class FriendRequests: public Fl_Box
 {
 public:
 	// Ctor
-	FriendRequests(int X, int Y, int S);
+	FriendRequests(const XWF_hObj_t *hobj, int X, int Y, int S);
 
 	void show();
 	void hide();
@@ -31,8 +33,10 @@ public:
 	Fl_Multiline_Output *message;
 	Fl_Button *accept, *reject, *next;
 
-	//vector <FriendRequest_t*> frs;
+	vector <FriendRequest_t*> frs;
 	int selected, scale;
+
+	const XWF_hObj_t *hObj_;
 };
 
 #endif
