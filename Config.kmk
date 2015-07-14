@@ -1,5 +1,5 @@
-#TOOL_GCC_CC =clang
-#TOOL_GCC_CXX=clang++
+#TOOL_GCC_CC =clang --analyze
+#TOOL_GCC_CXX=clang++ --analyze
 
 TEMPLATE_XwinTox = XwinTox base template
 TEMPLATE_XwinTox_TOOL = GCC

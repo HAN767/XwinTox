@@ -65,18 +65,15 @@ void frnextcallback(Fl_Widget *w, void *fr)
 
 void fracceptcallback(Fl_Widget *w, void *fr)
 {
-	/*FriendRequests *f =(FriendRequests*)fr;
-	PBMessage_t *message =(PBMessage_t*)calloc(1, sizeof(PBMessage_t));
-	Event_t *e =Ev_new();
+	FriendRequests *f =static_cast<FriendRequests*>(fr);
+	PBMessage_t *msg =PB_New_Message();
 
-	e->T =Comm_AddFriendNoReq;
-	e->S1 =strdup(f->frs[f->selected]->pubkey);
-	List_add(APP->Comm->WorkQueue, (void*)e);
-	CommWork();
+	msg->S1 =strdup(f->frs[f->selected]->pszAddress);
 
 	f->frs.erase(f->frs.begin() + f->selected);
 	frs_nextreq(f);
-	PB_Signal(APP->events, PB_FReqServiced, message);*/
+
+	f->hObj_->pSvcs->fnDispatch(f->hObj_, frAcceptRequest, msg);
 }
 
 FriendRequests::FriendRequests(const XWF_hObj_t *hobj, int X, int Y, int S)
@@ -113,7 +110,7 @@ FriendRequests::FriendRequests(const XWF_hObj_t *hobj, int X, int Y, int S)
 	message->value("");
 	message->wrap(1);
 
-	static XWFriendRequest_t test, test2;
+	/*static XWFriendRequest_t test, test2;
 	test.pszMessage="<SylvieLorxu> I would definitely not accept stqism as my boyfriend. Sorry, he's just not my type. ";
 	test.pszAddress="Zetok";
 	test2.pszMessage="Not a friendo";
@@ -122,7 +119,7 @@ FriendRequests::FriendRequests(const XWF_hObj_t *hobj, int X, int Y, int S)
 	frs.push_back(&test);
 	frs.push_back(&test2);
 	this->selected =0;
-	this->redraw();
+	this->redraw();*/
 
 	hObj_->pSvcs->fnSubscribe(hObj_, frRequest, this, freqFrRequest);
 	/*PB_Register(APP->events, PB_FRequest | PB_FReqServiced, this, frs_post);*/

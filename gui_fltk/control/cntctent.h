@@ -26,6 +26,9 @@ public:
 	int selected, scale;
 
 	const XWF_hObj_t *hObj_;
+
+private:
+	int children_ =0;
 };
 
 #endif

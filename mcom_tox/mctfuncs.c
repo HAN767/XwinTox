@@ -65,6 +65,30 @@ void frdelete(XWF_hObj_t *hobjSelf, unsigned int wNum)
 	DUNLOCK
 }
 
+void fracceptrequest(XWF_hObj_t *hobjSelf, const char *pszAddress)
+{
+	PREP
+	TOX_ERR_FRIEND_ADD ferr;
+	uint8_t *pk =hex_string_to_bin(pszAddress);
+	unsigned int wFNum;
+
+	DLOCK
+	wFNum =tox_friend_add_norequest(TOXINST, pk, &ferr);
+	DUNLOCK
+
+	dbg("FriendNoReqError: %d. Address: %s\n", ferr, pszAddress)
+	if(ferr == TOX_ERR_FRIEND_ADD_ALREADY_SENT) dbg("already\n")
+	else if(ferr == TOX_ERR_FRIEND_ADD_BAD_CHECKSUM) dbg("bad checksum\n")
+	else
+	{
+		PBMessage_t *msgfrRequestServiced =PB_New_Message();
+		msgfrRequestServiced->I1 =wFNum;
+		msgfrRequestServiced->S1 =strdup(pszAddress);
+
+		DISPATCH(frRequestServiced, msgfrRequestServiced);
+	}
+}
+
 void MCT_recv(int iType, PBMessage_t* msg, void* custom)
 {
 	switch(iType)
@@ -79,6 +103,11 @@ void MCT_recv(int iType, PBMessage_t* msg, void* custom)
 
 	case frDelete:
 		frdelete(custom, msg->I1);
+		savedata(custom);
+		break;
+
+	case frAcceptRequest:
+		fracceptrequest(custom, msg->S1);
 		savedata(custom);
 		break;
 
@@ -159,6 +188,7 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 
 	SUBSCRIBE(frSendMsg, hobjSelf, MCT_recv);
 	SUBSCRIBE(frDelete, hobjSelf, MCT_recv);
+	SUBSCRIBE(frAcceptRequest, hobjSelf, MCT_recv);
 
 	msgContacts->V =pimcSelf->lstContacts;
 	DISPATCH(clContacts, msgContacts);

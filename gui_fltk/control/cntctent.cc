@@ -132,6 +132,7 @@ ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
 
 	box(FL_FLAT_BOX);
 	color(fl_rgb_color(65, 65, 65));
+	end();
 }
 
 void ContactsEntry::draw()

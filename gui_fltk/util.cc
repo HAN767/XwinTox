@@ -44,7 +44,7 @@ char *GetDisplayName(XWContact_t *contact, size_t LenLimit)
 {
 	static char name[255] = { 0 };
 
-	if(strlen(contact->pszName) == 0)
+	if(contact->pszName == 0 || strlen(contact->pszName) == 0)
 	{
 		strncpy(name, contact->pszID, LenLimit);
 		name[LenLimit-2] ='.';
@@ -73,17 +73,17 @@ char *GetDisplayStatus(XWContact_t *contact, size_t LenLimit)
 {
 	static char status[255] = { 0 };
 
-	if(strlen(contact->pszStatus) >= LenLimit)
+	if(contact->pszStatus == 0 || strlen(contact->pszStatus) == 0)
+	{
+		strcpy(status, "Unknown");
+	}
+	else if (strlen(contact->pszStatus) >= LenLimit)
 	{
 		strcpy(status, GetShortenedText(contact->pszStatus, LenLimit));
 	}
 	else if(strlen(contact->pszStatus) > 0)
 	{
 		strcpy(status, contact->pszStatus);
-	}
-	else if(strlen(contact->pszStatus) == 0)
-	{
-		strcpy(status, "Unknown");
 	}
 
 	return status;
