@@ -76,6 +76,21 @@ void ce_deletecontact(ContactsEntry *ce)
 	CGUIUPDFLAG =1;*/
 }
 
+void ctentFrStatus(int, PBMessage_t *msg, void *custom)
+{
+	ContactsEntry *self =static_cast<ContactsEntry*>(custom);
+	char nmsg[1168];
+
+	if((msg->I1) != self->contact->wNum) return;
+
+	Fl::lock();
+	self->contact->wStatus =msg->I2;
+	self->redraw();
+	Fl::unlock();
+	Fl::awake();
+}
+
+
 ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
                              XWContact_t *C, XWGroupchat_t *G, short T)
 	: Fl_Box(X, Y, 224 * S, 50 * S)
@@ -87,7 +102,7 @@ ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
 	type =T;
 	selected =0;
 
-	if(!T)
+	if(!T) /* regular contact */
 	{
 		icon =new SVGBox(X+ (4 * S), Y+ (2 * S), 40 * S, 40 *S, S,
 		                 default_av, 1);
@@ -96,6 +111,8 @@ ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
 		invicon->hide();
 		groupchat =new XWGroupchat_t;
 		groupchat->wNum =65535;
+		hObj_->pSvcs->fnSubscribe(hObj_, frStatus, this, ctentFrStatus);
+
 	}
 	else
 	{
@@ -147,7 +164,11 @@ void ContactsEntry::draw()
 		name =GetDisplayName(contact, 16);
 		status =GetDisplayStatus(contact, 23);
 
-		if(contact->wConnected) fl_color(2);
+		if(contact->wStatus == stOnline) fl_color(2);
+		else if(contact->wStatus == stBusy | contact->wStatus == stAway)
+		{
+			fl_color(FL_YELLOW);
+		}
 		else fl_color(FL_RED);
 
 		fl_pie(x() + (185 * scale), this->y() + (20 * scale), 10 * scale,

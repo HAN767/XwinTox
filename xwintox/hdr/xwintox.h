@@ -20,11 +20,12 @@ typedef enum XWMtypes_e
     clSaveData,
 
     /* Friends related */
-    frConn,
+    frStatus,
     frName,
     frStatusMsg,
     frRequest,
     frAdded,
+	frMsg,
 
 	frDelete,
 	frMComDelete, /* issued by frDelete handler in GUI after it's cleared up */
@@ -45,9 +46,17 @@ typedef enum XWMtypes_e
 
 typedef struct XWContact_s
 {
-	unsigned int wNum, wStatus, wConnected;
+	unsigned int wNum, wStatus;
 	char *pszName, *pszStatus, *pszID;
 } XWContact_t;
+
+typedef enum XWContactStatus_e
+{
+	stOffline,
+	stOnline,
+	stAway,
+	stBusy
+} XWContactStatus_e;
 
 typedef struct XWGroupchat_s
 {

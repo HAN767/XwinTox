@@ -7,7 +7,13 @@
 #define CBFUNC(NAME, ...) void cb_##NAME (Tox *tox, ##__VA_ARGS__, void *custom)
 
 void register_callbacks(XWF_Object_Handle_t *hobjSelf);
+
 CBFUNC(self_connection_status, TOX_CONNECTION connection_status);
+
+CBFUNC(friend_connection_status, uint32_t friend_number,
+                                 TOX_CONNECTION connection_status);
+CBFUNC(friend_message, uint32_t friend_number, TOX_MESSAGE_TYPE type,
+       const uint8_t *message, size_t length);
 
 /* private */
 #define CBPREP XWF_Object_Handle_t *hobjSelf =custom; PREP

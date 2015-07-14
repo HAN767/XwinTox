@@ -9,6 +9,23 @@
 #include "misc.h"
 #include "util.h"
 
+void mareaFrMsg(int, PBMessage_t *msg, void *custom)
+{
+	GMessageArea *self =static_cast<GMessageArea*>(custom);
+	char nmsg[1168];
+
+	if((msg->I1) != self->contact->wNum) return;
+
+	Fl::lock();
+	snprintf(nmsg, 1168, "%s: %s\n", self->contact->pszName, msg->S1);
+	self->moutbuffer->append(nmsg);
+	self->moutput->scroll(self->moutput->count_lines(0,
+	                      self->moutbuffer->length(), 1), 0);
+	self->redraw();
+	Fl::unlock();
+	Fl::awake();
+}
+
 void mareaSendPressed(Fl_Widget* B , void*)
 {
 	PBMessage_t *msgNew =PB_New_Message();
@@ -18,7 +35,7 @@ void mareaSendPressed(Fl_Widget* B , void*)
 	XwinTox *Xw =getXwin(B);
 
 	snprintf(nmsg, 1024, "%s: %s\n", Xw->sidebar->top_area->name->value(),
-	        ((GMessageArea*)B->parent())->message->value());
+	         ((GMessageArea*)B->parent())->message->value());
 
 	if(!((GMessageArea*)B->parent())->mtype) /* contact */
 	{
@@ -32,7 +49,7 @@ void mareaSendPressed(Fl_Widget* B , void*)
 		cArea->message->take_focus();
 		cArea->moutput->scroll
 		(cArea->moutput->count_lines(0,
-		        cArea->moutbuffer->length(), 1), 0);
+		                             cArea->moutbuffer->length(), 1), 0);
 	}
 }
 
@@ -54,6 +71,7 @@ GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
 		icon->show();
 		groupchat =new XWGroupchat_t;
 		groupchat->wNum =65535;
+		hObj_->pSvcs->fnSubscribe(hObj_, frMsg, this, mareaFrMsg);
 	}
 	else
 	{
@@ -141,7 +159,7 @@ void GMessageArea::resize(int X, int Y, int W, int H)
 	}
 
 	send->resize(x() + (w() - 64 * scale), y() + (h() - (80 * scale)),
-				(60 * scale), (74 * scale));
+	             (60 * scale), (74 * scale));
 	message->resize(x() + (5 * scale), y() + h() - (80 * scale),
 	                (w() - (110 * scale)), (74 * scale));
 	emoji->resize(x() + (w() - (105 * scale)), y() + h() - (80 * scale),
