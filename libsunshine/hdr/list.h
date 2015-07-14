@@ -7,6 +7,11 @@
 #ifndef List_h
 #define List_h
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <threads.h>
 
 typedef struct List_s_
@@ -43,5 +48,9 @@ void *List_retrieve_and_remove_first(List_t *n);
 	for(List_t_ *e=( list )->List;(e) && (tmp = (e)->Link, 1) && (e_data =e->data); (e) = tmp) {
 
 #define LIST_ITERATE_CLOSE(list) } mtx_unlock(&( list )->Lock);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

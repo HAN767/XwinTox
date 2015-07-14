@@ -35,6 +35,16 @@ void XWContents::draw()
 {
 }
 
+void handle(void *userdata)
+{
+	userdata_t *ud =(userdata_t*)userdata;
+	if(ud->op == 'U')
+	{
+		ContactsList *ctLst =(ContactsList*)ud->lptr;
+		updatecontacts(ctLst, ctLst->lstContacts);
+	}
+}
+
 XwinTox::XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S)
 	: Fl_Double_Window(w, h, c)
 {

@@ -13,7 +13,7 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 {
 	int iSel =-1;
 	int iSeltype =-1;
-	unsigned int wCurY;
+	unsigned int wCurY =0;
 	XwinTox *Xw;
 
 	Fl_Widget *p =self;
@@ -27,6 +27,9 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 	}
 
 	self->clear_all();
+	self->lstContacts =lstContacts;
+
+	//Fl::do_widget_deletion();
 
 	LIST_ITERATE_OPEN(lstContacts)
 		XWContact_t *ctEntry =(XWContact_t*) e_data;
@@ -38,6 +41,7 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 
 		if(!FindContactMArea(Xw, ctEntry))
 		{
+			dbg("Need to make a new MArea\n");
 			GMessageArea *newarea =new 
 						GMessageArea(self->hObj_, self->scale,  ctEntry, 0, 0);
 			newarea->hide();
@@ -50,7 +54,7 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 		self->entries.push_back(newgui);
 		wCurY += (50 * self->scale);
 	LIST_ITERATE_CLOSE(lstContacts)
-
+	dbg("Finished contacts update\n");
 }
 
 void CtList_recv(int iType, PBMessage_t* msg, void* custom)
@@ -61,6 +65,7 @@ void CtList_recv(int iType, PBMessage_t* msg, void* custom)
 		Fl::lock();
 		updatecontacts(self, (List_t*)msg->V);
 		Fl::unlock();
+		Fl::awake();
 	}
 }
 
@@ -127,7 +132,7 @@ void ContactsList::clear_all()
 	this->clear();
 	for(const auto entry : entries)
 	{
-		Fl::delete_widget(entry);
+		//Fl::delete_widget(entry);
 	}
 	entries.clear();
 	this->redraw();

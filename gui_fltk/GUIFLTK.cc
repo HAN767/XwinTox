@@ -35,8 +35,11 @@ int GUIFLTK::fltkloop(void *)
 {
 	while(1)
 	{
+		void *msg =0;
 		Fl::lock();
 		Fl::wait();
+		msg = Fl::thread_message();
+		if (msg) handle(msg);
 		Fl::unlock();
 	}
 	return 0;

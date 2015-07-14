@@ -1,3 +1,6 @@
+#TOOL_GCC_CC =clang
+#TOOL_GCC_CXX=clang++
+
 TEMPLATE_XwinTox = XwinTox base template
 TEMPLATE_XwinTox_TOOL = GCC
 TEMPLATE_XwinTox_CXXFLAGS = -std=c++11 -ggdb

@@ -12,6 +12,13 @@
 #include "control/msgarea.h"
 /*#include "control/gtrnsfer.h"*/
 
+typedef struct userdata
+{
+	char op;
+	void *lptr;
+} userdata_t;
+void handle(void *userdata);
+
 class XWContents: public Fl_Box
 {
 public:

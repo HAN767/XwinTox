@@ -33,7 +33,10 @@ public:
 	int startpoint, selected, seltype, scale;
 
 	XwinTox *Xw;
+	List_t *lstContacts;
 	const XWF_hObj_t *hObj_;
 };
+
+void updatecontacts(ContactsList *self, List_t *lstContacts);
 
 #endif

@@ -12,68 +12,47 @@
 #include "control/cntctlst.h"
 #include "control/sidebar.h"
 #include "control/svgbox.h"
+#include "list.h"
 #include "util.h"
+#include "misc.h"
 
 void ce_deletecontact(ContactsEntry *ce)
 {
-	/*vector <ContactsEntry*> *ref =&
-	                              ((ContactsList*) ce->parent())->entries;
+	/* ugly but necessary */
+	userdata *ud =new userdata_t;
+	ud->op='U';
+
+	vector <ContactsEntry*> *ref =&((ContactsList*) ce->parent())->entries;
+	ContactsList* ctLst =(ContactsList*)ce->parent();
+	ud->lptr =ctLst;
+
+	XwinTox *Xw =getXwin(ce);
+	vector <GMessageArea*> *mareaVec =&Xw->contents->messageareas;
+	GMessageArea *mareaToDel =0;
+
 	ref->erase(std::remove(ref->begin(), ref->end(), ce),
 	           ref->end());
-	ce->parent()->remove(ce);
-	Fl::delete_widget(ce);
 
 	if(ce->type == 0)
 	{
-		DeleteContact(ce->contact->num);
-		Fl::delete_widget(FindContactMArea(ce->contact));
+		mareaToDel =FindContactMArea(Xw, ce->contact);
+		dbg("mareaToDel: %p\n", mareaToDel);
+		List_del(ctLst->lstContacts, ce->contact);
+		freeContact(ce->contact);
 	}
-	else
+	mareaVec->erase(std::remove(mareaVec->begin(), mareaVec->end(), mareaToDel),
+		mareaVec->end());
+
+	if(Xw->contents->currentarea == mareaToDel)
 	{
-		Groupchat_t *todel;
-		GMessageArea *mtodel =0;
-		Event_t *e =Ev_new();
-
-		e->T =Comm_LeaveGroupchat;
-		e->ID =ce->groupchat->num;
-		List_add(APP->Comm->WorkQueue, (void*)e);
-
-		todel =ce->groupchat;
-		vector <Groupchat_t*> *ref=&groupchats;
-		vector <GMessageArea*> *mref =&Xw->contents->messageareas;
-
-		free(todel->name);
-
-		free(todel->peers);
-
-		if(todel->peers_raw)
-		{
-			free(todel->peers_raw);
-			free(todel->peers_raw_lens);
-		}
-
-		free(todel);
-		ref->erase(std::remove(ref->begin(), ref->end(), todel), ref->end());
-
-		for(const auto messagearea : Xw->contents->messageareas)
-		{
-			if(messagearea->groupchat == todel) mtodel =messagearea;
-		}
-
-		mref->erase(std::remove(mref->begin(), mref->end(), mtodel),
-		            mref->end());
-
-		if(Xw->contents->currentarea == mtodel)
-		{
-			Xw->contents->NewCurrentArea(Xw->contents->addfriend);
-		}
-
-		Fl::delete_widget(mtodel);
-
-		CommWork();
+		Xw->contents->NewCurrentArea(Xw->contents->addfriend);
 	}
 
-	CGUIUPDFLAG =1;*/
+	dbg("ce: %p\n", ce);
+	Fl::delete_widget(ce);
+	Fl::delete_widget(mareaToDel);
+
+	Fl::awake(ud);
 }
 
 void ctentFrStatus(int, PBMessage_t *msg, void *custom)
@@ -88,12 +67,29 @@ void ctentFrStatus(int, PBMessage_t *msg, void *custom)
 	self->redraw();
 	Fl::unlock();
 	Fl::awake();
+
+	PBMessage_t *msgNew =PB_New_Message(); /* periodic save data */
+	self->hObj_->pSvcs->fnDispatch(self->hObj_, clSaveData, msgNew);
+}
+
+void ctentFrName(int, PBMessage_t *msg, void *custom)
+{
+	ContactsEntry *self =static_cast<ContactsEntry*>(custom);
+	char nmsg[1168];
+
+	if((msg->I1) != self->contact->wNum) return;
+
+	Fl::lock();
+	self->contact->pszName =strdup(msg->S1);
+	self->redraw();
+	Fl::unlock();
+	Fl::awake();
 }
 
 
 ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
                              XWContact_t *C, XWGroupchat_t *G, short T)
-	: Fl_Box(X, Y, 224 * S, 50 * S)
+	: Fl_Group(X, Y, 224 * S, 50 * S)
 {
 	hObj_ =hObj;
 	scale =S;
@@ -112,7 +108,7 @@ ContactsEntry::ContactsEntry(const XWF_hObj_t *hObj, int X, int Y, int S,
 		groupchat =new XWGroupchat_t;
 		groupchat->wNum =65535;
 		hObj_->pSvcs->fnSubscribe(hObj_, frStatus, this, ctentFrStatus);
-
+		hObj_->pSvcs->fnSubscribe(hObj_, frName, this, ctentFrName);
 	}
 	else
 	{
@@ -157,7 +153,7 @@ void ContactsEntry::draw()
 		icon->show();
 	}
 
-	Fl_Box::draw();
+	Fl_Group::draw();
 
 	if(!type) /* todo: resize() calls to the svgbox, make it work */
 	{
@@ -246,16 +242,16 @@ int ContactsEntry::handle(int event)
 		}
 		else if(Fl::event_button() == FL_RIGHT_MOUSE)
 		{
-			Fl_Menu_Item contmenu[] = { { "Delete contact" }, { 0 } };
+			Fl_Menu_Item contmenu[] = { { "Delete" }, { 0 } };
 			contmenu->labelsize(12 * scale);
 			const Fl_Menu_Item *m = contmenu->popup(Fl::event_x(), Fl::event_y(),
 			                                        0, 0, 0);
 
 			if(!m) return 0;
-			else if(strcmp(m->label(), "Delete contact") == 0)
+			else if(strcmp(m->label(), "Delete") == 0)
 			{
 				ce_deletecontact(this);
-				return 0;
+				return 1;
 			}
 		}
 	}

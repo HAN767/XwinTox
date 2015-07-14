@@ -16,6 +16,8 @@ void register_callbacks(XWF_Object_Handle_t *hobjSelf)
 
 	tox_callback_friend_connection_status(TOXINST, cb_friend_connection_status,
 	                                      hobjSelf);
+	tox_callback_friend_status(TOXINST, cb_friend_status, hobjSelf);
+	tox_callback_friend_name(TOXINST, cb_friend_name, hobjSelf);
 	tox_callback_friend_message(TOXINST, cb_friend_message, hobjSelf);
 }
 
@@ -71,6 +73,42 @@ CBFUNC(friend_connection_status, uint32_t friend_number,
 	msgCStatus->I1 =friend_number;
 	msgCStatus->I2 =wCStatus;
 	DISPATCH(frStatus, msgCStatus);
+}
+
+CBFUNC(friend_status, uint32_t friend_number, TOX_USER_STATUS status)
+{
+	CBPREP
+	unsigned int wCStatus;
+	PBMessage_t *msgCStatus =PB_New_Message();
+
+	switch(status)
+	{
+	case TOX_USER_STATUS_NONE:
+		wCStatus =stOnline;
+		break;
+
+	case TOX_USER_STATUS_AWAY:
+		wCStatus =stAway;
+		break;
+
+	case TOX_USER_STATUS_BUSY:
+		wCStatus =stBusy;
+		break;
+	}
+
+	msgCStatus->I1 =friend_number;
+	msgCStatus->I2 =wCStatus;
+	DISPATCH(frStatus, msgCStatus);
+}
+
+CBFUNC(friend_name, uint32_t friend_number, const uint8_t *name, size_t length)
+{
+	CBPREP
+	PBMessage_t *msgFrName =PB_New_Message();
+
+	msgFrName->I1 =friend_number;
+	msgFrName->S1 =strndup(name, length);
+	DISPATCH(frName, msgFrName);
 }
 
 CBFUNC(friend_message, uint32_t friend_number, TOX_MESSAGE_TYPE type,

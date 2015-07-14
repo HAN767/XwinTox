@@ -51,6 +51,10 @@ void mareaSendPressed(Fl_Widget* B , void*)
 		(cArea->moutput->count_lines(0,
 		                             cArea->moutbuffer->length(), 1), 0);
 	}
+	else
+	{
+		free(msgNew);
+	}
 }
 
 GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,

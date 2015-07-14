@@ -20,6 +20,7 @@ typedef enum XWMtypes_e
     clSaveData,
 
     /* Friends related */
+	frNew,
     frStatus,
     frName,
     frStatusMsg,

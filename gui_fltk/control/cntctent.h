@@ -1,13 +1,13 @@
 #ifndef CNTCTENT_H_
 #define CNTCTENT_H_
 
-#include <FL/Fl_Box.H>
+#include <FL/Fl_Group.H>
 
 #include "xwintox.h"
 
 class SVGBox;
 
-class ContactsEntry: public Fl_Box
+class ContactsEntry: public Fl_Group
 {
 public:
 	// Ctor
@@ -25,7 +25,6 @@ public:
 	XWGroupchat_t *groupchat;
 	int selected, scale;
 
-private:
 	const XWF_hObj_t *hObj_;
 };
 

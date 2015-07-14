@@ -72,8 +72,10 @@ int main(int argc, char *argv[])
 	IMCOBJ(App.pimcIM)->pszStatus =strdup(Dictionary_get(App.dictConfig,
 	                                      "XwinTox.Status"));
 
-	IMCOBJ(App.pimcIM)->fnConnect(App.pimcIM);
 	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
+	usleep(250); /* let the GUI initialise, ready for signal reception */
+
+	IMCOBJ(App.pimcIM)->fnConnect(App.pimcIM);
 
 	while(1)
 	{
