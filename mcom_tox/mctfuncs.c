@@ -56,6 +56,15 @@ void frsendmessage(XWF_hObj_t *hobjSelf, unsigned int wNum, const char *pszMsg)
 
 }
 
+void frdelete(XWF_hObj_t *hobjSelf, unsigned int wNum)
+{
+	PREP
+	dbg("Delete contact %d\n", wNum);
+	DLOCK
+	tox_friend_delete(TOXINST, wNum, 0);
+	DUNLOCK
+}
+
 void MCT_recv(int iType, PBMessage_t* msg, void* custom)
 {
 	switch(iType)
@@ -66,6 +75,11 @@ void MCT_recv(int iType, PBMessage_t* msg, void* custom)
 
 	case frSendMsg:
 		frsendmessage(custom, msg->I1, msg->S1);
+		break;
+
+	case frDelete:
+		frdelete(custom, msg->I1);
+		savedata(custom);
 		break;
 
 	default:

@@ -4,6 +4,7 @@
 #include "control/xwin.h"
 #include "control/sidebar.h"
 #include "misc.h"
+#include "GUIFLTK.h"
 //#include "control/svgbox.h"
 
 XWContents::XWContents(const XWF_hObj_t* hObj, int S) : Fl_Box(0, 0, 1, 1)
@@ -45,11 +46,11 @@ void handle(void *userdata)
 	}
 }
 
-XwinTox::XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S)
+XwinTox::XwinTox(GUIFLTK *G, int w, int h, const char* c, int S)
 	: Fl_Double_Window(w, h, c)
 {
 	scale =S;
-	hObj_ =hObj;
+	Obj =G;
 	basex =0;
 	basey =0;
 	sblength =224;
@@ -74,8 +75,8 @@ XwinTox::XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S)
 
 void XwinTox::init2()
 {
-	sidebar =new Sidebar(hObj_, scale);
-	contents =new XWContents(hObj_, scale);
+	sidebar =new Sidebar(Obj->hObj_, scale);
+	contents =new XWContents(Obj->hObj_, scale);
 	sidebar->bottom_area->addfriend->box(FL_FLAT_BOX);
 	sidebar->bottom_area->addfriend->color(fl_rgb_color(68, 68, 67));
 	resizable(contents);

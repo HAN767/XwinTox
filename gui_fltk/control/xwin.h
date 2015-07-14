@@ -7,6 +7,8 @@
 
 #include "Module/Module.h"
 
+class GUIFLTK;
+
 #include "control/sidebar.h"
 #include "control/gaddfrnd.h"
 #include "control/msgarea.h"
@@ -23,7 +25,7 @@ class XWContents: public Fl_Box
 {
 public:
 	// Ctor
-	XWContents(const XWF_hObj_t* hObj, int S);
+	XWContents(const XWF_hObj_t *hobj, int S);
 
 	void draw();
 
@@ -47,7 +49,7 @@ class XwinTox : public Fl_Double_Window
 {
 public:
 	// Ctor
-	XwinTox(const XWF_hObj_t* hObj, int w, int h, const char* c, int S);
+	XwinTox(GUIFLTK *G, int w, int h, const char* c, int S);
 	void init2();
 
 	void resize(int X, int Y, int W, int H);
@@ -58,6 +60,7 @@ public:
 
 	int scale, sblength, basex, basey;
 
+	GUIFLTK* Obj;
 private:
 	const XWF_hObj_t *hObj_;
 };

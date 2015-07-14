@@ -101,11 +101,6 @@ void ContactsList::draw()
 void ContactsList::resize(int X, int Y, int W, int H)
 {
 	Fl_Scroll::resize(X, Y, W, H);
-
-	for(const auto entry : entries)
-	{
-		//entry->icon->draw();
-	}
 }
 
 int ContactsList::handle(int event)

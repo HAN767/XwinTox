@@ -4,6 +4,8 @@
 #include "Module/Module.h"
 #include "IGUI.h"
 
+#include "misc.h"
+
 template <typename T>
 class GUICxxInterfaceT
 {
@@ -42,7 +44,6 @@ public:
 	}
 	static int staticStart(XWF_Object_Handle_t *pguiSelf)
 	{
-		getSelf(pguiSelf)->hObj_ =pguiSelf;
 		return getSelf(pguiSelf)->start();
 	}
 
@@ -51,9 +52,10 @@ public:
 		return 0;
 	}
 
-private:
+	const XWF_Object_Handle_t *hObj_;
+
+protected:
 	IGUI_t hCGUI_;
-	XWF_Object_Handle_t *hObj_;
 };
 
 #endif

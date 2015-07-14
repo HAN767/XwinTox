@@ -22,6 +22,7 @@ void ce_deletecontact(ContactsEntry *ce)
 	userdata *ud =new userdata_t;
 	ud->op='U';
 
+	PBMessage_t *delMsg =PB_New_Message();
 	vector <ContactsEntry*> *ref =&((ContactsList*) ce->parent())->entries;
 	ContactsList* ctLst =(ContactsList*)ce->parent();
 	ud->lptr =ctLst;
@@ -38,7 +39,9 @@ void ce_deletecontact(ContactsEntry *ce)
 		mareaToDel =FindContactMArea(Xw, ce->contact);
 		dbg("mareaToDel: %p\n", mareaToDel);
 		List_del(ctLst->lstContacts, ce->contact);
+		delMsg->I1 =ce->contact->wNum;
 		freeContact(ce->contact);
+		ce->hObj_->pSvcs->fnDispatch(ce->hObj_, frDelete, delMsg);
 	}
 	mareaVec->erase(std::remove(mareaVec->begin(), mareaVec->end(), mareaToDel),
 		mareaVec->end());
@@ -188,8 +191,6 @@ void ContactsEntry::draw()
 	fl_draw(name, x() + (54 * scale), y() + (22 * scale));
 	fl_font(FL_HELVETICA, 10 * scale);
 	fl_draw(status, x() + (54 * scale), y() + (36 * scale));
-	icon->draw(); /* make it account for scrollbar::value(); */
-	invicon->draw();
 
 	fl_pop_clip();
 }
