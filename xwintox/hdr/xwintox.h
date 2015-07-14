@@ -25,12 +25,13 @@ typedef enum XWMtypes_e
     frName,
     frStatusMsg,
     frRequest,
-    frAdded,
+	frRequestServiced,
 	frMsg,
 
 	frDelete,
 	frMComDelete, /* issued by frDelete handler in GUI after it's cleared up */
 	frSendMsg,
+	frAcceptRequest,
 
     /* Chatrooms related */
     crNew,
@@ -73,6 +74,11 @@ static inline void freeContact(XWContact_t *ctToFree)
 	if (ctToFree->pszStatus) free (ctToFree->pszStatus);
 	if (ctToFree->pszID) free (ctToFree->pszID);
 }
+
+typedef struct XWFriendRequest_s
+{
+	char *pszAddress, *pszMessage;
+} XWFriendRequest_t;
 
 
 #endif

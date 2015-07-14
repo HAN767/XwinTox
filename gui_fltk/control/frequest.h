@@ -12,11 +12,6 @@ using namespace std;
 
 const int frheight=88;
 
-typedef struct FriendRequest_t
-{
-	int no;
-} FriendRequest_t;
-
 class FriendRequests: public Fl_Box
 {
 public:
@@ -33,7 +28,7 @@ public:
 	Fl_Multiline_Output *message;
 	Fl_Button *accept, *reject, *next;
 
-	vector <FriendRequest_t*> frs;
+	vector <XWFriendRequest_t*> frs;
 	int selected, scale;
 
 	const XWF_hObj_t *hObj_;

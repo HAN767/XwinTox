@@ -96,6 +96,7 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 	TOX_ERR_BOOTSTRAP txberrTberr;
 	struct Tox_Options *ptxoTopts =tox_options_new(0);
 	PBMessage_t *msgContacts =PB_New_Message();
+	uint8_t mypubkey[TOX_ADDRESS_SIZE];
 
 	LOCK(pimcSelf)
 
@@ -146,6 +147,9 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 		dbg("Failed to bootstrap\n");
 	}
 
+	tox_self_get_address(TOXINST, mypubkey);
+	dbg("Tox ID: %s\n",bin_to_hex_string(mypubkey, TOX_ADDRESS_SIZE));
+
 	register_callbacks(hobjSelf);
 	getfriends(PRIVATE(pimcSelf)->ptoxTox, pimcSelf->lstContacts);
 
@@ -154,6 +158,8 @@ int MCT_Connect(XWF_Object_Handle_t *hobjSelf)
 	SUBSCRIBE(clSaveData, hobjSelf, MCT_recv);
 
 	SUBSCRIBE(frSendMsg, hobjSelf, MCT_recv);
+	SUBSCRIBE(frDelete, hobjSelf, MCT_recv);
+
 	msgContacts->V =pimcSelf->lstContacts;
 	DISPATCH(clContacts, msgContacts);
 

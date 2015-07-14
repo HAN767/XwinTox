@@ -3,8 +3,9 @@
 
 #include "misc.h"
 #include "postbox.h"
-#include "xwintox.h"
+#include "hexstring.h"
 
+#include "xwintox.h"
 #include "MCOMMTOX.h"
 #include "callback.h"
 
@@ -19,6 +20,7 @@ void register_callbacks(XWF_Object_Handle_t *hobjSelf)
 	tox_callback_friend_status(TOXINST, cb_friend_status, hobjSelf);
 	tox_callback_friend_name(TOXINST, cb_friend_name, hobjSelf);
 	tox_callback_friend_message(TOXINST, cb_friend_message, hobjSelf);
+	tox_callback_friend_request(TOXINST, cb_friend_request, hobjSelf);
 }
 
 CBFUNC(self_connection_status, TOX_CONNECTION connection_status)
@@ -120,4 +122,16 @@ CBFUNC(friend_message, uint32_t friend_number, TOX_MESSAGE_TYPE type,
 	msgFrMsg->I1 =friend_number;
 	msgFrMsg->S1 =strndup(message, length);
 	DISPATCH(frMsg, msgFrMsg);
+}
+
+CBFUNC(friend_request, const uint8_t *public_key, const uint8_t *message,
+       size_t length)
+{
+	CBPREP
+	PBMessage_t *msgFrRequest =PB_New_Message();
+
+	msgFrRequest->S1 =bin_to_hex_string(public_key, TOX_PUBLIC_KEY_SIZE);
+	msgFrRequest->S2 =strndup(message, length);
+
+	DISPATCH(frRequest, msgFrRequest);
 }

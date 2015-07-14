@@ -19,22 +19,19 @@ using namespace std;
 
 char *GetShortenedText(char* text, size_t LenLimit);
 
-void frs_post(int mtype, PBMessage_t* msg, void* custom)
+void freqFrRequest(int mtype, PBMessage_t* msg, void* custom)
 {
-	/*FriendRequests* me =(FriendRequests*)custom;
+	FriendRequests *self =static_cast<FriendRequests*>(custom);
+	XWFriendRequest_t *newfr =new XWFriendRequest_t;
 
-	if(mtype == PB_FRequest)
-	{
-		FriendRequest_t *newfr =new FriendRequest_t;
-		newfr->pubkey =strdup(msg->S1);
-		newfr->message =strdup(msg->S2);
-		me->frs.push_back(newfr);
+	newfr->pszAddress =strdup(msg->S1);
+	newfr->pszMessage =strdup(msg->S2);
+	self->frs.push_back(newfr);
 
-		if(me->selected == -1) me->selected =0;
-		else me->next->activate();
+	if(self->selected == -1) self->selected =0;
+	else self->next->activate();
 
-		me->redraw();
-	}*/
+	self->redraw();
 }
 
 void frs_nextreq(FriendRequests *f)
@@ -116,18 +113,19 @@ FriendRequests::FriendRequests(const XWF_hObj_t *hobj, int X, int Y, int S)
 	message->value("");
 	message->wrap(1);
 
-	/*static FriendRequest_t test, test2;
-	test.message="<SylvieLorxu> I would definitely not accept stqism as my boyfriend. Sorry, he's just not my type. ";
-	test.pubkey="Zetok";
-	test2.message="Not a friendo";
-	test2.pubkey="Tox";
+	static XWFriendRequest_t test, test2;
+	test.pszMessage="<SylvieLorxu> I would definitely not accept stqism as my boyfriend. Sorry, he's just not my type. ";
+	test.pszAddress="Zetok";
+	test2.pszMessage="Not a friendo";
+	test2.pszAddress="Tox";
 
 	frs.push_back(&test);
 	frs.push_back(&test2);
 	this->selected =0;
 	this->redraw();
 
-	PB_Register(APP->events, PB_FRequest | PB_FReqServiced, this, frs_post);*/
+	hObj_->pSvcs->fnSubscribe(hObj_, frRequest, this, freqFrRequest);
+	/*PB_Register(APP->events, PB_FRequest | PB_FReqServiced, this, frs_post);*/
 }
 
 void FriendRequests::resize(int X, int Y, int W, int H)
@@ -159,13 +157,13 @@ void FriendRequests::draw()
 		if(frs.size() > 1) next->activate();
 		else next->deactivate();
 
-/*		sprintf(idtext, "Client ID: %s",
-		        GetShortenedText(frs[selected]->pubkey, 20));
+		sprintf(idtext, "Client ID: %s",
+		        GetShortenedText(frs[selected]->pszAddress, 20));
 		fl_font(fl_font(), 11.2 * scale);
 		fl_draw(idtext, x() + 4 * scale,
 		        y() + 14 * scale);
-		message->value(frs[selected]->message);
-		message->redraw();*/
+		message->value(frs[selected]->pszMessage);
+		message->redraw();
 	}
 	else
 	{

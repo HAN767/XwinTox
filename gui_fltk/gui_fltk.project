@@ -114,7 +114,6 @@
     <File Name="control/msgarea.h"/>
     <File Name="control/frequest.cc"/>
     <File Name="control/cntctlst.cc"/>
-    <File Name="control/xwin.h"/>
     <File Name="control/xwin.cc"/>
     <File Name="control/sidebar.cc"/>
     <File Name="control/sbarbtm.h"/>
