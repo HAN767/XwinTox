@@ -139,6 +139,7 @@
     <File Name="control/xwin.h"/>
     <File Name="control/gsetting.cc"/>
     <File Name="control/gsetting.h"/>
+    <File Name="control/sr_table.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">
     <File Name="nanosvg/nsvgwrap.c"/>

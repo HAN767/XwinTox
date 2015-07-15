@@ -18,6 +18,7 @@ GUI_FLTK_SOURCES += control/sbartop.cc control/statbox.cc control/garea.cc
 GUI_FLTK_SOURCES += control/gaddfrnd.cc control/cntctlst.cc control/cntctent.cc
 GUI_FLTK_SOURCES += control/msgarea.cc control/gtrnsfer.cc control/translst.cc
 GUI_FLTK_SOURCES += control/transent.cc control/frequest.cc control/gsetting.cc
+GUI_FLTK_SOURCES += control/sr_table.cc
 GUI_FLTK_INCS = $(PATH_ROOT)/libsunshine/hdr \
 		$(PATH_ROOT)/xwintox/hdr \
 		hdr \
