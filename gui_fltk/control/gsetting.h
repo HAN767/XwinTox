@@ -7,7 +7,6 @@
 #include <FL/Fl_Tabs.H>
 
 #include "control/garea.h"
-#include "control/sr_table.h"
 
 class GSettings: public GArea
 {
@@ -23,7 +22,7 @@ public:
 	Fl_Group *pagePlugins, *pageIdentity;
 
 	/* pagePlugins */
-	ColResizeBrowser *tableMods;
+	//Fl_Browser*tableMods;
 	/* end pagePlugins */
 
 	const XWF_hObj_t* hObj_;

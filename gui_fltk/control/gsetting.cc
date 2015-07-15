@@ -19,23 +19,27 @@ GSettings::GSettings(const XWF_hObj_t* hObj, int S) :
 		/* pagePlugins begin */
 		pagePlugins =new Fl_Group(0, 0, 1, 1, "Modules");
 		{
-			ColResizeBrowser *b = new ColResizeBrowser(0, 0, 1, 1);
+			/*ColResizeBrowser *b = new ColResizeBrowser(0, 0, 400, 400);
 			b->showcolsep(1);
 			b->colsepcolor(FL_RED);
 			b->column_char('\t'); // tabs as column delimiters
-			//b->type(FL_MULTI_BROWSER);
+			b->type(FL_MULTI_BROWSER);
 
 			// NICER COLORED HEADING
-			b->add("@B12@C7@b@.Module\t\tDescription");
+			b->add("@B12@C7@b@.Module\tDescription");
 			b->add("Test Module\tDoes a test.");
+			b->add("Test Module\tdoes many many many tests");
 			b->end();
+			tableMods =b;*/
 		}
 		pagePlugins->end();
+		/* pagePlugins end */
 		pageIdentity =new Fl_Group(0, 0, 1, 1, "Identity");
 		pageIdentity->end();
 	}
 	pages->end();
 	end();
+	resize(x(), y(), w(), h());
 }
 
 void GSettings::resize(int X, int Y, int W, int H)
@@ -46,6 +50,7 @@ void GSettings::resize(int X, int Y, int W, int H)
 
 	pagePlugins->resize(pages->x(), pages->y() + (22.5 * scale), pages->w(),
 	                    pages->h() - (22.5 * scale));
+	/* pagePlugins */
 	int ppY =pages->y() + (27.5 * scale), ppX = pages->x() + (5 * scale);
 	int ppW =pages->w() - (10 * scale), ppH =pages->h() - (32.5 * scale);
 	pageIdentity->resize(pages->x(), pages->y() + (22.5 * scale), pages->w(),
