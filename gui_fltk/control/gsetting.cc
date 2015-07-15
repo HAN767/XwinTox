@@ -7,6 +7,7 @@
 
 #include "control/xwin.h"
 #include "control/gsetting.h"
+#include "control/sr_table.h"
 
 GSettings::GSettings(const XWF_hObj_t* hObj, int S) :
 	GArea(hObj, S, "Settings")
@@ -19,8 +20,16 @@ GSettings::GSettings(const XWF_hObj_t* hObj, int S) :
 		/* pagePlugins begin */
 		pagePlugins =new Fl_Group(0, 0, 1, 1, "Modules");
 		{
-			/*ColResizeBrowser *b = new ColResizeBrowser(0, 0, 400, 400);
-			b->showcolsep(1);
+			tblMods =new MyTable(0, 0, 1, 1);
+			tblMods->selection_color(FL_YELLOW);
+			tblMods->col_header(1);
+			tblMods->col_resize(1);
+			tblMods->when(FL_WHEN_RELEASE); // handle tblMods events on release
+			tblMods->row_height_all(18); // height of all rows
+			tblMods->load_command("Test","Test");
+			tblMods->load_command("Test2","Test Two");
+
+			/*b->showcolsep(1);
 			b->colsepcolor(FL_RED);
 			b->column_char('\t'); // tabs as column delimiters
 			b->type(FL_MULTI_BROWSER);
@@ -53,6 +62,7 @@ void GSettings::resize(int X, int Y, int W, int H)
 	/* pagePlugins */
 	int ppY =pages->y() + (27.5 * scale), ppX = pages->x() + (5 * scale);
 	int ppW =pages->w() - (10 * scale), ppH =pages->h() - (32.5 * scale);
+	tblMods->resize(ppX, ppY, ppW, ppH);
 	pageIdentity->resize(pages->x(), pages->y() + (22.5 * scale), pages->w(),
 	                     pages->h() - (22.5 * scale));
 }
