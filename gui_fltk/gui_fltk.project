@@ -136,6 +136,9 @@
     <File Name="control/translst.cc"/>
     <File Name="control/transent.cc"/>
     <File Name="control/gtrnsfer.cc"/>
+    <File Name="control/xwin.h"/>
+    <File Name="control/gsetting.cc"/>
+    <File Name="control/gsetting.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="nanosvg">
     <File Name="nanosvg/nsvgwrap.c"/>

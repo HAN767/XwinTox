@@ -11,6 +11,12 @@ extern "C"
 #include "sptr.h"
 #include "list.h"
 
+
+/* Ownership policy for PBMessages:
+ * Strings are owned by the Postbox.
+ * Void pointers are owned by the sender;
+ * they are not copied. */
+
 typedef struct PBMessage_s
 {
 	const char *ORIGIN;

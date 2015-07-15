@@ -25,6 +25,16 @@ void addfriendpressed(Fl_Widget* B , void*)
 	Xw->sidebar->bottom_area->addfriend->color(fl_rgb_color(68, 68, 67));
 }
 
+void settingspressed(Fl_Widget* B , void*)
+{
+	XwinTox *Xw =getXwin(B);
+
+	Xw->contents->NewCurrentArea(Xw->contents->settings);
+	Xw->sidebar->bottom_area->deselect_all();
+	Xw->sidebar->contacts->deselect_all();
+	Xw->sidebar->bottom_area->settings->color(fl_rgb_color(68, 68, 67));
+}
+
 Sidebar_Bottom_Area::Sidebar_Bottom_Area(const XWF_hObj_t* hObj, int S) :
 	Fl_Group(0, 0, 1, 1)
 {
@@ -45,6 +55,7 @@ Sidebar_Bottom_Area::Sidebar_Bottom_Area(const XWF_hObj_t* hObj, int S) :
 
 	addfriend->callback(addfriendpressed);
 	transfers->callback(transferspressed);
+	settings->callback(settingspressed);
 	deselect_all();
 	end();
 }

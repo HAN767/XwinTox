@@ -36,7 +36,6 @@
       <File Name="hdr/AOM/IGUI.h"/>
     </VirtualDirectory>
     <File Name="hdr/xwintox.h"/>
-    <File Name="../gui_fltk/control/xwin.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
