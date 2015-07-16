@@ -1,7 +1,9 @@
 #ifndef __XWINTOX_H__
 #define __XWINTOX_H__
 
-#include "AOM/IMComm.h"
+#include "dictionary.h"
+
+//#include "AOM/IMComm.h"
 #include "AOM/IGUI.h"
 
 typedef struct XWT_s

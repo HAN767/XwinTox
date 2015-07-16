@@ -49,3 +49,4 @@ Obj/*
 xwintox/xwintox
 out/*
 bld/*
+*.old/*
