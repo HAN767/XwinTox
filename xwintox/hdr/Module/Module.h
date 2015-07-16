@@ -24,6 +24,8 @@ typedef enum XWF_Modtype
     XWF_Static,
 } XWF_Modtype_e;
 
+static const char* XWF_Modtype_Text_sz[2] = { "Dynamic", "Static" };
+
 /* The function type of a module's exit function. */
 typedef int (*XWF_Exit_f)();
 
@@ -124,10 +126,12 @@ typedef struct XWF_Services_s
  * unloading of the module, so delete all resources held first. */
 typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
 
-typedef struct XWF_Objinfo_s
+typedef struct XWF_Module_Info_s
 {
-	const char *name, *description;
-} XWF_Objinfo_t;
+	const char *pszName, *pszType;
+} XWF_Module_Info_t;
+
+#define XWF_ModInfo_t XWF_Module_Info_t
 
 #ifdef __cplusplus
 }

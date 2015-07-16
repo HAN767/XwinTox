@@ -1,10 +1,6 @@
 #include <stdlib.h>
 #include <threads.h>
 
-#ifdef __cplusplus
-#include <FL/FL.H>
-#endif
-
 #include "list.h"
 #include "postbox.h"
 
@@ -104,9 +100,6 @@ void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg)
 	newdf->mtype =mtype;
 
 	List_add(pb->deferred, newdf);
-#ifdef __cplusplus
-	Fl::awake();
-#endif
 }
 
 void PB_Register(Postbox_t *pb, int mtype, void* custom,

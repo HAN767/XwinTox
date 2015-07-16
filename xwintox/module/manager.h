@@ -18,8 +18,8 @@ typedef struct ModuleManager_s
 	/* Objects registered with the wildcard - they handle any type. */
 	List_t *lstpobjWildcards;
 
-	/* List of module names, programming languages, and descriptions */
-	List_t *lstModinfo;
+	/* List of all XWF_Module_ts that are registered */
+	List_t *lstAllMods;
 
 	/* Private: */
 	/* Pointer to the XWFramework Manager's Services structure. */

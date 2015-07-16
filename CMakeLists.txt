@@ -18,5 +18,6 @@ include_directories("${PROJECT_SOURCE_DIR}/xwintox/hdr")
 add_subdirectory(libsunshine)
 add_subdirectory(xwintox)
 add_subdirectory(mcom_tox)
+add_subdirectory(gui_fltk)
 
 add_dependencies(xwintox libsunshine)

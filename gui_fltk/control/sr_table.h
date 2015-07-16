@@ -7,6 +7,7 @@
 #include <FL/Fl_Table_Row.H>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <vector>
 #include <algorithm> // STL sort
 

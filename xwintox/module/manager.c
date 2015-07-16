@@ -107,11 +107,13 @@ int ModuleManager_initialiseModule_(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 	if(!iRet)
 	{
 		dbg("Module <%s> loaded successfully.\n", pmodNew->pszName);
+		List_add(pmmManager->lstAllMods, pmodNew);
 		return 0;
 	}
 	else if(iRet == 1)
 	{
 		dbg("Module <%s> loaded with errors.\n", pmodNew->pszName);
+		List_add(pmmManager->lstAllMods, pmodNew);
 		return 0;
 	}
 	else
@@ -172,7 +174,15 @@ void *ModuleManager_call_(const XWF_Object_Handle_t *pobjhSource,
 	{
 		if (strcmp(pszService, "/GETMODULESINFO"))
 		{
-			/* do something here eventually */
+			List_t *lstRet;
+
+			LIST_ITERATE_OPEN(pmmManager->lstAllMods)
+				XWF_ModInfo_t *modinfoNew =malloc(sizeof(XWF_ModInfo_t));
+				XWF_Module_t *modEntry =(XWF_Module_t *)e_data;
+				modinfoNew->pszName =modEntry->pszName;
+				modinfoNew->pszType =XWF_Modtype_Text_sz[modEntry->enModtype];
+				List_add(lstRet, modinfoNew);
+			LIST_ITERATE_CLOSE(pmmManager->lstAllMods)
 		}
 	}
 	if(strncmp(pszService, "APP", 3) == 0)
