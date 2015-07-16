@@ -12,6 +12,7 @@
 GSettings::GSettings(const XWF_hObj_t* hObj, int S) :
 	GArea(hObj, S, "Settings")
 {
+	hObj_ =hObj;
 	scale = S;
 
 	pages =new Fl_Tabs(0, 0, 1, 1);
@@ -20,26 +21,16 @@ GSettings::GSettings(const XWF_hObj_t* hObj, int S) :
 		/* pagePlugins begin */
 		pagePlugins =new Fl_Group(0, 0, 1, 1, "Modules");
 		{
+			List_t *lstMods;
+			hObj_->pSvcs->fnCall(hObj_, "/GETMODULESINFO", lstMods);
 			tblMods =new MyTable(0, 0, 1, 1);
 			tblMods->selection_color(FL_YELLOW);
 			tblMods->col_header(1);
 			tblMods->col_resize(1);
 			tblMods->when(FL_WHEN_RELEASE); // handle tblMods events on release
 			tblMods->row_height_all(18); // height of all rows
-			tblMods->load_command("Test","Test");
-			tblMods->load_command("Test2","Test Two");
-
-			/*b->showcolsep(1);
-			b->colsepcolor(FL_RED);
-			b->column_char('\t'); // tabs as column delimiters
-			b->type(FL_MULTI_BROWSER);
-
-			// NICER COLORED HEADING
-			b->add("@B12@C7@b@.Module\tDescription");
-			b->add("Test Module\tDoes a test.");
-			b->add("Test Module\tdoes many many many tests");
-			b->end();
-			tableMods =b;*/
+	//		tblMods->load_command("Test","Test");
+//			tblMods->load_command("Test2","Test Two");
 		}
 		pagePlugins->end();
 		/* pagePlugins end */

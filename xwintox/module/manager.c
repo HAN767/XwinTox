@@ -4,6 +4,7 @@
 
 #include "misc.h"
 #include "postbox.h"
+#include "dictionary.h"
 
 #include "module/manager.h"
 
@@ -167,6 +168,13 @@ void *ModuleManager_call_(const XWF_Object_Handle_t *pobjhSource,
                           const char *pszService,
                           const void *pvParams)
 {
+	if(strncmp(pszService, "/", 1) == 0)
+	{
+		if (strcmp(pszService, "/GETMODULESINFO"))
+		{
+			/* do something here eventually */
+		}
+	}
 	if(strncmp(pszService, "APP", 3) == 0)
 	{
 		return pmmManager->fnAppCall(pobjhSource, pszService + 4, pvParams);

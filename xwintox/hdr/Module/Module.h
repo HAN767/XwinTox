@@ -124,6 +124,11 @@ typedef struct XWF_Services_s
  * unloading of the module, so delete all resources held first. */
 typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
 
+typedef struct XWF_Objinfo_s
+{
+	const char *name, *description;
+} XWF_Objinfo_t;
+
 #ifdef __cplusplus
 }
 #endif

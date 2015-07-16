@@ -118,34 +118,18 @@ void MyTable::autowidth(int pad)
 	table_resized();
 	redraw();
 }
-// Resize parent window to size of table
-void MyTable::resize_window()
-{
-// Determine exact outer width of table with all columns visible
-	int width = 4; // width of table borders
 
-	for(int t=0; t<cols(); t++) width += col_width(t);    // total width of all columns
-
-	width += MARGIN*2;
-
-	if(width < 200 || width > Fl::w()) return;
-
-	window()->resize(window()->x(), window()->y(), width, window()->h()); // resize window to fit
-}
 // Load table with output of 'cmd'
-void MyTable::load_command(const char *t1, const char *t2)
+void MyTable::load_command(std::vector <const char*> columns)
 {
 	cols(0);
 // Add a new row
 	Row newrow;
 	_rowdata.push_back(newrow);
 	std::vector<char*> &rc = _rowdata[_rowdata.size() -1].cols;
-// Break line into separate word 'columns'
-	char *ss;
-	const char *delim = " \t\n";
 
-	rc.push_back(strdup(t1));
-	rc.push_back(strdup(t2));
+	/*rc.push_back(strdup(t1));
+	rc.push_back(strdup(t2));*/
 
 // Keep track of max # columns
 	if((int)rc.size() > cols())
