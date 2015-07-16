@@ -38,6 +38,7 @@ typedef struct XWF_Module_s
 	XWF_Exit_f fnExit;
 	XWF_Modtype_e enModtype;
 	void *hdlLib;
+	List_t *lstClasses;
 } XWF_Module_t;
 
 struct XWF_Services_s;
@@ -128,7 +129,7 @@ typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
 
 typedef struct XWF_Module_Info_s
 {
-	const char *pszName, *pszType;
+	const char *pszName, *pszType, *pszClasses;
 } XWF_Module_Info_t;
 
 #define XWF_ModInfo_t XWF_Module_Info_t

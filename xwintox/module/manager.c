@@ -1,4 +1,5 @@
 #include <dlfcn.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -25,6 +26,7 @@ void ModuleManager_init(XWF_Call_f fnAppCall)
 	pmmManager->lstpmodModules =List_new();
 	pmmManager->lstpobjWildcards =List_new();
 	pmmManager->dictpobjObjects =Dictionary_new();
+	pmmManager->lstAllMods =List_new();
 	pmmManager->psrvServices.uiVersion =1;
 	pmmManager->psrvServices.fnRegisterClass =ModuleManager_registerClass_;
 	pmmManager->psrvServices.fnCall =ModuleManager_call_;
@@ -102,6 +104,7 @@ int ModuleManager_destroyObject(XWF_Object_Handle_t *pobjhToDelete)
 
 int ModuleManager_initialiseModule_(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 {
+	pmodNew->lstClasses =List_new();
 	int iRet =fnInit(pmodNew, &pmmManager->psrvServices);
 
 	if(!iRet)
@@ -147,6 +150,7 @@ int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered)
 		dbg("Adding new %s wildcard class provided by <%s>\n", pszLang,
 		    pobjRegistered->pmodProvider->pszName);
 		List_add(pmmManager->lstpobjWildcards, (void*)pobjRegistered);
+		List_add(pobjRegistered->pmodProvider->lstClasses, (void*)pobjRegistered);
 		return 0;
 	}
 	else if(Dictionary_get(pmmManager->dictpobjObjects,
@@ -162,6 +166,7 @@ int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered)
 		    pobjRegistered->pmodProvider->pszName);
 		Dictionary_set_pointer(pmmManager->dictpobjObjects,
 		                       pobjRegistered->pszType, pobjRegistered);
+		List_add(pobjRegistered->pmodProvider->lstClasses, (void*)pobjRegistered);
 		return 0;
 	}
 }
@@ -172,17 +177,36 @@ void *ModuleManager_call_(const XWF_Object_Handle_t *pobjhSource,
 {
 	if(strncmp(pszService, "/", 1) == 0)
 	{
-		if (strcmp(pszService, "/GETMODULESINFO"))
+		dbg("Service\n");
+		if (strcmp(pszService, "/GETMODULESINFO") == 0)
 		{
-			List_t *lstRet;
+			dbg("Prepare a list\n");
+			List_t *lstRet =List_new();;
 
 			LIST_ITERATE_OPEN(pmmManager->lstAllMods)
 				XWF_ModInfo_t *modinfoNew =malloc(sizeof(XWF_ModInfo_t));
 				XWF_Module_t *modEntry =(XWF_Module_t *)e_data;
-				modinfoNew->pszName =modEntry->pszName;
-				modinfoNew->pszType =XWF_Modtype_Text_sz[modEntry->enModtype];
+				char *pszClasses =malloc(128);
+				unsigned int dwRemLen =128;
+
+				LIST_ITERATE_OPEN(modEntry->lstClasses)
+					XWF_Class_t *clsCur =e_data;
+					if((strlen(clsCur->pszSubtype) + strlen(clsCur->pszSubtype)
+						+ 1) < dwRemLen)
+					{
+						dwRemLen -=sprintf(pszClasses, "%s.%s", clsCur->pszType,
+											clsCur->pszSubtype);
+					}
+				LIST_ITERATE_CLOSE(modEntry->lstClasses)
+
+				modinfoNew->pszName =strdup(modEntry->pszName);
+				modinfoNew->pszType =strdup(XWF_Modtype_Text_sz[modEntry->enModtype]);
+				modinfoNew->pszClasses =pszClasses;
+
 				List_add(lstRet, modinfoNew);
 			LIST_ITERATE_CLOSE(pmmManager->lstAllMods)
+
+			return lstRet;
 		}
 	}
 	if(strncmp(pszService, "APP", 3) == 0)

@@ -128,6 +128,11 @@ void MyTable::load_command(std::vector <const char*> columns)
 	_rowdata.push_back(newrow);
 	std::vector<char*> &rc = _rowdata[_rowdata.size() -1].cols;
 
+	for (const auto column : columns)
+	{
+		rc.push_back(strdup(column));
+	}
+
 	/*rc.push_back(strdup(t1));
 	rc.push_back(strdup(t2));*/
 

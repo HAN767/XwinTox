@@ -21,16 +21,25 @@ GSettings::GSettings(const XWF_hObj_t* hObj, int S) :
 		/* pagePlugins begin */
 		pagePlugins =new Fl_Group(0, 0, 1, 1, "Modules");
 		{
-			List_t *lstMods;
-			hObj_->pSvcs->fnCall(hObj_, "/GETMODULESINFO", lstMods);
+			List_t *lstMods =static_cast<List_t*>(hObj_->pSvcs->fnCall(hObj_,
+			                 "/GETMODULESINFO", 0));
 			tblMods =new MyTable(0, 0, 1, 1);
 			tblMods->selection_color(FL_YELLOW);
 			tblMods->col_header(1);
 			tblMods->col_resize(1);
 			tblMods->when(FL_WHEN_RELEASE); // handle tblMods events on release
 			tblMods->row_height_all(18); // height of all rows
-	//		tblMods->load_command("Test","Test");
-//			tblMods->load_command("Test2","Test Two");
+
+			LIST_ITERATE_OPEN(lstMods)
+				XWF_ModInfo_t *modinfoCur =static_cast<XWF_ModInfo_t*>(e_data);
+				vector<const char*> rows;
+
+				rows.push_back(modinfoCur->pszName);
+				rows.push_back(modinfoCur->pszType);
+				rows.push_back(modinfoCur->pszClasses);
+				tblMods->load_command(rows);
+				free(modinfoCur);
+			LIST_ITERATE_CLOSE(lstMods)
 		}
 		pagePlugins->end();
 		/* pagePlugins end */

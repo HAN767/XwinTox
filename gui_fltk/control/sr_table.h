@@ -85,7 +85,7 @@ public:
 	void load_command(std::vector <const char*> columns); 
 	void autowidth(int pad); // Automatically set column widths to data
 	void resize_window(); // Resize parent window to size of table
-	const char *G_header[3] = { "Module", "Description", 0 };
+	const char *G_header[4] = { "Module", "Type", "Classes", 0 };
 };
 
 #endif
