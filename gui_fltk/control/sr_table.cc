@@ -120,11 +120,13 @@ void MyTable::autowidth(int pad)
 }
 
 // Load table with output of 'cmd'
-void MyTable::load_command(std::vector <const char*> columns)
+void MyTable::load_command(void *userdata, std::vector <const char*> columns)
 {
 	cols(0);
 // Add a new row
 	Row newrow;
+
+	newrow.userdata =userdata;
 	_rowdata.push_back(newrow);
 	std::vector<char*> &rc = _rowdata[_rowdata.size() -1].cols;
 
@@ -146,7 +148,7 @@ void MyTable::load_command(std::vector <const char*> columns)
 // How many rows we loaded
 	rows((int)_rowdata.size());
 // Auto-calculate widths, with 20 pixel padding
-	autowidth(20);
+	autowidth(20 * scale);
 }
 // Callback whenever someone clicks on different parts of the table
 void MyTable::event_callback(Fl_Widget*, void *data)
@@ -180,6 +182,16 @@ void MyTable::event_callback2()
 		}
 
 		break;
+	}
+	case CONTEXT_CELL:
+	{
+		if(Fl::event() == FL_PUSH && Fl::event_button() == 1)
+		{
+			int rownum =callback_row();
+			char *text =_rowdata[rownum].cols[0];
+			printf("Context: Row %d. Text: %s\n", rownum, text);
+			cellcallback(this, _rowdata[rownum].userdata, userdatacellcallback);
+		}
 	}
 
 	default:

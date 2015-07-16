@@ -130,20 +130,7 @@ int ModuleManager_registerClass_(const XWF_Class_t *pobjRegistered)
 {
 	const char *pszLang ="Unknown";
 
-	switch(pobjRegistered->enLang)
-	{
-	case XWF_Lang_C:
-		pszLang ="C-language";
-		break;
-
-	case XWF_Lang_CXX:
-		pszLang ="C++-language";
-		break;
-
-	case XWF_Lang_Script:
-		pszLang ="Script-language";
-		break;
-	}
+	pszLang =XWF_Lang_Text_sz[pobjRegistered->enLang];
 
 	if(strcmp(pobjRegistered->pszType, "*") == 0)
 	{
@@ -199,12 +186,31 @@ void *ModuleManager_call_(const XWF_Object_Handle_t *pobjhSource,
 					}
 				LIST_ITERATE_CLOSE(modEntry->lstClasses)
 
+				modinfoNew->hMod =modEntry;
 				modinfoNew->pszName =strdup(modEntry->pszName);
 				modinfoNew->pszType =strdup(XWF_Modtype_Text_sz[modEntry->enModtype]);
 				modinfoNew->pszClasses =pszClasses;
 
 				List_add(lstRet, modinfoNew);
 			LIST_ITERATE_CLOSE(pmmManager->lstAllMods)
+
+			return lstRet;
+		}
+		else if (strcmp(pszService, "/GETMODULECLASSESINFO") == 0)
+		{
+			dbg("Get Moduel Classes Info\n");
+			const XWF_Module_t *modThis =pvParams;
+			List_t *lstRet =List_new();
+
+			LIST_ITERATE_OPEN(modThis->lstClasses)
+				XWF_Class_t *clsCur =e_data;
+				XWF_ClassInfo_t *clsiNew=malloc(sizeof(XWF_ClassInfo_t));
+
+				asprintf(&clsiNew->pszName, "%s.%s", clsCur->pszType, clsCur->pszSubtype);
+				asprintf(&clsiNew->pszLang, "%s", XWF_Lang_Text_sz[clsCur->enLang]);
+
+				List_add(lstRet, clsiNew);
+			LIST_ITERATE_CLOSE(modThis->lstClasses)
 
 			return lstRet;
 		}

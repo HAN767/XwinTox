@@ -23,7 +23,7 @@ public:
 	Fl_Group *pagePlugins, *pageIdentity;
 
 	/* pagePlugins */
-	MyTable *tblMods;
+	MyTable *tblMods, *tblClasses;
 	/* end pagePlugins */
 
 	const XWF_hObj_t* hObj_;

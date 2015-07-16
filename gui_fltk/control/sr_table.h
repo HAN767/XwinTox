@@ -11,18 +11,19 @@
 #include <vector>
 #include <algorithm> // STL sort
 
-#define MARGIN 20
+#define MARGIN (18 * scale)
 
 // Font face/sizes for header and rows
 #define HEADER_FONTFACE FL_HELVETICA_BOLD
-#define HEADER_FONTSIZE 16
+#define HEADER_FONTSIZE 13.5 * scale
 #define ROW_FONTFACE FL_HELVETICA
-#define ROW_FONTSIZE 16
+#define ROW_FONTSIZE 11.5 * scale
 
 // A single row of columns
 class Row
 {
 public:
+	void *userdata;
 	std::vector<char*> cols;
 };
 
@@ -58,6 +59,10 @@ public:
 	}
 };
 
+class MyTable;
+
+typedef void (*fnCellCB) (MyTable *w, void* rowdata, void* userdata);
+
 // Derive a custom class from Fl_Table_Row
 class MyTable : public Fl_Table_Row
 {
@@ -67,25 +72,50 @@ private:
 	int _sort_lastcol;
 	static void event_callback(Fl_Widget*, void*);
 	void event_callback2(); // callback for table events
+	void *userdatacellcallback;
+	fnCellCB cellcallback;
 protected:
 	void draw_cell(TableContext context, int R=0, int C=0, // table cell drawing
 	               int X=0, int Y=0, int W=0, int H=0);
 	void sort_column(int col, int reverse=0); // sort table by a column
 	void draw_sort_arrow(int X,int Y,int W,int H);
+	int scale;
 public:
 // Ctor
-	MyTable(int x, int y, int w, int h, const char *l=0) : Fl_Table_Row(x,y,w,h,l)
+	MyTable(int x, int y, int w, int h, int s, const char **Gh, const char *l=0)
+		: Fl_Table_Row(x,y,w,h,l)
 	{
+		G_header =(Gh);
+		scale =s;
 		_sort_reverse = 0;
 		_sort_lastcol = -1;
 		end();
 		callback(event_callback, (void*)this);
 	}
 	~MyTable() { } // Dtor
-	void load_command(std::vector <const char*> columns); 
+	void load_command(void *userdata, std::vector <const char*> columns);
 	void autowidth(int pad); // Automatically set column widths to data
 	void resize_window(); // Resize parent window to size of table
-	const char *G_header[4] = { "Module", "Type", "Classes", 0 };
+	void setcellcallback(fnCellCB cb, void* userdata)
+	{
+		cellcallback =cb;
+		userdatacellcallback =userdata;
+	}
+	void clearall()
+	{
+		for (const auto row : _rowdata)
+		{
+			for (const auto col : row.cols)
+			{
+				free(col);
+			}
+		}
+		_rowdata.clear();
+		cols(0);
+		rows(0);
+		clear();
+	}
+	const char **G_header;
 };
 
 #endif

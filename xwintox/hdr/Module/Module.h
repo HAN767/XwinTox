@@ -18,6 +18,9 @@ typedef enum XWF_Lang
 }
 XWF_Lang_e;
 
+static const char* XWF_Lang_Text_sz[3] = 
+{ "C-language", "C++-language", "Script-language" };
+
 typedef enum XWF_Modtype
 {
     XWF_Dynamic,
@@ -129,10 +132,35 @@ typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
 
 typedef struct XWF_Module_Info_s
 {
-	const char *pszName, *pszType, *pszClasses;
+	void *hMod;
+	char *pszName, *pszType, *pszClasses;
 } XWF_Module_Info_t;
 
+inline void XWF_Free_Module_Info(XWF_Module_Info_t *modInfo)
+{
+	free(modInfo->pszName);
+	free(modInfo->pszType);
+	free(modInfo->pszClasses);
+	free(modInfo);
+}
+
+typedef struct XWF_Class_Info_s
+{
+	char *pszName, *pszLang;
+} XWF_Class_Info_t;
+
+inline void XWF_Free_Class_Info(XWF_Class_Info_t *modInfo)
+{
+	free(modInfo->pszName);
+	free(modInfo->pszLang);
+	free(modInfo);
+}
+
 #define XWF_ModInfo_t XWF_Module_Info_t
+#define XWF_FreeModInfo XWF_Free_Module_Info
+
+#define XWF_ClassInfo_t XWF_Class_Info_t
+#define XWF_FreeClassInfo XWF_Free_Class_Info
 
 #ifdef __cplusplus
 }
