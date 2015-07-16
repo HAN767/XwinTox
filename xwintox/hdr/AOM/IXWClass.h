@@ -1,7 +1,10 @@
 #ifndef __IGUICXX__H__
 #define __IGUICXX__H__
 
-#include <vector>
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #include "list.h"
 #include "misc.h"
@@ -29,6 +32,13 @@ typedef struct XWClass_s
 } XWClass_t;
 
 #ifdef __cplusplus
+}
+#endif
+
+
+#ifdef __cplusplus
+
+#include <vector>
 
 template <typename T>
 class XWClassT
@@ -39,7 +49,7 @@ public:
 		cXWClass_.hCXXObj =this;
 		cXWClass_.fnStart =staticStart;
 	}
-	virtual ~XWClassT()
+	~XWClassT()
 	{
 	}
 	static XWClassT *getSelf(XWClass_t *pguiSelf)
@@ -54,6 +64,7 @@ public:
 	static void * create(XWF_ObjectParams_t *pobpParams)
 	{
 		T *NewObject =new T(pobpParams);
+		//NewObject->hObj_ =pobpParams->pobjhHandle;
 		return &NewObject->cXWClass_;
 	}
 	static int destroy(void *pvToDestroy)
@@ -69,12 +80,19 @@ public:
 	}
 	static int staticStart(XWF_Object_Handle_t *pguiSelf)
 	{
+		getSelf(pguiSelf)->hObj_ =pguiSelf;
 		return getSelf(pguiSelf)->start();
 	}
 
 	void *xwfCall(const char *pszService, void *pvParams)
 	{
 		return hObj_->pSvcs->fnCall(hObj_, pszService, pvParams);
+	}
+
+	const char *pszxwfCall(const char *pszService, const char *pvParams)
+	{
+		return static_cast<const char*>
+		(xwfCall(pszService, const_cast<char*>(pvParams)));
 	}
 
 	void *xwfSubscribe(unsigned int dwType, void *pvCustom, PB_Callback_f fnCallback)

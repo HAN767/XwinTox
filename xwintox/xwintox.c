@@ -5,7 +5,7 @@
 #include "misc.h"
 
 #include "Module/Module.h"
-//#include "AOM/IMComm.h"
+#include "AOM/IXWClass.h"
 #include "module/manager.h"
 #include "xwt.h"
 
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 	ModuleManager_loadDynamicModule
 	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/GUI_FLTK.so");
 
-	//App.pimcIM =ModuleManager_createObject("MESSENGER");
+	XWF_Object_Handle_t *msgr =ModuleManager_createObject("MESSENGER");
 	App.pguiGUI =ModuleManager_createObject("GUI");
 	/*IMCOBJ(App.pimcIM)->pszName =strdup(Dictionary_get(App.dictConfig,
 	                                    "XwinTox.Name"));
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
 	usleep(250); /* let the GUI initialise, ready for signal reception */
 
-	//IMCOBJ(App.pimcIM)->fnConnect(App.pimcIM);
+	((XWClass_t*)msgr->hObj)->fnStart(msgr);
 
 	while(1)
 	{

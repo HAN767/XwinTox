@@ -30,6 +30,7 @@ public:
 	static void * create(XWF_ObjectParams_t *pobpParams)
 	{
 		T *GUI =new T(pobpParams);
+		GUI->hObj_ =pobpParams->pobjhHandle;
 		return &GUI->hCGUI_;
 	}
 	static int destroy(void *pobjToDestroy)
@@ -44,6 +45,8 @@ public:
 	}
 	static int staticStart(XWF_Object_Handle_t *pguiSelf)
 	{
+		getSelf(pguiSelf)->hObj_ =pguiSelf;
+		//getSelf(pguiSelf)->hObj_->pxwoObject =
 		return getSelf(pguiSelf)->start();
 	}
 
