@@ -12,6 +12,6 @@ file(GLOB_RECURSE SRC_FILES "*.cc")
 file(GLOB H_FILES "hdr/*.h")
 
 add_library(mcommtox SHARED ${SRC_FILES})
-target_link_libraries(mcommtox ${libtoxcore_LIBRARIES})
+target_link_libraries(mcommtox ${libtoxcore_LIBRARIES} libsunshine)
 install(TARGETS mcommtox LIBRARY DESTINATION lib)
 install(FILES ${H_FILES} DESTINATION include)
