@@ -6,7 +6,6 @@
 #include <FL/Fl.H>
 
 #include "Module/Module.h"
-#include "AOM/IGUICxx.h"
 #include "dictionary.h"
 #include "misc.h"
 #include "postbox.h"
@@ -25,11 +24,14 @@ int GUIFLTK::start()
 {
 	Xw_ =new XwinTox(this, 640, 480, "XwinTox", 1);//1);
 	Xw_->show();
-	thrd_create(&thrdFLTK_, (thrd_start_t)fltkloop, 0);
+
+	thrd_create(&thrdFLTK_, (thrd_start_t)fltkLoop, 0);
+
+	setFLTKCallbacks();
 	return 0;
 }
 
-int GUIFLTK::fltkloop(void *)
+int GUIFLTK::fltkLoop(void *)
 {
 	while(1)
 	{

@@ -15,5 +15,7 @@ char *GetDisplayName(XWContact_t *contact, size_t LenLimit);
 char *GetDisplayStatus(XWContact_t *contact, size_t LenLimit);
 char *GetShortenedText(char* text, size_t LenLimit);
 
+void RemoveSpaces(char * s);
+
 #endif
 

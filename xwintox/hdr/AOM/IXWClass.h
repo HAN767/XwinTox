@@ -1,5 +1,5 @@
-#ifndef __IGUICXX__H__
-#define __IGUICXX__H__
+#ifndef __IXWCLASS__H__
+#define __IXWCLASS__H__
 
 #ifdef __cplusplus
 extern "C"
@@ -45,12 +45,6 @@ template<class T, class Method, Method m>
 static void pbThunk(unsigned int dwType,PBMessage_t *msg, void *userData)
 {
 	return ((*static_cast<T *>(userData)).*m)(dwType, msg);
-}
-
-template<class T, class Method, Method m, class Ret, class ...Args>
-static Ret bounce(Args... args, void *priv)
-{
-	return ((*reinterpret_cast<T *>(priv)).*m)(args...);
 }
 
 template <typename T>
@@ -142,9 +136,10 @@ public:
 		return 0;
 	}
 
+	const XWF_Object_Handle_t *hObj_;
+
 protected:
 	PB_Callback_f fnRecvSignal;
-	const XWF_Object_Handle_t *hObj_;
 	XWClass_t cXWClass_;
 };
 

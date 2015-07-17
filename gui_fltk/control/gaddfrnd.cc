@@ -41,51 +41,9 @@ void af_post(int mtype, PBMessage_t* msg, void* custom)
 	}*/
 }
 
-void removespaces(char * s)
-{
-	char *p =s;
-	int l =strlen(p);
-
-	while(isspace(p[l - 1])) p[--l] =0;
-
-	while(*p && isspace(*p)) ++p, --l;
-
-	memmove(s, p, l + 1);
-}
-
 void af_pressed(Fl_Widget *w, void *custom)
 {
-	GAddFriend *g =(GAddFriend*)custom;
-	char *id =strdup(g->id->value());
-	const char *msg =g->message->value();
 
-	removespaces(id);
-
-	/* try to identify what type of request this is */
-	if((strlen(id) == 76) && !strchr(id, '@'))
-	{
-		/* a regular tox key */
-		dbg("Regular Tox key\n");
-		af_sendrequest(id, msg);
-		g->id->value("");
-		free(id);
-		return;
-	}
-	else if(strchr(id, '@'))
-	{
-		dbg("ToxDNS ID\n");
-		/*	Call_t *call =(Call_t*)calloc(1, sizeof(Call_t));
-			call->Func =R_DNSResolve;
-			call->S1 =id;
-			List_add(APP->Resolv->Calls, call);
-			ResolvAddWork(1);*/
-		return;
-	}
-	else
-	{
-		dbg("ID unrecognised");
-		free(id);
-	}
 
 }
 
@@ -113,7 +71,7 @@ GAddFriend::GAddFriend(const XWF_hObj_t* hObj, int S) :
 	send->color(fl_rgb_color(107, 194, 96));
 	send->labelcolor(255);
 	send->labelsize(14 * S);
-	send->callback(af_pressed, this);
+	//send->callback(af_pressed, this);
 
 	//PB_Register(APP->events, PB_DNSResolved, this, af_post);
 
