@@ -18,12 +18,6 @@ MCOMMTOX::MCOMMTOX(XWF_ObjectParams_t *prmObj)
 	dbg("New MCOMMTOX created\n");
 }
 
-void MCOMMTOX::cb_self_connection_status(TOX_CONNECTION connection_status)
-{
-	dbg("Connection Status: %d\n", connection_status);
-	return;
-}
-
 int MCOMMTOX::start()
 {
 	struct Tox_Options *ptxoTopts =tox_options_new(0);
@@ -82,12 +76,8 @@ int MCOMMTOX::start()
 	tox_self_get_address(tox_, mypubkey);
 	dbg("Tox ID: %s\n", bin_to_hex_string(mypubkey, TOX_ADDRESS_SIZE));
 
-
-	tox_callback_self_connection_status
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_self_connection_status),
-	 &MCOMMTOX::cb_self_connection_status>::call,
-	 this);
+	registerCallbacks();
+	xwfSubscribe(2, &MCOMMTOX::recvSignal);
 
 	thrd_create(&thrdTox_, toxLoop_, this);
 

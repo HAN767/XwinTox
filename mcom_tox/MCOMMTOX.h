@@ -29,10 +29,24 @@ private:
 	void defaultConfig_();
 	int loadToxData_();
 	std::string getSaveFilePath_();
+	void registerCallbacks();
 
 	/* the Tox callbacks */
 	void cb_self_connection_status(TOX_CONNECTION connection_status);
 
+	void cb_friend_connection_status(uint32_t friend_number,
+	                                 TOX_CONNECTION connection_status);
+	void cb_friend_status(uint32_t friend_number, TOX_USER_STATUS status);
+	void cb_friend_name(uint32_t friend_number, const uint8_t *name,
+	                    size_t length);
+	void cb_friend_message(uint32_t friend_number, TOX_MESSAGE_TYPE type,
+	                       const uint8_t *message, size_t length);
+	void cb_friend_request(const uint8_t *public_key, const uint8_t *message,
+	                       size_t length);
+
+
+	/* signals */
+	void recvSignal(unsigned int, PBMessage_t*);
 
 	Dictionary_t *dictConfig_;
 	std::string strSavefile_, strConffile_;
@@ -47,10 +61,13 @@ template<typename Func, Func func> struct thunk;
 template<typename Class, typename R, typename ...Args, R(Class::*func)(Args...)>
 struct thunk<R(Class::*)(Args...), func>
 {
-	static R call(Tox *tox, Args ...args, void *userData)
-	{
-        return ((*static_cast<Class *>(userData)).*func)(args...);
-	}
+    static R call(Tox *tox, Args ...args, void *userData)
+{
+	return ((*static_cast<Class *>(userData)).*func)(args...);
+}
 };
+
+
+/*int, PBMessage_t*, void *userData*/
 
 #endif

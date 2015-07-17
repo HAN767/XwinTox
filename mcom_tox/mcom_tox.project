@@ -103,6 +103,7 @@
     <File Name="MCOMMTOX.h"/>
     <File Name="CMakeLists.txt"/>
     <File Name="MCOMMTOX.cc"/>
+    <File Name="MCT_CB.cc"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

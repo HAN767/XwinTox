@@ -40,6 +40,13 @@ typedef struct XWClass_s
 
 #include <vector>
 
+
+template<class T, class Method, Method m>
+static void pbThunk(unsigned int dwType,PBMessage_t *msg, void *userData)
+{
+        return ((*static_cast<T *>(userData)).*m)(dwType, msg);
+}
+
 template <typename T>
 class XWClassT
 {
@@ -95,12 +102,19 @@ public:
 		(xwfCall(pszService, const_cast<char*>(pvParams)));
 	}
 
-	void *xwfSubscribe(unsigned int dwType, void *pvCustom, PB_Callback_f fnCallback)
+	int xwfSubscribe_(unsigned int dwType, void *pvCustom, PB_Callback_f fnCallback)
 	{
 		return hObj_->pSvcs->fnSubscribe(hObj_, dwType, pvCustom, fnCallback);
 	}
 
-	void *xwfDispatch(unsigned int dwType, PBMessage_t *pbmMsg)
+	int xwfSubscribe(unsigned int dwType, void (T::*CbF)(unsigned int, PBMessage_t*))
+	{
+		typedef (T::*fnCB)(unsigned int, PBMessage_t*)
+		fun =pbThunk<T, fnCB, CbF>;
+		//xwfSubscribe_(dwType, this, CB);
+	}
+
+	int xwfDispatch(unsigned int dwType, PBMessage_t *pbmMsg)
 	{
 		return hObj_->pSvcs->fnDispatch(hObj_, dwType, pbmMsg);
 	}
