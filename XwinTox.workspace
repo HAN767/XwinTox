@@ -7,6 +7,7 @@
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="gui_fltk" Path="gui_fltk/gui_fltk.project" Active="No"/>
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
+  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Project Name="mcom_tox" ConfigName="Debug"/>

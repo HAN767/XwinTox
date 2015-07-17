@@ -1,7 +1,10 @@
 #include <cstdio>
 #include <sys/stat.h>
+#include <threads.h>
+#include <unistd.h>
 
 #include "misc.h"
+#include "hexstring.h"
 
 #include "AOM/IXWClass.h"
 #include "Module/Module.h"
@@ -11,20 +14,34 @@
 MCOMMTOX::MCOMMTOX(XWF_ObjectParams_t *prmObj)
 {
 	dictConfig_ =Dictionary_new();
+	mtx_init(&mtxTox_, mtx_plain);
 	dbg("New MCOMMTOX created\n");
+}
+
+void MCOMMTOX::cb_self_connection_status(TOX_CONNECTION connection_status)
+{
+	dbg("Connection Status: %d\n", connection_status);
+	return;
 }
 
 int MCOMMTOX::start()
 {
 	struct Tox_Options *ptxoTopts =tox_options_new(0);
+	TOX_ERR_NEW errNew;
+	TOX_ERR_BOOTSTRAP errBootstrap;
+	uint8_t mypubkey[TOX_ADDRESS_SIZE];
 
+	std::string strName =std::string(pszxwfCall("APP/GetName", 0));
+	std::string strStatus =std::string(pszxwfCall("APP/GetName", 0));
 	strSavefile_ =std::string(pszxwfCall("APP/GetDataFilename", "toxsave"));
 	strConffile_ =std::string(pszxwfCall("APP/GetConfigFilename", "toxconf"));
 
 	Dictionary_load_from_file(dictConfig_, strConffile_.c_str(), 1);
 	defaultConfig_();
 
-	if (loadToxData_() == 0)
+	ptxoTopts->ipv6_enabled =false;
+
+	if(loadToxData_() == 0)
 	{
 		ptxoTopts->savedata_type =TOX_SAVEDATA_TYPE_TOX_SAVE;
 		ptxoTopts->savedata_data =(const uint8_t*) datSave_.pbData;
@@ -32,13 +49,62 @@ int MCOMMTOX::start()
 		dbg("Savedata length: %d\n", ptxoTopts->savedata_length);
 	}
 
-	thrd_create(&thrdTox_, toxLoop_, 0);
+	tox_ =tox_new(ptxoTopts, &errNew);
+
+	if(errNew != TOX_ERR_NEW_OK)
+	{
+		const char *pszErrcode;
+
+		if(errNew == TOX_ERR_NEW_LOAD_BAD_FORMAT) pszErrcode =
+			    "Bad save format";
+		else pszErrcode ="Unknown";
+
+		dbg("Failed to create new Tox: %s\n", pszErrcode);
+		return -1;
+	}
+
+	tox_self_set_name(tox_, (uint8_t *)strName.c_str(), strName.size(), NULL);
+	tox_self_set_status_message(tox_, (uint8_t *)strStatus.c_str(),
+	                            strStatus.size(), NULL);
+
+	tox_self_set_status(tox_, TOX_USER_STATUS_NONE);
+
+	tox_bootstrap(tox_, Dictionary_get(dictConfig_, "Tox.BootstrapIP"),
+	              strtol(Dictionary_get(dictConfig_, "Tox.BootstrapPort"), 0, 10),
+	              hex_string_to_bin(Dictionary_get(dictConfig_, "Tox.BootstrapKey")),
+	              &errBootstrap);
+
+	if(errBootstrap != TOX_ERR_BOOTSTRAP_OK)
+	{
+		dbg("Failed to bootstrap\n");
+	}
+
+	tox_self_get_address(tox_, mypubkey);
+	dbg("Tox ID: %s\n", bin_to_hex_string(mypubkey, TOX_ADDRESS_SIZE));
+
+
+	tox_callback_self_connection_status
+	(tox_,
+	 &thunk<decltype(&MCOMMTOX::cb_self_connection_status),
+	 &MCOMMTOX::cb_self_connection_status>::call,
+	 this);
+
+	thrd_create(&thrdTox_, toxLoop_, this);
+
 	return 0;
 }
 
-int MCOMMTOX::toxLoop_(void*)
+int MCOMMTOX::toxLoop_(void *userData)
 {
+	MCOMMTOX *self =static_cast<MCOMMTOX *>(userData);
 
+	while (1)
+	{
+		mtx_lock(&self->mtxTox_);
+		tox_iterate(self->tox_);
+		mtx_unlock(&self->mtxTox_);
+		usleep(tox_iteration_interval(self->tox_) * 1000);
+	}
 }
 
 void MCOMMTOX::defaultConfig_()
