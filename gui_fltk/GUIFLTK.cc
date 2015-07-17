@@ -19,13 +19,11 @@ GUIFLTK *pgflCurrent;
 GUIFLTK::GUIFLTK(XWF_ObjectParams_t *prmObj)
 {
 	dbg("Initialising a new GUI for FLTK\n");
-	hObj_ =prmObj->pobjhHandle;
-
-	Xw_ =new XwinTox(this, 640, 480, "XwinTox", 1);//1);
 }
 
 int GUIFLTK::start()
 {
+	Xw_ =new XwinTox(this, 640, 480, "XwinTox", 1);//1);
 	Xw_->show();
 	thrd_create(&thrdFLTK_, fltkloop, 0);
 	return 0;

@@ -31,9 +31,9 @@
       <File Name="hdr/Module/Module.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="AOM">
-      <File Name="hdr/AOM/IMComm.h"/>
       <File Name="hdr/AOM/IGUICxx.h"/>
       <File Name="hdr/AOM/IGUI.h"/>
+      <File Name="hdr/AOM/IXWClass.h"/>
     </VirtualDirectory>
     <File Name="hdr/xwintox.h"/>
   </VirtualDirectory>
@@ -43,6 +43,7 @@
     <File Name="xwintox.c"/>
     <File Name="xwt.h"/>
     <File Name="Makefile.kmk"/>
+    <File Name="CMakeLists.txt"/>
   </VirtualDirectory>
   <VirtualDirectory Name="module">
     <File Name="module/manager.h"/>

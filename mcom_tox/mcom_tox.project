@@ -99,14 +99,11 @@
     </Configuration>
   </Settings>
   <VirtualDirectory Name="mcom_tox">
-    <File Name="MCOM_TOX.c"/>
+    <File Name="modMCT.cc"/>
     <File Name="MCOMMTOX.h"/>
-    <File Name="MCOMMTOX.c"/>
-    <File Name="mctfuncs.c"/>
-    <File Name="mctfuncs.h"/>
-    <File Name="Makefile.kmk"/>
-    <File Name="callback.c"/>
-    <File Name="callback.h"/>
+    <File Name="CMakeLists.txt"/>
+    <File Name="MCOMMTOX.cc"/>
+    <File Name="MCT_CB.cc"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

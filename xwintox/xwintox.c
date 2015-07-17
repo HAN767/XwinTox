@@ -5,7 +5,7 @@
 #include "misc.h"
 
 #include "Module/Module.h"
-#include "AOM/IMComm.h"
+#include "AOM/IXWClass.h"
 #include "module/manager.h"
 #include "xwt.h"
 
@@ -15,7 +15,15 @@ static void *AppCall(const XWF_Object_Handle_t *pobjhSource,
                      const char * pszService,
                      const void *pvParams)
 {
-	if(strcmp(pszService, "GetConfigFilename") == 0)
+	if(strcmp(pszService, "GetName") == 0)
+	{
+		return (void*)Dictionary_get(App.dictConfig, "XwinTox.Name");
+	}
+	else if(strcmp(pszService, "GetStatus") == 0)
+	{
+		return (void*)Dictionary_get(App.dictConfig, "XwinTox.Status");
+	}
+	else if(strcmp(pszService, "GetConfigFilename") == 0)
 	{
 		static char szPath[255];
 		snprintf(szPath, 255, "%s/.XwinTox/%s.ini", get_home_folder(), pvParams);
@@ -65,24 +73,24 @@ int main(int argc, char *argv[])
 	ModuleManager_loadDynamicModule
 	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/GUI_FLTK.so");
 
-	App.pimcIM =ModuleManager_createObject("MESSENGER");
+	XWF_Object_Handle_t *msgr =ModuleManager_createObject("MESSENGER");
 	App.pguiGUI =ModuleManager_createObject("GUI");
-	IMCOBJ(App.pimcIM)->pszName =strdup(Dictionary_get(App.dictConfig,
+	/*IMCOBJ(App.pimcIM)->pszName =strdup(Dictionary_get(App.dictConfig,
 	                                    "XwinTox.Name"));
 	IMCOBJ(App.pimcIM)->pszStatus =strdup(Dictionary_get(App.dictConfig,
-	                                      "XwinTox.Status"));
+	                                      "XwinTox.Status"));*/
 
 	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
 	usleep(250); /* let the GUI initialise, ready for signal reception */
 
-	IMCOBJ(App.pimcIM)->fnConnect(App.pimcIM);
+	((XWClass_t*)msgr->hObj)->fnStart(msgr);
 
 	while(1)
 	{
 		sleep(1);
 	}
 
-	ModuleManager_destroyObject(App.pimcIM);
+	//ModuleManager_destroyObject(App.pimcIM);
 	Dictionary_write_to_file(App.dictConfig, szConfigFilename);
 	return 0;
 }

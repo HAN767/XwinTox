@@ -7,6 +7,11 @@
 #ifndef Dictionary_h
 #define Dictionary_h
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <threads.h>
 
 #include "list.h"
@@ -58,5 +63,9 @@ void *Dictionary_get_pointer(Dictionary_t *dict, const char *key);
 int Dictionary_load_from_file(Dictionary_t *dict, const char *filename,
                               int createifnotexist);
 int Dictionary_write_to_file(Dictionary_t *dict, const char *filename);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
