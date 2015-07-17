@@ -81,6 +81,21 @@ void CtList_recv(int iType, PBMessage_t* msg, void* custom)
 
 		Fl::awake(ud);
 	}
+	else if (iType == frNew)
+	{
+		XWContact_t *newContact =(XWContact_t*)calloc(1, sizeof(XWContact_t));
+		userdata *ud =new userdata_t;
+
+		Fl::lock();
+		ud->op='U';
+		ud->lptr =self;
+		newContact->wNum =msg->I1;
+		newContact->pszID =strdup(msg->S1);
+		List_add(self->lstContacts, newContact);
+		Fl::unlock();
+
+		Fl::awake(ud);
+	}
 }
 
 ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
@@ -102,6 +117,7 @@ ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
 
 	hObj->pSvcs->fnSubscribe(hObj, clContacts, this, CtList_recv);
 	hObj->pSvcs->fnSubscribe(hObj, frRequestServiced, this, CtList_recv);
+	hObj->pSvcs->fnSubscribe(hObj, frNew, this, CtList_recv);
 
 }
 

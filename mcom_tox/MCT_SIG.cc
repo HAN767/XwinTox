@@ -31,7 +31,8 @@ void MCOMMTOX::recvSignal(unsigned int dwType, PBMessage_t* msg)
 			break;
 
 		case frSendRequest:
-			dbg("Unimplemented\n");
+			dbg("Add friend\n");
+			addFriend_(msg->S1, msg->S2);
 			break;
 	}
 }

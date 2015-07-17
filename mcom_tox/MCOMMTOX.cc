@@ -243,3 +243,33 @@ void MCOMMTOX::acceptFriendRequest_(const char *pszAddress)
 		xwfDispatch(frRequestServiced, msgfrRequestServiced);
 	}
 }
+
+
+void MCOMMTOX::addFriend_(const char *addr, const char *msg)
+{
+	TOX_ERR_FRIEND_ADD errFriend;
+	unsigned int dwNewNum;
+	uint8_t* bID =hex_string_to_bin(addr);
+
+	mtx_lock(&mtxTox_);
+	dwNewNum =tox_friend_add(tox_, bID, (uint8_t *) msg,
+	                      strlen(msg), &errFriend);
+	mtx_unlock(&mtxTox_);
+
+	dbg("ID %s, Msg %s, Error %d\n", addr, msg, errFriend);
+
+	if(errFriend == TOX_ERR_FRIEND_ADD_OK)
+	{
+		dbg("Added friend %d\n", dwNewNum);
+		PBMessage_t *msgNewFriend =PB_New_Message();
+
+		msgNewFriend->I1 =dwNewNum;
+		msgNewFriend->S1 =strdup(addr);
+
+		xwfDispatch(frNew, msgNewFriend);
+	}
+	else
+	{
+		dbg("Add friend failed\n");
+	}
+}

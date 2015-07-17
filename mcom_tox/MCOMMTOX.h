@@ -35,6 +35,7 @@ private:
 	void sendFriends_();
 
 	void acceptFriendRequest_(const char *pszAddress);
+	void addFriend_(const char *addr, const char *msg);
 
 
 	/* the Tox callbacks */
