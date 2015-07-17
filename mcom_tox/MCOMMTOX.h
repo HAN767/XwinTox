@@ -23,13 +23,16 @@ class MCOMMTOX : public XWClassT<MCOMMTOX>
 public:
 	MCOMMTOX(XWF_ObjectParams_t *pobjParams);
 	int start();
+	void recvSignal(unsigned int, PBMessage_t*);
 
 private:
 	static int toxLoop_(void*);
 	void defaultConfig_();
 	int loadToxData_();
+	void saveToxData_();
+	void sendFriends_();
 	std::string getSaveFilePath_();
-	void registerCallbacks();
+	void registerCallbacks_();
 
 	/* the Tox callbacks */
 	void cb_self_connection_status(TOX_CONNECTION connection_status);
@@ -44,9 +47,6 @@ private:
 	void cb_friend_request(const uint8_t *public_key, const uint8_t *message,
 	                       size_t length);
 
-
-	/* signals */
-	void recvSignal(unsigned int, PBMessage_t*);
 
 	Dictionary_t *dictConfig_;
 	std::string strSavefile_, strConffile_;

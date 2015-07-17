@@ -6,6 +6,7 @@
 #include "misc.h"
 #include "hexstring.h"
 
+#include "xwintox.h"
 #include "AOM/IXWClass.h"
 #include "Module/Module.h"
 #include "MCOMMTOX.h"
@@ -76,10 +77,13 @@ int MCOMMTOX::start()
 	tox_self_get_address(tox_, mypubkey);
 	dbg("Tox ID: %s\n", bin_to_hex_string(mypubkey, TOX_ADDRESS_SIZE));
 
-	registerCallbacks();
-	xwfSubscribe(2, &MCOMMTOX::recvSignal);
+	registerCallbacks_();
+
+	xwfSubscribe(2);
 
 	thrd_create(&thrdTox_, toxLoop_, this);
+
+	sendFriends_();
 
 	return 0;
 }
@@ -136,4 +140,77 @@ int MCOMMTOX::loadToxData_()
 	datSave_.wLength =iLength;
 	fread(datSave_.pbData, iLength, 1, hfSave);
 	return 0;
+}
+
+void MCOMMTOX::saveToxData_()
+{
+	unsigned int wLen =tox_get_savedata_size(tox_);
+	unsigned char *bData =new unsigned char[wLen + 1];
+	FILE *hfSave;
+
+	mtx_lock(&mtxTox_);
+	tox_get_savedata(tox_, bData);
+	mtx_unlock(&mtxTox_);
+
+	unlink(strSavefile_.c_str());
+	hfSave =fopen(strSavefile_.c_str(), "wb");
+
+	if(hfSave == NULL)
+	{
+		dbg("Failed to open savefile %s\n", strSavefile_.c_str());
+		return;
+	}
+
+	if(fwrite(bData, wLen, 1, hfSave) != 1)
+	{
+		dbg("Failed to save data to savefile %s\n", strSavefile_.c_str());
+		fclose(hfSave);
+		return;
+	}
+
+	dbg("Saved Tox data of length %d to %s\n", wLen, strSavefile_.c_str());
+
+	fclose(hfSave);
+}
+
+void MCOMMTOX::sendFriends_()
+{
+	unsigned int wCount =(tox_self_get_friend_list_size(tox_));
+	if (wCount < 1) return;
+	unsigned int *wNums =new unsigned int[wCount];
+	List_t *lstFriends =List_new();
+	PBMessage_t *msgContacts =PB_New_Message();
+
+	tox_self_get_friend_list(tox_, wNums);
+
+	for(int i =0; i < wCount; i++)
+	{
+		unsigned int wSize, wNum =wNums[i];
+		char *pszText;
+		unsigned char *pbPubkey;
+		XWContact_t *ctNew =(XWContact_t *)calloc(1, sizeof(XWContact_t));
+
+		ctNew->wNum =wNum;
+
+		wSize =tox_friend_get_name_size(tox_, wNum, 0) + 1;
+		pszText =new char [wSize];
+		tox_friend_get_name(tox_, wNum, (uint8_t*)pszText, 0);
+		pszText[wSize] ='\0';
+		ctNew->pszName =pszText;
+
+		wSize =tox_friend_get_status_message_size(tox_, wNum, 0) + 1;
+		pszText =new char[wSize];
+		tox_friend_get_status_message(tox_, wNum, (uint8_t*)pszText, 0);
+		pszText[wSize] ='\0';
+		ctNew->pszStatus =pszText;
+
+		pbPubkey =new unsigned char[TOX_PUBLIC_KEY_SIZE];
+		tox_friend_get_public_key(tox_, wNum, pbPubkey, 0);
+		ctNew->pszID =bin_to_hex_string(pbPubkey, TOX_PUBLIC_KEY_SIZE);
+
+		dbg("Contact: Pubkey %s, name %s, status %s\n", ctNew->pszID, ctNew->pszName, ctNew->pszStatus);
+		List_add(lstFriends, ctNew);
+	}
+	msgContacts->V =lstFriends;
+	xwfDispatch(clContacts, msgContacts);
 }

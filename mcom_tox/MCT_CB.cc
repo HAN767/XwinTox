@@ -4,7 +4,7 @@
 #include "xwintox.h"
 #include "MCOMMTOX.h"
 
-void MCOMMTOX::registerCallbacks()
+void MCOMMTOX::registerCallbacks_()
 {
 	tox_callback_self_connection_status
 	(tox_,

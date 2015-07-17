@@ -20,7 +20,7 @@ typedef int (*Start_f)(XWF_Object_Handle_t *);
  * a different thread, and either deliver messages to that thread
  * or use locking.
  * That main loop will be started by fnStart called for the module.
- * If you don't need a main loop, just blank it (or, in C++, leave 
+ * If you don't need a main loop, just blank it (or, in C++, leave
  * void start as is) */
 typedef struct XWClass_s
 {
@@ -44,17 +44,25 @@ typedef struct XWClass_s
 template<class T, class Method, Method m>
 static void pbThunk(unsigned int dwType,PBMessage_t *msg, void *userData)
 {
-        return ((*static_cast<T *>(userData)).*m)(dwType, msg);
+	return ((*static_cast<T *>(userData)).*m)(dwType, msg);
+}
+
+template<class T, class Method, Method m, class Ret, class ...Args>
+static Ret bounce(Args... args, void *priv)
+{
+	return ((*reinterpret_cast<T *>(priv)).*m)(args...);
 }
 
 template <typename T>
 class XWClassT
 {
 public:
-	XWClassT()// : pSvcs(NULL)
+	XWClassT()
 	{
 		cXWClass_.hCXXObj =this;
 		cXWClass_.fnStart =staticStart;
+		fnRecvSignal =reinterpret_cast<PB_Callback_f>
+		              (pbThunk<T, decltype(&T::recvSignal), &T::recvSignal>);
 	}
 	~XWClassT()
 	{
@@ -71,7 +79,6 @@ public:
 	static void * create(XWF_ObjectParams_t *pobpParams)
 	{
 		T *NewObject =new T(pobpParams);
-		//NewObject->hObj_ =pobpParams->pobjhHandle;
 		return &NewObject->cXWClass_;
 	}
 	static int destroy(void *pvToDestroy)
@@ -99,19 +106,12 @@ public:
 	const char *pszxwfCall(const char *pszService, const char *pvParams)
 	{
 		return static_cast<const char*>
-		(xwfCall(pszService, const_cast<char*>(pvParams)));
+		       (xwfCall(pszService, const_cast<char*>(pvParams)));
 	}
 
-	int xwfSubscribe_(unsigned int dwType, void *pvCustom, PB_Callback_f fnCallback)
+	int xwfSubscribe(unsigned int dwType)
 	{
-		return hObj_->pSvcs->fnSubscribe(hObj_, dwType, pvCustom, fnCallback);
-	}
-
-	int xwfSubscribe(unsigned int dwType, void (T::*CbF)(unsigned int, PBMessage_t*))
-	{
-		//typedef (T::*fnCB)(unsigned int, PBMessage_t*)
-		//fun =pbThunk<T, fnCB, CbF>;
-		//xwfSubscribe_(dwType, this, CB);
+		return hObj_->pSvcs->fnSubscribe(hObj_, dwType, this, fnRecvSignal);
 	}
 
 	int xwfDispatch(unsigned int dwType, PBMessage_t *pbmMsg)
@@ -125,11 +125,17 @@ public:
 		std::vector<XWF_ModInfo_t *> vecModinfos;
 
 		LIST_ITERATE_OPEN(lstModinfos)
-			vecModinfos.push_back(static_cast<XWF_ModInfo_t *>(e_data));
+		vecModinfos.push_back(static_cast<XWF_ModInfo_t *>(e_data));
 		LIST_ITERATE_CLOSE(lstModinfos)
 
 		return vecModinfos;
 	}
+
+	void recvSignal(unsigned int dwType, PBMessage_t*)
+	{
+		dbg("Signal received: %d\n");
+	}
+
 
 	virtual int start()
 	{
@@ -137,6 +143,7 @@ public:
 	}
 
 protected:
+	PB_Callback_f fnRecvSignal;
 	const XWF_Object_Handle_t *hObj_;
 	XWClass_t cXWClass_;
 };
