@@ -12,7 +12,7 @@ if(LIBSTDTHREADS)
 endif()
 
 set_property(TARGET xwintox APPEND PROPERTY COMPILE_DEFINITIONS XWVERS="DR0")
-TARGET_LINK_LIBRARIES(xwintox libsunshine)
+TARGET_LINK_LIBRARIES(xwintox ${CMAKE_DL_LIBS} libsunshine)
 
 install(TARGETS xwintox RUNTIME DESTINATION bin)
 install(FILES ${H_FILES} DESTINATION include)
