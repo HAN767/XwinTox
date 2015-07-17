@@ -50,3 +50,4 @@ xwintox/xwintox
 out/*
 bld/*
 *.old/*
+*~
