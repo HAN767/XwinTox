@@ -131,3 +131,24 @@ void MCOMMTOX::cb_friend_request(const uint8_t *public_key,
 
 	xwfDispatch(frRequest, msgFrRequest);
 }
+
+
+void MCOMMTOX::cb_file_recv(uint32_t friend_number, uint32_t file_number,
+                            uint32_t kind, uint64_t file_size,
+                            const uint8_t *filename, size_t filename_length)
+{
+	PBMessage_t *msgFtRequest =PB_New_Message();
+
+	msgFtRequest->S1 =strndup(reinterpret_cast<const char*>(filename),
+	                          filename_length);
+	msgFtRequest->I1 =friend_number;
+	msgFtRequest->I2 =file_number;
+	msgFtRequest->I3 =file_size;
+
+	xwfDispatch(ftRequest, msgFtRequest);
+}
+/*	void cb_file_recv_control(uint32_t friend_number,uint32_t file_number,
+	                          TOX_FILE_CONTROL c);
+	void cb_file_recv_chunk(uint32_t friendnumber, uint32_t filenumber,
+	                        uint64_t position, const uint8_t *data,
+	                        size_t length);*/

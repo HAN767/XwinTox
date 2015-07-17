@@ -32,13 +32,26 @@ GMessageArea *FindContactMArea(XwinTox *Xw, unsigned int num)
 
 /*XWContact_t *FindContact(XwinTox *Xw, unsigned int id)
 {
-	for(const auto contact : Xw->sidebar->contactscontactlist->contacts)
+	for(const auto contact : Xw->sidebar->contacts->contacts)
 	{
 		if(contact->wNum == id) return contact;
 	}
 
 	return 0;
 }*/
+
+XWContact_t *FindContact(XwinTox *Xw, unsigned int id)
+{
+	XWContact_t *c =0;
+	List_t *lstContacts =Xw->sidebar->contacts->lstContacts;
+
+	LIST_ITERATE_OPEN(lstContacts)
+		c =static_cast<XWContact_t *>(e_data);
+		if(c->wNum == id) break;
+	LIST_ITERATE_CLOSE(lstContacts)
+
+	return c;
+}
 
 char *GetDisplayName(XWContact_t *contact, size_t LenLimit)
 {

@@ -12,6 +12,7 @@
 
 #include "GUIFLTK.h"
 #include "control/xwin.h"
+#include "util.h"
 
 GUIFLTK *pgflCurrent;
 
@@ -28,6 +29,7 @@ int GUIFLTK::start()
 	thrd_create(&thrdFLTK_, (thrd_start_t)fltkLoop, 0);
 
 	setFLTKCallbacks();
+	xwfSubscribe(ftRequest);
 	return 0;
 }
 
@@ -43,4 +45,22 @@ int GUIFLTK::fltkLoop(void *)
 		Fl::unlock();
 	}
 	return 0;
+}
+
+void GUIFLTK::recvSignal(unsigned int dwType, PBMessage_t *msg)
+{
+	switch (dwType)
+	{
+	case ftRequest:
+		time_t rawtime;
+		time(&rawtime);
+		struct tm *ftime =localtime(&rawtime);
+
+		GFLTransfer *trNew =new GFLTransfer(this, FindContact(Xw_, msg->I1),
+											msg->S1, ftime, msg->I2, msg->I3);
+		vecTransfers.push_back(trNew);
+		Xw_->contents->transfers->add(trNew->entry_);
+		Xw_->contents->transfers->regen_gui();
+		break;
+	}
 }

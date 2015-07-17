@@ -22,6 +22,7 @@ public:
 	void resize(int X, int Y, int W, int H);
 	int handle(int event);
 
+	void regen_gui();
 	void clear_all();
 
 	vector <TransfersEntry*> entries;

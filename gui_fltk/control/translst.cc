@@ -1,6 +1,8 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Scroll.H>
 
+#include "misc.h"
+
 #include "control/translst.h"
 #include "control/transent.h"
 
@@ -52,10 +54,29 @@ int TransfersList::handle(int event)
 	return Fl_Scroll::handle(event);
 }
 
+void TransfersList::regen_gui()
+{
+	int YM =y(), XM =x(), inv =0;
+
+	for(const auto entry : entries)
+	{
+		entry->inv =inv;
+		entry->position(XM, YM);
+		dbg("Regen for Trans\n");
+
+		entry->show();
+		YM += 50;
+		inv =1 - inv;
+	}
+
+	redraw();
+
+	return;
+}
+
 void TransfersList::clear_all()
 {
-	this->clear();
-	entries.clear();
+	//for (const auto entry: entrie)
 	this->redraw();
 	parent()->redraw();
 }

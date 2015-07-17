@@ -10,7 +10,7 @@ GFLTransfer::GFLTransfer(class GUIFLTK *gui, XWContact_t *contact,
                          const char *filename, struct tm *time, unsigned int num,
                          unsigned int size)
 	: gui_(gui), contact_(contact), filename_(strdup(filename)), time_(time),
-	  id_(num), size_(size), entry_(0, 0, gui->Xw_->scale, 0)
+	  id_(num), size_(size), entry_(0, 0,gui->Xw_->w() - (224* gui->Xw_->scale), 50, gui->Xw_->scale, 0)
 {
 	fnRecvSignal =reinterpret_cast<PB_Callback_f>
 	              (pbThunk<GFLTransfer, decltype(&GFLTransfer::recvSignal),
@@ -18,7 +18,6 @@ GFLTransfer::GFLTransfer(class GUIFLTK *gui, XWContact_t *contact,
 	strftime(entry_.date, 255, "%d/%b/%y %H:%M", time_);
 	entry_.accept->callback(FLCB(cbAccept));
 
-	xwfSubscribe(ftRequest);
 	xwfSubscribe(ftControl);
 	xwfSubscribe(ftBytes);
 }

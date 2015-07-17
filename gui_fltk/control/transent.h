@@ -14,7 +14,7 @@ class TransfersEntry: public Fl_Group
 {
 public:
 	// Ctor
-	TransfersEntry(int X, int Y, int S, int I);
+	TransfersEntry(int X, int Y, int W, int H, int S, int I);
 
 	void draw();
 	void resize(int X, int Y, int W, int H);

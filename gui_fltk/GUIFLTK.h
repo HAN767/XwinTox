@@ -19,7 +19,11 @@ public:
 	GUIFLTK(XWF_ObjectParams_t *pobjParams);
 	int start();
 
+	void recvSignal(unsigned int dwType, PBMessage_t *msg);
+
 	void cbAddFriendSend(Fl_Widget* w);
+
+	vector<class GFLTransfer *> vecTransfers;
 private:
 	static int fltkLoop(void*);
 	void setFLTKCallbacks();

@@ -19,8 +19,8 @@ public:
 protected:
 	const char *filename_;
 	struct tm *time_;
-	XWContact_t *contact_;
 	unsigned int id_, size_;
+	XWContact_t *contact_;
 
 private:
 	class GUIFLTK *gui_;

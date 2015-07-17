@@ -65,8 +65,8 @@ void teAcceptPressed(Fl_Widget *w)
 	CommWork();*/
 }
 
-TransfersEntry::TransfersEntry(int X, int Y, int S, int I)
-	: Fl_Group(X, Y, parent()->w() - (224* S), 50 * S)
+TransfersEntry::TransfersEntry(int X, int Y, int W, int H, int S, int I)
+	: Fl_Group(X, Y, W, 50 * S)
 {
 	scale =S;
 	//transfer =T;
@@ -126,6 +126,8 @@ void TransfersEntry::draw()
 	if(inv == 1) color(fl_rgb_color(198, 199, 214));
 	else color(fl_rgb_color(239, 239, 239));
 
+	Fl_Group::draw();
+
 /*	sprintf(proglabel, "%d%%", (transfer->pos / transfer->size) * 100);
 
 	progress->value((transfer->pos / transfer->size) * 1000);
@@ -134,7 +136,7 @@ void TransfersEntry::draw()
 
 	sprintf(from, "From: %s", GetDisplayName(transfer->contact, 100));
 
-	Fl_Group::draw();
+
 
 	fl_font(FL_HELVETICA, 11 * scale);
 	fl_color(fl_rgb_color(110, 110, 118));
