@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include <sys/stat.h>
 #include <threads.h>
 #include <unistd.h>
@@ -84,6 +85,7 @@ int MCOMMTOX::start()
 	xwfSubscribe(frSendMsg);
 	xwfSubscribe(frDelete);
 	xwfSubscribe(frAcceptRequest);
+	xwfSubscribe(frSendRequest);
 
 	thrd_create(&thrdTox_, toxLoop_, this);
 
@@ -217,4 +219,27 @@ void MCOMMTOX::sendFriends_()
 	}
 	msgContacts->V =lstFriends;
 	xwfDispatch(clContacts, msgContacts);
+}
+
+void MCOMMTOX::acceptFriendRequest_(const char *pszAddress)
+{
+	TOX_ERR_FRIEND_ADD ferr;
+	uint8_t *pk =hex_string_to_bin(pszAddress);
+	unsigned int dwFNum;
+
+	mtx_lock(&mtxTox_);
+	dwFNum =tox_friend_add_norequest(tox_, pk, &ferr);
+	mtx_unlock(&mtxTox_);
+
+	dbg("FriendNoReqError: %d. Address: %s\n", ferr, pszAddress);
+	if(ferr == TOX_ERR_FRIEND_ADD_ALREADY_SENT) dbg("already\n")
+	else if(ferr == TOX_ERR_FRIEND_ADD_BAD_CHECKSUM) dbg("bad checksum\n")
+	else
+	{
+		PBMessage_t *msgfrRequestServiced =PB_New_Message();
+		msgfrRequestServiced->I1 =dwFNum;
+		msgfrRequestServiced->S1 =strdup(pszAddress);
+
+		xwfDispatch(frRequestServiced, msgfrRequestServiced);
+	}
 }

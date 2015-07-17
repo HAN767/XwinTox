@@ -24,5 +24,14 @@ void MCOMMTOX::recvSignal(unsigned int dwType, PBMessage_t* msg)
 			mtx_unlock(&mtxTox_);
 			saveToxData_();
 			break;
+
+		case frAcceptRequest:
+			acceptFriendRequest_(msg->S1);
+			saveToxData_();
+			break;
+
+		case frSendRequest:
+			dbg("Unimplemented\n");
+			break;
 	}
 }

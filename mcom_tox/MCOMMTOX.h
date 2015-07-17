@@ -30,9 +30,12 @@ private:
 	void defaultConfig_();
 	int loadToxData_();
 	void saveToxData_();
-	void sendFriends_();
 	std::string getSaveFilePath_();
 	void registerCallbacks_();
+	void sendFriends_();
+
+	void acceptFriendRequest_(const char *pszAddress);
+
 
 	/* the Tox callbacks */
 	void cb_self_connection_status(TOX_CONNECTION connection_status);
