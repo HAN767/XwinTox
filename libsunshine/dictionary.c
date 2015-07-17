@@ -39,6 +39,8 @@ jenkins_hash (const char *key) /* Jenkins One-at-a-Time Hash function */
 	return hash;
 }
 
+Dictionary_t *Dictionary_new_i (int size);
+
 static Dictionary_t*
 resize (Dictionary_t *dict)
 {
@@ -48,7 +50,7 @@ resize (Dictionary_t *dict)
 	Dictionary_entry_t *entry;
 	mtx_t *lock =dict->Lock;
 
-	newdict = Dictionary_new (dict->size * 2);
+	newdict = Dictionary_new_i (dict->size * 2);
 
 	for (int i = 0; i < dict->size; i++)
 	{
@@ -71,7 +73,7 @@ resize (Dictionary_t *dict)
 /* primary functions */
 
 Dictionary_t*
-Dictionary_new (int size)
+Dictionary_new_i (int size)
 {
 	Dictionary_t *newdict =calloc (1, sizeof (Dictionary_t));
 
@@ -82,6 +84,12 @@ Dictionary_new (int size)
 	mtx_init(newdict->Lock, mtx_plain);
 
 	return newdict;
+}
+
+Dictionary_t*
+Dictionary_new ()
+{
+	return Dictionary_new_i(32);
 }
 
 void

@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 	                                      "XwinTox.Status"));*/
 
 	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
-	usleep(250); /* let the GUI initialise, ready for signal reception */
+	usleep(750); /* let the GUI initialise, ready for signal reception */
 
 	((XWClass_t*)msgr->hObj)->fnStart(msgr);
 

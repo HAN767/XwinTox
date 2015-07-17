@@ -229,6 +229,7 @@ int ModuleManager_subscribe_(const XWF_Object_Handle_t *hObject, int mtype,
 	dbg("Object of class %s.%s subscribed to signal %d\n",
 	    hObject->pxwoClass->pszType, hObject->pxwoClass->pszSubtype,  mtype);
 	PB_Register(pmmManager->pbGlobal, mtype, custom, callback);
+	return 0;
 }
 
 int ModuleManager_dispatch_(const XWF_Object_Handle_t *hObject, int iType,

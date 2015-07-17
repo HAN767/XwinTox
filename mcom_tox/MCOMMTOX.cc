@@ -87,7 +87,7 @@ int MCOMMTOX::start()
 	xwfSubscribe(frAcceptRequest);
 	xwfSubscribe(frSendRequest);
 
-	thrd_create(&thrdTox_, toxLoop_, this);
+	thrd_create(&thrdTox_, (thrd_start_t)toxLoop_, this);
 
 	sendFriends_();
 
@@ -201,13 +201,13 @@ void MCOMMTOX::sendFriends_()
 		wSize =tox_friend_get_name_size(tox_, wNum, 0) + 1;
 		pszText =new char [wSize];
 		tox_friend_get_name(tox_, wNum, (uint8_t*)pszText, 0);
-		pszText[wSize] ='\0';
+		pszText[wSize - 1] ='\0';
 		ctNew->pszName =pszText;
 
 		wSize =tox_friend_get_status_message_size(tox_, wNum, 0) + 1;
 		pszText =new char[wSize];
 		tox_friend_get_status_message(tox_, wNum, (uint8_t*)pszText, 0);
-		pszText[wSize] ='\0';
+		pszText[wSize - 1] ='\0';
 		ctNew->pszStatus =pszText;
 
 		pbPubkey =new unsigned char[TOX_PUBLIC_KEY_SIZE];

@@ -29,8 +29,6 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 	self->clear_all();
 	self->lstContacts =lstContacts;
 
-	//Fl::do_widget_deletion();
-
 	LIST_ITERATE_OPEN(lstContacts)
 		XWContact_t *ctEntry =(XWContact_t*) e_data;
 		dbg("Contact GUI. CTEntry num: %d \n", ctEntry->wNum);
@@ -63,6 +61,7 @@ void CtList_recv(int iType, PBMessage_t* msg, void* custom)
 	if (iType == clContacts)
 	{
 		Fl::lock();
+		if (msg == 0) return;
 		updatecontacts(self, (List_t*)msg->V);
 		Fl::unlock();
 		Fl::awake();

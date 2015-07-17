@@ -25,7 +25,7 @@ int GUIFLTK::start()
 {
 	Xw_ =new XwinTox(this, 640, 480, "XwinTox", 1);//1);
 	Xw_->show();
-	thrd_create(&thrdFLTK_, fltkloop, 0);
+	thrd_create(&thrdFLTK_, (thrd_start_t)fltkloop, 0);
 	return 0;
 }
 
