@@ -109,8 +109,8 @@ public:
 
 	int xwfSubscribe(unsigned int dwType, void (T::*CbF)(unsigned int, PBMessage_t*))
 	{
-		typedef (T::*fnCB)(unsigned int, PBMessage_t*)
-		fun =pbThunk<T, fnCB, CbF>;
+		//typedef (T::*fnCB)(unsigned int, PBMessage_t*)
+		//fun =pbThunk<T, fnCB, CbF>;
 		//xwfSubscribe_(dwType, this, CB);
 	}
 
