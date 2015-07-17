@@ -104,6 +104,8 @@
     <File Name="CMakeLists.txt"/>
     <File Name="MCOMMTOX.cc"/>
     <File Name="MCT_CB.cc"/>
+    <File Name="MCT_SIG.cc"/>
+    <File Name="Makefile.kmk"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

@@ -105,6 +105,7 @@
     <File Name="Makefile.kmk"/>
     <File Name="util.cc"/>
     <File Name="util.h"/>
+    <File Name="CMakeLists.txt"/>
   </VirtualDirectory>
   <VirtualDirectory Name="control">
     <File Name="control/statbox.h"/>

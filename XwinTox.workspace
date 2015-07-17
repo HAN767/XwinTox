@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="XwinTox" Database="">
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="libsunshine" Path="libsunshine/libsunshine.project" Active="No"/>
+  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
+  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
+  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="gui_fltk" Path="gui_fltk/gui_fltk.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="xwintox" Path="xwintox/xwintox.project" Active="Yes"/>
+  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
+  <Project Name="libsunshine" Path="libsunshine/libsunshine.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Project Name="mcom_tox" ConfigName="Debug"/>
-      <Project Name="libsunshine" ConfigName="Debug"/>
       <Project Name="gui_fltk" ConfigName="Debug"/>
-      <Project Name="imcomm_tox" ConfigName="Debug"/>
       <Project Name="xwintox" ConfigName="Debug"/>
+      <Project Name="imcomm_tox" ConfigName="Debug"/>
+      <Project Name="libsunshine" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Project Name="mcom_tox" ConfigName="Release"/>
-      <Project Name="libsunshine" ConfigName="Release"/>
       <Project Name="gui_fltk" ConfigName="Release"/>
-      <Project Name="imcomm_tox" ConfigName="Release"/>
       <Project Name="xwintox" ConfigName="Release"/>
+      <Project Name="imcomm_tox" ConfigName="Release"/>
+      <Project Name="libsunshine" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

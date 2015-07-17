@@ -17,7 +17,9 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 	XwinTox *Xw;
 
 	Fl_Widget *p =self;
-    while (p->parent()) p =p->parent();
+
+	while(p->parent()) p =p->parent();
+
 	Xw =(XwinTox*)p;
 
 	if(self->selected >= 0)
@@ -30,27 +32,27 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 	self->lstContacts =lstContacts;
 
 	LIST_ITERATE_OPEN(lstContacts)
-		XWContact_t *ctEntry =(XWContact_t*) e_data;
-		dbg("Contact GUI. CTEntry num: %d \n", ctEntry->wNum);
-		ContactsEntry *newgui =new ContactsEntry(self->hObj_, self->x(),
-			self->y() + wCurY,
-			self->scale,
-			ctEntry, 0, 0);
+	XWContact_t *ctEntry =(XWContact_t*) e_data;
+	dbg("Contact GUI. CTEntry num: %d \n", ctEntry->wNum);
+	ContactsEntry *newgui =new ContactsEntry(self->hObj_, self->x(),
+	        self->y() + wCurY,
+	        self->scale,
+	        ctEntry, 0, 0);
 
-		if(!FindContactMArea(Xw, ctEntry))
-		{
-			dbg("Need to make a new MArea\n");
-			GMessageArea *newarea =new 
-						GMessageArea(self->hObj_, self->scale,  ctEntry, 0, 0);
-			newarea->hide();
+	if(!FindContactMArea(Xw, ctEntry))
+	{
+		dbg("Need to make a new MArea\n");
+		GMessageArea *newarea =new
+		GMessageArea(self->hObj_, self->scale,  ctEntry, 0, 0);
+		newarea->hide();
 
-			Xw->add(newarea);
-			Xw->contents->messageareas.push_back(newarea);
-		}
+		Xw->add(newarea);
+		Xw->contents->messageareas.push_back(newarea);
+	}
 
-		self->add(newgui);
-		self->entries.push_back(newgui);
-		wCurY += (50 * self->scale);
+	self->add(newgui);
+	self->entries.push_back(newgui);
+	wCurY += (50 * self->scale);
 	LIST_ITERATE_CLOSE(lstContacts)
 	dbg("Finished contacts update\n");
 }
@@ -58,15 +60,18 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 void CtList_recv(int iType, PBMessage_t* msg, void* custom)
 {
 	ContactsList *self =(ContactsList*) custom;
-	if (iType == clContacts)
+
+	if(iType == clContacts)
 	{
 		Fl::lock();
-		if (msg == 0) return;
+
+		if(msg == 0) return;
+
 		updatecontacts(self, (List_t*)msg->V);
 		Fl::unlock();
 		Fl::awake();
 	}
-	else if (iType == frRequestServiced)
+	else if(iType == frRequestServiced)
 	{
 		XWContact_t *newContact =(XWContact_t*)calloc(1, sizeof(XWContact_t));
 		userdata *ud =new userdata_t;
@@ -81,7 +86,7 @@ void CtList_recv(int iType, PBMessage_t* msg, void* custom)
 
 		Fl::awake(ud);
 	}
-	else if (iType == frNew)
+	else if(iType == frNew)
 	{
 		XWContact_t *newContact =(XWContact_t*)calloc(1, sizeof(XWContact_t));
 		userdata *ud =new userdata_t;
@@ -109,7 +114,9 @@ ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
 	lstChatrooms =List_new();
 
 	Fl_Widget *p =this;
-    while (p->parent()) p =p->parent();
+
+	while(p->parent()) p =p->parent();
+
 	Xw =(XwinTox*)p;
 
 	type(VERTICAL);
@@ -144,6 +151,7 @@ int ContactsList::handle(int event)
 		if(Fl::event_button() == FL_LEFT_MOUSE)
 		{
 			deselect_all();
+
 			for(const auto entry : entries)
 			{
 				entry->redraw();
@@ -158,10 +166,12 @@ int ContactsList::handle(int event)
 void ContactsList::clear_all()
 {
 	this->clear();
+
 	for(const auto entry : entries)
 	{
 		//Fl::delete_widget(entry);
 	}
+
 	entries.clear();
 	this->redraw();
 	parent()->redraw();

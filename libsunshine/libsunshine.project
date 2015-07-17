@@ -117,10 +117,12 @@
     <File Name="hexstring.c"/>
     <File Name="postbox.c"/>
     <File Name="Makefile.kmk"/>
+    <File Name="CMakeLists.txt"/>
   </VirtualDirectory>
   <VirtualDirectory Name="ini">
     <File Name="ini/ini.c"/>
     <File Name="ini/ini.h"/>
+    <File Name="ini/LICENCE.txt"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

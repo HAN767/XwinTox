@@ -4,44 +4,24 @@
 #include "xwintox.h"
 #include "MCOMMTOX.h"
 
+#define TOXCALLBACK(func) 	tox_callback_##func \
+	(tox_, &thunk<decltype(&MCOMMTOX::cb_##func), &MCOMMTOX::cb_##func>::call, \
+	 this);	\
+
 void MCOMMTOX::registerCallbacks_()
 {
-	tox_callback_self_connection_status
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_self_connection_status),
-	 &MCOMMTOX::cb_self_connection_status>::call,
-	 this);
 
-	tox_callback_friend_connection_status
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_friend_connection_status),
-	 &MCOMMTOX::cb_friend_connection_status>::call,
-	 this);
-	tox_callback_friend_connection_status
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_friend_connection_status),
-	 &MCOMMTOX::cb_friend_connection_status>::call,
-	 this);
-	tox_callback_friend_status
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_friend_status),
-	 &MCOMMTOX::cb_friend_status>::call,
-	 this);
-	tox_callback_friend_name
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_friend_name),
-	 &MCOMMTOX::cb_friend_name>::call,
-	 this);
-	tox_callback_friend_message
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_friend_message),
-	 &MCOMMTOX::cb_friend_message>::call,
-	 this);
-	tox_callback_friend_request
-	(tox_,
-	 &thunk<decltype(&MCOMMTOX::cb_friend_request),
-	 &MCOMMTOX::cb_friend_request>::call,
-	 this);
+	TOXCALLBACK(self_connection_status)
+
+	TOXCALLBACK(friend_connection_status)
+	TOXCALLBACK(friend_status)
+	TOXCALLBACK(friend_name)
+	TOXCALLBACK(friend_message)
+	TOXCALLBACK(friend_request)
+
+	TOXCALLBACK(file_recv)
+	TOXCALLBACK(file_recv_control)
+	TOXCALLBACK(file_recv_chunk)
 }
 
 void MCOMMTOX::cb_self_connection_status(TOX_CONNECTION connection_status)
