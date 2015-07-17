@@ -79,7 +79,11 @@ int MCOMMTOX::start()
 
 	registerCallbacks_();
 
-	xwfSubscribe(2);
+	xwfSubscribe(clSaveData);
+
+	xwfSubscribe(frSendMsg);
+	xwfSubscribe(frDelete);
+	xwfSubscribe(frAcceptRequest);
 
 	thrd_create(&thrdTox_, toxLoop_, this);
 
