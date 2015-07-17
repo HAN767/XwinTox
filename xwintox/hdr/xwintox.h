@@ -1,6 +1,7 @@
 #ifndef __XWINTOX_H__
 #define __XWINTOX_H__
 
+#include <stdio.h>
 #include "dictionary.h"
 
 //#include "AOM/IMComm.h"
@@ -44,9 +45,20 @@ typedef enum XWMtypes_e
     crInvite,
 
     /* File transfers related */
+	/* ftRequest = File delivery request
+	 * I1 = Friend number. I2 = File number.
+	 * I3 = File length. S1 = File name. */
+
+	/* ftControl = File control
+	 * I1 = Friend number. I2 = File number.
+	 * I3 = (Enum TransferControl) Control ID */
+
+	/* ftBytes = File data delivery
+	 * I1 = Friend number. I2 = File number.
+	 * I3 = Position. V = Data */
     ftRequest,
     ftControl,
-    ftData,
+    ftBytes,
 } XWMtypes_e;
 
 typedef struct XWContact_s
@@ -82,6 +94,37 @@ typedef struct XWFriendRequest_s
 {
 	char *pszAddress, *pszMessage;
 } XWFriendRequest_t;
+
+typedef enum XWFTransferControl_e
+{
+	TC_Resume,
+	TC_Pause,
+	TC_Cancel
+} XWFTransferControl_e;
+
+typedef enum TransferState_e
+{
+    TR_Waiting,
+    TR_Active,
+    TR_Pause
+} TransferState_e;
+
+typedef enum TransferDir_e
+{
+	TR_Recv,
+	TR_Send
+} TransferDir_e;
+
+typedef struct XWTransfer_s
+{
+	TransferState_e state;
+	TransferDir_e dir; /* dir = 0 means receive, 1 means send */
+	const char *filename;
+	XWContact_t *contact;
+	unsigned int num, size, donebytes;
+	struct tm *time;
+	FILE* file;
+} XWTransfer_t;
 
 
 #endif

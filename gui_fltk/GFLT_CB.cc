@@ -3,6 +3,9 @@
 #include "GUIFLTK.h"
 #include "util.h"
 
+#define FLCB(FUNC) reinterpret_cast<FLTK_Callback_f> \
+	(flThunk<GUIFLTK, decltype(&GUIFLTK::FUNC), &GUIFLTK::FUNC>), this
+
 void GUIFLTK::setFLTKCallbacks()
 {
 	Xw_->contents->addfriend->send->callback(FLCB(cbAddFriendSend));

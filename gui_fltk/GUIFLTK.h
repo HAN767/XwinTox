@@ -7,10 +7,14 @@
 #include "AOM/IXWClass.h"
 #include "Module/Module.h"
 #include "misc.h"
+
+#include "GFL_FILE.h"
 #include "control/xwin.h"
 
 class GUIFLTK : public XWClassT<GUIFLTK>
 {
+	friend class GFLTransfer;
+
 public:
 	GUIFLTK(XWF_ObjectParams_t *pobjParams);
 	int start();
@@ -32,9 +36,5 @@ static void flThunk(Fl_Widget *w, void *userData)
 typedef void (*FLTK_Callback_f)(Fl_Widget *w, void *userData);
 
 extern GUIFLTK *pgflCurrent;
-
-#define FLCB(FUNC) reinterpret_cast<FLTK_Callback_f> \
-	(flThunk<GUIFLTK, decltype(&GUIFLTK::FUNC), &GUIFLTK::FUNC>), this
-
 
 #endif

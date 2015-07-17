@@ -77,7 +77,7 @@ void GTransfers::regen_gui()
 	/* delete the old ones */
 	list->clear_all();
 
-	for(const auto t : transfers)
+/*	for(const auto t : transfers)
 	{
 		TransfersEntry *te =new TransfersEntry(XM, YM, scale, t, inv);
 		dbg("Regen for Trans %d %d\n", t->contact->wNum, t->num);
@@ -87,7 +87,7 @@ void GTransfers::regen_gui()
 		te->show();
 		YM += 50;
 		inv =1 - inv;
-	}
+	}*/
 
 	list->redraw();
 	redraw();

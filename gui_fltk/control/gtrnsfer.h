@@ -10,29 +10,7 @@
 #include "control/garea.h"
 #include "control/translst.h"
 
-typedef enum TransferState_e
-{
-    TR_Waiting,
-    TR_Active,
-    TR_Pause
-} TransferState_e;
 
-typedef enum TransferDir_e
-{
-	TR_Recv,
-	TR_Send
-} TransferDir_e;
-
-typedef struct Transfer_s
-{
-	TransferState_e state;
-	TransferDir_e dir; /* dir = 0 means receive, 1 means send */
-	char *filename;
-	XWContact_t *contact;
-	unsigned int num, size, pos, donebytes;
-	struct tm *time;
-	FILE* file;
-} Transfer_t;
 
 class TransfersList;
 
@@ -48,7 +26,7 @@ public:
 	void regen_gui();
 
 	TransfersList *list;
-	vector <Transfer_t*> transfers;
+	//vector <Transfer_t*> transfers;
 	int regengui;
 };
 

@@ -106,6 +106,9 @@
     <File Name="util.cc"/>
     <File Name="util.h"/>
     <File Name="CMakeLists.txt"/>
+    <File Name="GFLT_CB.cc"/>
+    <File Name="GFL_FILE.h"/>
+    <File Name="GFL_FILE.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="control">
     <File Name="control/statbox.h"/>
@@ -149,6 +152,7 @@
     <File Name="nanosvg/svgs.h"/>
     <File Name="nanosvg/nsvgwrap.h"/>
     <File Name="nanosvg/nanosvgrast.h"/>
+    <File Name="nanosvg/nsvgwrap.cc"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

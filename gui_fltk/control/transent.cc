@@ -9,26 +9,6 @@
 #include "control/transent.h"
 #include "util.h"
 
-const char *GetDisplaySize(unsigned int bytes)
-{
-	static char dsize[255] = { 0 };
-	const char *suffixes[5] = { "B", "KB", "MB", "GB", "TB" };
-	double s =bytes;
-	int o =0, p = 2;
-
-	while(s >= 1024 && o + 1 < bytes)
-	{
-		o ++;
-		s =s / 1024;
-	}
-
-	if(s - floor(s) == 0.0) p = 0;
-	else if(s - floor(s) <= 0.1) p = 1;
-
-	sprintf(dsize, "%.*f %s", p, s, suffixes[o]);
-	return dsize;
-}
-
 void teRecvPost(int mtype, PBMessage_t* msg, void* custom)
 {
 	TransfersEntry *te =(TransfersEntry*)custom;
@@ -85,13 +65,13 @@ void teAcceptPressed(Fl_Widget *w)
 	CommWork();*/
 }
 
-TransfersEntry::TransfersEntry(int X, int Y, int S, Transfer_t *T, int I)
+TransfersEntry::TransfersEntry(int X, int Y, int S, int I)
 	: Fl_Group(X, Y, parent()->w() - (224* S), 50 * S)
 {
 	scale =S;
-	transfer =T;
+	//transfer =T;
 	inv =I;
-	strftime(date, 255, "%d/%b/%y %H:%M", transfer->time);
+//	strftime(date, 255, "%d/%b/%y %H:%M", transfer->time);
 
 	fl_font(FL_HELVETICA, 11 * scale);
 	dl =fl_width(date) + 20;
@@ -113,15 +93,12 @@ TransfersEntry::TransfersEntry(int X, int Y, int S, Transfer_t *T, int I)
 	progress->labelcolor(fl_rgb_color(85, 85, 100));
 	progress->minimum(0);
 	progress->maximum(1000);
-	progress->value((transfer->pos / transfer->size) * 1000);
+	//progress->value((transfer->pos / transfer->size) * 1000);
 	progress->labelsize(11.2 * scale);
 	progress->labelfont(FL_HELVETICA_BOLD);
 	progress->deactivate();
 
 	box(FL_FLAT_BOX);
-
-	if(I == 1) color(fl_rgb_color(198, 199, 214));
-	else color(fl_rgb_color(239, 239, 239));
 
 	//PB_Register(APP->events, PB_TControl | PB_TData, this, teRecvPost);
 
@@ -146,7 +123,10 @@ void TransfersEntry::draw()
 	char from[255] ={ 0 };
 	char proglabel[255] ={ 0 };
 
-	sprintf(proglabel, "%d%%", (transfer->pos / transfer->size) * 100);
+	if(inv == 1) color(fl_rgb_color(198, 199, 214));
+	else color(fl_rgb_color(239, 239, 239));
+
+/*	sprintf(proglabel, "%d%%", (transfer->pos / transfer->size) * 100);
 
 	progress->value((transfer->pos / transfer->size) * 1000);
 	progress->label(proglabel);
@@ -171,5 +151,5 @@ void TransfersEntry::draw()
 	        cut = cut - 5);
 
 	fl_draw(GetShortenedText(transfer->filename, cut),
-	        x() + dl, y() + (16 * scale));
+	        x() + dl, y() + (16 * scale));*/
 }

@@ -101,6 +101,26 @@ char *GetShortenedText(char* text, size_t LenLimit)
 	return name;
 }
 
+const char *GetDisplaySize(unsigned int bytes)
+{
+	static char dsize[255] = { 0 };
+	const char *suffixes[5] = { "B", "KB", "MB", "GB", "TB" };
+	double s =bytes;
+	int o =0, p = 2;
+
+	while(s >= 1024 && o + 1 < bytes)
+	{
+		o ++;
+		s =s / 1024;
+	}
+
+	if(s - floor(s) == 0.0) p = 0;
+	else if(s - floor(s) <= 0.1) p = 1;
+
+	sprintf(dsize, "%.*f %s", p, s, suffixes[o]);
+	return dsize;
+}
+
 void RemoveSpaces(char * s)
 {
 	char *p =s;

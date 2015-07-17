@@ -10,6 +10,8 @@ using namespace std;
 
 #include "control/transent.h"
 
+class TransfersEntry;
+
 class TransfersList: public Fl_Scroll
 {
 public:
