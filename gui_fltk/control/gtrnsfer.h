@@ -23,11 +23,7 @@ public:
 	void resize(int X, int Y, int W, int H);
 	void draw();
 
-	void regen_gui();
-
 	TransfersList *list;
-	//vector <Transfer_t*> transfers;
-	int regengui;
 };
 
 #endif

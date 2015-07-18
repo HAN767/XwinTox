@@ -42,8 +42,6 @@ typedef struct PB_Thread_Msg_s
 int PB_Despatch_Deferred_Thread(void *pvCustom)
 {
 	PB_Thread_Msg_t *tMsg =(PB_Thread_Msg_t*)pvCustom;
-
-	dbg("Defered thread: Msg %p\n", tMsg->sprMsg->pvData);
 	tMsg->fnCB(tMsg->mtype, tMsg->sprMsg->pvData, tMsg->pvCustom);
 
 	PBM_DEC(tMsg->sprMsg);
@@ -55,7 +53,6 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
 	List_t *lstHandlers;
 	Shared_Ptr_t *sprMsg =Shared_Ptr_new(msg);
-	dbg("Message: %p\n", msg);
 
 	LIST_ITERATE_OPEN(pb->clients)
 	if(((PBRegistryEntry_t*) e_data)->mtype == mtype)

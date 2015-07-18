@@ -52,6 +52,7 @@ void GUIFLTK::recvSignal(unsigned int dwType, PBMessage_t *msg)
 	switch (dwType)
 	{
 	case ftRequest:
+		printf("FTRequest\n");
 		time_t rawtime;
 		time(&rawtime);
 		struct tm *ftime =localtime(&rawtime);
@@ -59,8 +60,12 @@ void GUIFLTK::recvSignal(unsigned int dwType, PBMessage_t *msg)
 		GFLTransfer *trNew =new GFLTransfer(this, FindContact(Xw_, msg->I1),
 											msg->S1, ftime, msg->I2, msg->I3);
 		vecTransfers.push_back(trNew);
-		Xw_->contents->transfers->add(trNew->entry_);
-		Xw_->contents->transfers->regen_gui();
+
+		Fl::lock();
+		Xw_->contents->transfers->list->entries.push_back(&trNew->entry_);
+		Xw_->contents->transfers->list->add(&trNew->entry_);		
+		Xw_->contents->transfers->list->regen_gui();
+		Fl::unlock();
 		break;
 	}
 }
