@@ -131,7 +131,7 @@ public:
 	}
 
 
-	virtual int start()
+	int start()
 	{
 		return 0;
 	}

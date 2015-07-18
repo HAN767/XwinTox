@@ -61,7 +61,6 @@ void ce_deletecontact(ContactsEntry *ce)
 void ctentFrStatus(int, PBMessage_t *msg, void *custom)
 {
 	ContactsEntry *self =static_cast<ContactsEntry*>(custom);
-	char nmsg[1168];
 
 	if((msg->I1) != self->contact->wNum) return;
 
@@ -78,11 +77,11 @@ void ctentFrStatus(int, PBMessage_t *msg, void *custom)
 void ctentFrName(int, PBMessage_t *msg, void *custom)
 {
 	ContactsEntry *self =static_cast<ContactsEntry*>(custom);
-	char nmsg[1168];
 
 	if((msg->I1) != self->contact->wNum) return;
 
 	Fl::lock();
+	if (self->contact->pszName) free(self->contact->pszName);
 	self->contact->pszName =strdup(msg->S1);
 	self->redraw();
 	Fl::unlock();

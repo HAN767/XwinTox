@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "util.h"
 
 ContactsEntry *FindContactEntry(XwinTox *Xw, unsigned int num)
@@ -29,16 +31,6 @@ GMessageArea *FindContactMArea(XwinTox *Xw, unsigned int num)
 
 	return 0;
 }
-
-/*XWContact_t *FindContact(XwinTox *Xw, unsigned int id)
-{
-	for(const auto contact : Xw->sidebar->contacts->contacts)
-	{
-		if(contact->wNum == id) return contact;
-	}
-
-	return 0;
-}*/
 
 XWContact_t *FindContact(XwinTox *Xw, unsigned int id)
 {

@@ -63,8 +63,6 @@ public:
 	int scale, sblength, basex, basey;
 
 	GUIFLTK* Obj;
-private:
-	const XWF_hObj_t *hObj_;
 };
 
 static inline XwinTox *getXwin(Fl_Widget *p)

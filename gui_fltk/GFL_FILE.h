@@ -25,9 +25,9 @@ protected:
 private:
 	class GUIFLTK *gui_;
 	class TransfersEntry entry_;
-	PB_Callback_f fnRecvSignal;
+	PB_Callback_f fnRecvSignal_;
 
-	int xwfSubscribe(unsigned int dwType);
+	int xwfSubscribe_(unsigned int dwType);
 };
 
 #endif

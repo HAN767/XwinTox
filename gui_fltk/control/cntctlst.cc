@@ -166,12 +166,6 @@ int ContactsList::handle(int event)
 void ContactsList::clear_all()
 {
 	this->clear();
-
-	for(const auto entry : entries)
-	{
-		//Fl::delete_widget(entry);
-	}
-
 	entries.clear();
 	this->redraw();
 	parent()->redraw();
