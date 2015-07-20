@@ -5,7 +5,45 @@
 #include "list.h"
 #include "postbox.h"
 
-int threadcnt =3;
+typedef struct PB_Thread_Msg_s
+{
+	int mtype;
+	PBMessage_t *msg;
+	PB_Callback_f fnCB;
+	void *pvCustom;
+} PB_Thread_Msg_t;
+
+int PBThread_Main(void *custom)
+{
+	PBThread_t *self =custom;
+	PB_Thread_Msg_t *msg =0;
+
+	while(1)
+	{
+		dbg("locking\n");
+		mtx_lock(&self->msgMtx);
+
+		while(!self->msgCnt)
+		{
+			cnd_wait(&self->msgCnd, &self->msgMtx);
+		}
+
+		mtx_unlock(&self->msgMtx);
+		dbg("unlocking\n");
+
+		while((msg =List_retrieve_and_remove_first(
+		                 self->msgQueue)) != 0)
+		{
+			dbg("Call: %d\n", msg->mtype);
+
+			msg->fnCB(msg->mtype, msg->msg, msg->pvCustom);
+
+			mtx_lock(&self->msgMtx);
+			self->msgCnt -=1;
+			mtx_unlock(&self->msgMtx);
+		}
+	}
+}
 
 Postbox_t *PB_New()
 {
@@ -13,10 +51,20 @@ Postbox_t *PB_New()
 	newpb->clients =List_new();
 	newpb->deferred =List_new();
 	mtx_init(&newpb->Lock, mtx_plain);
+
+	for (int i =0; i < 2; i++)
+	{
+		mtx_init(&newpb->threads[i].msgMtx, mtx_plain);
+		cnd_init(&newpb->threads[i].msgCnd);
+		newpb->threads[i].msgCnt =0;
+		newpb->threads[i].msgQueue =List_new();
+		thrd_create(&newpb->threads[i].thrd, PBThread_Main, &newpb->threads[i]);
+	}
+
 	return newpb;
 }
 
-void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t *msg) 
+void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
 	LIST_ITERATE_OPEN(pb->clients)
 
@@ -32,48 +80,26 @@ void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t *msg)
 	PB_Free_Message(msg);
 }
 
-typedef struct PB_Thread_Msg_s
-{
-	thrd_t thrd;
-	int mtype;
-	Shared_Ptr_t *sprMsg;
-	PB_Callback_f fnCB;
-	void *pvCustom;
-} PB_Thread_Msg_t;
-
-int PB_Despatch_Deferred_Thread(void *pvCustom)
-{
-	PB_Thread_Msg_t *tMsg =(PB_Thread_Msg_t*)pvCustom;
-	tMsg->fnCB(tMsg->mtype, tMsg->sprMsg->pvData, tMsg->pvCustom);
-	threadcnt++;
-	dbg("I am thread number: %d\n", threadcnt);
-
-	PBM_DEC(tMsg->sprMsg);
-	free(tMsg);
-	thrd_exit(0);
-}
-
 void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
-	List_t *lstHandlers;
-	Shared_Ptr_t *sprMsg =Shared_Ptr_new(msg);
-
 	LIST_ITERATE_OPEN(pb->clients)
 	if(((PBRegistryEntry_t*) e_data)->mtype == mtype)
 	{
-		PBM_INC(sprMsg);
 		PB_Thread_Msg_t *pbtMsg =malloc(sizeof(PB_Thread_Msg_t));
 		pbtMsg->mtype =mtype;
-		pbtMsg->sprMsg =sprMsg;
+		pbtMsg->msg =msg;
 		pbtMsg->fnCB =((PBRegistryEntry_t*) e_data)->callback;
 		pbtMsg->pvCustom =((PBRegistryEntry_t*) e_data)->custom;
-		if (thrd_create(&pbtMsg->thrd, PB_Despatch_Deferred_Thread,
-								  pbtMsg)
-			!=thrd_success) PBM_DEC(sprMsg);
+
+		dbg("add it...\n");
+		mtx_lock(&pb->threads[0].msgMtx);
+		List_add(pb->threads[0].msgQueue, pbtMsg);
+		pb->threads[0].msgCnt +=1;
+		cnd_broadcast(&pb->threads[0].msgCnd);
+		mtx_unlock(&pb->threads[0].msgMtx);
+		dbg("done adding\n");
 	}
 	LIST_ITERATE_CLOSE(pb->clients)
-
-	PBM_DEC(sprMsg);
 }
 
 void PB_Despatch_Deferred(Postbox_t *pb)

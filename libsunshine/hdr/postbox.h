@@ -13,8 +13,8 @@ extern "C"
 
 
 /* Ownership policy for PBMessages:
- * Strings are owned by the Postbox.
- * Void pointers are owned by the sender;
+ * Strings are owned by the Postbox. They are copied.
+ * Void pointers are owned by the recipient;
  * they are not copied. */
 
 typedef struct PBMessage_s
@@ -40,23 +40,27 @@ typedef struct PBDeferred_s
 	PBMessage_t *msg;
 } PBDeferred_t;
 
+typedef struct PBThread_s
+{
+	thrd_t thrd;
+	List_t *msgQueue;
+	short msgCnt;
+	mtx_t msgMtx;
+	cnd_t msgCnd;
+} PBThread_t;
+
 typedef struct Postbox_s
 {
 	List_t *clients;
 	List_t *deferred;
 	mtx_t Lock;
+	PBThread_t threads[2];
 } Postbox_t;
-
-typedef struct PBC_s
-{
-	int mtype;
-	PBMessage_t *msg;
-} PBC_t; /* provided for convenience */
 
 Postbox_t *PB_New();
 void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t* msg);
-void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg);
+//#define PB_Signal_Multithreaded PB_Signal
 void PB_Despatch_Deferred(Postbox_t *pb);
 void PB_Register(Postbox_t *pb, int mtype, void *custom, PB_Callback_f);
 
