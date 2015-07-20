@@ -158,6 +158,8 @@ void MCOMMTOX::saveToxData_()
 	tox_get_savedata(tox_, bData);
 	mtx_unlock(&mtxTox_);
 
+	mkdir(pszxwfCall("APP/GetDataFolder", 0), S_IRWXU);
+
 	unlink(strSavefile_.c_str());
 	hfSave =fopen(strSavefile_.c_str(), "wb");
 

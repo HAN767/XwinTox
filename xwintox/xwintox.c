@@ -29,6 +29,12 @@ static void *AppCall(const XWF_Object_Handle_t *pobjhSource,
 		snprintf(szPath, 255, "%s/.XwinTox/%s.ini", get_home_folder(), pvParams);
 		return szPath;
 	}
+	else if(strcmp(pszService, "GetDataFolder") == 0)
+	{
+		static char szDir[255];
+		snprintf(szDir, 255, "%s/.XwinTox", get_home_folder());
+		return szDir;
+	}
 	else if(strcmp(pszService, "GetDataFilename") == 0)
 	{
 		static char szPath[255];
