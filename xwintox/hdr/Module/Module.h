@@ -1,3 +1,8 @@
+/* XwinTox
+ *
+ * At the very heart of XwinTox is the module manager. XwinTox is designed
+ * to be as modular as possible; such modularity requires a firm base. */
+
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
@@ -18,7 +23,7 @@ typedef enum XWF_Lang
 }
 XWF_Lang_e;
 
-static const char* XWF_Lang_Text_sz[3] = 
+static const char* XWF_Lang_Text_sz[3] =
 { "C-language", "C++-language", "Script-language" };
 
 typedef enum XWF_Modtype
@@ -106,7 +111,7 @@ typedef void *(*XWF_Call_f)(const XWF_Object_Handle_t *, const char *,
  * 0 is returned if the module is permitted to do so, and
  * 1 is returned if the module is not permitted to. */
 typedef int (*XWF_Subscribe_f)(const XWF_Object_Handle_t *, int mtype,
-                              void *custom, PB_Callback_f);
+                               void *custom, PB_Callback_f);
 /* This function allows a module to despatch a message.
  * 0 is returned if the module is permitted to do so, and
  * 1 is returned if the module is not permitted to. */
@@ -130,6 +135,13 @@ typedef struct XWF_Services_s
  * unloading of the module, so delete all resources held first. */
 typedef int (*XWF_Init_f)(XWF_Module_t*, const XWF_Services_t*);
 
+/* These are used to pass information about modules and classes that are loaded
+ * over to modules and objects. First, the structure of an entry in the
+ * module information list. Note that *hMod is currently a pointer to the
+ * actual module structure. Later, I'd like to make it opaque. An integer
+ * corresponding to an index (private to the module manager) would be better
+ * to promote encapsulisation and security. */
+
 typedef struct XWF_Module_Info_s
 {
 	void *hMod;
@@ -144,6 +156,7 @@ inline void XWF_Free_Module_Info(XWF_Module_Info_t *modInfo)
 	free(modInfo);
 }
 
+/* Now for the class info structure. */
 typedef struct XWF_Class_Info_s
 {
 	char *pszName, *pszLang;
@@ -156,6 +169,7 @@ inline void XWF_Free_Class_Info(XWF_Class_Info_t *modInfo)
 	free(modInfo);
 }
 
+/* These are just here for convenience. */
 #define XWF_ModInfo_t XWF_Module_Info_t
 #define XWF_FreeModInfo XWF_Free_Module_Info
 
