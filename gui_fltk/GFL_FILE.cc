@@ -32,15 +32,36 @@ int GFLTransfer::xwfSubscribe_(unsigned int dwType)
 	                                       fnRecvSignal_);
 }
 
-void GFLTransfer::recvSignal(unsigned int dwType, PBMessage_t*)
+void GFLTransfer::recvSignal(unsigned int dwType, PBMessage_t* msg)
 {
 	dbg("Signal received\n");
+	if (msg->I1 != contact_->wNum | msg->I2 != id_) return;
+	else if(dwType == ftControl)
+	{
+		if(msg->I3 == TC_Resume)
+		{
+			file_ =fopen(localfilename_, "wb");
+			entry_->accept->deactivate();
+			entry_->saveto->deactivate();
+			entry_->progress->activate();
+		}
+	}
+	else if(dwType == ftBytes)
+	{
+		fseek(file_, msg->I4, SEEK_SET);
+		if (fwrite(msg->V, msg->I4, 1, file_) != 1)
+		{
+			dbg("failed to write file data\n");
+		}
+	}
 }
 
 void GFLTransfer::cbAccept(Fl_Widget *w)
 {
+	PBMessage_t *msg =PB_New_Message();
 	dbg("Accept\n");
-	//entry_->accept->deactivate();
-	//entry_->progress->activate();
-	
+	msg->I1 =contact_->wNum;
+	msg->I2 =id_;
+
+	gui_->xwfDispatch(ftResume, msg);
 }

@@ -20,8 +20,8 @@ void MCOMMTOX::registerCallbacks_()
 	TOXCALLBACK(friend_request)
 
 	TOXCALLBACK(file_recv)
-	TOXCALLBACK(file_recv_control)
-	TOXCALLBACK(file_recv_chunk)
+	//TOXCALLBACK(file_recv_control)
+	//TOXCALLBACK(file_recv_chunk)
 }
 
 void MCOMMTOX::cb_self_connection_status(TOX_CONNECTION connection_status)

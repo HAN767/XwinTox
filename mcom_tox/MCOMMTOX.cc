@@ -87,6 +87,8 @@ int MCOMMTOX::start()
 	xwfSubscribe(frAcceptRequest);
 	xwfSubscribe(frSendRequest);
 
+	xwfSubscribe(ftResume);
+
 	thrd_create(&thrdTox_, (thrd_start_t)toxLoop_, this);
 
 	sendFriends_();

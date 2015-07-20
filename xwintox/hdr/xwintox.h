@@ -58,7 +58,9 @@ typedef enum XWMtypes_e
     ftControl,
     ftBytes,
 
-	ftAccept,
+	/* ftResume = Resume a file transfer (or start one)
+	 * I1 = Friend number. I2 = File number. */
+	ftResume,
 } XWMtypes_e;
 
 typedef struct XWContact_s

@@ -37,6 +37,9 @@ private:
 	void acceptFriendRequest_(const char *pszAddress);
 	void addFriend_(const char *addr, const char *msg);
 
+	void controlFileTransfer(unsigned int dwFID, unsigned int dwTID,
+                                   unsigned int eCtrl);
+
 
 	/* the Tox callbacks */
 	void cb_self_connection_status(TOX_CONNECTION connection_status);
@@ -60,6 +63,8 @@ private:
 	                        uint64_t position, const uint8_t *data,
 	                        size_t length);
 
+	/* Miscellaneous */
+	TOX_FILE_CONTROL getToxFC(unsigned int eCtrl);
 
 	Dictionary_t *dictConfig_;
 	std::string strSavefile_, strConffile_;

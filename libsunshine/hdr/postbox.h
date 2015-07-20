@@ -22,7 +22,7 @@ typedef struct PBMessage_s
 	const char *ORIGIN;
 	void *V; /* not copied */
 	char *S1, *S2, *S3, *S4;
-	int I1, I2, I3, I4;
+	int I1, I2, I3, I4, I5;
 } PBMessage_t;
 
 typedef void (*PB_Callback_f)(int, PBMessage_t*, void*);
