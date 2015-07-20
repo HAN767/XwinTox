@@ -31,6 +31,8 @@ typedef struct XWClass_s
 	void *hCXXObj; /* used for C++ wrapper */
 } XWClass_t;
 
+#define XWOBJ(hdl) ((XWClass_t*)hdl->hObj)
+
 #ifdef __cplusplus
 }
 #endif

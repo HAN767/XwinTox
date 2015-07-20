@@ -73,17 +73,13 @@ int main(int argc, char *argv[])
 	ModuleManager_loadDynamicModule
 	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/GUI_FLTK.so");
 
-	XWF_Object_Handle_t *msgr =ModuleManager_createObject("MESSENGER");
-	App.pguiGUI =ModuleManager_createObject("GUI");
-	/*IMCOBJ(App.pimcIM)->pszName =strdup(Dictionary_get(App.dictConfig,
-	                                    "XwinTox.Name"));
-	IMCOBJ(App.pimcIM)->pszStatus =strdup(Dictionary_get(App.dictConfig,
-	                                      "XwinTox.Status"));*/
+	App.objMSGR =ModuleManager_createObject("MESSENGER");
+	App.objGUI =ModuleManager_createObject("GUI");
 
-	GUIOBJ(App.pguiGUI)->fnStart(App.pguiGUI);
+	XWOBJ(App.objGUI)->fnStart(App.objGUI);
 	usleep(750); /* let the GUI initialise, ready for signal reception */
 
-	((XWClass_t*)msgr->hObj)->fnStart(msgr);
+	XWOBJ(App.objMSGR)->fnStart(App.objGUI);
 
 	while(1)
 	{

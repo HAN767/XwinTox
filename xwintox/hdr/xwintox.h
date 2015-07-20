@@ -3,15 +3,13 @@
 
 #include <stdio.h>
 #include "dictionary.h"
-
-//#include "AOM/IMComm.h"
-#include "AOM/IGUI.h"
+#include "Module/Module.h"
 
 typedef struct XWT_s
 {
 	Dictionary_t *dictConfig;
-	XWF_Object_Handle_t *pimcIM;
-	XWF_Object_Handle_t *pguiGUI;
+	XWF_Object_Handle_t *objMSGR;
+	XWF_Object_Handle_t *objGUI;
 } XWT_t;
 
 typedef enum XWMtypes_e
