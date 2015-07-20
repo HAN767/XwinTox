@@ -81,6 +81,7 @@ void CtList_recv(int iType, PBMessage_t* msg, void* custom)
 		ud->lptr =self;
 		newContact->wNum =msg->I1;
 		newContact->pszID =strdup(msg->S1);
+		if(!self->lstContacts) self->lstContacts =List_new();
 		List_add(self->lstContacts, newContact);
 		Fl::unlock();
 
@@ -96,6 +97,7 @@ void CtList_recv(int iType, PBMessage_t* msg, void* custom)
 		ud->lptr =self;
 		newContact->wNum =msg->I1;
 		newContact->pszID =strdup(msg->S1);
+		if(!self->lstContacts) self->lstContacts =List_new();
 		List_add(self->lstContacts, newContact);
 		Fl::unlock();
 
@@ -111,6 +113,7 @@ ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
 	selected =-1;
 	color(fl_rgb_color(65, 65, 65));
 	startpoint =0 * S;
+	lstContacts =0;
 	lstChatrooms =List_new();
 
 	Fl_Widget *p =this;
