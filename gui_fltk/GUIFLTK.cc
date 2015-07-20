@@ -57,13 +57,14 @@ void GUIFLTK::recvSignal(unsigned int dwType, PBMessage_t *msg)
 		time(&rawtime);
 		struct tm *ftime =localtime(&rawtime);
 
-		GFLTransfer *trNew =new GFLTransfer(this, FindContact(Xw_, msg->I1),
-											msg->S1, ftime, msg->I2, msg->I3);
-		vecTransfers.push_back(trNew);
-
 		Fl::lock();
-		Xw_->contents->transfers->list->entries.push_back(&trNew->entry_);
-		Xw_->contents->transfers->list->add(&trNew->entry_);		
+		dbg("Msg->I1: %d\n", msg->I1);
+		GFLTransfer *trNew =new GFLTransfer(this, FindContact(Xw_, msg->I1),
+											msg->S1, ftime, msg->I2, msg->I3,
+											TR_Recv);
+		vecTransfers.push_back(trNew);
+		Xw_->contents->transfers->list->entries.push_back(trNew->entry_);
+		Xw_->contents->transfers->list->add(trNew->entry_);		
 		Xw_->contents->transfers->list->regen_gui();
 		Fl::unlock();
 		break;

@@ -2,50 +2,53 @@
 
 #include <FL/fl_draw.H>
 #include <FL/Fl_Group.H>
+#include <FL/Fl_Native_File_Chooser.H>
 #include "xwintox.h"
+#include "GFL_FILE.h"
 
 #include "control/xwin.h"
 #include "control/gtrnsfer.h"
 #include "control/transent.h"
 #include "util.h"
+#include "misc.h"
 
 void teRecvPost(int mtype, PBMessage_t* msg, void* custom)
 {
 	TransfersEntry *te =(TransfersEntry*)custom;
 
-/*	if(mtype == PB_TControl && msg->I1 == te->transfer->contact->num && 
-	   msg->I2 == te->transfer->num)
-	{
-		dbg("Transfer %d:%d: enter new state: ", msg->I1, msg->I2);
-		switch (msg->I3)
+	/*	if(mtype == PB_TControl && msg->I1 == te->transfer->contact->num &&
+		   msg->I2 == te->transfer->num)
 		{
-		case TC_Resume:
-			dbg("resume\n");
-			te->progress->activate();
-			te->accept->deactivate();
-		}
-	}
-	else if(mtype == PB_TData && msg->I1 == te->transfer->contact->num && 
-	   msg->I2 == te->transfer->num)
-	{
-		if (msg->I4)
-		{
-			fseek(te->transfer->file, msg->I3, SEEK_SET);
-			if (fwrite(msg->S1, msg->I4, 1, te->transfer->file) != 1)
+			dbg("Transfer %d:%d: enter new state: ", msg->I1, msg->I2);
+			switch (msg->I3)
 			{
-				dbg("failed to write file data\n");
+			case TC_Resume:
+				dbg("resume\n");
+				te->progress->activate();
+				te->accept->deactivate();
 			}
-			te->transfer->pos =msg->I3;
 		}
-		else
+		else if(mtype == PB_TData && msg->I1 == te->transfer->contact->num &&
+		   msg->I2 == te->transfer->num)
 		{
-			fclose(te->transfer->file);
-			te->accept->deactivate();
-			te->reject->deactivate();
-			te->progress->value(te->transfer->size);
+			if (msg->I4)
+			{
+				fseek(te->transfer->file, msg->I3, SEEK_SET);
+				if (fwrite(msg->S1, msg->I4, 1, te->transfer->file) != 1)
+				{
+					dbg("failed to write file data\n");
+				}
+				te->transfer->pos =msg->I3;
+			}
+			else
+			{
+				fclose(te->transfer->file);
+				te->accept->deactivate();
+				te->reject->deactivate();
+				te->progress->value(te->transfer->size);
+			}
 		}
-	}
-	te->redraw();*/
+		te->redraw();*/
 }
 
 void teAcceptPressed(Fl_Widget *w)
@@ -65,32 +68,51 @@ void teAcceptPressed(Fl_Widget *w)
 	CommWork();*/
 }
 
-TransfersEntry::TransfersEntry(int X, int Y, int W, int H, int S, int I)
+void teSaveasPressed(Fl_Widget *w)
+{
+	TransfersEntry *te =(TransfersEntry*)w->parent();
+	Fl_Native_File_Chooser fnfc;
+	fnfc.title("Save as");
+	fnfc.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
+	int res =fnfc.show();
+	if (res == 1 | res == -1) return;
+	else
+	{
+		free (te->transfer->localfilename_);
+		te->transfer->localfilename_ =strdup(fnfc.filename());
+	}
+}
+
+TransfersEntry::TransfersEntry(int X, int Y, int W, int H, int S, struct tm *Time,
+                               GFLTransfer *T, int I)
 	: Fl_Group(X, Y, W, 50 * S)
 {
 	scale =S;
-	//transfer =T;
+	transfer =T;
 	inv =I;
-//	strftime(date, 255, "%d/%b/%y %H:%M", transfer->time);
+	strftime(date, 255, "%d/%b/%y %H:%M", Time);
 
 	fl_font(FL_HELVETICA, 11 * scale);
 	dl =fl_width(date) + 20;
 
 	accept =new Fl_Button(0, 0, 1, 1, "Accept");
 	reject =new Fl_Button(0, 0, 1, 1, "Reject");
+	saveto =new Fl_Button(0, 0, 1, 1, "Save as");
 	progress =new Fl_Progress(0, 0, 1, 1);
 
 	accept->color(fl_rgb_color(118, 202, 116));
 	reject->color(fl_rgb_color(214, 78, 77));
+	saveto->color(fl_rgb_color(160, 84, 160));
 	progress->color(fl_rgb_color(209, 210, 214));
 
 	accept->labelsize(11 * scale);
 	reject->labelsize(11 * scale);
+	saveto->labelsize(11 * scale);
 
-	accept->callback(teAcceptPressed);
+	saveto->callback(teSaveasPressed);
 
 	progress->selection_color(fl_rgb_color(118, 202, 116));
-	progress->labelcolor(fl_rgb_color(85, 85, 100));
+	progress->labelcolor(fl_rgb_color(25, 25, 50));
 	progress->minimum(0);
 	progress->maximum(1000);
 	//progress->value((transfer->pos / transfer->size) * 1000);
@@ -99,8 +121,6 @@ TransfersEntry::TransfersEntry(int X, int Y, int W, int H, int S, int I)
 	progress->deactivate();
 
 	box(FL_FLAT_BOX);
-
-	//PB_Register(APP->events, PB_TControl | PB_TData, this, teRecvPost);
 
 	resize(X, Y, w(), h());
 	end();
@@ -113,45 +133,48 @@ void TransfersEntry::resize(int X, int Y, int W, int H)
 	               (h() / 2) - 2 * scale);
 	reject->resize(X + w() - (78 * scale), y() + (h() / 2) + (2 * scale),
 	               54 * scale,(h() / 2) - 4 * scale);
-	progress->resize(x() + dl, y() + (30 * scale), w() - dl - (86 * scale),
-					(16 * scale));
+	saveto->resize(X + w() -(78 * scale) - (59 * scale),  y() + (2 * scale),
+				   54 * scale, (h() / 2) - 2 * scale);
+	progress->resize(x() + dl, y() + (30 * scale), w() - dl - (83 * scale),
+	                 (16 * scale));
 }
 
 void TransfersEntry::draw()
 {
 	int cut;
-	char from[255] ={ 0 };
-	char proglabel[255] ={ 0 };
+	char from[255] = { 0 };
+	char proglabel[255] = { 0 };
+	float percent =(((double)transfer->pos_) / transfer->size_) * 100;
+	int val =(((double)transfer->pos_) / transfer->size_) * 1000;
 
 	if(inv == 1) color(fl_rgb_color(198, 199, 214));
 	else color(fl_rgb_color(239, 239, 239));
 
-	Fl_Group::draw();
-
-/*	sprintf(proglabel, "%d%%", (transfer->pos / transfer->size) * 100);
-
-	progress->value((transfer->pos / transfer->size) * 1000);
+	sprintf(proglabel, "%.1f %%", percent);
+	dbg("Prog label: %s. Val: %d.  Pos: %d. Size_: %d.\n", proglabel, val, transfer->pos_, transfer->size_);
+	progress->value(val);
 	progress->label(proglabel);
 	progress->redraw();
 
-	sprintf(from, "From: %s", GetDisplayName(transfer->contact, 100));
+	Fl_Group::draw();
 
-
+	sprintf(from, "From: %s", GetDisplayName(transfer->contact_, 100));
 
 	fl_font(FL_HELVETICA, 11 * scale);
 	fl_color(fl_rgb_color(110, 110, 118));
 	fl_draw(date, x() + (10 * scale), y() + (16 * scale));
 	fl_draw(from, x() + (10 * scale), y() + (30 * scale));
-	fl_draw(GetDisplaySize(transfer->size), x() + (10 * scale), y() + (44 * scale));
+	fl_draw(GetDisplaySize(transfer->size_), x() + (10 * scale), y() + (44 * scale));
 
 	fl_color(fl_rgb_color(85, 85, 100));
 	fl_font(FL_HELVETICA_BOLD, 12 * scale);
 
 	for(cut =255;
-	        cut > 0 &&
-	        fl_width(GetShortenedText(transfer->filename, cut)) > w() - 80 -dl;
+	        cut > 0 && (
+	            fl_width((GetShortenedText((char*)transfer->filename_, cut)))
+	            > w() - 140 -dl);
 	        cut = cut - 5);
 
-	fl_draw(GetShortenedText(transfer->filename, cut),
-	        x() + dl, y() + (16 * scale));*/
+	fl_draw(GetShortenedText((char*)transfer->filename_, cut),
+	        x() + dl, y() + (16 * scale));
 }

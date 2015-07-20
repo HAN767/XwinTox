@@ -7,7 +7,7 @@
 #define TOXCALLBACK(func) 	tox_callback_##func \
 	(tox_, &thunk<decltype(&MCOMMTOX::cb_##func), &MCOMMTOX::cb_##func>::call, \
 	 this);	\
-
+	 
 void MCOMMTOX::registerCallbacks_()
 {
 
@@ -137,6 +137,13 @@ void MCOMMTOX::cb_file_recv(uint32_t friend_number, uint32_t file_number,
                             uint32_t kind, uint64_t file_size,
                             const uint8_t *filename, size_t filename_length)
 {
+	if(kind != TOX_FILE_KIND_DATA)
+	{
+		tox_file_control(tox_, friend_number, file_number, 
+		TOX_FILE_CONTROL_CANCEL, NULL);
+		return;
+	}
+
 	PBMessage_t *msgFtRequest =PB_New_Message();
 
 	msgFtRequest->S1 =strndup(reinterpret_cast<const char*>(filename),

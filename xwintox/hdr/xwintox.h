@@ -57,6 +57,8 @@ typedef enum XWMtypes_e
     ftRequest,
     ftControl,
     ftBytes,
+
+	ftAccept,
 } XWMtypes_e;
 
 typedef struct XWContact_s

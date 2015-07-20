@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "util.h"
+#include "misc.h"
 
 ContactsEntry *FindContactEntry(XwinTox *Xw, unsigned int num)
 {
@@ -38,10 +39,14 @@ XWContact_t *FindContact(XwinTox *Xw, unsigned int id)
 	List_t *lstContacts =Xw->sidebar->contacts->lstContacts;
 
 	LIST_ITERATE_OPEN(lstContacts)
-		c =static_cast<XWContact_t *>(e_data);
-		if(c->wNum == id) break;
+		XWContact_t *cn =static_cast<XWContact_t *>(e_data);
+		if(cn->wNum == id)
+		{
+			c =cn; break;
+		}
 	LIST_ITERATE_CLOSE(lstContacts)
 
+	dbg("C = %p\n", c);
 	return c;
 }
 
