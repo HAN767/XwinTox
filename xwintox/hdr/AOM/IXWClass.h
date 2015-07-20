@@ -133,10 +133,7 @@ public:
 	}
 
 
-	int start()
-	{
-		return 0;
-	}
+	virtual int start() =0;
 
 	const XWF_Object_Handle_t *hObj_;
 

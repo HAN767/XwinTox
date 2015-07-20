@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	XWOBJ(App.objGUI)->fnStart(App.objGUI);
 	usleep(750); /* let the GUI initialise, ready for signal reception */
 
-	XWOBJ(App.objMSGR)->fnStart(App.objGUI);
+	XWOBJ(App.objMSGR)->fnStart(App.objMSGR);
 
 	while(1)
 	{
