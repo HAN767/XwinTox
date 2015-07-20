@@ -53,7 +53,8 @@ typedef enum XWMtypes_e
 
 	/* ftBytes = File data delivery
 	 * I1 = Friend number. I2 = File number.
-	 * I3 = Position. V = Data */
+	 * I3 = Position. I4 = Length. 
+	 * V = Data */
     ftRequest,
     ftControl,
     ftBytes,

@@ -21,7 +21,7 @@ void MCOMMTOX::registerCallbacks_()
 
 	TOXCALLBACK(file_recv)
 	//TOXCALLBACK(file_recv_control)
-	//TOXCALLBACK(file_recv_chunk)
+	TOXCALLBACK(file_recv_chunk)
 }
 
 void MCOMMTOX::cb_self_connection_status(TOX_CONNECTION connection_status)
@@ -153,6 +153,23 @@ void MCOMMTOX::cb_file_recv(uint32_t friend_number, uint32_t file_number,
 	msgFtRequest->I3 =file_size;
 
 	xwfDispatch(ftRequest, msgFtRequest);
+}
+
+void MCOMMTOX::cb_file_recv_chunk(uint32_t friend_number, uint32_t file_number,
+								  uint64_t position, const uint8_t *data, 
+								  size_t length)
+{
+	PBMessage_t *msgFtBytes =PB_New_Message();
+
+	msgFtBytes->I1 =friend_number;
+	msgFtBytes->I2 =file_number;
+	msgFtBytes->I3 =position;
+	msgFtBytes->I4 =length;
+	msgFtBytes->V =malloc(sizeof(char) * length);
+	memcpy(msgFtBytes->V, const_cast<void*>(static_cast<const void*>(data)),
+		   length);
+
+	xwfDispatch(ftBytes, msgFtBytes);
 }
 /*	void cb_file_recv_control(uint32_t friend_number,uint32_t file_number,
 	                          TOX_FILE_CONTROL c);

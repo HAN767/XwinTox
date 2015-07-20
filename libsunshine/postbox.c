@@ -5,6 +5,8 @@
 #include "list.h"
 #include "postbox.h"
 
+int threadcnt =3;
+
 Postbox_t *PB_New()
 {
 	Postbox_t *newpb =calloc(1, sizeof(Postbox_t));
@@ -43,6 +45,8 @@ int PB_Despatch_Deferred_Thread(void *pvCustom)
 {
 	PB_Thread_Msg_t *tMsg =(PB_Thread_Msg_t*)pvCustom;
 	tMsg->fnCB(tMsg->mtype, tMsg->sprMsg->pvData, tMsg->pvCustom);
+	threadcnt++;
+	dbg("I am thread number: %d\n", threadcnt);
 
 	PBM_DEC(tMsg->sprMsg);
 	free(tMsg);
@@ -57,6 +61,7 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 	LIST_ITERATE_OPEN(pb->clients)
 	if(((PBRegistryEntry_t*) e_data)->mtype == mtype)
 	{
+		PBM_INC(sprMsg);
 		PB_Thread_Msg_t *pbtMsg =malloc(sizeof(PB_Thread_Msg_t));
 		pbtMsg->mtype =mtype;
 		pbtMsg->sprMsg =sprMsg;
@@ -64,7 +69,7 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 		pbtMsg->pvCustom =((PBRegistryEntry_t*) e_data)->custom;
 		if (thrd_create(&pbtMsg->thrd, PB_Despatch_Deferred_Thread,
 								  pbtMsg)
-			==thrd_success) PBM_INC(sprMsg);
+			!=thrd_success) PBM_DEC(sprMsg);
 	}
 	LIST_ITERATE_CLOSE(pb->clients)
 

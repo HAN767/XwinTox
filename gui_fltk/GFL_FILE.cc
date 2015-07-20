@@ -48,10 +48,24 @@ void GFLTransfer::recvSignal(unsigned int dwType, PBMessage_t* msg)
 	}
 	else if(dwType == ftBytes)
 	{
-		fseek(file_, msg->I4, SEEK_SET);
-		if (fwrite(msg->V, msg->I4, 1, file_) != 1)
+		if(msg->I4 > 0)
 		{
-			dbg("failed to write file data\n");
+			fseek(file_, msg->I3, SEEK_SET);
+			if (fwrite(msg->V, msg->I4, 1, file_) != 1)
+			{
+				dbg("failed to write file data\n");
+			}
+			else
+			{
+				pos_ +=msg->I4;
+				entry_->progress->redraw();
+			}
+		}
+		else
+		{
+			dbg("Transfer complete\n");
+			fclose(file_);
+			entry_->reject->deactivate();
 		}
 	}
 }

@@ -23,6 +23,10 @@ static void *AppCall(const XWF_Object_Handle_t *pobjhSource,
 	{
 		return (void*)Dictionary_get(App.dictConfig, "XwinTox.Status");
 	}
+	else if(strcmp(pszService, "GetHomeFolder") == 0)
+	{
+		return (void*)get_home_folder();
+	}
 	else if(strcmp(pszService, "GetConfigFilename") == 0)
 	{
 		static char szPath[255];
