@@ -14,8 +14,6 @@
 #include "control/xwin.h"
 #include "util.h"
 
-GUIFLTK *pgflCurrent;
-
 GUIFLTK::GUIFLTK(XWF_ObjectParams_t *prmObj)
 {
 	dbg("Initialising a new GUI for FLTK\n");

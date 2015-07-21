@@ -1,4 +1,5 @@
-#include <string.h>
+#include <cstring>
+#include <libgen.h>
 
 #include "MCOMMTOX.h"
 #include "xwintox.h"
@@ -40,6 +41,25 @@ void MCOMMTOX::recvSignal(unsigned int dwType, PBMessage_t* msg)
 	case ftResume:
 		dbg("Resume transfer\n");
 		controlFileTransfer(msg->I1, msg->I2, TC_Resume);
+		break;
+
+	case ftSend:
+		TOX_ERR_FILE_SEND errSend;
+		unsigned int dwFilenum;
+		char szFilename[TOX_MAX_FILENAME_LENGTH];
+
+		basename_r(msg->S1, szFilename);
+
+		mtx_lock(&mtxTox_);
+		tox_file_send(tox_, msg->I1, TOX_FILE_KIND_DATA, msg->I2, NULL,
+		              const_cast<const uint8_t*>(
+		                  reinterpret_cast<uint8_t*>(szFilename)),
+		              strlen(szFilename), &errSend);
+
+		dbg("Transfer %s to %d. Error: %d\n", szFilename, msg->I1, errSend);
+
+		mtx_unlock(&mtxTox_);
+		break;
 	}
 }
 
@@ -50,6 +70,7 @@ void MCOMMTOX::controlFileTransfer(unsigned int dwFID, unsigned int dwTID,
 	TOX_FILE_CONTROL c =getToxFC(eCtrl);
 
 	mtx_lock(&mtxTox_);
+
 	if(tox_file_control(tox_, dwFID, dwTID, c, &err))
 	{
 		PBMessage_t *msg =PB_New_Message();
@@ -65,12 +86,13 @@ void MCOMMTOX::controlFileTransfer(unsigned int dwFID, unsigned int dwTID,
 
 		xwfDispatch(ftControl, msg);
 	}
+
 	mtx_unlock(&mtxTox_);
 }
 
 TOX_FILE_CONTROL MCOMMTOX::getToxFC(unsigned int eCtrl)
 {
 	if(eCtrl == TC_Resume) return TOX_FILE_CONTROL_RESUME;
-	else if (eCtrl == TC_Pause) return TOX_FILE_CONTROL_PAUSE;
-	else if (eCtrl == TC_Cancel) return TOX_FILE_CONTROL_CANCEL;
+	else if(eCtrl == TC_Pause) return TOX_FILE_CONTROL_PAUSE;
+	else if(eCtrl == TC_Cancel) return TOX_FILE_CONTROL_CANCEL;
 }

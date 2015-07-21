@@ -130,7 +130,7 @@ void MyTable::load_command(void *userdata, std::vector <const char*> columns)
 	_rowdata.push_back(newrow);
 	std::vector<char*> &rc = _rowdata[_rowdata.size() -1].cols;
 
-	for (const auto column : columns)
+	for (const char* column : columns)
 	{
 		rc.push_back(strdup(column));
 	}

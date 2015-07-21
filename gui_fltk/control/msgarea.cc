@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include <FL/Fl_Multiline_Input.H>
 #include <FL/Fl_Native_File_Chooser.H>
 
@@ -22,11 +23,20 @@ void mareaSendfilePressed(Fl_Widget* B , void*)
 	if (res == 1 | res == -1) goto cleanup;
 	else
 	{
-		dbg("File: %s\n", fnfc.filename());
+		struct stat statFile;
+		char *const pszFilename =strdup(fnfc.filename());
+		if (stat(pszFilename, &statFile) == -1)
+		{
+			free(pszFilename);
+			goto cleanup;
+		}
 		msgSendfile->I1 =cArea->contact->wNum;
-		msgSendfile->S1 =strdup(fnfc.filename());
+		msgSendfile->I2 =statFile.st_size;
+		msgSendfile->S1 =pszFilename;
 		cArea->hObj_->pSvcs->fnDispatch(cArea->hObj_, ftSend, msgSendfile);
 	}
+
+	return;
 
 cleanup:
 	free(msgSendfile);

@@ -27,7 +27,7 @@ char *bin_to_hex_string(const uint8_t *bin, size_t len)
 		b += sprintf(result+b, "%02X", bin[i]);
 	}
 
-	result[(2 * len) +1] ='\0';
+	//result[(2 * len) + 1] ='\0';
 	return result;
 }
 

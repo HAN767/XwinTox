@@ -64,10 +64,11 @@ typedef enum XWMtypes_e
 	/* ftResume = Resume a file transfer (or start one)
 	 * I1 = Friend number. I2 = File number. */
 
-	/* ftSendInternal = Widget wants to transfer a file.
+	/* ftSend = Widget wants to transfer a file.
 	 * A MESSENGER object can handle this and deliver an
 	 * ftSendRequest to the GUI.
-	 * I1 = Friend number. S1 = Filename. */
+	 * I1 = Friend number. S1 = Filename (full path).
+	 * I2 = File size. */
 	ftResume,
 	ftSend,
 } XWMtypes_e;
