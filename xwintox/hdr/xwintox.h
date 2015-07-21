@@ -59,6 +59,10 @@ typedef enum XWMtypes_e
     ftControl,
     ftBytes,
 
+	/* ftSendRequest = MCOM says to transfer a file
+	 * I1 = Friend number. I2 = File number.
+	 * I3 = file size. S1 = full path.
+	 * S2 = file name. */
 	ftSendRequest,
 
 	/* ftResume = Resume a file transfer (or start one)

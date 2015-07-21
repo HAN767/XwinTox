@@ -28,6 +28,7 @@ int GUIFLTK::start()
 
 	setFLTKCallbacks();
 	xwfSubscribe(ftRequest);
+	xwfSubscribe(ftSendRequest);
 	return 0;
 }
 
@@ -53,6 +54,7 @@ void GUIFLTK::recvSignal(unsigned int dwType, PBMessage_t *msg)
 	switch(dwType)
 	{
 	case ftRequest:
+	{
 		printf("FTRequest\n");
 		time_t rawtime;
 		time(&rawtime);
@@ -69,11 +71,37 @@ void GUIFLTK::recvSignal(unsigned int dwType, PBMessage_t *msg)
 		Xw_->contents->transfers->list->add(trNew->entry_);
 		Xw_->contents->transfers->list->regen_gui();
 		snprintf(nmsg, 1168, "* %s would like to send you a file: %s\n",
-		         FindContact(Xw_, msg->I1), msg->S1);
+		         FindContact(Xw_, msg->I1)->pszName, msg->S1);
 		cmArea->moutbuffer->append(nmsg);
 		cmArea->moutput->scroll(cmArea->moutput->count_lines(0,
 		                        cmArea->moutbuffer->length(), 1), 0);
 		Fl::unlock();
 		break;
+	}
+
+	case ftSendRequest:
+	{
+		printf("FTSendRequest\n");
+		time_t rawtime;
+		time(&rawtime);
+		struct tm *ftime =localtime(&rawtime);
+		char nmsg[1168];
+		GMessageArea *cmArea =FindContactMArea(Xw_, msg->I1);
+
+		Fl::lock();
+		GFLTransfer *trNew =new GFLTransfer(this, FindContact(Xw_, msg->I1),
+		                                    msg->S1, ftime, msg->I2, msg->I3,
+		                                    TR_Send);
+		vecTransfers.push_back(trNew);
+		Xw_->contents->transfers->list->entries.push_back(trNew->entry_);
+		Xw_->contents->transfers->list->add(trNew->entry_);
+		Xw_->contents->transfers->list->regen_gui();
+		snprintf(nmsg, 1168, "* You would like to send %s a file: %s\n",
+		         FindContact(Xw_, msg->I1)->pszName, msg->S1);
+		cmArea->moutbuffer->append(nmsg);
+		cmArea->moutput->scroll(cmArea->moutput->count_lines(0,
+		                        cmArea->moutbuffer->length(), 1), 0);
+		Fl::unlock();
+	}
 	}
 }

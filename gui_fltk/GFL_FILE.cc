@@ -34,7 +34,7 @@ int GFLTransfer::xwfSubscribe_(unsigned int dwType)
 
 void GFLTransfer::recvSignal(unsigned int dwType, PBMessage_t* msg)
 {
-	dbg("Signal received\n");
+	//dbg("Signal received\n");
 
 	if(msg->I1 != contact_->wNum | msg->I2 != id_) return;
 	else if(dwType == ftControl)

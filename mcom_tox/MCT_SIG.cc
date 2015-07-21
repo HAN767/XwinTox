@@ -44,6 +44,7 @@ void MCOMMTOX::recvSignal(unsigned int dwType, PBMessage_t* msg)
 		break;
 
 	case ftSend:
+		PBMessage_t *msgFtSendRequest;
 		TOX_ERR_FILE_SEND errSend;
 		unsigned int dwFilenum;
 		char szFilename[TOX_MAX_FILENAME_LENGTH];
@@ -51,14 +52,25 @@ void MCOMMTOX::recvSignal(unsigned int dwType, PBMessage_t* msg)
 		basename_r(msg->S1, szFilename);
 
 		mtx_lock(&mtxTox_);
-		tox_file_send(tox_, msg->I1, TOX_FILE_KIND_DATA, msg->I2, NULL,
-		              const_cast<const uint8_t*>(
-		                  reinterpret_cast<uint8_t*>(szFilename)),
-		              strlen(szFilename), &errSend);
+		dwFilenum =tox_file_send(tox_, msg->I1, TOX_FILE_KIND_DATA, msg->I2,
+		                         NULL, const_cast<const uint8_t*>(
+		                             reinterpret_cast<uint8_t*>(szFilename)),
+		                         strlen(szFilename), &errSend);
+		mtx_unlock(&mtxTox_);
 
 		dbg("Transfer %s to %d. Error: %d\n", szFilename, msg->I1, errSend);
 
-		mtx_unlock(&mtxTox_);
+		if(errSend != TOX_ERR_FILE_SEND_OK) return;
+
+		msgFtSendRequest =PB_New_Message();
+		msgFtSendRequest->I1 =msg->I1;
+		msgFtSendRequest->I2 =dwFilenum;
+		msgFtSendRequest->I3 =msg->I2;
+		msgFtSendRequest->S1 =strdup(msg->S1);
+		msgFtSendRequest->S2 =strdup(szFilename);
+
+		xwfDispatch(ftSendRequest, msgFtSendRequest);
+
 		break;
 	}
 }
