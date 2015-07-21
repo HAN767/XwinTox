@@ -15,40 +15,6 @@
 void teRecvPost(int mtype, PBMessage_t* msg, void* custom)
 {
 	TransfersEntry *te =(TransfersEntry*)custom;
-
-	/*	if(mtype == PB_TControl && msg->I1 == te->transfer->contact->num &&
-		   msg->I2 == te->transfer->num)
-		{
-			dbg("Transfer %d:%d: enter new state: ", msg->I1, msg->I2);
-			switch (msg->I3)
-			{
-			case TC_Resume:
-				dbg("resume\n");
-				te->progress->activate();
-				te->accept->deactivate();
-			}
-		}
-		else if(mtype == PB_TData && msg->I1 == te->transfer->contact->num &&
-		   msg->I2 == te->transfer->num)
-		{
-			if (msg->I4)
-			{
-				fseek(te->transfer->file, msg->I3, SEEK_SET);
-				if (fwrite(msg->S1, msg->I4, 1, te->transfer->file) != 1)
-				{
-					dbg("failed to write file data\n");
-				}
-				te->transfer->pos =msg->I3;
-			}
-			else
-			{
-				fclose(te->transfer->file);
-				te->accept->deactivate();
-				te->reject->deactivate();
-				te->progress->value(te->transfer->size);
-			}
-		}
-		te->redraw();*/
 }
 
 void teAcceptPressed(Fl_Widget *w)

@@ -59,9 +59,17 @@ typedef enum XWMtypes_e
     ftControl,
     ftBytes,
 
+	ftSendRequest,
+
 	/* ftResume = Resume a file transfer (or start one)
 	 * I1 = Friend number. I2 = File number. */
+
+	/* ftSendInternal = Widget wants to transfer a file.
+	 * A MESSENGER object can handle this and deliver an
+	 * ftSendRequest to the GUI.
+	 * I1 = Friend number. S1 = Filename. */
 	ftResume,
+	ftSend,
 } XWMtypes_e;
 
 typedef struct XWContact_s

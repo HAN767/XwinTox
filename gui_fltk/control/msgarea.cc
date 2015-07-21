@@ -1,4 +1,5 @@
 #include <FL/Fl_Multiline_Input.H>
+#include <FL/Fl_Native_File_Chooser.H>
 
 #include "nanosvg/svgs.h"
 #include "xwintox.h"
@@ -8,6 +9,28 @@
 #include "control/svgbox.h"
 #include "misc.h"
 #include "util.h"
+
+void mareaSendfilePressed(Fl_Widget* B , void*)
+{
+	PBMessage_t *msgSendfile =PB_New_Message();
+	GMessageArea *cArea =((GMessageArea*)B->parent());
+	Fl_Native_File_Chooser fnfc;
+
+	fnfc.title("Select a File");
+	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);
+	int res =fnfc.show();
+	if (res == 1 | res == -1) goto cleanup;
+	else
+	{
+		dbg("File: %s\n", fnfc.filename());
+		msgSendfile->I1 =cArea->contact->wNum;
+		msgSendfile->S1 =strdup(fnfc.filename());
+		cArea->hObj_->pSvcs->fnDispatch(cArea->hObj_, ftSend, msgSendfile);
+	}
+
+cleanup:
+	free(msgSendfile);
+}
 
 void mareaFrMsg(int, PBMessage_t *msg, void *custom)
 {
@@ -128,6 +151,7 @@ GMessageArea::GMessageArea(const XWF_hObj_t* hObj, int S, XWContact_t *C,
 	attach->color(fl_rgb_color(107, 194, 96));
 	attach->box(FL_BORDER_BOX);
 	attach->show();
+	attach->callback(mareaSendfilePressed, this);
 
 	emoji->color(fl_rgb_color(107, 194, 96));
 	emoji->box(FL_BORDER_BOX);

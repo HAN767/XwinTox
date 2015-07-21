@@ -41,31 +41,40 @@ int GUIFLTK::fltkLoop(void *)
 		Fl::lock();
 		Fl::wait();
 		msg = Fl::thread_message();
-		if (msg) handle(msg);
+
+		if(msg) handle(msg);
+
 		Fl::unlock();
 	}
+
 	return 0;
 }
 
 void GUIFLTK::recvSignal(unsigned int dwType, PBMessage_t *msg)
 {
-	switch (dwType)
+	switch(dwType)
 	{
 	case ftRequest:
 		printf("FTRequest\n");
 		time_t rawtime;
 		time(&rawtime);
 		struct tm *ftime =localtime(&rawtime);
+		char nmsg[1168];
+		GMessageArea *cmArea =FindContactMArea(Xw_, msg->I1);
 
 		Fl::lock();
-		dbg("Msg->I1: %d\n", msg->I1);
 		GFLTransfer *trNew =new GFLTransfer(this, FindContact(Xw_, msg->I1),
-											msg->S1, ftime, msg->I2, msg->I3,
-											TR_Recv);
+		                                    msg->S1, ftime, msg->I2, msg->I3,
+		                                    TR_Recv);
 		vecTransfers.push_back(trNew);
 		Xw_->contents->transfers->list->entries.push_back(trNew->entry_);
-		Xw_->contents->transfers->list->add(trNew->entry_);		
+		Xw_->contents->transfers->list->add(trNew->entry_);
 		Xw_->contents->transfers->list->regen_gui();
+		snprintf(nmsg, 1168, "* %s would like to send you a file: %s\n",
+		         FindContact(Xw_, msg->I1), msg->S1);
+		cmArea->moutbuffer->append(nmsg);
+		cmArea->moutput->scroll(cmArea->moutput->count_lines(0,
+		                        cmArea->moutbuffer->length(), 1), 0);
 		Fl::unlock();
 		break;
 	}

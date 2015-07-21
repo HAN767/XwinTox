@@ -14,7 +14,7 @@ GFLTransfer::GFLTransfer(class GUIFLTK *gui, XWContact_t *pcontact,
 {
 	dbg("Pos: %d. Size: %d\n", pos_, size_);
 	asprintf(&localfilename_, "%s/%s", gui_->xwfCall("APP/GetHomeFolder", 0),
- filename_);
+	         filename_);
 	fnRecvSignal_ =reinterpret_cast<PB_Callback_f>
 	               (pbThunk<GFLTransfer, decltype(&GFLTransfer::recvSignal),
 	                &GFLTransfer::recvSignal>);
@@ -35,7 +35,8 @@ int GFLTransfer::xwfSubscribe_(unsigned int dwType)
 void GFLTransfer::recvSignal(unsigned int dwType, PBMessage_t* msg)
 {
 	dbg("Signal received\n");
-	if (msg->I1 != contact_->wNum | msg->I2 != id_) return;
+
+	if(msg->I1 != contact_->wNum | msg->I2 != id_) return;
 	else if(dwType == ftControl)
 	{
 		if(msg->I3 == TC_Resume)
@@ -51,7 +52,8 @@ void GFLTransfer::recvSignal(unsigned int dwType, PBMessage_t* msg)
 		if(msg->I4 > 0)
 		{
 			fseek(file_, msg->I3, SEEK_SET);
-			if (fwrite(msg->V, msg->I4, 1, file_) != 1)
+
+			if(fwrite(msg->V, msg->I4, 1, file_) != 1)
 			{
 				dbg("failed to write file data\n");
 			}

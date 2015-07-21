@@ -8,7 +8,7 @@
 typedef struct PB_Thread_Msg_s
 {
 	int mtype;
-	PBMessage_t *msg;
+	Shared_Ptr_t *msg;
 	PB_Callback_f fnCB;
 	void *pvCustom;
 } PB_Thread_Msg_t;
@@ -32,11 +32,14 @@ int PBThread_Main(void *custom)
 		while((msg =List_retrieve_and_remove_first(
 		                 self->msgQueue)) != 0)
 		{
-			msg->fnCB(msg->mtype, msg->msg, msg->pvCustom);
+			msg->fnCB(msg->mtype, msg->msg->pvData, msg->pvCustom);
 
 			mtx_lock(&self->msgMtx);
 			self->msgCnt -=1;
 			mtx_unlock(&self->msgMtx);
+
+			PBM_DEC(msg->msg);
+			free(msg);
 		}
 	}
 }
@@ -78,12 +81,15 @@ void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t *msg)
 
 void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 {
+	Shared_Ptr_t *sprMsg =Shared_Ptr_new(msg);
+
 	LIST_ITERATE_OPEN(pb->clients)
 	if(((PBRegistryEntry_t*) e_data)->mtype == mtype)
 	{
+		PBM_INC(sprMsg);
 		PB_Thread_Msg_t *pbtMsg =malloc(sizeof(PB_Thread_Msg_t));
 		pbtMsg->mtype =mtype;
-		pbtMsg->msg =msg;
+		pbtMsg->msg =sprMsg;
 		pbtMsg->fnCB =((PBRegistryEntry_t*) e_data)->callback;
 		pbtMsg->pvCustom =((PBRegistryEntry_t*) e_data)->custom;
 
@@ -94,6 +100,8 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 		mtx_unlock(&pb->threads[0].msgMtx);
 	}
 	LIST_ITERATE_CLOSE(pb->clients)
+
+	PBM_DEC(sprMsg);
 }
 
 void PB_Despatch_Deferred(Postbox_t *pb)
