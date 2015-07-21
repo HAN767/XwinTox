@@ -20,7 +20,6 @@ int PBThread_Main(void *custom)
 
 	while(1)
 	{
-		dbg("locking\n");
 		mtx_lock(&self->msgMtx);
 
 		while(!self->msgCnt)
@@ -29,13 +28,10 @@ int PBThread_Main(void *custom)
 		}
 
 		mtx_unlock(&self->msgMtx);
-		dbg("unlocking\n");
 
 		while((msg =List_retrieve_and_remove_first(
 		                 self->msgQueue)) != 0)
 		{
-			dbg("Call: %d\n", msg->mtype);
-
 			msg->fnCB(msg->mtype, msg->msg, msg->pvCustom);
 
 			mtx_lock(&self->msgMtx);
@@ -91,13 +87,11 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 		pbtMsg->fnCB =((PBRegistryEntry_t*) e_data)->callback;
 		pbtMsg->pvCustom =((PBRegistryEntry_t*) e_data)->custom;
 
-		dbg("add it...\n");
 		mtx_lock(&pb->threads[0].msgMtx);
 		List_add(pb->threads[0].msgQueue, pbtMsg);
 		pb->threads[0].msgCnt +=1;
 		cnd_broadcast(&pb->threads[0].msgCnd);
 		mtx_unlock(&pb->threads[0].msgMtx);
-		dbg("done adding\n");
 	}
 	LIST_ITERATE_CLOSE(pb->clients)
 }
