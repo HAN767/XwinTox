@@ -2,23 +2,23 @@
 SUB_DEPTH = ..
 include $(KBUILD_PATH)/subheader.kmk
 
-DLLS += mcom_tox
+DLLS += toxdns3
 
-TEMPLATE_mcom_tox				= Messenger Comm for Tox DLL
-TEMPLATE_mcom_tox_EXTENDS		= XwDLL
-TEMPLATE_mcom_tox_EXTENDS_BY	= appending
-TEMPLATE_mcom_tox_CFLAGS		= $(TOX_CFLAGS)
-TEMPLATE_mcom_tox_CXXFLAGS	= $(TOX_CFLAGS)
-TEMPLATE_mcom_tox_LDFLAGS		= $(TOX_LDFLAGS)
+TEMPLATE_toxdns3				= DNS Resolver for Tox 3 DLL
+TEMPLATE_toxdns3_EXTENDS		= XwDLL
+TEMPLATE_toxdns3_EXTENDS_BY		= appending
+TEMPLATE_toxdns3_CFLAGS			= $(TOX_CFLAGS)
+TEMPLATE_toxdns3_CXXFLAGS		= $(TOX_CFLAGS)
+TEMPLATE_toxdns3_LDFLAGS		= $(TOX_LDFLAGS)
 
-mcom_tox_TEMPLATE = mcom_tox
-mcom_tox_SOURCES = modMCT.cc MCOMMTOX.cc MCT_CB.cc MCT_SIG.cc
-mcom_tox_INCS = $(PATH_ROOT)/libsunshine/hdr \
+toxdns3_TEMPLATE = toxdns3
+toxdns3_SOURCES = modTOX3.cc TOXDNS3.cc
+toxdns3_INCS = $(PATH_ROOT)/libsunshine/hdr \
 		$(PATH_ROOT)/xwintox/hdr \
 		hdr \
 		.
-mcom_tox_LIBS = $(libsunshine_1_TARGET) stdc++
-mcom_tox_CFLAGS = $(TOX_CFLAGS)
-mcom_tox_LDFLAGS = $(TOX_LDFLAGS)
+toxdns3_LIBS = $(libsunshine_1_TARGET) stdc++
+toxdns3_CFLAGS = $(TOX_CFLAGS)
+toxdns3_LDFLAGS = $(TOX_LDFLAGS)
 
 include $(FILE_KBUILD_SUB_FOOTER)

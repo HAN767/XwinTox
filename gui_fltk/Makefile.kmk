@@ -1,28 +1,28 @@
 SUB_DEPTH = ..
 include $(KBUILD_PATH)/subheader.kmk
 
-DLLS += GUI_FLTK
+DLLS += gui_fltk
 
-TEMPLATE_gui_fltk				= GUI for FLTK DLL
-TEMPLATE_gui_fltk_EXTENDS		= XwDLL
-TEMPLATE_gui_fltk_EXTENDS_BY	= appending
-TEMPLATE_gui_fltk_CFLAGS		= $(FLTK_CFLAGS)
-TEMPLATE_gui_fltk_CXXFLAGS		= $(FLTK_CFLAGS)
-TEMPLATE_gui_fltk_LDFLAGS		= $(FLTK_LDFLAGS)
+TEMPLATE_guifltk				= GUI for FLTK DLL
+TEMPLATE_guifltk_EXTENDS		= XwDLL
+TEMPLATE_guifltk_EXTENDS_BY	= appending
+TEMPLATE_guifltk_CFLAGS		= $(FLTK_CFLAGS)
+TEMPLATE_guifltk_CXXFLAGS		= $(FLTK_CFLAGS)
+TEMPLATE_guifltk_LDFLAGS		= $(FLTK_LDFLAGS)
 
-GUI_FLTK_TEMPLATE = gui_fltk
-GUI_FLTK_SOURCES  = GUI_FLTK.cc GUIFLTK.cc GFLT_CB.cc GFL_FILE.cc util.cc
-GUI_FLTK_SOURCES += nanosvg/nsvgwrap.cc nanosvg/res.cc control/svgbox.cc
-GUI_FLTK_SOURCES += control/xwin.cc control/sidebar.cc control/sbarbtm.cc
-GUI_FLTK_SOURCES += control/sbartop.cc control/statbox.cc control/garea.cc
-GUI_FLTK_SOURCES += control/gaddfrnd.cc control/cntctlst.cc control/cntctent.cc
-GUI_FLTK_SOURCES += control/msgarea.cc control/gtrnsfer.cc control/translst.cc
-GUI_FLTK_SOURCES += control/transent.cc control/frequest.cc control/gsetting.cc
-GUI_FLTK_SOURCES += control/sr_table.cc
-GUI_FLTK_INCS = $(PATH_ROOT)/libsunshine/hdr \
+gui_fltk_TEMPLATE = guifltk
+gui_fltk_SOURCES  = modGFLTK.cc GUIFLTK.cc GFLT_CB.cc GFL_FILE.cc util.cc
+gui_fltk_SOURCES += nanosvg/nsvgwrap.cc nanosvg/res.cc control/svgbox.cc
+gui_fltk_SOURCES += control/xwin.cc control/sidebar.cc control/sbarbtm.cc
+gui_fltk_SOURCES += control/sbartop.cc control/statbox.cc control/garea.cc
+gui_fltk_SOURCES += control/gaddfrnd.cc control/cntctlst.cc control/cntctent.cc
+gui_fltk_SOURCES += control/msgarea.cc control/gtrnsfer.cc control/translst.cc
+gui_fltk_SOURCES += control/transent.cc control/frequest.cc control/gsetting.cc
+gui_fltk_SOURCES += control/sr_table.cc
+gui_fltk_INCS = $(PATH_ROOT)/libsunshine/hdr \
 		$(PATH_ROOT)/xwintox/hdr \
 		hdr \
 		.
-GUI_FLTK_LIBS = $(libsunshine_1_TARGET) $(CXX_LIBS) $(FLTK_LIB)
+gui_fltk_LIBS = $(libsunshine_1_TARGET) $(CXX_LIBS) $(FLTK_LIB)
 
 include $(FILE_KBUILD_SUB_FOOTER)
