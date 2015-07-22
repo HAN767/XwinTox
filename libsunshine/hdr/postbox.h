@@ -11,6 +11,12 @@ extern "C"
 #include "sptr.h"
 #include "list.h"
 
+typedef enum PBPriority_e
+{
+	PB_Slow,
+	PB_Fast,
+} PBPriority_e;
+
 
 /* Ownership policy for PBMessages:
  * Strings are owned by the Postbox. They are copied.
@@ -20,6 +26,7 @@ extern "C"
 typedef struct PBMessage_s
 {
 	const char *ORIGIN;
+	PBPriority_e P;
 	void *V; /* not copied */
 	char *S1, *S2, *S3, *S4;
 	int I1, I2, I3, I4;
@@ -54,19 +61,21 @@ typedef struct Postbox_s
 	List_t *clients;
 	List_t *deferred;
 	mtx_t Lock;
-	PBThread_t threads[2];
+	PBThread_t threads[2]; /* 0 = slow, 1 = fast */
 } Postbox_t;
 
 Postbox_t *PB_New();
 void PB_Defer(Postbox_t *pb, int mtype, PBMessage_t *msg);
 void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t* msg);
-//#define PB_Signal_Multithreaded PB_Signal
+void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t* msg);
 void PB_Despatch_Deferred(Postbox_t *pb);
 void PB_Register(Postbox_t *pb, int mtype, void *custom, PB_Callback_f);
 
 static inline PBMessage_t *PB_New_Message()
 {
-	return (PBMessage_t*) calloc (1, sizeof(PBMessage_t));
+	PBMessage_t *newPBM =(PBMessage_t*) calloc(1, sizeof(PBMessage_t));
+	newPBM->P =PB_Fast;
+	return newPBM;
 }
 
 static inline void PB_Free_Message(PBMessage_t *pmsgMsg)

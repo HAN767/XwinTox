@@ -44,7 +44,7 @@ typedef struct XWClass_s
 
 
 template<class T, class Method, Method m>
-static void pbThunk(unsigned int dwType,PBMessage_t *msg, void *userData)
+static void pbThunk(unsigned int dwType, PBMessage_t *msg, void *userData)
 {
 	return ((*static_cast<T *>(userData)).*m)(dwType, msg);
 }
@@ -113,6 +113,11 @@ public:
 	int xwfDispatch(unsigned int dwType, PBMessage_t *pbmMsg)
 	{
 		return hObj_->pSvcs->fnDispatch(hObj_, dwType, pbmMsg);
+	}
+
+	int xwfRegisterFilter(unsigned int dwType)
+	{
+		return hObj_->pSvcs->fnSubscribe(hObj_, dwType, this, fnRecvSignal);
 	}
 
 	std::vector<XWF_ModInfo_t *> xwfGetModulesInfo()

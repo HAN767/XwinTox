@@ -51,7 +51,7 @@ Postbox_t *PB_New()
 	newpb->deferred =List_new();
 	mtx_init(&newpb->Lock, mtx_plain);
 
-	for (int i =0; i < 2; i++)
+	for (int i =0; i < 3; i++)
 	{
 		mtx_init(&newpb->threads[i].msgMtx, mtx_plain);
 		cnd_init(&newpb->threads[i].msgCnd);
@@ -88,16 +88,22 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 	{
 		PBM_INC(sprMsg);
 		PB_Thread_Msg_t *pbtMsg =malloc(sizeof(PB_Thread_Msg_t));
+		unsigned int dwThread;
+
+		if(msg->P == PB_Slow) dwThread =0;
+		else if(msg->P == PB_Fast) dwThread =1;
+		else dwThread =2;
+
 		pbtMsg->mtype =mtype;
 		pbtMsg->msg =sprMsg;
 		pbtMsg->fnCB =((PBRegistryEntry_t*) e_data)->callback;
 		pbtMsg->pvCustom =((PBRegistryEntry_t*) e_data)->custom;
 
-		mtx_lock(&pb->threads[0].msgMtx);
-		List_add(pb->threads[0].msgQueue, pbtMsg);
-		pb->threads[0].msgCnt +=1;
-		cnd_broadcast(&pb->threads[0].msgCnd);
-		mtx_unlock(&pb->threads[0].msgMtx);
+		mtx_lock(&pb->threads[dwThread].msgMtx);
+		List_add(pb->threads[dwThread].msgQueue, pbtMsg);
+		pb->threads[dwThread].msgCnt +=1;
+		cnd_broadcast(&pb->threads[dwThread].msgCnd);
+		mtx_unlock(&pb->threads[dwThread].msgMtx);
 	}
 	LIST_ITERATE_CLOSE(pb->clients)
 
