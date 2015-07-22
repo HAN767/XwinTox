@@ -27,6 +27,7 @@ typedef struct PBMessage_s
 {
 	const char *ORIGIN;
 	PBPriority_e P;
+	int filtered; /* used to indicate it has been filtered already */ 
 	void *V; /* not copied */
 	char *S1, *S2, *S3, *S4;
 	int I1, I2, I3, I4;
@@ -47,6 +48,8 @@ typedef struct PBDeferred_s
 	PBMessage_t *msg;
 } PBDeferred_t;
 
+typedef struct Postbox_s Postbox_t;
+
 typedef struct PBThread_s
 {
 	thrd_t thrd;
@@ -54,12 +57,12 @@ typedef struct PBThread_s
 	short msgCnt;
 	mtx_t msgMtx;
 	cnd_t msgCnd;
+	Postbox_t *postbox;
 } PBThread_t;
 
 typedef struct Postbox_s
 {
-	List_t *clients;
-	List_t *deferred;
+	List_t *clients, *deferred, *filters;
 	mtx_t Lock;
 	PBThread_t threads[3]; /* 0 = slow, 1 = fast */
 } Postbox_t;
@@ -70,10 +73,12 @@ void PB_Signal(Postbox_t *pb, int mtype, PBMessage_t* msg);
 void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t* msg);
 void PB_Despatch_Deferred(Postbox_t *pb);
 void PB_Register(Postbox_t *pb, int mtype, void *custom, PB_Callback_f);
+void PB_Register_Filter(Postbox_t *pb, int mtype, void *custom, PB_Callback_f);
 
 static inline PBMessage_t *PB_New_Message()
 {
 	PBMessage_t *newPBM =(PBMessage_t*) calloc(1, sizeof(PBMessage_t));
+	newPBM->filtered =0;
 	newPBM->P =PB_Fast;
 	return newPBM;
 }

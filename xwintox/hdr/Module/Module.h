@@ -109,7 +109,8 @@ typedef void *(*XWF_Call_f)(const XWF_Object_Handle_t *, const char *,
 /* This function allows a module to subscribe to a message type.
  * It may pass a custom parameter if desired.
  * 0 is returned if the module is permitted to do so, and
- * 1 is returned if the module is not permitted to. */
+ * 1 is returned if the module is not permitted to.
+ * It is used in the same way to register a filter. */
 typedef int (*XWF_Subscribe_f)(const XWF_Object_Handle_t *, int mtype,
                                void *custom, PB_Callback_f);
 /* This function allows a module to despatch a message.
@@ -125,6 +126,7 @@ typedef struct XWF_Services_s
 	XWF_RegisterClass_f fnRegisterClass;
 	XWF_Call_f fnCall;
 
+	XWF_Subscribe_f fnRegisterFilter;
 	XWF_Subscribe_f fnSubscribe;
 	XWF_Dispatch_f fnDispatch;
 } XWF_Services_t;

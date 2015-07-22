@@ -48,6 +48,7 @@ void ModuleManager_init(XWF_Call_f fnAppCall)
 	pmmManager->psrvServices.fnCall =ModuleManager_call_;
 	pmmManager->psrvServices.fnSubscribe =ModuleManager_subscribe_;
 	pmmManager->psrvServices.fnDispatch =ModuleManager_dispatch_;
+	pmmManager->psrvServices.fnRegisterFilter =ModuleManager_registerFilter_;
 
 	/* And, finally, we'll set fnAppCall, which is used by XwinTox to provide
 	 * XwinTox-specific services. */
@@ -312,5 +313,15 @@ int ModuleManager_dispatch_(const XWF_Object_Handle_t *hObject, int iType,
 	    hObject->pxwoClass->pszSubtype, iType);
 	/* Issue the signal. */
 	PB_Signal_Multithreaded(pmmManager->pbGlobal, iType, ppbmMsg);
+	return 0;
+}
+
+int ModuleManager_registerFilter_(const XWF_Object_Handle_t *hObject, int mtype,
+                             void *custom, PB_Callback_f callback)
+{
+	dbg("Object of class %s.%s registered as filter for signal %d\n",
+	    hObject->pxwoClass->pszType, hObject->pxwoClass->pszSubtype,  mtype);
+	/* Register with the global postbox the appropriate data. */
+	PB_Register_Filter(pmmManager->pbGlobal, mtype, custom, callback);
 	return 0;
 }

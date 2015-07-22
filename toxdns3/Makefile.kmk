@@ -1,0 +1,24 @@
+
+SUB_DEPTH = ..
+include $(KBUILD_PATH)/subheader.kmk
+
+DLLS += mcom_tox
+
+TEMPLATE_mcom_tox				= Messenger Comm for Tox DLL
+TEMPLATE_mcom_tox_EXTENDS		= XwDLL
+TEMPLATE_mcom_tox_EXTENDS_BY	= appending
+TEMPLATE_mcom_tox_CFLAGS		= $(TOX_CFLAGS)
+TEMPLATE_mcom_tox_CXXFLAGS	= $(TOX_CFLAGS)
+TEMPLATE_mcom_tox_LDFLAGS		= $(TOX_LDFLAGS)
+
+mcom_tox_TEMPLATE = mcom_tox
+mcom_tox_SOURCES = modMCT.cc MCOMMTOX.cc MCT_CB.cc MCT_SIG.cc
+mcom_tox_INCS = $(PATH_ROOT)/libsunshine/hdr \
+		$(PATH_ROOT)/xwintox/hdr \
+		hdr \
+		.
+mcom_tox_LIBS = $(libsunshine_1_TARGET) stdc++
+mcom_tox_CFLAGS = $(TOX_CFLAGS)
+mcom_tox_LDFLAGS = $(TOX_LDFLAGS)
+
+include $(FILE_KBUILD_SUB_FOOTER)

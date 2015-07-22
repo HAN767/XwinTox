@@ -13,6 +13,24 @@ typedef struct PB_Thread_Msg_s
 	void *pvCustom;
 } PB_Thread_Msg_t;
 
+static void PBFilter(Postbox_t *pb, unsigned int mtype, PBMessage_t *msg)
+{
+	if(msg->filtered == 0)
+	{
+		LIST_ITERATE_OPEN(pb->filters)
+			if(((PBRegistryEntry_t*) e_data)->mtype == mtype)
+			{
+				dbg("MTYPE: %d\n Msg: %p\n", mtype, msg);
+				((PBRegistryEntry_t*) e_data)->
+				callback(mtype, msg,
+						 ((PBRegistryEntry_t*) e_data)->custom);
+			}
+		LIST_ITERATE_CLOSE(pb->filters)
+
+		msg->filtered =1;
+	}
+}
+
 int PBThread_Main(void *custom)
 {
 	PBThread_t *self =custom;
@@ -32,6 +50,7 @@ int PBThread_Main(void *custom)
 		while((msg =List_retrieve_and_remove_first(
 		                 self->msgQueue)) != 0)
 		{
+			PBFilter(self->postbox, msg->mtype, msg->msg->pvData);
 			msg->fnCB(msg->mtype, msg->msg->pvData, msg->pvCustom);
 
 			mtx_lock(&self->msgMtx);
@@ -49,6 +68,7 @@ Postbox_t *PB_New()
 	Postbox_t *newpb =calloc(1, sizeof(Postbox_t));
 	newpb->clients =List_new();
 	newpb->deferred =List_new();
+	newpb->filters =List_new();
 	mtx_init(&newpb->Lock, mtx_plain);
 
 	for (int i =0; i < 3; i++)
@@ -57,6 +77,7 @@ Postbox_t *PB_New()
 		cnd_init(&newpb->threads[i].msgCnd);
 		newpb->threads[i].msgCnt =0;
 		newpb->threads[i].msgQueue =List_new();
+		newpb->threads[i].postbox =newpb;
 		thrd_create(&newpb->threads[i].thrd, PBThread_Main, &newpb->threads[i]);
 	}
 
@@ -90,7 +111,11 @@ void PB_Signal_Multithreaded(Postbox_t *pb, int mtype, PBMessage_t *msg)
 		PB_Thread_Msg_t *pbtMsg =malloc(sizeof(PB_Thread_Msg_t));
 		unsigned int dwThread;
 
-		if(msg->P == PB_Slow) dwThread =0;
+		if(msg->P == PB_Slow)
+		{
+			dbg("slow\n");
+			dwThread =0;
+		}
 		else if(msg->P == PB_Fast) dwThread =1;
 		else dwThread =2;
 
@@ -150,4 +175,14 @@ void PB_Register(Postbox_t *pb, int mtype, void* custom,
 	e->callback =callback;
 	e->custom =custom;
 	List_add(pb->clients, e);
+}
+
+void PB_Register_Filter(Postbox_t *pb, int mtype, void* custom,
+                 void (*callback)(int, PBMessage_t*, void*))
+{
+	PBRegistryEntry_t *e =calloc(1, sizeof(PBRegistryEntry_t));
+	e->mtype =mtype;
+	e->callback =callback;
+	e->custom =custom;
+	List_add(pb->filters, e);
 }

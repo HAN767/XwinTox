@@ -59,8 +59,10 @@ public:
 		cXWClass_.fnStart =staticStart;
 		fnRecvSignal =reinterpret_cast<PB_Callback_f>
 		              (pbThunk<T, decltype(&T::recvSignal), &T::recvSignal>);
+		fnFilterSignal =reinterpret_cast<PB_Callback_f>
+		              (pbThunk<T, decltype(&T::filterSignal), &T::filterSignal>);
 	}
-	~XWClassT()
+	virtual ~XWClassT()
 	{
 	}
 	static XWClassT *getSelf(XWClass_t *pguiSelf)
@@ -117,7 +119,7 @@ public:
 
 	int xwfRegisterFilter(unsigned int dwType)
 	{
-		return hObj_->pSvcs->fnSubscribe(hObj_, dwType, this, fnRecvSignal);
+		return hObj_->pSvcs->fnRegisterFilter(hObj_, dwType, this, fnFilterSignal);
 	}
 
 	std::vector<XWF_ModInfo_t *> xwfGetModulesInfo()
@@ -134,7 +136,12 @@ public:
 
 	void recvSignal(unsigned int dwType, PBMessage_t*)
 	{
-		dbg("Signal received: %d\n");
+		dbg("Signal received: %d\n", dwType);
+	}
+
+	void filterSignal(unsigned int dwType, PBMessage_t*)
+	{
+		dbg("Signal received: %d\n", dwType);
 	}
 
 
@@ -144,6 +151,7 @@ public:
 
 protected:
 	PB_Callback_f fnRecvSignal;
+	PB_Callback_f fnFilterSignal;
 	XWClass_t cXWClass_;
 };
 

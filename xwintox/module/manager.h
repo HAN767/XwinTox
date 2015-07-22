@@ -73,4 +73,7 @@ int ModuleManager_subscribe_(const XWF_Object_Handle_t *hObject, int mtype,
 /* And this allows the module to dispatch signals. */
 int ModuleManager_dispatch_(const XWF_Object_Handle_t *hObject, int iType,
                             PBMessage_t *ppbmMsg);
+/* And finally, this allows a module to register a filter.*/
+int ModuleManager_registerFilter_(const XWF_Object_Handle_t *hObject, int mtype,
+                             void *custom, PB_Callback_f callback);
 #endif

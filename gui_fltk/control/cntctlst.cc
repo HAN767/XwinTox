@@ -33,11 +33,16 @@ void updatecontacts(ContactsList *self, List_t *lstContacts)
 
 	LIST_ITERATE_OPEN(lstContacts)
 	XWContact_t *ctEntry =(XWContact_t*) e_data;
+	ContactsEntry *newgui;
 	dbg("Contact GUI. CTEntry num: %d \n", ctEntry->wNum);
-	ContactsEntry *newgui =new ContactsEntry(self->hObj_, self->x(),
-	        self->y() + wCurY,
-	        self->scale,
-	        ctEntry, 0, 0);
+	if((newgui =FindContactEntry(Xw, ctEntry->wNum)) == 0)
+	{
+		dbg("need to build a new contacts entry\n");
+		newgui =new ContactsEntry(self->hObj_, self->x(),
+				self->y() + wCurY,
+				self->scale,
+				ctEntry, 0, 0);
+	}
 
 	if(!FindContactMArea(Xw, ctEntry))
 	{
@@ -168,7 +173,10 @@ int ContactsList::handle(int event)
 
 void ContactsList::clear_all()
 {
-	this->clear();
+	for (const auto entry : entries)
+	{
+		this->remove(entry);
+	}
 	entries.clear();
 	this->redraw();
 	parent()->redraw();
