@@ -115,9 +115,9 @@
     <File Name="misc.c"/>
     <File Name="dictionary.c"/>
     <File Name="hexstring.c"/>
-    <File Name="postbox.c"/>
     <File Name="Makefile.kmk"/>
     <File Name="CMakeLists.txt"/>
+    <File Name="postbox.c"/>
   </VirtualDirectory>
   <VirtualDirectory Name="ini">
     <File Name="ini/ini.c"/>

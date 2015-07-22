@@ -67,7 +67,8 @@ static void default_config(Dictionary_t *conf)
 
 int main(int argc, char *argv[])
 {
-	char szConfigFilename[255];
+	int c, index, modcount =0;
+	char szConfigFilename[255], *next, *mods[argc];
 
 	dbg("XwinTox Frameworks 2.0_%s\n", XWVERS);
 
@@ -78,18 +79,48 @@ int main(int argc, char *argv[])
 	default_config(App.dictConfig);
 
 	ModuleManager_init(AppCall);
-	ModuleManager_loadDynamicModule
-	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/mcom_tox.so");
-	ModuleManager_loadDynamicModule
-	("/ws/tox/XwinTox/out/freebsd.amd64/release/stage/lib/GUI_FLTK.so");
 
-	App.objMSGR =ModuleManager_createObject("MESSENGER");
-	App.objGUI =ModuleManager_createObject("GUI");
+	while((c = getopt(argc, argv, "m:-")) != -1)
+	{
+		switch(c)
+		{
+		case 'm':
+			index = optind-1;
 
-	XWOBJ(App.objGUI)->fnStart(App.objGUI);
-	usleep(750); /* let the GUI initialise, ready for signal reception */
+			while(index < argc)
+			{
+				next = strdup(argv[index]);
+				index++;
 
-	XWOBJ(App.objMSGR)->fnStart(App.objMSGR);
+				if(next[0] != '-')
+				{
+					mods[modcount++] = next;
+				}
+				else break;
+			}
+
+			optind = index - 1;
+			break;
+		}
+	}
+
+	for(int i =0; i < modcount; i++)
+	{
+		if (ModuleManager_loadDynamicModule(mods[i]) == -1) exit(1);
+	}
+
+	for(index = optind; index < argc; index++)
+	{
+		dbg("One\n");
+		XWF_Object_Handle_t *objCur =ModuleManager_createObject(argv[index]);
+		if(!objCur)
+		{
+			dbg("Error creating class %s. Did you forget to pass -- on the" \
+				"command line?\n", argv[index]);
+			exit(1);
+		}
+		XWOBJ(objCur)->fnStart(objCur);
+	}
 
 	while(1)
 	{

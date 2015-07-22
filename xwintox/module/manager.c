@@ -120,9 +120,9 @@ XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
 		else free(pobjhCreated);
 	}
 
-	/* Later, we should try and find
+	/* Later, we should try and find */
 
-		return 0; /* no module can create such an object */
+	return 0; /* no module can create such an object */
 }
 
 int ModuleManager_destroyObject(XWF_Object_Handle_t *pobjhToDelete)

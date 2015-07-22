@@ -61,7 +61,7 @@ typedef struct Postbox_s
 	List_t *clients;
 	List_t *deferred;
 	mtx_t Lock;
-	PBThread_t threads[2]; /* 0 = slow, 1 = fast */
+	PBThread_t threads[3]; /* 0 = slow, 1 = fast */
 } Postbox_t;
 
 Postbox_t *PB_New();
