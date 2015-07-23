@@ -111,7 +111,6 @@ int main(int argc, char *argv[])
 
 	for(index = optind; index < argc; index++)
 	{
-		dbg("One\n");
 		XWF_Object_Handle_t *objCur =ModuleManager_createObject(argv[index]);
 		if(!objCur)
 		{

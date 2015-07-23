@@ -45,6 +45,7 @@ typedef struct Bytes_s
 } Bytes_t;
 
 void dbg2(const char *funcname, const char *format,  ...);
+void dbgPrint();
 typedef struct Event_s Event_t;
 Event_t *Ev_new();
 Event_t *Ev_copy(Event_t *ev);
