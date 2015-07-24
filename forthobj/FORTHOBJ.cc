@@ -34,10 +34,10 @@ int FORTHOBJ::vmThread(void *customData)
 	FORTHOBJ *self =static_cast<FORTHOBJ*>(customData);
     char buffer[256];
 	int returnValue =0;
-	ficlVmEvaluate (self->vm_, 
+	ficlVmEvaluate (self->vm_,
 					".( XwinTox Command Interpreter ) cr "
 					".( This is an interactive Objective-Forth environment. ) cr"
-					" .( Full access is provided to the XwinTox object model. )" 
+					" .( Full access is provided to the XwinTox object model. )"
 					" cr quit");
     while (returnValue != FICL_VM_STATUS_USER_EXIT) 
 	{
