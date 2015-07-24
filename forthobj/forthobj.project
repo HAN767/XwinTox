@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="toxdns3" InternalType="">
+<CodeLite_Project Name="forthobj" InternalType="">
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -89,12 +89,53 @@
       </Completion>
     </Configuration>
   </Settings>
-  <VirtualDirectory Name="toxdns3">
-    <File Name="TOXDNS3.cc"/>
+  <VirtualDirectory Name="forthobj">
+    <File Name="float.c"/>
+    <File Name="hash.c"/>
+    <File Name="utility.c"/>
+    <File Name="bit.c"/>
+    <File Name="unix.c"/>
+    <File Name="search.c"/>
+    <File Name="tools.c"/>
+    <File Name="main.c"/>
+    <File Name="primitives.c"/>
+    <File Name="compatibility.c"/>
+    <File Name="fileaccess.c"/>
+    <File Name="FORTHOBJ.cc"/>
+    <File Name="double.c"/>
+    <File Name="dictionary.c"/>
+    <File Name="ficltokens.h"/>
+    <File Name="word.c"/>
+    <File Name="stack.c"/>
+    <File Name="unix.h"/>
+    <File Name="vm.c"/>
+    <File Name="ficl.h"/>
+    <File Name="system.c"/>
+    <File Name="prefix.c"/>
+    <File Name="libser.c"/>
+    <File Name="modFOBJ.cc"/>
+    <File Name="FORTHOBJ.h"/>
+    <File Name="extras.c"/>
+    <File Name="callback.c"/>
+    <File Name="ficlcompatibility.h"/>
     <File Name="CMakeLists.txt"/>
-    <File Name="modTOX3.cc"/>
-    <File Name="TOXDNS3.h"/>
+    <File Name="Makefile.kmk"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
+  <VirtualDirectory Name="softcore">
+    <File Name="softcore/mksoftcore.c"/>
+    <File Name="softcore/classes.fr"/>
+    <File Name="softcore/extras.fr"/>
+    <File Name="softcore/ficl.fr"/>
+    <File Name="softcore/ficlclass.fr"/>
+    <File Name="softcore/ficllocal.fr"/>
+    <File Name="softcore/fileaccess.fr"/>
+    <File Name="softcore/ifbrack.fr"/>
+    <File Name="softcore/jhlocal.fr"/>
+    <File Name="softcore/marker.fr"/>
+    <File Name="softcore/oo.fr"/>
+    <File Name="softcore/prefix.fr"/>
+    <File Name="softcore/softcore.fr"/>
+    <File Name="softcore/string.fr"/>
+    <File Name="softcore/xwintox.4th"/>
+  </VirtualDirectory>
 </CodeLite_Project>

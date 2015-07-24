@@ -168,51 +168,6 @@ extern "C" {
 */
 
 /*
-** FICL_WANT_MINIMAL
-** If set to nonzero, build the smallest possible Ficl interpreter.
-*/
-#if !defined(FICL_WANT_MINIMAL)
-#define FICL_WANT_MINIMAL          (0)
-#endif
-
-#if FICL_WANT_MINIMAL
-#define FICL_WANT_SOFTWORDS        (0)
-#define FICL_WANT_FILE             (0)
-#define FICL_WANT_FLOAT            (0)
-#define FICL_WANT_USER             (0)
-#define FICL_WANT_LOCALS           (0)
-#define FICL_WANT_DEBUGGER         (0)
-#define FICL_WANT_OOP              (0)
-#define FICL_WANT_PLATFORM         (0)
-#define FICL_WANT_MULTITHREADED    (0)
-#define FICL_WANT_EXTENDED_PREFIX  (0)
-
-#define FICL_ROBUST                (0)
-
-#endif /* FICL_WANT_SMALL */
-
-#if !defined(FICL_WANT_SMALL)
-#define FICL_WANT_SMALL          (0)
-#endif
-
-#if FICL_WANT_SMALL
-#define FICL_WANT_SOFTWORDS        (0)
-#define FICL_WANT_FILE             (0)
-#define FICL_WANT_FLOAT            (0)
-#define FICL_WANT_USER             (0)
-#define FICL_WANT_LOCALS           (0)
-#define FICL_WANT_DEBUGGER         (0)
-#define FICL_WANT_OOP              (0)
-#define FICL_WANT_PLATFORM         (1)
-#define FICL_WANT_MULTITHREADED    (0)
-#define FICL_WANT_EXTENDED_PREFIX  (0)
-
-#define FICL_ROBUST                (0)
-
-#endif /* FICL_WANT_MINIMAL */
-
-
-/*
 ** FICL_WANT_PLATFORM
 ** Includes words defined in ficlCompilePlatform
 ** (see ficlplatform/win32.c and ficlplatform/unix.c for example)
@@ -453,9 +408,6 @@ typedef ficlUnsigned32 ficlUnsigned;
 typedef float ficlFloat;
 
 #endif /* !defined(FICL_PLATFORM_BASIC_TYPES) */
-
-
-
 
 
 

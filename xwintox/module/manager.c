@@ -97,12 +97,15 @@ error:
 	return -1;
 }
 
-XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
+XWF_Object_Handle_t *ModuleManager_createObject(const char *p_pszType)
 {
 	XWF_ObjectParams_t obpParams;
 	XWF_Class_t *pobjHandler;
+	char *pszSubType =strdup(p_pszType);
+	char *pszType =strsep(&pszSubType, ".");
 
 	obpParams.pszObjType =pszType;
+	obpParams.pszObjSubtype =pszSubType;
 	obpParams.psrvServices =&pmmManager->psrvServices;
 
 	/* Is there a class already set up for this? */
@@ -116,13 +119,17 @@ XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType)
 		pobjhCreated->hObj =pobjHandler->fnCreate(&obpParams);
 
 		/* There is, and it went well. An object was created. */
-		if(pobjhCreated->hObj) return pobjhCreated;
+		if(pobjhCreated->hObj)
+		{
+			free(pszType);
+			return pobjhCreated;
+		}
 		/* There is, but for some reason, it didn't create an object! */
 		else free(pobjhCreated);
 	}
 
 	/* Later, we should try and find */
-
+	free(pszType);
 	return 0; /* no module can create such an object */
 }
 

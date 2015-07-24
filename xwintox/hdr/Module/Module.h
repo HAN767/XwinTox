@@ -59,6 +59,7 @@ struct XWF_Object_Handle_s;
 typedef struct XWF_ObjectParams_s
 {
 	const char *pszObjType;
+	const char *pszObjSubtype;
 	const struct XWF_Object_Handle_s *pobjhHandle;
 	const struct XWF_Services_s *psrvServices;
 } XWF_ObjectParams_t;

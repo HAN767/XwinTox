@@ -14,9 +14,9 @@
 
 FORTHOBJ::FORTHOBJ(XWF_ObjectParams_t *prmObj)
 {
-	dbg("New FORTHOBJ created\n");
+	printf("New FORTHOBJ created. Subtype: %s\n", prmObj->pszObjSubtype);
 	vm_ =ficlSystemCreateVm(globalSystem);
-	ficlVmEvaluate (vm_, ".ver .( XwinTox Objective-Forth " __DATE__ " ) cr quit") ;
+	ficlVmEvaluate (vm_, ".( XwinTox Objective-Forth " __DATE__ " ) cr quit") ;
 }
 
 int FORTHOBJ::start()

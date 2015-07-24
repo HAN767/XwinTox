@@ -13,7 +13,7 @@ ENDFUNCTION(PREPEND)
 
 set (SOFTCORE_FILES_P  softcore.fr ifbrack.fr prefix.fr ficl.fr jhlocal.fr
 					   marker.fr oo.fr classes.fr string.fr ficllocal.fr 
-					   fileaccess.fr)
+					   fileaccess.fr xwintox.4th)
 
 PREPEND(SOFTCORE_FILES ${PROJECT_SOURCE_DIR}/softcore/ ${SOFTCORE_FILES_P})
 
