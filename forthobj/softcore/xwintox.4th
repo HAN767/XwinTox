@@ -31,6 +31,17 @@ object subclass c-PBMessage
 	;
 end-class
 
+: signal-received ( c-addr -- ) \ c-addr is the userdata
+	s" Forth says: Signal received" type cr
+	;
+
+: register-callback ( c-addr -- )
+	['] signal-received
+	swap
+	xwfsetcallback
+	;
+
+
 \ testing commences below 
 15 24 23 87 90
 : S1 S" Test One" ;
@@ -46,3 +57,8 @@ Msg --> .S1 --> type
 Msg --> .S2 --> type
 Msg --> .S3 --> type
 Msg --> .S4 --> type
+
+999 register-callback
+
+1 2 3 4 5 6 7 8 xwfsubscribe xwfsubscribe xwfsubscribe xwfsubscribe xwfsubscribe
+xwfsubscribe xwfsubscribe xwfsubscribe

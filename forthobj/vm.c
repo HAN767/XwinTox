@@ -102,6 +102,8 @@ ficlVm *ficlVmCreate(ficlVm *vm, unsigned nPStack, unsigned nRStack)
     vm->floatStack = ficlStackCreate(vm, "float", nPStack);
 #endif
 
+	vm->sealed =-1;
+
     ficlVmReset(vm);
     return vm;
 }

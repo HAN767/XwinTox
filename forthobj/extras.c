@@ -1454,9 +1454,17 @@ athGetenv(ficlVm * vm)
 
     int             len;
 
+	FICL_STACK_CHECK(vm->dataStack, 2, 2);
+
     len = ficlStackPopInteger(vm->dataStack);
     env = (char *)ficlStackPopPointer(vm->dataStack);
     ptr = (char *)ficlStackPopPointer(vm->dataStack);
+
+	if (ptr == 0)
+	{
+		ficlVmTextOut(vm, "Error: (ptr env len -- res len) ptr = 0\n");
+		ficlVmThrow(vm, FICL_VM_STATUS_QUIT);
+	}
 
     env[len] = '\0';
     tmp = getenv(env);

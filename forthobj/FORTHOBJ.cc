@@ -13,6 +13,7 @@
 #include "FORTHOBJ.h"
 
 FORTHOBJ::FORTHOBJ(XWF_ObjectParams_t *prmObj)
+: xtSignal(0), userData(0)
 {
 	printf("New FORTHOBJ created. Subtype: %s\n", prmObj->pszObjSubtype);
 	instances.push_back(this);
@@ -27,6 +28,21 @@ FORTHOBJ::FORTHOBJ(XWF_ObjectParams_t *prmObj)
 int FORTHOBJ::start()
 {
 	return 0;
+}
+
+void FORTHOBJ::recvSignal(unsigned int, PBMessage_t*)
+{
+	ficlCell cell;
+
+	printf("%d\n", xtSignal);
+
+	if(!xtSignal) return;
+	printf("signal received: dispatch to %d with data %d\n", xtSignal, userData);
+
+	cell.p =userData;
+	ficlVmPush(vm_, cell);
+
+	ficlVmExecuteXT(vm_, xtSignal);
 }
 
 int FORTHOBJ::vmThread(void *customData)
@@ -50,6 +66,27 @@ int FORTHOBJ::vmThread(void *customData)
 	return 0;
 }
 
+void FORTHOBJ::wordXWFSETCALLBACK(ficlVm *vm) /* ( xtCallback userdata -- ) */
+{
+	FORTHOBJ *self;
+	ficlCell cell;
+
+	FICL_STACK_CHECK(vm->dataStack, 2, 0);
+
+	for(FORTHOBJ* fObj : instances)
+	{
+		printf("Set callback\n");
+		if(fObj->vm_ == vm) self =fObj;
+	}
+
+	cell =ficlVmPop(vm);
+	self->userData =cell.p;
+
+	cell =ficlVmPop(vm);
+	self->xtSignal =static_cast<ficlWord*>(cell.p);
+}
+
+
 void FORTHOBJ::wordXWFSUBSCRIBE(ficlVm *vm) /* ( EventID -- ) */
 {
 	ficlCell cell;
@@ -62,7 +99,6 @@ void FORTHOBJ::wordXWFSUBSCRIBE(ficlVm *vm) /* ( EventID -- ) */
 	{
 		printf("Subscribe to signal %lu\n", cell.u);
 		if(fObj->vm_ == vm) fObj->xwfSubscribe(cell.u);
-		return;
 	}
 }
 

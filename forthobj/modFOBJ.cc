@@ -31,6 +31,9 @@ extern "C" int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServic
 	globalSystem =ficlSystemCreate(NULL);
 	ficlSystemCompileExtras(globalSystem);
 	ficlDictionarySetPrimitive(ficlSystemGetDictionary (globalSystem), 
+							   "XWFSETCALLBACK", FORTHOBJ::wordXWFSETCALLBACK, 
+								FICL_WORD_DEFAULT);
+	ficlDictionarySetPrimitive(ficlSystemGetDictionary (globalSystem), 
 							   "XWFSUBSCRIBE", FORTHOBJ::wordXWFSUBSCRIBE, 
 								FICL_WORD_DEFAULT);
 	return 0;
