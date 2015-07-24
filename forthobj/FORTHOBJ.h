@@ -15,11 +15,18 @@ public:
 	FORTHOBJ(XWF_ObjectParams_t *pobjParams);
 	int start();
 
-private:
 	ficlVm *vm_;
+
+	static void deliverString(ficlVm *vm, const char *string);
+	static void wordXWFSUBSCRIBE(ficlVm *vm);
+
+private:
+	static int vmThread(void *customData);
+	void deliverPBMessage(unsigned int mtype, PBMessage_t *msg);
+	thrd_t thrdInteractive;
 };
 
 extern ficlSystem *globalSystem;
-
+extern std::vector<FORTHOBJ*> instances;
 
 #endif

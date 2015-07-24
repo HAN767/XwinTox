@@ -2621,7 +2621,7 @@ void ficlVmErrorOut(ficlVm *vm, char *text)
 	}
 
 
-	/**************************************************************************
+/**************************************************************************
                         v m T h r o w
 ** 
 **************************************************************************/
@@ -2649,7 +2649,7 @@ void ficlVmThrowError(ficlVm *vm, char *fmt, ...)
 void ficlVmThrowErrorVararg(ficlVm *vm, char *fmt, va_list list)
 {
     vsprintf(vm->pad, fmt, list);
-	/* well, we can try anyway, we're certainly not returning to our caller! */
+	// well, we can try anyway, we're certainly not returning to our caller! 
     va_end(list);
 	strcat(vm->pad, "\n");
 	

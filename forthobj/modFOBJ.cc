@@ -1,29 +1,11 @@
+#include <vector>
 #include <threads.h>
 
 #include "AOM/IXWClass.h"
 #include "FORTHOBJ.h"
 
+std::vector<FORTHOBJ*> instances;
 ficlSystem *globalSystem;
-ficlVm *interactiveVm;
-thrd_t interactiveThrd;
-
-int vmThread(void *customData)
-{
-    char buffer[256];
-	int returnValue =0;
-	ficlVmEvaluate (interactiveVm, 
-					".( XwinTox Objective-Forth Command Interpreter " 
-					__DATE__ " ) cr quit");
-    while (returnValue != FICL_VM_STATUS_USER_EXIT) 
-	{
-        fputs("ok ", stdout);
-        fflush(stdout);
-
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) break;
-        returnValue = ficlVmEvaluate(interactiveVm, buffer);
-    }
-	return 0;
-}
 
 extern "C" int XWF_exit()
 {
@@ -48,9 +30,8 @@ extern "C" int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServic
 
 	globalSystem =ficlSystemCreate(NULL);
 	ficlSystemCompileExtras(globalSystem);
-
-	interactiveVm =ficlSystemCreateVm(globalSystem);
-	thrd_create(&interactiveThrd, vmThread, 0);
-
+	ficlDictionarySetPrimitive(ficlSystemGetDictionary (globalSystem), 
+							   "XWFSUBSCRIBE", FORTHOBJ::wordXWFSUBSCRIBE, 
+								FICL_WORD_DEFAULT);
 	return 0;
 }
