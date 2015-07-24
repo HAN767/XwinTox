@@ -51,7 +51,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#ifndef __FreeBSD__
 #include <ctype.h>
+#endif
 #include "ficl.h"
 
 #if FICL_ROBUST >= 2

@@ -51,7 +51,9 @@
 ** SUCH DAMAGE.
 */
 
+#ifndef __FreeBSD__
 #include <ctype.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

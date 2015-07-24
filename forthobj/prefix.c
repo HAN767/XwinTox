@@ -42,7 +42,9 @@
 */
 
 #include <string.h>
+#ifndef __FreeBSD__
 #include <ctype.h>
+#endif
 #include "ficl.h"
 
 /*

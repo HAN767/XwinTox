@@ -57,7 +57,9 @@
 #include <stdlib.h>
 #include <stdio.h>          /* sprintf */
 #include <string.h>
+#ifndef __FreeBSD__
 #include <ctype.h>
+#endif
 #include "ficl.h"
 
 

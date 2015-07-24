@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifndef __FreeBSD__
 #include <ctype.h>
+#endif
 #include "ficl.h"
 
 #if FICL_WANT_FILE
