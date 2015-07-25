@@ -13,12 +13,15 @@
 #include "FORTHOBJ.h"
 
 FORTHOBJ::FORTHOBJ(XWF_ObjectParams_t *prmObj)
-: xtSignal(0), userData(0)
+	: xtSignal(0), userData(0)
 {
-	printf("New FORTHOBJ created. Subtype: %s\n", prmObj->pszObjSubtype);
+	dbg("New FORTHOBJ created. Subtype: %s\n", prmObj->pszObjSubtype);
 	instances.push_back(this);
 	vm_ =ficlSystemCreateVm(globalSystem);
-	ficlVmEvaluate (vm_, ".( XwinTox Objective-Forth " __DATE__ " ) cr quit") ;
+	ficlVmEvaluate(vm_,
+	               const_cast<char*>(".( XwinTox Objective-Forth " __DATE__
+	                                 " ) cr quit")) ;
+
 	if(prmObj->pszObjSubtype != 0 && (strcmp(prmObj->pszObjSubtype, "INTER") == 0))
 	{
 		thrd_create(&thrdInteractive, vmThread, this);
@@ -30,14 +33,15 @@ int FORTHOBJ::start()
 	return 0;
 }
 
-void FORTHOBJ::recvSignal(unsigned int, PBMessage_t*)
+void FORTHOBJ::recvSignal(unsigned int mtype, PBMessage_t* msg)
 {
 	ficlCell cell;
 
-	printf("%d\n", xtSignal);
-
 	if(!xtSignal) return;
-	printf("signal received: dispatch to %d with data %d\n", xtSignal, userData);
+
+	dbg("signal received: dispatch to %d with data %d\n", xtSignal, userData);
+
+	deliverPBMessage(mtype, msg);
 
 	cell.p =userData;
 	ficlVmPush(vm_, cell);
@@ -48,21 +52,24 @@ void FORTHOBJ::recvSignal(unsigned int, PBMessage_t*)
 int FORTHOBJ::vmThread(void *customData)
 {
 	FORTHOBJ *self =static_cast<FORTHOBJ*>(customData);
-    char buffer[256];
+	char buffer[256];
 	int returnValue =0;
-	ficlVmEvaluate (self->vm_,
-					".( XwinTox Command Interpreter ) cr "
-					".( This is an interactive Objective-Forth environment. ) cr"
-					" .( Full access is provided to the XwinTox object model. )"
-					" cr quit");
-    while (returnValue != FICL_VM_STATUS_USER_EXIT) 
-	{
-        fputs("ok ", stdout);
-        fflush(stdout);
+	ficlVmEvaluate(self->vm_, const_cast<char*>(
+	                   ".( XwinTox Command Interpreter ) cr "
+	                   ".( This is an interactive Objective-Forth environment. ) cr"
+	                   " .( Full access is provided to the XwinTox object model. )"
+	                   " cr quit"));
 
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) break;
-        returnValue = ficlVmEvaluate(self->vm_, buffer);
-    }
+	while(returnValue != FICL_VM_STATUS_USER_EXIT)
+	{
+		fputs("ok ", stdout);
+		fflush(stdout);
+
+		if(fgets(buffer, sizeof(buffer), stdin) == NULL) break;
+
+		returnValue = ficlVmEvaluate(self->vm_, buffer);
+	}
+
 	return 0;
 }
 
@@ -76,6 +83,7 @@ void FORTHOBJ::wordXWFSETCALLBACK(ficlVm *vm) /* ( xtCallback userdata -- ) */
 	for(FORTHOBJ* fObj : instances)
 	{
 		printf("Set callback\n");
+
 		if(fObj->vm_ == vm) self =fObj;
 	}
 
@@ -97,7 +105,8 @@ void FORTHOBJ::wordXWFSUBSCRIBE(ficlVm *vm) /* ( EventID -- ) */
 
 	for(FORTHOBJ* fObj : instances)
 	{
-		printf("Subscribe to signal %lu\n", cell.u);
+		dbg("Subscribe to signal %lu\n", cell.u);
+
 		if(fObj->vm_ == vm) fObj->xwfSubscribe(cell.u);
 	}
 }
@@ -106,7 +115,7 @@ void FORTHOBJ::deliverString(ficlVm *vm, const char *string)
 {
 	ficlCell cell;
 
-	if (!string)
+	if(!string)
 	{
 		cell.p =0;
 		ficlVmPush(vm, cell);
@@ -145,4 +154,3 @@ void FORTHOBJ::deliverPBMessage(unsigned int mtype, PBMessage_t *msg)
 	deliverString(vm_, msg->S3);
 	deliverString(vm_, msg->S4);
 }
-

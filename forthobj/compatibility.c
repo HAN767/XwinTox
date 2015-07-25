@@ -183,7 +183,7 @@ FICL_PLATFORM_EXTERN void        ficlTextOut      (ficlVm *vm, char *text, int f
 	}
 
 extern ficlSystem *ficlSystemGlobal;
-static defaultStackSize = FICL_DEFAULT_STACK_SIZE;
+static int defaultStackSize = FICL_DEFAULT_STACK_SIZE;
 FICL_PLATFORM_EXTERN int ficlSetStackSize(int nStackCells)
 {
 	if (defaultStackSize < nStackCells)

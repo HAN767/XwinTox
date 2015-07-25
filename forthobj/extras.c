@@ -1338,7 +1338,7 @@ void athPopenRWE(ficlVm *vm) {
         args[i]=(char *)NULL;
         */
 
-        ret=popenRWE(&rwepipe[0],cmd,(const char *)args);
+        ret=popenRWE(&rwepipe[0],cmd,(const char * const*)args);
 
         pStdin->fd = rwepipe[0];
         pStdin->f = fdopen(rwepipe[0],"w");

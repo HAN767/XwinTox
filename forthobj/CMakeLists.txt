@@ -21,7 +21,7 @@ add_custom_command(
 OUTPUT ${PROJECT_BINARY_DIR}/softcore.c
 COMMAND mksoftcore ${SOFTCORE_FILES}
 DEPENDS mksoftcore
-MAIN_DEPENDENCY ${PROJECT_SOURCE_DIR}/softcore/softcore.fr
+MAIN_DEPENDENCY ${PROJECT_SOURCE_DIR}/softcore/xwintox.4th
 )
 
 file(GLOB SRC_FILES "*.c" "*.cc")

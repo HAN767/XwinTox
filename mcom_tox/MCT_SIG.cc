@@ -107,4 +107,5 @@ TOX_FILE_CONTROL MCOMMTOX::getToxFC(unsigned int eCtrl)
 	if(eCtrl == TC_Resume) return TOX_FILE_CONTROL_RESUME;
 	else if(eCtrl == TC_Pause) return TOX_FILE_CONTROL_PAUSE;
 	else if(eCtrl == TC_Cancel) return TOX_FILE_CONTROL_CANCEL;
+	else return static_cast<TOX_FILE_CONTROL>(0);
 }

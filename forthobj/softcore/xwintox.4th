@@ -1,5 +1,46 @@
 also oop definitions
 
+\ helpers for -->bind-xt-for-method
+
+: (exec-instance-method)         ( xt-thisword )
+     dup 2@                       ( xt-thisword cls inst )
+     rot 2 cells + @              ( cls inst xt-clsMeth )
+     execute
+;
+
+: (bind-instance-method) ( inst cls xt-clsMeth -- xt-instMeth )
+
+     \ create a word to hold the 'inst cls xt', and run the method
+     s" create _im_" evaluate    ( inst cls xt-clsMeth )
+     -rot                             ( xt-clsMeth inst cls )
+     , , ,                            ( )
+     last-word                        ( xt-instMeth )
+     does>
+         \ ." instance method runner started" cr
+         (exec-instance-method)
+;
+
+\ the beast itself
+\ binds an instance method to an xt, so whenever the
+\ xt is executed, the object signature ( inst cls ) is
+\ pushed onto the stack, and the method executed
+
+: -->bind-instance-method                ( inst cls -- xt )
+
+     state @ if
+         \ compiling
+         parse-method                     ( inst cls addr u )
+         postpone lookup-method           ( inst cls xt-clsMeth )
+         postpone (bind-instance-method)  ( xt-instMeth )
+     else
+         \ interpreting
+         parse-word                       ( inst cls addr u )
+         lookup-method                    ( inst cls xt-clsMeth )
+         (bind-instance-method)           ( xt-instMeth )
+     then
+
+; immediate
+
 object subclass c-PBMessage
 	c-cell obj: .T
 
@@ -31,34 +72,3 @@ object subclass c-PBMessage
 	;
 end-class
 
-: signal-received ( c-addr -- ) \ c-addr is the userdata
-	s" Forth says: Signal received" type cr
-	;
-
-: register-callback ( c-addr -- )
-	['] signal-received
-	swap
-	xwfsetcallback
-	;
-
-
-\ testing commences below 
-15 24 23 87 90
-: S1 S" Test One" ;
-: S2 S" Test Two" ;
-: S3 S" Test Three" ;
-: S4 S" Test Four" ;
-S1 S2 S3 S4
-.s
-c-PBMessage --> new Msg
-
-
-Msg --> .S1 --> type
-Msg --> .S2 --> type
-Msg --> .S3 --> type
-Msg --> .S4 --> type
-
-999 register-callback
-
-1 2 3 4 5 6 7 8 xwfsubscribe xwfsubscribe xwfsubscribe xwfsubscribe xwfsubscribe
-xwfsubscribe xwfsubscribe xwfsubscribe
