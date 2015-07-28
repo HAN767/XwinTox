@@ -24,7 +24,7 @@ FORTHOBJ::FORTHOBJ(XWF_ObjectParams_t *prmObj)
 
 	if(prmObj->pszObjSubtype != 0 && (strcmp(prmObj->pszObjSubtype, "INTER") == 0))
 	{
-		thrd_create(&thrdInteractive, vmThread, this);
+		thrd_create(&thrdInteractive, (thrd_start_t)vmThread, this);
 	}
 }
 
