@@ -44,9 +44,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifndef __FreeBSD__
 #include <ctype.h>
-#endif
 #include "ficl.h"
 
 
@@ -192,9 +190,7 @@ static void ficlPrimitiveColon(ficlVm *vm)
     vm->state = FICL_VM_STATE_COMPILE;
     markControlTag(vm, colonTag);
     ficlDictionaryAppendWord(dictionary, name, (ficlPrimitive)ficlInstructionColonParen, FICL_WORD_DEFAULT | FICL_WORD_SMUDGED);
-#if FICL_WANT_LOCALS
     vm->callback.system->localsCount = 0;
-#endif
     return;
 }
 
@@ -206,7 +202,6 @@ static void ficlPrimitiveSemicolonCoIm(ficlVm *vm)
 
     matchControlTag(vm, colonTag);
 
-#if FICL_WANT_LOCALS
     if (vm->callback.system->localsCount > 0)
     {
         ficlDictionary *locals = ficlSystemGetLocals(vm->callback.system);
@@ -214,7 +209,6 @@ static void ficlPrimitiveSemicolonCoIm(ficlVm *vm)
             ficlDictionaryAppendUnsigned(dictionary, ficlInstructionUnlinkParen);
     }
     vm->callback.system->localsCount = 0;
-#endif
 
     ficlDictionaryAppendUnsigned(dictionary, ficlInstructionSemiParen);
     vm->state = FICL_VM_STATE_INTERPRET;
@@ -238,12 +232,10 @@ static void ficlPrimitiveExitCoIm(ficlVm *vm)
     ficlDictionary *dictionary = ficlVmGetDictionary(vm);
     FICL_IGNORE(vm);
 
-#if FICL_WANT_LOCALS
     if (vm->callback.system->localsCount > 0)
     {
 		ficlDictionaryAppendUnsigned(dictionary, ficlInstructionUnlinkParen);
     }
-#endif
     ficlDictionaryAppendUnsigned(dictionary, ficlInstructionExitParen);
     return;
 }
@@ -489,7 +481,7 @@ static void ficlPrimitiveSprintf(ficlVm *vm) /*  */
 
 	ficlStackPushPointer(vm->dataStack, bufferStart);
 	ficlStackPushInteger(vm->dataStack, buffer - bufferStart);
-	ficlStackPushInteger(vm->dataStack, append && FICL_TRUE);
+	ficlStackPushInteger(vm->dataStack, append);
 }
 
 
@@ -1355,7 +1347,7 @@ static void ficlPrimitiveIsObject(ficlVm *vm)
     int flag;
     ficlWord *word = (ficlWord *)ficlStackPopPointer(vm->dataStack);
     
-    flag = ((word != NULL) && (word->flags & FICL_WORD_OBJECT)) ? FICL_TRUE : FICL_FALSE;
+    flag = ((word != NULL) && (word->flags & FICL_WORD_OBJECT)) ? (int)FICL_TRUE : FICL_FALSE;
     ficlStackPushInteger(vm->dataStack, flag);
     return;
 }
@@ -1502,7 +1494,6 @@ static void ficlPrimitiveCreate(ficlVm *vm)
 static void ficlPrimitiveDoesCoIm(ficlVm *vm)
 {
     ficlDictionary *dictionary = ficlVmGetDictionary(vm);
-#if FICL_WANT_LOCALS
     if (vm->callback.system->localsCount > 0)
     {
         ficlDictionary *locals = ficlSystemGetLocals(vm->callback.system);
@@ -1511,7 +1502,6 @@ static void ficlPrimitiveDoesCoIm(ficlVm *vm)
     }
 
     vm->callback.system->localsCount = 0;
-#endif
     FICL_IGNORE(vm);
 
     ficlDictionaryAppendUnsigned(dictionary, ficlInstructionDoesParen);
@@ -2481,7 +2471,6 @@ static void ficlPrimitiveUser(ficlVm *vm)
 #endif
 
 
-#if FICL_WANT_LOCALS
 /*
 ** Each local is recorded in a private locals dictionary as a 
 ** word that does doLocalIm at runtime. DoLocalIm compiles code
@@ -2495,20 +2484,16 @@ void ficlLocalParenIm(ficlVm *vm, int isDouble, int isFloat)
     ficlDictionary *dictionary = ficlVmGetDictionary(vm);
     ficlInteger nLocal = vm->runningWord->param[0].i;
 
-#if !FICL_WANT_FLOAT
 	FICL_VM_ASSERT(vm, !isFloat);
 	/* get rid of unused parameter warning */
 	isFloat = 0;
-#endif /* FICL_WANT_FLOAT */
 
     if (vm->state == FICL_VM_STATE_INTERPRET)
     {
 		ficlStack *stack;
-#if FICL_WANT_FLOAT
 		if (isFloat)
 			stack = vm->floatStack;
 		else
-#endif /* FICL_WANT_FLOAT */
 		stack = vm->dataStack;
 
         ficlStackPush(stack, vm->returnStack->frame[nLocal]);
@@ -2519,14 +2504,12 @@ void ficlLocalParenIm(ficlVm *vm, int isDouble, int isFloat)
     {
 		ficlInstruction instruction;
 		ficlInteger appendLocalOffset;
-#if FICL_WANT_FLOAT
         if (isFloat)
 		{
 			instruction = (isDouble) ? ficlInstructionGetF2LocalParen : ficlInstructionGetFLocalParen;
 			appendLocalOffset = FICL_TRUE;
 		}
 		else
-#endif /* FICL_WANT_FLOAT */
 		if (nLocal == 0)
 		{
 			instruction = (isDouble) ? ficlInstructionGet2Local0 : ficlInstructionGetLocal0;
@@ -2560,7 +2543,6 @@ static void ficlPrimitiveDo2LocalIm(ficlVm *vm)
     ficlLocalParenIm(vm, 1, 0);
 }
 
-#if FICL_WANT_FLOAT
 static void ficlPrimitiveDoFLocalIm(ficlVm *vm)
 {
     ficlLocalParenIm(vm, 0, 1);
@@ -2570,7 +2552,6 @@ static void ficlPrimitiveDoF2LocalIm(ficlVm *vm)
 {
     ficlLocalParenIm(vm, 1, 1);
 }
-#endif /* FICL_WANT_FLOAT */
 
 
 
@@ -2619,11 +2600,9 @@ void ficlLocalParen(ficlVm *vm, int isDouble, int isFloat)
             ficlVmThrowError(vm, "Error: out of local space");
         }
 
-#if !FICL_WANT_FLOAT
 		FICL_VM_ASSERT(vm, !isFloat);
 		/* get rid of unused parameter warning */
 		isFloat = 0;
-#else /* FICL_WANT_FLOAT */
 		if (isFloat)
 		{
 			if (isDouble)
@@ -2638,7 +2617,6 @@ void ficlLocalParen(ficlVm *vm, int isDouble, int isFloat)
 			}
 		}
 		else
-#endif /* FICL_WANT_FLOAT */
         if (isDouble)
 		{
 			code = ficlPrimitiveDo2LocalIm;
@@ -2687,7 +2665,6 @@ static void ficlPrimitive2LocalParen(ficlVm *vm)
 }
 
 
-#endif /* FICL_WANT_LOCALS */
 
 
 /**************************************************************************
@@ -2706,13 +2683,10 @@ static void ficlPrimitiveToValue(ficlVm *vm)
 	ficlInstruction instruction = 0;
 	ficlStack *stack;
 	ficlInteger isDouble;
-#if FICL_WANT_LOCALS
 	ficlInteger nLocal;
 	ficlInteger appendLocalOffset;
 	ficlInteger isFloat;
-#endif /* FICL_WANT_LOCALS */
 
-#if FICL_WANT_LOCALS
     if ((vm->callback.system->localsCount > 0) && (vm->state == FICL_VM_STATE_COMPILE))
     {
         ficlDictionary *locals;
@@ -2733,7 +2707,6 @@ static void ficlPrimitiveToValue(ficlVm *vm)
 			isDouble = FICL_TRUE;
 			isFloat = FICL_FALSE;
 		}
-#if FICL_WANT_FLOAT
 		else if (word->code == ficlPrimitiveDoFLocalIm)
 		{
 			instruction = ficlInstructionToFLocalParen;
@@ -2745,7 +2718,6 @@ static void ficlPrimitiveToValue(ficlVm *vm)
 			instruction = ficlInstructionToF2LocalParen;
 			isDouble = isFloat = FICL_TRUE;
 		}
-#endif /* FICL_WANT_FLOAT */
 		else
 		{
 			ficlVmThrowError(vm, "to %.*s : local is of unknown type", FICL_STRING_GET_LENGTH(name), FICL_STRING_GET_POINTER(name));
@@ -2755,10 +2727,8 @@ static void ficlPrimitiveToValue(ficlVm *vm)
 		nLocal = word->param[0].i;
 		appendLocalOffset = FICL_TRUE;
 
-#if FICL_WANT_FLOAT
 		if (!isFloat)
 		{
-#endif /* FICL_WANT_FLOAT */
 		if (nLocal == 0)
 		{
 			instruction = (isDouble) ? ficlInstructionTo2Local0 : ficlInstructionToLocal0;
@@ -2769,20 +2739,15 @@ static void ficlPrimitiveToValue(ficlVm *vm)
 			instruction = ficlInstructionToLocal1;
 			appendLocalOffset = FICL_FALSE;
 		}
-#if FICL_WANT_FLOAT
 		}
-#endif /* FICL_WANT_FLOAT */
 		
         ficlDictionaryAppendUnsigned(dictionary, instruction);
 		if (appendLocalOffset)
 			ficlDictionaryAppendCell(dictionary, FICL_LVALUE_TO_CELL(nLocal));
         return;
     }
-#endif
 
-#if FICL_WANT_LOCALS
 TO_GLOBAL:
-#endif /* FICL_WANT_LOCALS */
     word = ficlDictionaryLookup(dictionary, name);
     if (!word)
         ficlVmThrowError(vm, "%.*s not found", FICL_STRING_GET_LENGTH(name), FICL_STRING_GET_POINTER(name));
@@ -2799,7 +2764,6 @@ TO_GLOBAL:
 			stack = vm->dataStack;
 			isDouble = FICL_TRUE;
 			break;
-#if FICL_WANT_FLOAT
 		case ficlInstructionFConstantParen:
 			instruction = ficlInstructionFStore;
 			stack = vm->floatStack;
@@ -2810,7 +2774,6 @@ TO_GLOBAL:
 			stack = vm->floatStack;
 			isDouble = FICL_TRUE;
 			break;
-#endif /* FICL_WANT_FLOAT */
 		default:
 		{
 		    ficlVmThrowError(vm, "to %.*s : value/constant is of unknown type", FICL_STRING_GET_LENGTH(name), FICL_STRING_GET_POINTER(name));
@@ -3380,11 +3343,6 @@ void ficlSystemCompileCore(ficlSystem *system)
     ficlDictionarySetConstant(environment, "max-n",             0x7fffffff);
     ficlDictionarySetConstant(environment, "max-u",             0xffffffff);
 
-#ifdef REDIS
-    ficlDictionarySetConstant(environment, "redis",              FICL_TRUE);
-#else
-    ficlDictionarySetConstant(environment, "redis",              FICL_FALSE);
-#endif
 
 #ifdef SYSV_IPC
     ficlDictionarySetConstant(environment, "sysv_ipc",              FICL_TRUE);
@@ -3398,28 +3356,10 @@ void ficlSystemCompileCore(ficlSystem *system)
     ficlDictionarySetConstant(environment, "socket",              FICL_FALSE);
 #endif
 
-#ifdef MODBUS
-    ficlDictionarySetConstant(environment, "modbus",              FICL_TRUE);
-#else
-    ficlDictionarySetConstant(environment, "modbus",              FICL_FALSE);
-#endif
-
-#ifdef SPREAD
-    ficlDictionarySetConstant(environment, "spread",              FICL_TRUE);
-#else
-    ficlDictionarySetConstant(environment, "spread",              FICL_FALSE);
-#endif
-
 #ifdef DYNLIB
     ficlDictionarySetConstant(environment, "dynlib",              FICL_TRUE);
 #else
     ficlDictionarySetConstant(environment, "dynlib",              FICL_FALSE);
-#endif
-
-#ifdef SERIAL
-    ficlDictionarySetConstant(environment, "serial",              FICL_TRUE);
-#else
-    ficlDictionarySetConstant(environment, "serial",              FICL_FALSE);
 #endif
 
 	{
@@ -3455,7 +3395,6 @@ void ficlSystemCompileCore(ficlSystem *system)
     ** The optional Locals and Locals Extensions word set
     ** see softcore.c for implementation of locals|
     */
-#if FICL_WANT_LOCALS
     ficlDictionarySetPrimitive(dictionary, "doLocal",   ficlPrimitiveDoLocalIm,      FICL_WORD_COMPILE_ONLY_IMMEDIATE);
     ficlDictionarySetPrimitive(dictionary, "(local)",   ficlPrimitiveLocalParen,     FICL_WORD_COMPILE_ONLY);
     ficlDictionarySetPrimitive(dictionary, "(2local)",  ficlPrimitive2LocalParen,  FICL_WORD_COMPILE_ONLY);
@@ -3463,7 +3402,6 @@ void ficlSystemCompileCore(ficlSystem *system)
     ficlDictionarySetConstant(environment, "locals",            FICL_TRUE);
     ficlDictionarySetConstant(environment, "locals-ext",        FICL_TRUE);
     ficlDictionarySetConstant(environment, "#locals",           FICL_MAX_LOCALS);
-#endif
 
     /*
     ** The optional Memory-Allocation word set

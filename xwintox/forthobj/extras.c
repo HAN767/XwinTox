@@ -10,13 +10,7 @@
 #ifndef EMBEDDED
 #include <termios.h>
 #include <sys/select.h>
-#endif
-
-static int      ttyfd = 0;   /* STDIN_FILENO is 0 by default */
-
-#ifdef SYSV_IPC
-#include <sys/ipc.h>
-#include <sys/shm.h>
+#include <sys/wait.h>
 #endif
 
 #include <signal.h>
@@ -31,73 +25,16 @@ static int      ttyfd = 0;   /* STDIN_FILENO is 0 by default */
 #include <netdb.h>
 #endif
 
-// #ifndef ARM
 #ifndef EMBEDDED
 #include <dlfcn.h>
 #include <sys/utsname.h>
 #include <termios.h>
 #endif
 
-#ifdef SYSV_IPC
-#if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED) || defined(MAC) || defined(SOLARIS) || defined(MUSL)
-#warning "Including sys/sem.h"
-#include <sys/sem.h>
-/* union semun is defined by including <sys/sem.h> */
-#endif
-#endif
-
 #if (defined(LINUX))
 #include <sys/mman.h>
 static int systemTick=0;
 #endif
-
-#if defined(SOLARIS) || defined(MUSL)
-#warning "Solaris"
-union semun {
-    int             val;
-    struct semid_ds *buf;
-    unsigned short *array;
-} arg;
-#endif
-
-#define MSGSIZE 255
-#if defined(SOLARIS) || defined(COBALT) || defined(MAC) || defined(MUSL)
-struct msgbuf {
-    long            mtype;
-    char            mtext[MSGSIZE];
-};
-#endif
-
-#if (!defined(MAC) && !defined(SOLARIS)) && defined(SYSV_IPC) && !defined(COBALT) && !defined(MUSL) 
-#warning "Including sys/msg.h"
-#include <sys/msg.h>
-#define MSGSIZE 255
-
-#if defined(SYSV_IPC ) 
-/* #if !defined(SOLARIS) && !defined(CYC_TS) */
-#warning "Defining msgbuf"
-
-struct msgbuf {
-    long            mtype;
-    char            mtext[MSGSIZE];
-};
-/* #endif */
-#endif
-
-#warning "Defining seminfo"
-/* according to X/OPEN we have to define it ourselves */
-union semun {
-    int             val;	/* value for SETVAL */
-    struct semid_ds *buf;	/* buffer for IPC_STAT, IPC_SET */
-    unsigned short *array;	/* array for GETALL, SETALL */
-    /* Linux specific part: */
-    struct seminfo *__buf;	/* buffer for IPC_INFO */
-};
-#endif
-
-/*
-   struct nlist *install(struct database *,char *, char *);
-   */
 
 char           *strsave(char *);
 extern int      errno;
@@ -108,73 +45,6 @@ void fatal(char *message) {
     exit(1);
 }
 
-
-#ifndef EMBEDDED
-/* put terminal in raw mode - see termio(7I) for modes */
-#ifdef FRED
-void tty_raw(void) {
-    struct termios  raw;
-
-    extern struct termios orig_termios; /* TERMinal I/O Structure */
-
-    raw = orig_termios; /* copy original and then modify below */
-
-    /*
-     * input modes - clear indicated ones giving: no break, no CR to NL,
-     * no parity check, no strip char, no start/stop output (sic) control
-     */
-    raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-
-    /*
-     * output modes - clear giving: no post processing such as NL to
-     * CR+NL
-     */
-    raw.c_oflag &= ~(OPOST);
-
-    /* control modes - set 8 bit chars */
-    raw.c_cflag |= (CS8);
-
-    /*
-     * local modes - clear giving: echoing off, canonical off (no erase
-     * with backspace, ^U,...),  no extended functions, no signal chars
-     * (^Z,^C)
-     */
-    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-
-    /*
-     * control chars - set return condition: min number of bytes and
-     * timer
-     */
-    //    raw.c_cc[VMIN] = 5;
-    //    raw.c_cc[VTIME] = 8;    /* after 5 bytes or .8 seconds after first byte seen      */
-    //    raw.c_cc[VMIN] = 0;
-    //    raw.c_cc[VTIME] = 0;    /* immediate - anything       */
-    //    raw.c_cc[VMIN] = 2;
-    //    raw.c_cc[VTIME] = 0;    /* after two bytes, no timer  */
-    //    raw.c_cc[VMIN] = 0;
-    //    raw.c_cc[VTIME] = 8;    /* after a byte or .8 seconds */
-
-    /* put terminal in raw mode after flushing */
-    if (tcsetattr(ttyfd, TCSAFLUSH, &raw) < 0)
-        fatal("can't set raw mode");
-}
-
-/*
- * reset tty - useful also for restoring the terminal when this process
- * wishes to temporarily relinquish the tty
- */
-
-int tty_reset(void) {
-    extern struct termios orig_termios; /* TERMinal I/O Structure */
-
-    /* flush and reset */
-    if (tcsetattr(ttyfd, TCSAFLUSH, &orig_termios) < 0) {
-        return -1;
-    }
-    return 0;
-}
-#endif // fred
-#endif
 
 int kbhit() {
     struct timeval  tv;
@@ -233,51 +103,6 @@ char keystroke(int t) {
     }
     return (buf[next++]);
 }
-// #define EMPTY '\0'
-// static char cbuf = EMPTY;
-
-#ifdef FRED
-static void athGetkey(ficlVm * vm) {
-
-    int i;
-    extern struct termios orig_termios; /* TERMinal I/O Structure */
-
-    i = tcgetattr( ttyfd, &orig_termios);
-
-    if( cbuf != EMPTY ) {
-        ficlStackPushInteger(vm->dataStack, cbuf);
-        cbuf = EMPTY ;
-    } else {
-
-        tty_raw();
-        nonblock(0);
-        i=fgetc(stdin);
-        nonblock(1);
-        tty_reset();
-        ficlStackPushInteger(vm->dataStack, i);
-
-    }
-}
-
-
-static void athQkey(ficlVm * vm) {
-
-    tty_raw();
-    nonblock(0);
-
-    if(kbhit() !=0 )
-    {
-        cbuf=fgetc(stdin);
-        ficlStackPushInteger(vm->dataStack, -1);
-    } else {
-        cbuf = EMPTY;
-        ficlStackPushInteger(vm->dataStack,0);
-    }
-    tty_reset();
-    nonblock(1);    
-
-}
-#endif
 
 static void athStdoutFlush(ficlVm * vm) {
     fflush( (FILE *)NULL );
@@ -417,18 +242,6 @@ static void athFeatures(ficlVm *vm) {
     printf("NOT FICL_WANT_MINIMAL\n");
 #endif
 
-#ifdef SERIAL
-    printf ("    SERIAL\n");
-#else
-    printf ("NOT SERIAL\n");
-#endif
-
-#ifdef REDIS
-    printf ("    REDIS\n");
-#else
-    printf ("NOT REDIS\n");
-#endif
-
 #ifdef SYSV_IPC
     printf ("    SYSV_IPC\n");
 #else    
@@ -453,11 +266,7 @@ static void athFeatures(ficlVm *vm) {
     printf("NOT WANT_FILE\n");
 #endif
 
-#if FICL_WANT_FLOAT
     printf("    WANT_FLOAT\n");
-#else
-    printf("NOT WANT_FLOAT\n");
-#endif
 
 #if FICL_WANT_DEBUGGER
     printf("    WANT_DEBUGGER\n");
@@ -531,7 +340,6 @@ static void athPrimitiveDollarSystem(ficlVm * vm) {
     ficlStackPushInteger(vm->dataStack, status);
 }
 
-#ifdef FRED
 /*
  ** Ficl add-in to load a text file and execute it...
  ** Cheesy, but illustrative.
@@ -549,7 +357,6 @@ char           *pathToFile(char *fname) {
     char            scr[255];
     char           *scratch;
     char           *tok;
-    char           *dirs[32];
 
     if ((loadPath == (char *) NULL) || (*fname == '/') || (*fname == '.'))
         return (fname);
@@ -673,19 +480,10 @@ static void ficlDollarPrimitiveLoad(ficlVm * vm) {
 }
 
 static void ficlPrimitiveLoad(ficlVm * vm) {
-    char            buffer[BUFFER_SIZE];
     char            filename[BUFFER_SIZE];
-    char            scratch[255];
-    char            tmp[255];
 
     extern char    *loadPath;
     char           *name;
-    char           *tok;
-    char           *dirs[32];
-
-    int             i = 0;
-    int             fd;
-
 
     ficlCountedString *counted = (ficlCountedString *) filename;
     ficlVmGetString(vm, counted, '\n');
@@ -721,9 +519,6 @@ static void ficlDollarPrimitiveLoadDir(ficlVm * vm) {
     ficlStackPushInteger(vm->dataStack, strlen(buffer));
     ficlDollarPrimitiveLoad(vm);
 }
-
-#endif // FRED
-
 
 
 /*
@@ -878,7 +673,6 @@ athMinusTrailing(ficlVm * vm)
 athTwoRot(ficlVm * vm)
 {
     void           *stuff[6];
-    void           *tmp0, *tmp1;
     int             i = 0;
 
     for (i = 0; i < 6; i++)
@@ -908,149 +702,6 @@ static void athStrsave(ficlVm * vm) {
     ficlStackPushPointer(vm->dataStack, p);
     ficlStackPushInteger(vm->dataStack, len);
 }
-
-#ifdef DYNLIB
-#define MAX_ARGS 5
-
-// arg0 ... argn <res_count> <arg_count> <function ptr>
-// 
-static void athDlExec(ficlVm * vm) {
-    int i;
-    int argCount=0;
-    int resCount=0;
-
-    void *(*func)();
-    void *args[MAX_ARGS];
-    void *res;
-
-    func = ficlStackPopPointer(vm->dataStack);
-    argCount = ficlStackPopInteger(vm->dataStack);
-    resCount = ficlStackPopInteger(vm->dataStack);
-
-    for (i=0; i < argCount;i++) {
-        args[i]  = ficlStackPopPointer(vm->dataStack);
-    }
-
-    if ( 0 == argCount && 0 == resCount ) {
-        (void)(*func)();
-    } else {
-        if(argCount > 0 ) {
-            switch(argCount) {
-                case 1:
-                    res=(*func)(args[0]);
-                    break;
-                case 2:
-                    res=(*func)(args[1],args[0]);
-                    break;
-                case 3:
-                    res=(*func)(args[2],args[1],args[0]);
-                    break;
-                case 4:
-                    res=(*func)(args[3],args[2],args[1],args[0]);
-                    break;
-                case 5:
-                    res=(*func)(args[4],args[3],args[2],args[1],args[0]);
-                    break;
-                default:
-                    printf("Too many args\n");
-                    break;
-            }
-            ficlStackPushPointer( vm->dataStack,res);
-        } else {
-            switch(argCount) {
-                case 1:
-                    (void)(*func)(args[0]);
-                    break;
-                case 2:
-                    (void)(*func)(args[1],args[0]);
-                    break;
-                case 3:
-                    (void)(*func)(args[2],args[1],args[0]);
-                    break;
-                case 4:
-                    (void)(*func)(args[3],args[2],args[1],args[0]);
-                    break;
-                case 5:
-                    (void)(*func)(args[4],args[3],args[2],args[1],args[0]);
-                    break;
-                default:
-                    printf("Too many args\n");
-                    break;
-            }
-        }
-    }
-
-}
-
-static void athDlOpen(ficlVm * vm) {
-    int libLen;
-    char *lib;
-    void *res;
-
-    libLen = ficlStackPopInteger(vm->dataStack);
-    lib = ficlStackPopPointer(vm->dataStack);
-
-    res=(void *)dlopen(lib,RTLD_LAZY );
-
-    if(!res) {
-        printf("%s\n", dlerror());
-    }
-
-    ficlStackPushPointer( vm->dataStack,res);
-
-    if( res == (void *)NULL ) {
-        ficlStackPushInteger(vm->dataStack,-1);
-    } else {
-        ficlStackPushInteger(vm->dataStack,0);
-    }
-}
-
-static void athDlClose(ficlVm * vm) {
-    int res;
-    void *h;
-
-    h = ficlStackPopPointer( vm->dataStack);
-    res = dlclose(h);
-    ficlStackPushInteger(vm->dataStack,res);
-}
-/*
-   name len handle -- symbol_ptr
-   */
-static void athDlSym(ficlVm * vm) {
-    void *sym, *h;
-    char *symbol;
-    char *error;
-    char flag=0;
-
-    int symbolLen = 0;
-
-    h = ficlStackPopPointer( vm->dataStack);
-    symbolLen = ficlStackPopInteger( vm->dataStack);
-    symbol = ficlStackPopPointer(vm->dataStack);
-    symbol[symbolLen]=0x00;
-
-    error = dlerror();
-    symbol = dlsym(h,symbol);
-    error = dlerror();
-
-    if( error != (char *)NULL ) {
-        fprintf(stderr,"%s\n",error);
-        flag=-1;
-    } else {
-        flag=0;
-    }
-
-    ficlStackPushPointer( vm->dataStack,symbol);
-    ficlStackPushInteger( vm->dataStack,flag);
-
-}
-
-    static void
-athDlError(ficlVm *vm)
-{
-    perror(dlerror());
-}
-#endif
 
 // Same as move except adds a 0 byte at the end.
 // Traget area must be at least one byte bigger than len
@@ -1103,13 +754,6 @@ static void athSizeofChar(ficlVm *vm)
 static void athSizeofCharPtr(ficlVm *vm)
 {
     ficlStackPushInteger(vm->dataStack, sizeof(char *));
-}
-
-    static void
-ficlPrimitiveBreak(ficlVm * vm)
-{
-    //	vm->state = vm->state;
-    return;
 }
 
 static void athGetPid(ficlVm *vm)
@@ -1325,7 +969,6 @@ void athPcloseRWE(ficlVm *vm)
 {
     int rwepipe[3];
     int pid;
-    int status;
 
     ficlFile *pStdin;
     ficlFile *pStdout;
@@ -1445,295 +1088,6 @@ athGetErrno(ficlVm * vm)
     ficlStackPushInteger(vm->dataStack, errno);
     errno = 0;
 }
-#ifdef SYSV_IPC
-
-    static void
-athSemTran(ficlVm * vm)
-{
-    int             key;
-    int             sid;
-    extern int      errno;
-
-    key = ficlStackPopInteger(vm->dataStack);
-    if (key < 0)
-    {
-        ficlStackPushInteger(vm->dataStack, -1);
-    } else
-    {
-        sid = semget(key, 1, 0666 | IPC_CREAT);
-
-        ficlStackPushInteger(vm->dataStack, sid);
-
-    }
-}
-
-static void athRmSem(ficlVm * vm) {
-
-    int             sid;
-    int             res;
-#ifdef COBALT
-    union semun arg;
-#endif
-
-    sid = ficlStackPopInteger(vm->dataStack);
-#ifdef COBALT
-    res = semctl(sid, 0, IPC_RMID,arg);
-#else
-    res = semctl(sid, 0, IPC_RMID);
-#endif
-    if (res < 0) {
-        ficlStackPushInteger(vm->dataStack, -1);
-    } else {
-        ficlStackPushInteger(vm->dataStack, 0);
-    }
-
-
-}
-/*
-   Returns 0 on error, true on success.
-   */
-int semcall(int sid, int op) {
-    struct sembuf   sb;
-
-    sb.sem_num = 0;
-    sb.sem_op = op;
-    /*
-     * sb.sem_flg = IPC_NOWAIT;
-     */
-    sb.sem_flg = 0;
-
-    if (semop(sid, &sb, 1) == -1) {
-        perror("ficl: semcall ");
-        return (-1);
-    } else {
-        return (0);
-    }
-}
-
-    static void
-athGetSemValue(ficlVm * vm)
-{
-    int             sid;
-    int             res;
-#ifdef COBALT
-    union semun arg;
-#endif
-
-    sid = ficlStackPopInteger(vm->dataStack);
-#ifdef COBALT
-    res = semctl(sid, 0, GETVAL,arg);
-#else
-    res = semctl(sid, 0, GETVAL);
-#endif
-    ficlStackPushInteger(vm->dataStack, res);
-}
-
-/*
- * Stack: value semid -- flag
- */
-    static void
-athSetSemValue(ficlVm * vm)
-{
-    int             sid;
-    int             res;
-    int             val;
-    union semun     arg;
-
-    sid = ficlStackPopInteger(vm->dataStack);
-    val = ficlStackPopInteger(vm->dataStack);
-    arg.val = val;
-    res = semctl(sid, 0, SETVAL, arg);
-    if (!res)
-        res = -1;
-    else
-        res = 0;
-
-    ficlStackPushInteger(vm->dataStack, res);
-}
-
-    static void
-athGetSem(ficlVm * vm)
-{
-    int             sid;
-
-    sid = ficlStackPopInteger(vm->dataStack);
-
-
-    ficlStackPushInteger(vm->dataStack,semcall(sid, -1) );
-}
-
-    static void
-athRelSem(ficlVm * vm)
-{
-    int             sid;
-
-    sid = ficlStackPopInteger(vm->dataStack);
-    ficlStackPushInteger(vm->dataStack, semcall(sid, 1));
-}
-/*
- * Stack: key size flags -- shmid
- */
-    static void
-athShmGet(ficlVm * vm)
-{
-    int             shm_id;
-    int             key;
-    int             size;
-    int             flags;
-
-    flags = ficlStackPopInteger(vm->dataStack);
-    size = ficlStackPopInteger(vm->dataStack);
-    key = ficlStackPopInteger(vm->dataStack);
-    shm_id = shmget(key, size, flags);
-    ficlStackPushInteger(vm->dataStack, shm_id);
-}
-
-/*
- * Stack: shmid -- ptr
- */
-    static void
-athShmat(ficlVm * vm)
-{
-    void           *ptr;
-    int             shm_id;
-
-    shm_id = ficlStackPopInteger(vm->dataStack);
-    ptr = shmat(shm_id, 0, SHM_RND);
-    ficlStackPushPointer(vm->dataStack, ptr);
-}
-
-/*
- * Stack: ptr -- flag
- */
-    static void
-athShmdt(ficlVm * vm)
-{
-    void           *ptr;
-    int             res;
-    ptr = ficlStackPopPointer(vm->dataStack);
-    res = shmdt(ptr);
-    if (!res)
-        ficlStackPushInteger(vm->dataStack, -1);
-    else
-        ficlStackPushInteger(vm->dataStack, 0);
-
-}
-/*
-*/
-static void athShmrm(ficlVm *vm)
-{
-    int shm_id;
-    struct shmid_ds buf;
-    int res;
-
-    shm_id = ficlStackPopInteger(vm->dataStack);
-    res = shmctl(shm_id,IPC_STAT,&buf);
-    if ( res == 0 ) {
-        res = shmctl(shm_id,IPC_RMID,&buf);
-    }
-    ficlStackPushInteger(vm->dataStack, res);
-}
-
-#endif
-
-
-// #if !defined(MAC) && defined(SYSV_IPC)
-#if defined(SYSV_IPC)
-#define MAXOPEN 20
-
-    static void
-athOpenQueue(ficlVm * vm)
-{
-    static struct
-    {
-        long            key;
-        int             qid;
-    }               queues[MAXOPEN];
-    int             i;
-    int             avail = -1;
-    int             qid;
-
-    int             key;
-    key = ficlStackPopInteger(vm->dataStack);
-
-    //
-    //Try to open the message Q first
-    //
-    if ((qid = msgget(key, 0666)) == -1)
-    {
-        if ((qid = msgget(key, 0666 | IPC_CREAT)) == -1)
-        {
-            ficlStackPushInteger(vm->dataStack, -1);
-            return;
-        }
-    }
-    queues[avail].key = key;
-    queues[avail].qid = qid;
-    ficlStackPushInteger(vm->dataStack, qid);
-    ficlStackPushInteger(vm->dataStack, 0);
-}
-
-static void athRmQueue( ficlVm *vm)
-{
-    int msqid;
-
-    msqid = ficlStackPopInteger(vm->dataStack);
-    msgctl(msqid, IPC_RMID, NULL);
-}
-//
-//Stack:ptr cnt qid-- flag
-//
-    static void
-athMsgSend(ficlVm * vm)
-{
-    struct msgbuf   buf;
-    int             nbytes;
-    int             qid;
-    char           *msg;
-    int             status;
-
-    qid = ficlStackPopInteger(vm->dataStack);
-    nbytes = ficlStackPopInteger(vm->dataStack);
-    msg = (char *)ficlStackPopPointer(vm->dataStack);
-
-    buf.mtype = 1;
-    strncpy(buf.mtext, msg, nbytes);
-
-    //status = msgsnd(qid, &buf, nbytes - sizeof(buf.mtype), 0);
-    status = msgsnd(qid, &buf, nbytes, 0);
-    ficlStackPushInteger(vm->dataStack, status);
-}
-//
-//Stack ptr qid-- ptr cnt flag
-//
-    static void
-athMsgRecv(ficlVm * vm)
-{
-    struct msgbuf   buf;
-    int             nbytes;
-    int             qid;
-    char           *msg;
-    int             status;
-    int flag = 0;
-
-    flag = ficlStackPopInteger(vm->dataStack);
-    qid = ficlStackPopInteger(vm->dataStack);
-    msg = (char *)ficlStackPopPointer(vm->dataStack);
-
-    status = msgrcv(qid, &buf, MSGSIZE, 1, flag);
-    strncpy(msg, buf.mtext, MSGSIZE);
-
-    if (status > 0)
-    {
-        ficlStackPushPointer(vm->dataStack, msg);
-        ficlStackPushInteger(vm->dataStack, status);
-        ficlStackPushInteger(vm->dataStack, 0);
-    } else
-    {
-        ficlStackPushInteger(vm->dataStack, -1);
-    }
-}
-#endif				/* // #define(MAC) */
 
 /*
  * Stack: sep ptr cnt --- addrn lenn ...... addr0 len0 n
@@ -1802,7 +1156,6 @@ static void athFiclFileDump(ficlVm *vm)
 static void athMs(ficlVm * vm) {
     int             ms;
     int i;
-    int status;
 #ifdef LINUX
     struct timespec tim,tim2;
 #endif
@@ -1821,11 +1174,6 @@ static void athMs(ficlVm * vm) {
 #endif
     }
 }
-
-
-#if (defined(LINUX) && defined(GPIO))
-#warning "... GPIO ..."
-#endif
 
 static void athSleep(ficlVm *vm)
 {
@@ -2481,34 +1829,16 @@ static void athSH4AQ(ficlVm *vm) {
 /*
    Return the hostname at pad, and the length on the stack.
    */
-// #ifndef ARM
 static void athHostname(ficlVm * vm) {
     int             n;
 #ifndef EMBEDDED
     struct utsname  buf;
     int             res;
-    int             len;
-    char           *dest;
     char *tmp;
-
-    /*
-       len = ficlStackPopInteger(vm->dataStack);
-       dest = ficlStackPopPointer(vm->dataStack);
-       */
 
     res = uname(&buf);
 
     tmp = (char *)strtok(buf.nodename,".");
-
-    /*
-       if (len >= strlen(buf.nodename))
-       {
-       n = strlen(buf.nodename);
-       } else
-       {
-       n = len;
-       }
-       */
 
     n = strlen(buf.nodename);
     //	strncpy((char *) dest, (char *) buf.nodename, (size_t) n);
@@ -2518,7 +1848,6 @@ static void athHostname(ficlVm * vm) {
 #endif
     ficlStackPushInteger(vm->dataStack, n);
 }
-// #endif
 
 #if FICL_WANT_FILE
 
@@ -2593,9 +1922,9 @@ void ficlSystemCompileExtras(ficlSystem * system) {
     ficlDictionarySetPrimitive(dictionary, "pclose", athPcloseRWE, FICL_WORD_DEFAULT);
 #endif
 
-    //    ficlDictionarySetPrimitive(dictionary, (char *)"load", ficlPrimitiveLoad, FICL_WORD_DEFAULT);
-    //    ficlDictionarySetPrimitive(dictionary, (char *)"$load", ficlDollarPrimitiveLoad, FICL_WORD_DEFAULT);
-    //    ficlDictionarySetPrimitive(dictionary, (char *)"$load-dir", ficlDollarPrimitiveLoadDir, FICL_WORD_DEFAULT);
+    ficlDictionarySetPrimitive(dictionary, (char *)"load", ficlPrimitiveLoad, FICL_WORD_DEFAULT);
+    ficlDictionarySetPrimitive(dictionary, (char *)"$load", ficlDollarPrimitiveLoad, FICL_WORD_DEFAULT);
+    ficlDictionarySetPrimitive(dictionary, (char *)"$load-dir", ficlDollarPrimitiveLoadDir, FICL_WORD_DEFAULT);
 
     ficlDictionarySetPrimitive(dictionary, (char *)"spewhash", ficlPrimitiveSpewHash, FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, (char *)"system", ficlPrimitiveSystem, FICL_WORD_DEFAULT);
@@ -2662,27 +1991,12 @@ void ficlSystemCompileExtras(ficlSystem * system) {
 
     ficlDictionarySetPrimitive(dictionary, (char *)"cpu", athCpu, FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, (char *)"hostname", athHostname, FICL_WORD_DEFAULT);
-    //    #endif
-#ifdef DYNLIB
-    ficlDictionarySetPrimitive(dictionary, "dlopen", athDlOpen, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, "dlclose", athDlClose, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, "dlsym", athDlSym, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, "dlerror", athDlError, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, "dlexec", athDlExec, FICL_WORD_DEFAULT);
-#endif
 
 #ifdef DB
     ficlDictionarySetPrimitive(dictionary, "sqlite-open", athSqliteOpen, FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, "sqlite-compile", athSqliteCompile, FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, "sqlite-fetch", athSqliteFetch, FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, "sqlite-final", athSqliteFinal, FICL_WORD_DEFAULT);
-#endif
-
-#if defined(SYSV_IPC)
-    ficlDictionarySetPrimitive(dictionary, (char *)"openqueue", athOpenQueue, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, (char *)"closequeue", athRmQueue, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, (char *)"msg-send", athMsgSend, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, (char *)"msg-recv", athMsgRecv, FICL_WORD_DEFAULT);
 #endif
     /*
 #ifdef LIST
@@ -2731,16 +2045,6 @@ ficlDictionarySetPrimitive(dictionary, "list-display", athListDisplay, FICL_WORD
     ficlDictionarySetPrimitive(dictionary, (char *)"fcntl", athFcntl, FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, (char *)"seal", athSeal, FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, (char *)"unseal", athUnseal, FICL_WORD_DEFAULT);
-
-#ifdef SPREAD
-    //    ficlDictionarySetPrimitive(dictionary, "test", athTest, FICL_WORD_DEFAULT); 
-    ficlDictionarySetPrimitive(dictionary, (char *)"sp-connect", athSPConnect, FICL_WORD_DEFAULT);   
-    ficlDictionarySetPrimitive(dictionary, (char *)"sp-join", athSPJoin, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, (char *)"sp-leave", athSPLeave, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, (char *)"sp-send", athSPSend, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, (char *)"sp-recv", athSPRecv, FICL_WORD_DEFAULT);
-    ficlDictionarySetPrimitive(dictionary, (char *)"sp-poll", athSPPoll, FICL_WORD_DEFAULT);
-#endif
 
 #ifndef FICL_ANSI
     ficlDictionarySetPrimitive(dictionary, (char *)"clock", ficlPrimitiveClock, FICL_WORD_DEFAULT);

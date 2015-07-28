@@ -17,23 +17,6 @@ void teRecvPost(int mtype, PBMessage_t* msg, void* custom)
 	TransfersEntry *te =(TransfersEntry*)custom;
 }
 
-void teAcceptPressed(Fl_Widget *w)
-{
-	char path[255] = { 0 };
-	TransfersEntry *te =(TransfersEntry*)w->parent();
-	/*Event_t *e =Ev_new();
-
-	snprintf(path, 255, "%s/%s", get_home_folder(), te->transfer->filename);
-	te->transfer->file =fopen(path, "wb");
-
-	e->T =Comm_ResumeTransfer;
-	e->ID =te->transfer->num;
-	e->I1 =te->transfer->contact->num;
-
-	List_add(APP->Comm->WorkQueue, (void*)e);
-	CommWork();*/
-}
-
 void teSaveasPressed(Fl_Widget *w)
 {
 	TransfersEntry *te =(TransfersEntry*)w->parent();

@@ -276,10 +276,8 @@ ficlWord *ficlDictionarySet2ConstantInstruction(ficlDictionary *dictionary, ficl
 	/* only reuse the existing word if we're sure it has space for a 2constant */
     if ((word != NULL) &&
 		((((ficlInstruction)word->code) == ficlInstruction2ConstantParen)
-#if FICL_WANT_FLOAT
 		  ||
 		(((ficlInstruction)word->code) == ficlInstructionF2ConstantParen)
-#endif /* FICL_WANT_FLOAT */
 		)
 		)
     {
@@ -699,12 +697,10 @@ void ficlDictionarySee(ficlDictionary *dictionary, ficlWord *word, ficlCallback 
                 c2 = *++cell;
                 sprintf(trace, "2literal %d %d (%#lx %#lx)", c2.i, c.i, c2.u, c.u);
                 break;
-#if FICL_WANT_FLOAT
             case FICL_WORDKIND_FLITERAL:
                 c = *++cell;
                 sprintf(trace, "fliteral %f (%#lx)", c.f, c.u);
                 break;
-#endif /* FICL_WANT_FLOAT */
             case FICL_WORDKIND_STRING_LITERAL:
                 {
                     ficlCountedString *counted = (ficlCountedString *)(void *)++cell;

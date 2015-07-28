@@ -779,7 +779,6 @@ static void ficlPrimitiveWords(ficlVm *vm)
     {
         pPad[nChars++] = '\n';
         pPad[nChars] = '\0';
-        nChars = 0;
         ficlVmTextOut(vm, pPad);
     }
 
