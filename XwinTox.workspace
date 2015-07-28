@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="XwinTox" Database="">
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
-  <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="xwintox" Path="xwintox/xwintox.project" Active="Yes"/>
+  <Project Name="forthobj" Path="xwintox/forthobj/forthobj.project" Active="No"/>
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="libsunshine" Path="libsunshine/libsunshine.project" Active="No"/>
   <Project Name="gui_fltk" Path="gui_fltk/gui_fltk.project" Active="No"/>
   <Project Name="toxdns3" Path="toxdns3/toxdns3.project" Active="No"/>
-  <Project Name="forthobj" Path="forthobj/forthobj.project" Active="No"/>
+
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Project Name="mcom_tox" ConfigName="Debug"/>

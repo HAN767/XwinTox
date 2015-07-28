@@ -25,11 +25,10 @@ MAIN_DEPENDENCY ${PROJECT_SOURCE_DIR}/softcore/xwintox.4th
 )
 
 include_directories($(PROJECT_SOURCE_DIR))
-add_library(forthobj STATIC FORTHOBJ.cc bit.c callback.c compatibility.c
-			dictionary.c double.c extras.c fileaccess.c float.c hash.c libser.c
+add_library(forthobj STATIC FORTHOBJ.cc bit.c callback.c unix.c utility.c vm.c
+			dictionary.c double.c extras.c fileaccess.c float.c hash.c
 			main.c modFOBJ.cc prefix.c primitives.c search.c stack.c system.c
-			tools.c unix.c utility.c vm.c word.c 
-			${PROJECT_BINARY_DIR}/softcore.c)
+			tools.c word.c ${PROJECT_BINARY_DIR}/softcore.c)
 
 find_library(M_LIB m)
 target_link_libraries(forthobj ${M_LIB})

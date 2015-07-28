@@ -118,7 +118,6 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
 	ficlDictionary *environment;
 
 
-
 	if (fsi == NULL)
 	{
 		fsi = &fauxInfo;
