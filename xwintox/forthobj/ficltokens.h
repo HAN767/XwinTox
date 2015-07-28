@@ -32,11 +32,9 @@ FICL_TOKEN(ficlInstructionNeg13, "-13")
 FICL_TOKEN(ficlInstructionNeg14, "-14")
 FICL_TOKEN(ficlInstructionNeg15, "-15")
 FICL_TOKEN(ficlInstructionNeg16, "-16")
-#if FICL_WANT_FLOAT
 FICL_TOKEN(ficlInstructionF0, "0.0e")
 FICL_TOKEN(ficlInstructionF1, "1.0e")
 FICL_TOKEN(ficlInstructionFNeg1, "-1.0e")
-#endif /* FICL_WANT_FLOAT */
 FICL_INSTRUCTION_TOKEN(ficlInstructionPlus, "+", FICL_WORD_DEFAULT)
 FICL_INSTRUCTION_TOKEN(ficlInstructionMinus, "-", FICL_WORD_DEFAULT)
 FICL_INSTRUCTION_TOKEN(ficlInstruction1Plus, "1+", FICL_WORD_DEFAULT)
@@ -143,11 +141,8 @@ FICL_INSTRUCTION_TOKEN(ficlInstructionSeedRandom,"seed-random",FICL_WORD_DEFAULT
 FICL_INSTRUCTION_TOKEN(ficlInstructionLeave, "leave", FICL_WORD_COMPILE_ONLY)
 FICL_INSTRUCTION_TOKEN(ficlInstructionUnloop, "unloop", FICL_WORD_COMPILE_ONLY)
 
-#if FICL_WANT_USER
 FICL_INSTRUCTION_TOKEN(ficlInstructionUserParen, "(user)", FICL_WORD_DEFAULT)
-#endif /* FICL_WANT_USER */
 
-#if FICL_WANT_LOCALS
 FICL_INSTRUCTION_TOKEN(ficlInstructionLinkParen, "(link)", FICL_WORD_COMPILE_ONLY)
 FICL_INSTRUCTION_TOKEN(ficlInstructionUnlinkParen, "(unlink)", FICL_WORD_COMPILE_ONLY)
 
@@ -164,16 +159,11 @@ FICL_INSTRUCTION_TOKEN(ficlInstructionTo2Local0, "(To2Local0)", FICL_WORD_COMPIL
 FICL_INSTRUCTION_TOKEN(ficlInstructionGetLocal1, "(@local1)", FICL_WORD_COMPILE_ONLY)
 FICL_INSTRUCTION_TOKEN(ficlInstructionToLocal1, "(toLocal1)", FICL_WORD_COMPILE_ONLY)
 
-#if FICL_WANT_FLOAT
 FICL_INSTRUCTION_TOKEN(ficlInstructionGetFLocalParen, "(@fLocal)", FICL_WORD_COMPILE_ONLY)
 FICL_INSTRUCTION_TOKEN(ficlInstructionGetF2LocalParen, "(@f2Local)", FICL_WORD_COMPILE_ONLY)
 FICL_INSTRUCTION_TOKEN(ficlInstructionToFLocalParen, "(toFLocal)", FICL_WORD_COMPILE_ONLY)
 FICL_INSTRUCTION_TOKEN(ficlInstructionToF2LocalParen, "(toF2Local)", FICL_WORD_COMPILE_ONLY)
-#endif /* FICL_WANT_FLOAT */
 
-#endif /* FICL_WANT_LOCALS */
-
-#if FICL_WANT_FLOAT
 FICL_INSTRUCTION_TOKEN(ficlInstructionFLiteralParen, "(fliteral)", FICL_WORD_DEFAULT)
 FICL_INSTRUCTION_TOKEN(ficlInstructionFConstantParen, "(fconstant)", FICL_WORD_DEFAULT)
 FICL_INSTRUCTION_TOKEN(ficlInstructionF2ConstantParen, "(f2constant)", FICL_WORD_DEFAULT)
@@ -222,7 +212,5 @@ FICL_INSTRUCTION_TOKEN(ficlInstructionF0Equals, "f0=", FICL_WORD_DEFAULT)
 FICL_INSTRUCTION_TOKEN(ficlInstructionFEquals, "f=", FICL_WORD_DEFAULT)
 FICL_INSTRUCTION_TOKEN(ficlInstructionF0Greater, "f0>", FICL_WORD_DEFAULT)
 FICL_INSTRUCTION_TOKEN(ficlInstructionFGreater, "f>", FICL_WORD_DEFAULT)
-	
-#endif  /* FICL_WANT_FLOAT */
 
 FICL_TOKEN(ficlInstructionExitInnerLoop, "** exit inner loop **")

@@ -352,7 +352,7 @@ static void athPrimitiveDollarSystem(ficlVm * vm) {
 char           *pathToFile(char *fname) {
     int             i;
     int             fd;
-    extern char    *loadPath;
+    char		    *loadPath =NULL;
     char            path[255];
     char            scr[255];
     char           *scratch;

@@ -6,6 +6,7 @@
 **
 ** Contributed by Larry Hastings, larry@hastings.org
 **/
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -33,8 +34,7 @@ void fprintDataAsHex(FILE *f, char *data, int length)
 
 void fprintDataAsQuotedString(FILE *f, char *data)
 	{
-	int i;
-	int lineIsBlank = FICL_TRUE;
+	int lineIsBlank = (int)FICL_TRUE;
 
 	while (*data)
 		{
@@ -42,7 +42,7 @@ void fprintDataAsQuotedString(FILE *f, char *data)
 			{
 			if (!lineIsBlank)
 				fprintf(f, "\\n\"\n");
-			lineIsBlank = FICL_TRUE;
+			lineIsBlank = (int)FICL_TRUE;
 			}
 		else
 			{
@@ -69,10 +69,8 @@ void fprintDataAsQuotedString(FILE *f, char *data)
 int main(int argc, char *argv[])
 	{
 	char *uncompressed = (char *)malloc(128 * 1024);
-	char *compressed;
 	char *trace = uncompressed;
 	int i;
-	int compressedSize;
 	int uncompressedSize;
 	char *src, *dst;
 	FILE *f;

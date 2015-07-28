@@ -176,20 +176,6 @@ extern "C" {
 #define FICL_WANT_PLATFORM (0)
 #endif /* FICL_WANT_PLATFORM */
 
-
-/*
-** FICL_WANT_COMPATIBILITY
-** Changes Ficl 4 at compile-time so it is source-compatible
-** with the Ficl 3 API.  If you are a new user to Ficl you
-** don't need to worry about this setting; if you are upgrading
-** from a pre-4.0 version of Ficl, see doc/upgrading.html for
-** more information.
-*/
-#if !defined FICL_WANT_COMPATIBILITY
-#define FICL_WANT_COMPATIBILITY (0)
-#endif /* !defined FICL_WANT_COMPATIBILITY */
-
-
 /*
 ** FICL_WANT_FILE
 ** Includes the FILE and FILE-EXT wordset and associated code.
@@ -292,76 +278,12 @@ extern "C" {
 #define FICL_WANT_OPTIMIZE FICL_OPTIMIZE_FOR_SPEED
 #endif /* FICL_WANT_OPTIMIZE */
 
-
-/*
-** FICL_WANT_VCALL
-** Ficl OO support for calling vtable methods.  Win32 only.
-** Contributed by Guy Carver
-*/
-#if !defined (FICL_WANT_VCALL)
-#define FICL_WANT_VCALL (0)
-#endif /* FICL_WANT_VCALL */
-
-
-
 /*
 ** P L A T F O R M   S E T T I N G S
 **
 ** The FICL_PLATFORM_* settings.
 ** These indicate attributes about the local platform.
 */
-
-
-/*
-** FICL_PLATFORM_OS
-** String constant describing the current hardware architecture.
-*/
-#if !defined (FICL_PLATFORM_ARCHITECTURE)
-#define FICL_PLATFORM_ARCHITECTURE    "unknown"
-#endif
-
-/*
-** FICL_PLATFORM_OS
-** String constant describing the current operating system.
-*/
-#if !defined (FICL_PLATFORM_OS)
-#define FICL_PLATFORM_OS              "unknown"
-#endif
-
-/*
-** FICL_PLATFORM_HAS_2INTEGER
-** Indicates whether or not the current architecture
-** supports a native double-width integer type.
-** If you set this to 1 in your ficlplatform/ *.h file,
-** you *must* create typedefs for the following two types:
-**        ficl2Unsigned
-**        ficl2Integer
-** If this is set to 0, Ficl will implement double-width
-** integer math in C, which is both bigger *and* slower
-** (the double whammy!).  Make sure your compiler really
-** genuinely doesn't support native double-width integers
-** before setting this to 0.
-*/
-#if !defined (FICL_PLATFORM_HAS_2INTEGER)
-#define FICL_PLATFORM_HAS_2INTEGER    (0)
-#endif
-
-/*
-** FICL_PLATFORM_HAS_FTRUNCATE
-** Indicates whether or not the current platform provides
-** the ftruncate() function (available on most UNIXes).
-** This function is necessary to provide the complete
-** File-Access wordset.
-**
-** If your platform does not have ftruncate() per se,
-** but does have some method of truncating files, you
-** should be able to implement ftruncate() yourself and
-** set this constant to 1.  For an example of this see
-** "ficlplatform/win32.c".
-*/
-#if !defined (FICL_PLATFORM_HAS_FTRUNCATE)
-#define FICL_PLATFORM_HAS_FTRUNCATE (0)
-#endif
 
 
 /*
@@ -410,8 +332,6 @@ typedef float ficlFloat;
 #endif /* !defined(FICL_PLATFORM_BASIC_TYPES) */
 
 
-
-
 /*
 ** FICL_ROBUST enables bounds checking of stacks and the dictionary.
 ** This will detect stack over and underflows and dictionary overflows.
@@ -424,8 +344,6 @@ typedef float ficlFloat;
 #if !defined FICL_ROBUST
 #define FICL_ROBUST (2)
 #endif /* FICL_ROBUST */
-
-
 
 /*
 ** FICL_DEFAULT_STACK_SIZE Specifies the default size (in CELLs) of
@@ -459,7 +377,7 @@ typedef float ficlFloat;
 ** (file://dpans16.htm#16.3.3)
 */
 #if !defined FICL_MAX_WORDLISTS
-#define FICL_MAX_WORDLISTS (32)
+#define FICL_MAX_WORDLISTS (64)
 #endif
 
 /*
@@ -502,7 +420,7 @@ typedef float ficlFloat;
 ** performance, use a prime number!
 */
 #if !defined FICL_HASH_SIZE
-	#define FICL_HASH_SIZE (241)
+	#define FICL_HASH_SIZE (937)
 #endif
 
 
@@ -512,8 +430,6 @@ typedef float ficlFloat;
 #if (!defined(FICL_USER_CELLS)) && FICL_WANT_USER
 #define FICL_USER_CELLS (16)
 #endif
-
-
 
 
 
@@ -558,8 +474,6 @@ FICL_PLATFORM_EXTERN void *ficlRealloc(void *p, size_t size);
 
 
 
-
-
 /* 
 ** the Good Stuff starts here...
 */
@@ -584,25 +498,9 @@ FICL_PLATFORM_EXTERN void *ficlRealloc(void *p, size_t size);
 #endif /*  !defined FICL_IGNORE */
 
 
-
-
 #if !defined NULL
 #define NULL ((void *)0)
 #endif
-
-
-/*
-** Jiggery-pokery for the FICL_WANT_COMPATIBILITY compatibility layer.
-** Even if you're not using it, compatibility.c won't compile properly
-** unless FICL_WANT_COMPATIBILITY is turned on.  Hence, we force it to
-** always be turned on.
-*/
-#ifdef FICL_FORCE_COMPATIBILITY
-#undef FICL_WANT_COMPATIBILITY
-#define FICL_WANT_COMPATIBILITY (1)
-#endif /* FICL_FORCE_COMPATIBILITY */
-
-
 
 
 
@@ -719,9 +617,6 @@ FICL_PLATFORM_EXTERN ficl2UnsignedQR  ficl2UnsignedDivide(ficl2Unsigned q, ficlU
 
 
 
-
-
-
 /*
 ** A ficlCell is the main storage type. It must be large enough
 ** to contain a pointer or a scalar. In order to accommodate 
@@ -736,9 +631,7 @@ typedef union ficlCell
 {
     ficlInteger i;
     ficlUnsigned u;
-#if (FICL_WANT_FLOAT)
     ficlFloat f;
-#endif
     void *p;
     void (*fn)(void);
 } ficlCell;
@@ -882,10 +775,8 @@ FICL_PLATFORM_EXTERN void          ficlStackRoll         (ficlStack *stack, int 
 FICL_PLATFORM_EXTERN void          ficlStackSetTop       (ficlStack *stack, ficlCell c);
 FICL_PLATFORM_EXTERN void          ficlStackStore        (ficlStack *stack, int n, ficlCell c);
 
-#if FICL_WANT_LOCALS
 FICL_PLATFORM_EXTERN void          ficlStackLink         (ficlStack *stack, int nCells);
 FICL_PLATFORM_EXTERN void          ficlStackUnlink       (ficlStack *stack);
-#endif /* FICL_WANT_LOCALS */
 
 FICL_PLATFORM_EXTERN void         *ficlStackPopPointer   (ficlStack *stack);
 FICL_PLATFORM_EXTERN ficlUnsigned  ficlStackPopUnsigned  (ficlStack *stack);
@@ -894,10 +785,8 @@ FICL_PLATFORM_EXTERN void          ficlStackPushPointer  (ficlStack *stack, void
 FICL_PLATFORM_EXTERN void          ficlStackPushUnsigned (ficlStack *stack, ficlUnsigned u);
 FICL_PLATFORM_EXTERN void          ficlStackPushInteger  (ficlStack *stack, ficlInteger i);
 
-#if (FICL_WANT_FLOAT)
 FICL_PLATFORM_EXTERN ficlFloat     ficlStackPopFloat     (ficlStack *stack);
 FICL_PLATFORM_EXTERN void          ficlStackPushFloat    (ficlStack *stack, ficlFloat f);
-#endif
 
 FICL_PLATFORM_EXTERN void          ficlStackPush2Integer (ficlStack *stack, ficl2Integer i64);
 FICL_PLATFORM_EXTERN ficl2Integer  ficlStackPop2Integer  (ficlStack *stack);
@@ -945,14 +834,6 @@ FICL_PLATFORM_EXTERN void ficlCallbackTextOut(ficlCallback *callback, char *text
 FICL_PLATFORM_EXTERN void ficlCallbackErrorOut(ficlCallback *callback, char *text);
 
 /*
-** For backwards compatibility.
-*/
-typedef void (*ficlCompatibilityOutputFunction)(ficlVm *vm, char *text, int newline);
-FICL_PLATFORM_EXTERN void ficlCompatibilityTextOutCallback(ficlCallback *callback, char *text, ficlCompatibilityOutputFunction oldFunction);
-
-
-
-/*
 ** Starting with Ficl 4.0, Ficl uses a "switch-threaded" inner loop,
 ** where each primitive word is represented with a numeric constant,
 ** and words are (more or less) arrays of these constants.  In Ficl
@@ -986,10 +867,6 @@ typedef enum
 	#endif
 } ficlInstruction;
 
-#ifndef __cplusplus
-//typedef intptr_t ficlInstruction;
-#endif
-
 /* 
 ** The virtual machine (VM) contains the state for one interpreter.
 ** Defined operations include:
@@ -1019,18 +896,11 @@ struct ficlVm
 #endif
     ficlStack     *dataStack;
     ficlStack     *returnStack;     /* return stack                     */
-#if FICL_WANT_FLOAT
     ficlStack     *floatStack;     /* float stack (optional)           */
-#endif
     ficlCell       sourceId;   /* -1 if EVALUATE, 0 if normal input, >0 if a file */
     ficlTIB        tib;        /* address of incoming text string  */
-#if FICL_WANT_USER
     ficlCell       user[FICL_USER_CELLS];
-#endif
     char           pad[FICL_PAD_SIZE];  /* the scratch area (see above)     */
-#if FICL_WANT_COMPATIBILITY
-    ficlCompatibilityOutputFunction thunkedTextout;
-#endif /* FICL_WANT_COMPATIBILITY */
 };
 
 
@@ -1093,9 +963,7 @@ FICL_PLATFORM_EXTERN void        ficlVmErrorOut     (ficlVm *vm, char *text);
 FICL_PLATFORM_EXTERN void ficlVmDisplayDataStack(ficlVm *vm);
 FICL_PLATFORM_EXTERN void ficlVmDisplayDataStackSimple(ficlVm *vm);
 FICL_PLATFORM_EXTERN void ficlVmDisplayReturnStack(ficlVm *vm);
-#if FICL_WANT_FLOAT
 FICL_PLATFORM_EXTERN void ficlVmDisplayFloatStack(ficlVm *vm);
-#endif /* FICL_WANT_FLOAT */
 
 /*
 ** f i c l E v a l u a t e
@@ -1404,10 +1272,8 @@ FICL_PLATFORM_EXTERN ficlWord   *ficlDictionaryAppendConstant(ficlDictionary *di
 FICL_PLATFORM_EXTERN ficlWord   *ficlDictionaryAppend2Constant(ficlDictionary *dictionary, char *name, ficl2Integer value);
 #define     ficlDictionaryAppendConstantPointer(dictionary, name, pointer) \
 			(ficlDictionaryAppendConstant(dictionary, name, (ficlInteger)pointer))
-#if FICL_WANT_FLOAT
 FICL_PLATFORM_EXTERN ficlWord   *ficlDictionaryAppendFConstant(ficlDictionary *dictionary, char *name, float value);
 FICL_PLATFORM_EXTERN ficlWord   *ficlDictionaryAppendF2Constant(ficlDictionary *dictionary, char *name, double value);
-#endif /* FICL_WANT_FLOAT */
 
 
 FICL_PLATFORM_EXTERN ficlWord   *ficlDictionarySetConstantInstruction(ficlDictionary *dictionary, ficlString name, ficlInstruction instruction, ficlInteger value);
@@ -1426,10 +1292,8 @@ FICL_PLATFORM_EXTERN ficlWord   *ficlDictionarySetInstruction(ficlDictionary *di
                           char *name, 
                           ficlInstruction i,
                           ficlUnsigned8 flags);
-#if FICL_WANT_FLOAT
 FICL_PLATFORM_EXTERN ficlWord   *ficlDictionarySetFConstant(ficlDictionary *dictionary, char *name, float value);
 FICL_PLATFORM_EXTERN ficlWord   *ficlDictionarySetF2Constant(ficlDictionary *dictionary, char *name, double value);
-#endif /* FICL_WANT_FLOAT */
 
 FICL_PLATFORM_EXTERN int              ficlDictionaryCellsAvailable (ficlDictionary *dictionary);
 FICL_PLATFORM_EXTERN int              ficlDictionaryCellsUsed  (ficlDictionary *dictionary);
@@ -1553,18 +1417,13 @@ struct ficlSystem
     ficlWord *exitInnerWord;
     ficlWord *interpretWord;
 
-#if FICL_WANT_LOCALS
     ficlDictionary *locals;
     ficlInteger   localsCount;
     ficlCell *localsFixup;
-#endif
 
     ficlInteger stackSize;
 
     ficlBreakpoint breakpoint;
-#if FICL_WANT_COMPATIBILITY
-    ficlCompatibilityOutputFunction thunkedTextout;
-#endif /* FICL_WANT_COMPATIBILITY */
 };
 
 
@@ -1629,9 +1488,7 @@ FICL_PLATFORM_EXTERN ficlWord *ficlSystemLookup(ficlSystem *system, char *name);
 */
 ficlDictionary *ficlSystemGetDictionary(ficlSystem *system);
 ficlDictionary *ficlSystemGetEnvironment(ficlSystem *system);
-#if FICL_WANT_LOCALS
 ficlDictionary *ficlSystemGetLocals(ficlSystem *system);
-#endif
 
 /* 
 ** f i c l C o m p i l e C o r e
@@ -1644,21 +1501,17 @@ FICL_PLATFORM_EXTERN void       ficlSystemCompileSearch(ficlSystem *system);
 FICL_PLATFORM_EXTERN void       ficlSystemCompileSoftCore(ficlSystem *system);
 FICL_PLATFORM_EXTERN void       ficlSystemCompileTools(ficlSystem *system);
 FICL_PLATFORM_EXTERN void       ficlSystemCompileFile(ficlSystem *system);
-#if FICL_WANT_FLOAT
 FICL_PLATFORM_EXTERN void       ficlSystemCompileFloat(ficlSystem *system);
 FICL_PLATFORM_EXTERN int        ficlVmParseFloatNumber(ficlVm *vm, ficlString s);
-#endif /* FICL_WANT_FLOAT */
 #if FICL_WANT_PLATFORM
 FICL_PLATFORM_EXTERN void       ficlSystemCompilePlatform(ficlSystem *system);
-#endif /* FICL_WANT_PLATFORM */
+#endif
 FICL_PLATFORM_EXTERN void       ficlSystemCompileExtras(ficlSystem *system);
 
 
 FICL_PLATFORM_EXTERN int        ficlVmParsePrefix(ficlVm *vm, ficlString s);
 
-#if FICL_WANT_LOCALS
 FICL_PLATFORM_EXTERN ficlWord  *ficlSystemLookupLocal(ficlSystem *system, ficlString name);
-#endif
 
 /*
 ** from words.c...
@@ -1666,9 +1519,7 @@ FICL_PLATFORM_EXTERN ficlWord  *ficlSystemLookupLocal(ficlSystem *system, ficlSt
 FICL_PLATFORM_EXTERN int        ficlVmParseNumber(ficlVm *vm, ficlString s);
 FICL_PLATFORM_EXTERN void       ficlPrimitiveTick(ficlVm *vm);
 FICL_PLATFORM_EXTERN void       ficlPrimitiveParseStepParen(ficlVm *vm);
-#if FICL_WANT_LOCALS
 FICL_PLATFORM_EXTERN void       ficlLocalParen(ficlVm *vm, int isDouble, int isFloat);
-#endif /* FICL_WANT_LOCALS */
 
 
 /*
@@ -1701,9 +1552,7 @@ typedef enum
     FICL_WORDKIND_DOES, 
     FICL_WORDKIND_LITERAL,
     FICL_WORDKIND_2LITERAL,
-#if FICL_WANT_FLOAT
     FICL_WORDKIND_FLITERAL,
-#endif /* FICL_WANT_FLOAT */
     FICL_WORDKIND_LOOP,
     FICL_WORDKIND_OF,
     FICL_WORDKIND_PLOOP,
@@ -1711,9 +1560,7 @@ typedef enum
     FICL_WORDKIND_QDO,
     FICL_WORDKIND_STRING_LITERAL,
     FICL_WORDKIND_CSTRING_LITERAL,
-#if FICL_WANT_USER
     FICL_WORDKIND_USER,
-#endif
     FICL_WORDKIND_VARIABLE,
     FICL_WORDKIND_INSTRUCTION,
     FICL_WORDKIND_INSTRUCTION_WORD,
@@ -1750,62 +1597,6 @@ FICL_PLATFORM_EXTERN int ficlFileTruncate(ficlFile *ff, ficlUnsigned size);
 
 FICL_PLATFORM_EXTERN int ficlFileStatus(char *filename, int *status);
 FICL_PLATFORM_EXTERN long ficlFileSize(ficlFile *ff);
-
-
-/*
-** Used with compressed softcore.
-**
-*/
-
-#ifndef FICL_BIT_NUMBER
-#define FICL_BIT_NUMBER(x)              (1 << (x))
-#endif /* FICL_BIT_NUMBER */
-
-#ifndef FICL_BIT_SET
-#define FICL_BIT_SET(value, flag)       ((value) |= (flag))
-#endif /* FICL_BIT_SET */
-
-#ifndef FICL_BIT_CLEAR
-#define FICL_BIT_CLEAR(value, flag)     ((value) &= ~(flag))
-#endif /* FICL_BIT_CLEAR */
-
-#ifndef FICL_BIT_CHECK
-#define FICL_BIT_CHECK(value, flag)     ((value) & (flag))
-#endif /* FICL_BIT_CHECK */
-
-
-#define FICL_LZ_TYPE_BITS       (1)
-#define FICL_LZ_OFFSET_BITS     (12)
-#define FICL_LZ_LENGTH_BITS     (5)
-#define FICL_LZ_NEXT_BITS       (8)
-#define FICL_LZ_PHRASE_BITS     (FICL_LZ_TYPE_BITS + FICL_LZ_OFFSET_BITS + FICL_LZ_LENGTH_BITS + FICL_LZ_NEXT_BITS)
-#define FICL_LZ_SYMBOL_BITS     (FICL_LZ_TYPE_BITS + FICL_LZ_NEXT_BITS)
-
-/*
-** if you match fewer characters than this, don't bother,
-** it's smaller to encode it as a sequence of symbol tokens.
-**/
-#define FICL_LZ_MINIMUM_USEFUL_MATCH ((int)(FICL_LZ_PHRASE_BITS / FICL_LZ_SYMBOL_BITS))
-
-#define FICL_LZ_WINDOW_SIZE	(FICL_BIT_NUMBER(FICL_LZ_OFFSET_BITS))
-#define FICL_LZ_BUFFER_SIZE	(FICL_BIT_NUMBER(FICL_LZ_LENGTH_BITS) + FICL_LZ_MINIMUM_USEFUL_MATCH)
-
-FICL_PLATFORM_EXTERN int ficlBitGet(const unsigned char *bits, size_t index);
-FICL_PLATFORM_EXTERN void ficlBitSet(unsigned char *bits, size_t size_t, int value);
-FICL_PLATFORM_EXTERN void ficlBitGetString(unsigned char *destination, const unsigned char *source, int offset, int count, int destAlignment);
-
-FICL_PLATFORM_EXTERN ficlUnsigned16 ficlNetworkUnsigned16(ficlUnsigned16 number);
-FICL_PLATFORM_EXTERN ficlUnsigned32 ficlNetworkUnsigned32(ficlUnsigned32 number);
-
-#define FICL_MIN(a, b)  (((a) < (b)) ? (a) : (b))
-FICL_PLATFORM_EXTERN int ficlLzCompress(const unsigned char *uncompressed, size_t uncompressedSize, unsigned char **compressed, size_t *compressedSize);
-FICL_PLATFORM_EXTERN int ficlLzUncompress(const unsigned char *compressed, unsigned char **uncompressed, size_t *uncompressedSize);
-
-
-
-#if FICL_WANT_COMPATIBILITY
-	#include "ficlcompatibility.h"
-#endif /* FICL_WANT_COMPATIBILITY */
 
 
 #ifdef __cplusplus
