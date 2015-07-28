@@ -138,4 +138,6 @@
     <File Name="softcore/string.fr"/>
     <File Name="softcore/xwintox.4th"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

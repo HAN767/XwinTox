@@ -109,4 +109,8 @@
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
+  <VirtualDirectory Name="toxdns3">
+    <File Name="toxdns3/TOXDNS3.h"/>
+    <File Name="toxdns3/TOXDNS3.cc"/>
+  </VirtualDirectory>
 </CodeLite_Project>

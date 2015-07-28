@@ -12,7 +12,7 @@ TEMPLATE_mcom_tox_CXXFLAGS	= $(TOX_CFLAGS)
 TEMPLATE_mcom_tox_LDFLAGS		= $(TOX_LDFLAGS)
 
 mcom_tox_TEMPLATE = mcom_tox
-mcom_tox_SOURCES = modMCT.cc MCOMMTOX.cc MCT_CB.cc MCT_SIG.cc
+mcom_tox_SOURCES = modMCT.cc MCOMMTOX.cc MCT_CB.cc MCT_SIG.cc toxdns3/TOXDNS3.cc
 mcom_tox_INCS = $(PATH_ROOT)/libsunshine/hdr \
 		$(PATH_ROOT)/xwintox/hdr \
 		hdr \
