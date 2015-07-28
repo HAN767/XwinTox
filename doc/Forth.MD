@@ -5,7 +5,7 @@ XwinTox provides a comprehensive Forth plugin interface.
 
 An example of its use is below:
 
-```
+```forth
 object subclass c-SignalHandler
 	c-PBMessage obj: .PBMessage
 
