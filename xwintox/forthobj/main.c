@@ -60,7 +60,7 @@ char *loadPath;
 
 extern int verbose;
 
-int main(int argc, char **argv) {
+int formerMain(int argc, char **argv) {
     int returnValue = 0;
     char buffer[256];
     ficlVm *vm;

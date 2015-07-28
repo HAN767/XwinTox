@@ -51,6 +51,7 @@ void ModuleManager_shutdown();
 /* This loads a module that exists as a dynamically linked library. It returns
  * -1 for failure. */
 int ModuleManager_loadDynamicModule(const char *pszPath);
+int ModuleManager_loadStaticModule(XWF_Init_f fnInit);
 /* Creates an object of type pszType. Returns null if no module includes a class
  * for such an object. */
 XWF_Object_Handle_t *ModuleManager_createObject(const char *pszType);

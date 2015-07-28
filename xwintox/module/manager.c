@@ -97,6 +97,24 @@ error:
 	return -1;
 }
 
+int ModuleManager_loadStaticModule(XWF_Init_f fnInit)
+{
+	/* Naturally we need a new XWF_Module_t. */
+	XWF_Module_t *pmodNew =malloc(sizeof(XWF_Module_t));
+
+	pmodNew->enModtype =XWF_Static;
+
+	/* Let's try to initialise the module now. */
+	if(ModuleManager_initialiseModule_(pmodNew, fnInit) != 0) goto error;
+
+	return 0;
+
+error:
+	dbg("Not loading static module due to error.\n");
+	free(pmodNew);
+	return -1;
+}
+
 XWF_Object_Handle_t *ModuleManager_createObject(const char *p_pszType)
 {
 	XWF_ObjectParams_t obpParams;

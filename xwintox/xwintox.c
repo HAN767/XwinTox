@@ -6,6 +6,8 @@
 
 #include "Module/Module.h"
 #include "AOM/IXWClass.h"
+#include "luaobj/modLOBJ.h"
+#include "forthobj/modFOBJ.h"
 #include "module/manager.h"
 #include "xwt.h"
 
@@ -79,6 +81,8 @@ int main(int argc, char *argv[])
 	default_config(App.dictConfig);
 
 	ModuleManager_init(AppCall);
+	ModuleManager_loadStaticModule(FOBJ_init);
+	ModuleManager_loadStaticModule(LOBJ_init);
 
 	while((c = getopt(argc, argv, "m:-")) != -1)
 	{

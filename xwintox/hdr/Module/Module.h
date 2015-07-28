@@ -20,12 +20,13 @@ typedef enum XWF_Lang
 	XWF_Lang_C,
 	XWF_Lang_CXX,
 	XWF_Lang_Forth,
+	XWF_Lang_Lua,
 	XWF_Lang_Script,
 }
 XWF_Lang_e;
 
-static const char* XWF_Lang_Text_sz[4] =
-{ "C-language", "C++-language", "XwinTox Objective-Forth", "Script-language" };
+static const char* XWF_Lang_Text_sz[5] =
+{ "C-language", "C++-language", "XwinTox Objective-Forth", "Lua", "Script" };
 
 typedef enum XWF_Modtype
 {

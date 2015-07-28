@@ -1,5 +1,5 @@
-#ifndef __GUIFLTK__H
-#define __GUIFLTK__H
+#ifndef __FORTHOBJ__H
+#define __FORTHOBJ__H
 
 #include <threads.h>
 

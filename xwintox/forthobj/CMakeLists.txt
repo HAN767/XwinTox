@@ -24,14 +24,13 @@ DEPENDS mksoftcore
 MAIN_DEPENDENCY ${PROJECT_SOURCE_DIR}/softcore/xwintox.4th
 )
 
-file(GLOB SRC_FILES "*.c" "*.cc")
-file(GLOB H_FILES "*.h")
 include_directories($(PROJECT_SOURCE_DIR))
-add_library(forthobj SHARED ${SRC_FILES} ${PROJECT_BINARY_DIR}/softcore.c)
+add_library(forthobj STATIC FORTHOBJ.cc bit.c callback.c compatibility.c
+			dictionary.c double.c extras.c fileaccess.c float.c hash.c libser.c
+			main.c modFOBJ.cc prefix.c primitives.c search.c stack.c system.c
+			tools.c unix.c utility.c vm.c word.c 
+			${PROJECT_BINARY_DIR}/softcore.c)
 
 find_library(M_LIB m)
 target_link_libraries(forthobj ${M_LIB})
 set_target_properties(forthobj PROPERTIES PREFIX "")
-
-install(TARGETS forthobj LIBRARY DESTINATION lib)
-install(FILES ${H_FILES} DESTINATION include)

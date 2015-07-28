@@ -7,17 +7,17 @@
 std::vector<FORTHOBJ*> instances;
 ficlSystem *globalSystem;
 
-extern "C" int XWF_exit()
+extern "C" int FOBJ_exit()
 {
 	return 0;
 }
 
-extern "C" int XWF_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServices)
+extern "C" int FOBJ_init(XWF_Module_t *pmodSelf, const XWF_Services_t *psrvServices)
 {
 	XWF_Class_t *objMCOM =new XWF_Class_t;
 
 	pmodSelf->pszName ="Forth VM for XwinTox";
-	pmodSelf->fnExit =XWF_exit;
+	pmodSelf->fnExit =FOBJ_exit;
 
 	objMCOM->pszType ="FORTHVM";
 	objMCOM->pszSubtype ="DYN";
