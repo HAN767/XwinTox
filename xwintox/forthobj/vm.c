@@ -1,10 +1,3 @@
-/*******************************************************************
-** v m . c
-** Forth Inspired Command Language - virtual machine methods
-** Author: John Sadler (john_sadler@alum.mit.edu)
-** Created: 19 July 1997
-** $Id: vm.c,v 1.17 2010/09/13 18:43:04 asau Exp $
-*******************************************************************/
 /*
 ** This file implements the virtual machine of Ficl. Each virtual
 ** machine retains the state of an interpreter. A virtual machine
@@ -96,11 +89,9 @@ ficlVm *ficlVmCreate(ficlVm *vm, unsigned nPStack, unsigned nRStack)
         ficlStackDestroy(vm->returnStack);
     vm->returnStack = ficlStackCreate(vm, "return", nRStack);
 
-#if FICL_WANT_FLOAT
     if (vm->floatStack)
         ficlStackDestroy(vm->floatStack);
     vm->floatStack = ficlStackCreate(vm, "float", nPStack);
-#endif
 
 	vm->sealed =-1;
 
@@ -120,9 +111,7 @@ void ficlVmDestroy(ficlVm *vm)
     {
         ficlFree(vm->dataStack);
         ficlFree(vm->returnStack);
-#if FICL_WANT_FLOAT
         ficlFree(vm->floatStack);
-#endif
         ficlFree(vm);
     }
 
@@ -189,11 +178,6 @@ RUNTIME_FIXUP:
 **************************************************************************/
 
 
-#if FICL_ROBUST <= 1
-	/* turn off stack checking for primitives */
-	#define _CHECK_STACK(stack, top, pop, push)
-#else
-
 #define _CHECK_STACK(stack, top, pop, push)	\
 	ficlStackCheckNospill(stack, top, pop, push)
 
@@ -211,33 +195,20 @@ RUNTIME_FIXUP:
 	stack->top = oldTop;
 }
 
-#endif /* FICL_ROBUST <= 1 */
-
 #define CHECK_STACK(pop, push)         _CHECK_STACK(vm->dataStack, dataTop, pop, push)
 #define CHECK_FLOAT_STACK(pop, push)   _CHECK_STACK(vm->floatStack, floatTop, pop, push)
 #define CHECK_RETURN_STACK(pop, push)  _CHECK_STACK(vm->returnStack, returnTop, pop, push)
 
-
-#if FICL_WANT_FLOAT
 	#define FLOAT_LOCAL_VARIABLE_SPILL	\
 		vm->floatStack->top = floatTop;
 	#define FLOAT_LOCAL_VARIABLE_REFILL	\
 		floatTop = vm->floatStack->top;
-#else
-	#define FLOAT_LOCAL_VARIABLE_SPILL
-	#define FLOAT_LOCAL_VARIABLE_REFILL
-#endif  /* FICL_WANT_FLOAT */
 
 
-#if FICL_WANT_LOCALS
 	#define LOCALS_LOCAL_VARIABLE_SPILL	\
 		vm->returnStack->frame = frame;
 	#define LOCALS_LOCAL_VARIABLE_REFILL \
 		frame = vm->returnStack->frame;
-#else
-	#define LOCALS_LOCAL_VARIABLE_SPILL
-	#define LOCALS_LOCAL_VARIABLE_REFILL
-#endif  /* FICL_WANT_FLOAT */
 
 
 #define LOCAL_VARIABLE_SPILL	\
@@ -260,13 +231,9 @@ void ficlVmInnerLoop(ficlVm *vm, ficlWord *fw)
 	register ficlInstruction *ip;
 	register ficlCell *dataTop;
 	register ficlCell *returnTop;
-#if FICL_WANT_FLOAT
 	register ficlCell *floatTop;
 	ficlFloat f;
-#endif  /* FICL_WANT_FLOAT */
-#if FICL_WANT_LOCALS
 	register ficlCell *frame;
-#endif  /* FICL_WANT_LOCALS */
     jmp_buf   *oldExceptionHandler;
     jmp_buf    exceptionHandler;
     int        except;
@@ -400,74 +367,10 @@ AGAIN:
 				continue;
 			}
 
-			
-#if FICL_WANT_OPTIMIZE == FICL_OPTIMIZE_FOR_SIZE
-	#if FICL_WANT_FLOAT
-		FLOAT_PUSH_CELL_POINTER_DOUBLE_MINIPROC:
-			*++floatTop = cell[1];
-			/* intentional fall-through */
-		FLOAT_PUSH_CELL_POINTER_MINIPROC:
-			*++floatTop = cell[0];
-			continue;
-
-		FLOAT_POP_CELL_POINTER_MINIPROC:
-			cell[0] = *floatTop--;
-			continue;
-		FLOAT_POP_CELL_POINTER_DOUBLE_MINIPROC:
-			cell[0] = *floatTop--;
-			cell[1] = *floatTop--;
-			continue;
-
-		#define FLOAT_PUSH_CELL_POINTER_DOUBLE(cp) cell = (cp); goto FLOAT_PUSH_CELL_POINTER_DOUBLE_MINIPROC
-		#define FLOAT_PUSH_CELL_POINTER(cp)        cell = (cp); goto FLOAT_PUSH_CELL_POINTER_MINIPROC
-		#define FLOAT_POP_CELL_POINTER_DOUBLE(cp)  cell = (cp); goto FLOAT_POP_CELL_POINTER_DOUBLE_MINIPROC
-		#define FLOAT_POP_CELL_POINTER(cp)         cell = (cp); goto FLOAT_POP_CELL_POINTER_MINIPROC
-	#endif /* FICL_WANT_FLOAT */
-
-		/*
-		** Think of these as little mini-procedures.
-		** --lch
-		*/
-		PUSH_CELL_POINTER_DOUBLE_MINIPROC:
-			*++dataTop = cell[1];
-			/* intentional fall-through */
-		PUSH_CELL_POINTER_MINIPROC:
-			*++dataTop = cell[0];
-			continue;
-
-		POP_CELL_POINTER_MINIPROC:
-			cell[0] = *dataTop--;
-			continue;
-		POP_CELL_POINTER_DOUBLE_MINIPROC:
-			cell[0] = *dataTop--;
-			cell[1] = *dataTop--;
-			continue;
-
-		#define PUSH_CELL_POINTER_DOUBLE(cp) cell = (cp); goto PUSH_CELL_POINTER_DOUBLE_MINIPROC
-		#define PUSH_CELL_POINTER(cp)        cell = (cp); goto PUSH_CELL_POINTER_MINIPROC
-		#define POP_CELL_POINTER_DOUBLE(cp)  cell = (cp); goto POP_CELL_POINTER_DOUBLE_MINIPROC
-		#define POP_CELL_POINTER(cp)         cell = (cp); goto POP_CELL_POINTER_MINIPROC
-
-		BRANCH_MINIPROC:
-			ip += *(int *)ip;
-			continue;
-
-		#define BRANCH()         goto BRANCH_MINIPROC
-
-		EXIT_FUNCTION_MINIPROC:
-		    ip = (ficlInstruction *)((returnTop--)->p);
-			continue;
-
-		#define EXIT_FUNCTION    goto EXIT_FUNCTION_MINIPROC
-
-#else /* FICL_WANT_SIZE */
-
-	#if FICL_WANT_FLOAT
 		#define FLOAT_PUSH_CELL_POINTER_DOUBLE(cp) cell = (cp); *++floatTop = cell[1]; *++floatTop = *cell; continue
 		#define FLOAT_PUSH_CELL_POINTER(cp)        cell = (cp); *++floatTop = *cell; continue
 		#define FLOAT_POP_CELL_POINTER_DOUBLE(cp)  cell = (cp); *cell = *floatTop--; cell[1] = *floatTop--; continue
 		#define FLOAT_POP_CELL_POINTER(cp)         cell = (cp); *cell = *floatTop--; continue
-	#endif /* FICL_WANT_FLOAT */
 
 		#define PUSH_CELL_POINTER_DOUBLE(cp) cell = (cp); *++dataTop = cell[1]; *++dataTop = *cell; continue
 		#define PUSH_CELL_POINTER(cp)        cell = (cp); *++dataTop = *cell; continue
@@ -476,9 +379,6 @@ AGAIN:
 
 		#define BRANCH()         ip += *(ficlInteger *)ip; continue
 		#define EXIT_FUNCTION()  ip = (ficlInstruction *)((returnTop--)->p); continue
-
-#endif /* FICL_WANT_SIZE */
-
 
 			/**************************************************************************
 			** This is the runtime for (literal). It assumes that it is part of a colon
@@ -503,7 +403,6 @@ AGAIN:
 			}
 
 
-#if FICL_WANT_LOCALS
 			/**************************************************************************
 			** Link a frame on the return stack, reserving nCells of space for
 			** locals - the value of nCells is the next ficlCell in the instruction
@@ -540,7 +439,6 @@ AGAIN:
 			** code to fetch the value of a local given the local's index in the
 			** word's pfa
 			**************************************************************************/
-#if FICL_WANT_FLOAT
 			case ficlInstructionGetF2LocalParen:
 				FLOAT_PUSH_CELL_POINTER_DOUBLE(frame + *ip++);
 
@@ -552,7 +450,6 @@ AGAIN:
 
 			case ficlInstructionToFLocalParen:
 				FLOAT_POP_CELL_POINTER(frame + *ip++);
-#endif /* FICL_WANT_FLOAT */
 
 			case ficlInstructionGet2LocalParen:
 				PUSH_CELL_POINTER_DOUBLE(frame + *ip++);
@@ -593,8 +490,6 @@ AGAIN:
 
 			case ficlInstructionTo2Local0:
 				POP_CELL_POINTER_DOUBLE(frame);
-
-#endif /* FICL_WANT_LOCALS */
 
 			case ficlInstructionPlus:
 			{
@@ -1491,7 +1386,6 @@ BRANCH_PAREN:
 				continue;
 			}
 
-#if FICL_WANT_FLOAT
 			case ficlInstructionF2Fetch:
 				CHECK_FLOAT_STACK(0, 2);
 				CHECK_STACK(1, 0);
@@ -1511,8 +1405,6 @@ BRANCH_PAREN:
 				CHECK_FLOAT_STACK(1, 0);
 				CHECK_STACK(1, 0);
 				FLOAT_POP_CELL_POINTER((dataTop--)->p);
-#endif /* FICL_WANT_FLOAT */
-
 			/*
 			** two-fetch CORE ( a-addr -- x1 x2 )
 			**
@@ -1685,9 +1577,6 @@ BRANCH_PAREN:
 				dataTop[0].i = FICL_2UNSIGNED_GET_LOW(qr.quotient);
 				continue;
 			}
-
-
-#if FICL_WANT_FLOAT
 
 			case ficlInstructionF0:
 			{
@@ -2223,9 +2112,6 @@ FMINUSROLL:
 				continue;
 			}
 
-#endif /* FICL_WANT_FLOAT */
-
-
 			/**************************************************************************
 									c o l o n P a r e n
 			** This is the code that executes a colon definition. It assumes that the
@@ -2265,8 +2151,6 @@ FMINUSROLL:
 			**
 			**************************************************************************/
 
-
-#if FICL_WANT_FLOAT
 			case ficlInstructionF2ConstantParen:
 				CHECK_FLOAT_STACK(0, 2);
 				FLOAT_PUSH_CELL_POINTER_DOUBLE(fw->param);
@@ -2274,8 +2158,6 @@ FMINUSROLL:
 			case ficlInstructionFConstantParen:
 				CHECK_FLOAT_STACK(0, 1);
 				FLOAT_PUSH_CELL_POINTER(fw->param);
-#endif /* FICL_WANT_FLOAT */
-
 			case ficlInstruction2ConstantParen:
 				CHECK_STACK(0, 2);
 				PUSH_CELL_POINTER_DOUBLE(fw->param);
@@ -2284,21 +2166,16 @@ FMINUSROLL:
 				CHECK_STACK(0, 1);
 				PUSH_CELL_POINTER(fw->param);
 
-
-#if FICL_WANT_USER
 			case ficlInstructionUserParen:
 			{
 				ficlInteger i = fw->param[0].i;
 				(++dataTop)->p = &vm->user[i];
 				continue;
 			}
-#endif
 
 			default:
 			{
 				/*
-				** Clever hack, or evil coding?  You be the judge.
-				**
 				** If the word we've been asked to execute is in fact
 				** an *instruction*, we grab the instruction, stow it
 				** in "i" (our local cache of *ip), and *jump* to the
@@ -2591,9 +2468,7 @@ void ficlVmReset(ficlVm *vm)
 {
     ficlVmQuit(vm);
     ficlStackReset(vm->dataStack);
-#if FICL_WANT_FLOAT
     ficlStackReset(vm->floatStack);
-#endif
     vm->base        = 10;
     return;
 }
@@ -2752,9 +2627,7 @@ int ficlVmExecuteString(ficlVm *vm, ficlString s)
     case FICL_VM_STATUS_QUIT:
         if (vm->state == FICL_VM_STATE_COMPILE) {
             ficlDictionaryAbortDefinition(dictionary);
-#if FICL_WANT_LOCALS
             ficlDictionaryEmpty(system->locals, system->locals->forthWordlist->size);
-#endif
         }
         ficlVmQuit(vm);
         break;
@@ -2765,9 +2638,7 @@ int ficlVmExecuteString(ficlVm *vm, ficlString s)
     default:    /* user defined exit code?? */
         if (vm->state == FICL_VM_STATE_COMPILE) {
             ficlDictionaryAbortDefinition(dictionary);
-#if FICL_WANT_LOCALS
             ficlDictionaryEmpty(system->locals, system->locals->forthWordlist->size);
-#endif
         }
         /* If sealed do not reset vocab search order */
         if(vm->sealed == 0) {
@@ -2950,11 +2821,10 @@ int ficlVmParseNumber(ficlVm *vm, ficlString s)
 **         0 just do a consistency check
 **************************************************************************/
 void ficlVmDictionarySimpleCheck(ficlVm *vm, ficlDictionary *dictionary, int cells)
-#if FICL_ROBUST >= 1
 {
     if ((cells >= 0) && (ficlDictionaryCellsAvailable(dictionary) * (int)sizeof(ficlCell) < cells))
     {
-        ficlVmThrowError(vm, "Error: dictionary full");
+        ficlVmThrowError(vm, "Error: dictionary full (tried to allocate %d cells", cells);
     }
 
     if ((cells <= 0) && (ficlDictionaryCellsUsed(dictionary) * (int)sizeof(ficlCell) < -cells))
@@ -2964,17 +2834,9 @@ void ficlVmDictionarySimpleCheck(ficlVm *vm, ficlDictionary *dictionary, int cel
 
     return;
 }
-#else /* FICL_ROBUST >= 1 */
-{
-	FICL_IGNORE(vm);
-	FICL_IGNORE(dictionary);
-	FICL_IGNORE(cells);
-}
-#endif /* FICL_ROBUST >= 1 */
 
 
 void ficlVmDictionaryCheck(ficlVm *vm, ficlDictionary *dictionary, int cells)
-#if FICL_ROBUST >= 1
 {
     ficlVmDictionarySimpleCheck(vm, dictionary, cells);
 
@@ -2991,13 +2853,6 @@ void ficlVmDictionaryCheck(ficlVm *vm, ficlDictionary *dictionary, int cells)
 
     return;
 }
-#else /* FICL_ROBUST >= 1 */
-{
-	FICL_IGNORE(vm);
-	FICL_IGNORE(dictionary);
-	FICL_IGNORE(cells);
-}
-#endif /* FICL_ROBUST >= 1 */
 
 
 
@@ -3045,13 +2900,11 @@ int ficlVmParseWord(ficlVm *vm, ficlString name)
     FICL_VM_DICTIONARY_CHECK(vm, dictionary, 0);
     FICL_STACK_CHECK(vm->dataStack, 0, 0);
 
-#if FICL_WANT_LOCALS
     if (vm->callback.system->localsCount > 0)
     {
         tempFW = ficlSystemLookupLocal(vm->callback.system, name);
     }
     else
-#endif
     tempFW = ficlDictionaryLookup(dictionary, name);
 
     if (vm->state == FICL_VM_STATE_INTERPRET)

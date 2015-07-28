@@ -1,4 +1,3 @@
-S" FICL_WANT_LOCALS" ENVIRONMENT? drop [if]
 \ ** ficl/softwords/jhlocal.fr
 \ ** stack comment style local syntax...
 \ { a b c | cleared -- d e }
@@ -166,6 +165,5 @@ set-current
     local-state 3 <> abort" syntax error in { } local line"
 ; immediate compile-only
 
-previous 
-[endif]
+previous
 

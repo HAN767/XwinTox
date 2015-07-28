@@ -57,39 +57,27 @@ IS_INSTRUCTION:
 	switch (i)
 	{
 		case ficlInstructionConstantParen:
-#if FICL_WANT_FLOAT
 		case ficlInstructionFConstantParen:
-#endif /* FICL_WANT_FLOAT */
 			return FICL_WORDKIND_CONSTANT;
 
 		case ficlInstruction2ConstantParen:
-#if FICL_WANT_FLOAT
 		case ficlInstructionF2ConstantParen:
-#endif /* FICL_WANT_FLOAT */
 			return FICL_WORDKIND_2CONSTANT;
 
-#if FICL_WANT_LOCALS
 		case ficlInstructionToLocalParen:
 		case ficlInstructionTo2LocalParen:
-#if FICL_WANT_FLOAT
 		case ficlInstructionToFLocalParen:
 		case ficlInstructionToF2LocalParen:
-#endif /* FICL_WANT_FLOAT */
 			return FICL_WORDKIND_INSTRUCTION_WITH_ARGUMENT;
-#endif /* FICL_WANT_LOCALS */
 
-#if FICL_WANT_USER
 		case ficlInstructionUserParen:
 			return FICL_WORDKIND_USER;
-#endif
 
 		case ficlInstruction2LiteralParen:
 			return FICL_WORDKIND_2LITERAL;
-			
-#if FICL_WANT_FLOAT
+
 		case ficlInstructionFLiteralParen:
 			return FICL_WORDKIND_FLITERAL;
-#endif
 
 		case ficlInstructionCreateParen:
 			return FICL_WORDKIND_CREATE;

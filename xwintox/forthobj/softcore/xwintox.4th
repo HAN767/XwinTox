@@ -20,7 +20,6 @@ also oop definitions
          (exec-instance-method)
 ;
 
-\ the beast itself
 \ binds an instance method to an xt, so whenever the
 \ xt is executed, the object signature ( inst cls ) is
 \ pushed onto the stack, and the method executed

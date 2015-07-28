@@ -1,10 +1,3 @@
-/*******************************************************************
-** s t a c k . c
-** Forth Inspired Command Language
-** Author: John Sadler (john_sadler@alum.mit.edu)
-** Created: 16 Oct 1997
-** $Id: stack.c,v 1.11 2010/08/12 13:57:22 asau Exp $
-*******************************************************************/
 /*
 ** Copyright (c) 1997-2001 John Sadler (john_sadler@alum.mit.edu)
 ** All rights reserved.
@@ -68,7 +61,6 @@
 ** the function throws (via vmThrow) a VM_ERREXIT exception.
 *******************************************************************/
 void ficlStackCheck(ficlStack *stack, int popCells, int pushCells)
-#if FICL_ROBUST >= 1
 {
     int nFree = stack->size - STKDEPTH(stack);
 
@@ -84,13 +76,6 @@ void ficlStackCheck(ficlStack *stack, int popCells, int pushCells)
 
     return;
 }
-#else /* FICL_ROBUST >= 1 */
-{
-	FICL_IGNORE(stack);
-	FICL_IGNORE(popCells);
-	FICL_IGNORE(pushCells);
-}
-#endif /* FICL_ROBUST >= 1 */
 
 /*******************************************************************
                     s t a c k C r e a t e
@@ -179,7 +164,6 @@ ficlCell ficlStackGetTop(ficlStack *stack)
     return stack->top[0];
 }
 
-#if FICL_WANT_LOCALS
 
 /*******************************************************************
                     s t a c k L i n k
@@ -212,7 +196,6 @@ void ficlStackUnlink(ficlStack *stack)
     stack->frame = ficlStackPopPointer(stack);
     return;
 }
-#endif /* FICL_WANT_LOCALS */
 
 
 /*******************************************************************
@@ -270,13 +253,10 @@ ficl2Unsigned ficlStackPop2Unsigned(ficlStack *stack)
     return ret;
 }
 
-
-#if (FICL_WANT_FLOAT)
 ficlFloat ficlStackPopFloat(ficlStack *stack)
 {
     return (*stack->top--).f;
 }
-#endif
 
 
 /*******************************************************************
@@ -317,12 +297,10 @@ void  ficlStackPush2Integer(ficlStack *stack, ficl2Integer di)
     return;
 }
 
-#if (FICL_WANT_FLOAT)
 void ficlStackPushFloat(ficlStack *stack, ficlFloat f)
 {
     *++stack->top = FICL_LVALUE_TO_CELL(f);
 }
-#endif
 
 
 /*******************************************************************

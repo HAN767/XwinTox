@@ -1,10 +1,3 @@
-/*******************************************************************
-** f i c l . c
-** Forth Inspired Command Language - external interface
-** Author: John Sadler (john_sadler@alum.mit.edu)
-** Created: 19 July 1997
-** $Id: system.c,v 1.2 2010/09/10 10:35:54 asau Exp $
-*******************************************************************/
 /*
 ** This is an ANS Forth interpreter written in C.
 ** Ficl uses Forth syntax for its commands, but turns the Forth 
@@ -132,9 +125,7 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
 
     FICL_ASSERT(&callback, sizeof(ficlInteger) >= sizeof(void *));
     FICL_ASSERT(&callback, sizeof(ficlUnsigned) >= sizeof(void *));
-#if (FICL_WANT_FLOAT)
     FICL_ASSERT(&callback, sizeof(ficlFloat) <= sizeof(ficlInteger));
-#endif
 
     system = ficlMalloc(sizeof(ficlSystem));
 
@@ -168,7 +159,6 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
     system->callback.vm = NULL;
     system->stackSize = stackSize;
 
-#if FICL_WANT_LOCALS
     /*
     ** The locals dictionary is only searched while compiling,
     ** but this is where speed is most important. On the other
@@ -177,7 +167,6 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
     ** operation led me to select a single-threaded list...
     */
     system->locals = ficlDictionaryCreate(system, (unsigned)FICL_MAX_LOCALS * FICL_CELLS_PER_WORD);
-#endif /* FICL_WANT_LOCALS */
 
     /*
     ** Build the precompiled dictionary and load softwords. We need a temporary
@@ -187,9 +176,7 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
     ficlSystemCompileCore(system);
     ficlSystemCompilePrefix(system);
 
-#if FICL_WANT_FLOAT
     ficlSystemCompileFloat(system);
-#endif /* FICL_WANT_FLOAT */
 
 #if FICL_WANT_PLATFORM
     ficlSystemCompilePlatform(system);
@@ -205,9 +192,7 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
     ficlSystemAddPrimitiveParseStep(system, "?word", ficlVmParseWord);
     ficlSystemAddPrimitiveParseStep(system, "?prefix", ficlVmParsePrefix);
     ficlSystemAddPrimitiveParseStep(system, "?number", ficlVmParseNumber);
-#if FICL_WANT_FLOAT
     ficlSystemAddPrimitiveParseStep(system, "?float", ficlVmParseFloatNumber);
-#endif
 
     /*
     ** Now create a temporary VM to compile the softwords. Since all VMs are
@@ -220,11 +205,8 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
     ficlSystemCreateVm(system);
 #define ADD_COMPILE_FLAG(name) ficlDictionarySetConstant(environment, #name, name)
 	ADD_COMPILE_FLAG(FICL_WANT_FILE);
-	ADD_COMPILE_FLAG(FICL_WANT_FLOAT);
 	ADD_COMPILE_FLAG(FICL_WANT_DEBUGGER);
 	ADD_COMPILE_FLAG(FICL_WANT_EXTENDED_PREFIX);
-	ADD_COMPILE_FLAG(FICL_WANT_USER);
-	ADD_COMPILE_FLAG(FICL_WANT_LOCALS);
 	ADD_COMPILE_FLAG(FICL_WANT_OOP);
 	ADD_COMPILE_FLAG(FICL_WANT_SOFTWORDS);
 	ADD_COMPILE_FLAG(FICL_WANT_MULTITHREADED);
@@ -238,10 +220,7 @@ ficlSystem *ficlSystemCreate(ficlSystemInformation *fsi)
 	ADD_COMPILE_STRING(FICL_PLATFORM_ARCHITECTURE);
 	ADD_COMPILE_STRING(FICL_PLATFORM_OS);
 
-    /* ATH testing */
-    #if FICL_WANT_SOFTWORDS
     ficlSystemCompileSoftCore(system);
-    #endif
     ficlSystemDestroyVm(system->vmList);
 
 	if (ficlSystemGlobal == NULL)
@@ -267,11 +246,9 @@ void ficlSystemDestroy(ficlSystem *system)
         ficlDictionaryDestroy(system->environment);
     system->environment = NULL;
 
-#if FICL_WANT_LOCALS
     if (system->locals)
         ficlDictionaryDestroy(system->locals);
     system->locals = NULL;
-#endif
 
     while (system->vmList != NULL)
     {
@@ -416,13 +393,10 @@ ficlDictionary *ficlSystemGetEnvironment(ficlSystem *system)
 ** Returns the address of the system locals dictionary. This dictionary is
 ** only used during compilation, and is shared by all VMs.
 **************************************************************************/
-#if FICL_WANT_LOCALS
 ficlDictionary *ficlSystemGetLocals(ficlSystem *system)
 {
     return system->locals;
 }
-#endif
-
 
 
 /**************************************************************************
@@ -430,7 +404,6 @@ ficlDictionary *ficlSystemGetLocals(ficlSystem *system)
 ** Same as dictLookup, but looks in system locals dictionary first...
 ** Assumes locals dictionary has only one wordlist...
 **************************************************************************/
-#if FICL_WANT_LOCALS
 ficlWord *ficlSystemLookupLocal(ficlSystem *system, ficlString name)
 {
     ficlWord *word = NULL;
@@ -461,6 +434,4 @@ ficlWord *ficlSystemLookupLocal(ficlSystem *system, ficlString name)
     ficlDictionaryLock(dictionary, FICL_FALSE);
     return word;
 }
-#endif
-
 

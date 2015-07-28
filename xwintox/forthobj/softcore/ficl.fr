@@ -3,18 +3,12 @@
 \ ** John Sadler (john_sadler@alum.mit.edu)
 \ ** September, 1998
 
-S" FICL_WANT_USER" ENVIRONMENT? drop [if]
 \ ** Ficl USER variables
 \ ** See words.c for primitive def'n of USER
 variable nUser  0 nUser ! 
 : user   \ name ( -- )  
     nUser dup @ user 1 swap +! ; 
 
-[endif]
-
-
-
-S" FICL_WANT_LOCALS" ENVIRONMENT? drop [if]
 
 \ ** LOCAL EXT word set
 
@@ -60,8 +54,6 @@ S" FICL_WANT_LOCALS" ENVIRONMENT? drop [if]
 	locals| b-u b-addr a-u a-addr | end-locals
 	a-addr 0  b-addr b-u  strcat
 	;
-
-[endif]
 
 \ end-of-file
 

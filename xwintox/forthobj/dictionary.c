@@ -1,10 +1,3 @@
-/*******************************************************************
-** d i c t . c
-** Forth Inspired Command Language - dictionary methods
-** Author: John Sadler (john_sadler@alum.mit.edu)
-** Created: 19 July 1997
-** $Id: dictionary.c,v 1.2 2010/09/12 15:14:52 asau Exp $
-*******************************************************************/
 /*
 ** This file implements the dictionary -- Ficl's model of 
 ** memory management. All Ficl words are stored in the

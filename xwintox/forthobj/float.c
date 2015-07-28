@@ -50,8 +50,6 @@
 #include <math.h>
 #include "ficl.h"
 
-#if FICL_WANT_FLOAT
-
 
 /*******************************************************************
 ** Create a floating point constant.
@@ -402,8 +400,6 @@ int ficlVmParseFloatNumber( ficlVm *vm, ficlString s)
 }
 
 
-#if FICL_WANT_LOCALS
-
 static void ficlPrimitiveFLocalParen(ficlVm *vm)
 {
    ficlLocalParen(vm, FICL_FALSE, FICL_TRUE);
@@ -414,17 +410,12 @@ static void ficlPrimitiveF2LocalParen(ficlVm *vm)
    ficlLocalParen(vm, FICL_TRUE, FICL_TRUE);
 }
 
-#endif /* FICL_WANT_LOCALS */
-
-#endif  /* FICL_WANT_FLOAT */
-
 /**************************************************************************
 ** Add float words to a system's dictionary.
 ** system -- Pointer to the Ficl sytem to add float words to.
 **************************************************************************/
 void ficlSystemCompileFloat(ficlSystem *system)
 {
-#if FICL_WANT_FLOAT
     ficlDictionary *dictionary = ficlSystemGetDictionary(system);
     ficlDictionary *environment = ficlSystemGetEnvironment(system);
 
@@ -441,10 +432,8 @@ void ficlSystemCompileFloat(ficlSystem *system)
     ficlDictionarySetPrimitive(dictionary, "f.s",       ficlVmDisplayFloatStack,  FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, "fe.",       ficlPrimitiveEDot,           FICL_WORD_DEFAULT);
 
-#if FICL_WANT_LOCALS
     ficlDictionarySetPrimitive(dictionary, "(flocal)",   ficlPrimitiveFLocalParen,     FICL_WORD_COMPILE_ONLY);
     ficlDictionarySetPrimitive(dictionary, "(f2local)",  ficlPrimitiveF2LocalParen,  FICL_WORD_COMPILE_ONLY);
-#endif /* FICL_WANT_LOCALS */
 
  /* 
     Missing words:
@@ -463,9 +452,5 @@ void ficlSystemCompileFloat(ficlSystem *system)
     ficlDictionarySetConstant(environment, "floating",       FICL_FALSE);  /* not all required words are present */
     ficlDictionarySetConstant(environment, "floating-ext",   FICL_FALSE);
     ficlDictionarySetConstant(environment, "floating-stack", system->stackSize);
-#else /* FICL_WANT_FLOAT */
-	/* get rid of unused parameter warning */
-	system = NULL;
-#endif
     return;
 }

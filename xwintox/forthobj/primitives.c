@@ -1,10 +1,5 @@
 /*******************************************************************
-** w o r d s . c
-** Forth Inspired Command Language
 ** ANS Forth CORE word-set written in C
-** Author: John Sadler (john_sadler@alum.mit.edu)
-** Created: 19 July 1997
-** $Id: primitives.c,v 1.4 2010/09/13 18:43:04 asau Exp $
 *******************************************************************/
 /*
 ** Copyright (c) 1997-2001 John Sadler (john_sadler@alum.mit.edu)
@@ -2451,7 +2446,6 @@ static void ficlPrimitiveColonNoName(ficlVm *vm)
 ** (also in softcore) of "user" that defines a user word and increments
 ** nUser.
 **************************************************************************/
-#if FICL_WANT_USER
 static void ficlPrimitiveUser(ficlVm *vm)
 {
     ficlDictionary *dictionary = ficlVmGetDictionary(vm);
@@ -2468,8 +2462,6 @@ static void ficlPrimitiveUser(ficlVm *vm)
     ficlDictionaryAppendCell(dictionary, c);
     return;
 }
-#endif
-
 
 /*
 ** Each local is recorded in a private locals dictionary as a 
@@ -3343,13 +3335,6 @@ void ficlSystemCompileCore(ficlSystem *system)
     ficlDictionarySetConstant(environment, "max-n",             0x7fffffff);
     ficlDictionarySetConstant(environment, "max-u",             0xffffffff);
 
-
-#ifdef SYSV_IPC
-    ficlDictionarySetConstant(environment, "sysv_ipc",              FICL_TRUE);
-#else
-    ficlDictionarySetConstant(environment, "sysv_ipc",              FICL_FALSE);
-#endif
-
 #ifdef SOCKET
     ficlDictionarySetConstant(environment, "socket",              FICL_TRUE);
 #else
@@ -3451,9 +3436,7 @@ void ficlSystemCompileCore(ficlSystem *system)
     ficlDictionarySetPrimitive(dictionary, "sprintf",   ficlPrimitiveSprintf,    FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, "strlen",    ficlPrimitiveStrlen,     FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, "x.",        ficlPrimitiveHexDot,         FICL_WORD_DEFAULT);
-#if FICL_WANT_USER
     ficlDictionarySetPrimitive(dictionary, "user",      ficlPrimitiveUser,   FICL_WORD_DEFAULT);
-#endif
 
     /*
     ** internal support words

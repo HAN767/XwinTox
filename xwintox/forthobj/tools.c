@@ -62,15 +62,12 @@
 #endif
 #include "ficl.h"
 
-
 static void ficlPrimitiveStepIn(ficlVm *vm);
 static void ficlPrimitiveStepOver(ficlVm *vm);
 static void ficlPrimitiveStepBreak(ficlVm *vm);
 
 
-
 void ficlCallbackAssert(ficlCallback *callback, int expression, char *expressionString, char *filename, int line)
-#if FICL_ROBUST >= 1
 {
 	if (!expression)
 	{
@@ -80,15 +77,6 @@ void ficlCallbackAssert(ficlCallback *callback, int expression, char *expression
 		exit(-1);
 	}
 }
-#else /* FICL_ROBUST >= 1 */
-{
-	FICL_IGNORE(callback);
-	FICL_IGNORE(expression);
-	FICL_IGNORE(expressionString);
-	FICL_IGNORE(filename);
-	FICL_IGNORE(line);
-}
-#endif /* FICL_ROBUST >= 1 */
 
 
 
@@ -138,7 +126,6 @@ static int isPrimitive(ficlWord *word)
 ** addressing scheme (i.e. collisions resolved by searching the
 ** table for an empty slot) for a given size table.
 **************************************************************************/
-#if FICL_WANT_FLOAT
 void ficlPrimitiveHashSummary(ficlVm *vm)
 {
     ficlDictionary *dictionary = ficlVmGetDictionary(vm);
@@ -202,7 +189,6 @@ void ficlPrimitiveHashSummary(ficlVm *vm)
 
     return;
 }
-#endif
 
 /*
 ** Here's the outer part of the decompiler. It's 
@@ -242,12 +228,10 @@ static void ficlPrimitiveSeeXT(ficlVm *vm)
         ficlVmTextOut(vm, vm->pad);
         break;
 
-#if FICL_WANT_USER
     case FICL_WORDKIND_USER:
         sprintf(vm->pad, "user variable %ld (%#lx)\n", word->param->i, word->param->u);
         ficlVmTextOut(vm, vm->pad);
         break;
-#endif
 
     case FICL_WORDKIND_CONSTANT:
         sprintf(vm->pad, "constant = %ld (%#lx)\n", word->param->i, word->param->u);
@@ -918,9 +902,7 @@ void ficlSystemCompileTools(ficlSystem *system)
     ficlDictionarySetPrimitive(dictionary, "forget-wid",ficlPrimitiveForgetWid,      FICL_WORD_DEFAULT);
     ficlDictionarySetPrimitive(dictionary, "see-xt",    ficlPrimitiveSeeXT,          FICL_WORD_DEFAULT);
 
-#if FICL_WANT_FLOAT
     ficlDictionarySetPrimitive(dictionary, ".hash",     ficlPrimitiveHashSummary,FICL_WORD_DEFAULT);
-#endif
 
     return;
 }

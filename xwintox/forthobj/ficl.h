@@ -187,15 +187,6 @@ extern "C" {
 #endif /* FICL_WANT_FILE */
 
 /*
-** FICL_WANT_FLOAT
-** Includes a floating point stack for the VM, and words to do float operations.
-** Contributed by Guy Carver
-*/
-#if !defined (FICL_WANT_FLOAT)
-#define FICL_WANT_FLOAT (1)
-#endif /* FICL_WANT_FLOAT */
-
-/*
 ** FICL_WANT_DEBUGGER
 ** Inludes a simple source level debugger
 */
@@ -213,32 +204,12 @@ extern "C" {
 #endif /* FICL_WANT_EXTENDED_PREFIX */
 
 /*
-** FICL_WANT_USER
-** Enables user variables: per-instance variables bound to the VM.
-** Kind of like thread-local storage. Could be implemented in a 
-** VM private dictionary, but I've chosen the lower overhead
-** approach of an array of CELLs instead.
-*/
-#if !defined FICL_WANT_USER
-#define FICL_WANT_USER (1)
-#endif /* FICL_WANT_USER */
-
-/* 
-** FICL_WANT_LOCALS
-** Controls the creation of the LOCALS wordset
-** and a private dictionary for local variable compilation.
-*/
-#if !defined FICL_WANT_LOCALS
-#define FICL_WANT_LOCALS (1)
-#endif /* FICL_WANT_LOCALS */
-
-/*
 ** FICL_WANT_OOP
 ** Inludes object oriented programming support (in softwords)
 ** OOP support requires locals and user variables!
 */
 #if !defined (FICL_WANT_OOP)
-#define FICL_WANT_OOP ((FICL_WANT_LOCALS) && (FICL_WANT_USER))
+#define FICL_WANT_OOP (1)
 #endif /* FICL_WANT_OOP */
 
 /*
@@ -396,7 +367,7 @@ typedef float ficlFloat;
 ** and there's only one per entire ficlSystem, so it
 ** doesn't make sense to be a piker here.
 */
-#if (!defined(FICL_MAX_LOCALS)) && FICL_WANT_LOCALS
+#if (!defined(FICL_MAX_LOCALS))
 #define FICL_MAX_LOCALS (64)
 #endif
 
@@ -427,7 +398,7 @@ typedef float ficlFloat;
 /*
 ** Default number of USER flags.
 */
-#if (!defined(FICL_USER_CELLS)) && FICL_WANT_USER
+#if (!defined(FICL_USER_CELLS))
 #define FICL_USER_CELLS (16)
 #endif
 

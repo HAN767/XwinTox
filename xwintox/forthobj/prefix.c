@@ -1,10 +1,5 @@
 /*******************************************************************
-** p r e f i x . c
-** Forth Inspired Command Language
 ** Parser extensions for Ficl
-** Authors: Larry Hastings & John Sadler (john_sadler@alum.mit.edu)
-** Created: April 2001
-** $Id: prefix.c,v 1.8 2010/09/13 18:43:04 asau Exp $
 *******************************************************************/
 /*
 ** Copyright (c) 1997-2001 John Sadler (john_sadler@alum.mit.edu)
