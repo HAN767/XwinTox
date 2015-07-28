@@ -179,7 +179,7 @@ int ModuleManager_initialiseModule_(XWF_Module_t *pmodNew, XWF_Init_f fnInit)
 	if(!iRet)
 	{
 		/* It went perfectly, so we can print out a success message. */
-		dbg("Module <%s> loaded successfully.\n", pmodNew->pszName);
+		printf("Module <%s> loaded successfully.\n", pmodNew->pszName);
 		/* We can also add it to the list of all modules. */
 		List_add(pmmManager->lstAllMods, pmodNew);
 		return 0;

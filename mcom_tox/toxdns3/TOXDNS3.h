@@ -1,5 +1,5 @@
-#ifndef __GUIFLTK__H
-#define __GUIFLTK__H
+#ifndef __TOXFLTK__H
+#define __TOXFLTK__H
 
 #include <string>
 
