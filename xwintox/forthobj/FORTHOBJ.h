@@ -23,6 +23,7 @@ public:
 	static void deliverString(ficlVm *vm, const char *string);
 	static void wordXWFSUBSCRIBE(ficlVm *vm);
 	static void wordXWFSETCALLBACK(ficlVm *vm);
+	static void wordXWFPRINTLOGS(ficlVm *vm);
 
 private:
 	static int vmThread(void *customData);

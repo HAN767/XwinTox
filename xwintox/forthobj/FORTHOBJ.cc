@@ -73,6 +73,11 @@ int FORTHOBJ::vmThread(void *customData)
 	return 0;
 }
 
+void FORTHOBJ::wordXWFPRINTLOGS(ficlVm *vm)
+{
+	dbgPrint();
+}
+
 void FORTHOBJ::wordXWFSETCALLBACK(ficlVm *vm) /* ( xtCallback userdata -- ) */
 {
 	FORTHOBJ *self;

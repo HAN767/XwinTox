@@ -18,44 +18,37 @@
 
 #define DEF_EV
 #include "misc.h"
+#include "list.h"
+
+List_t *lstLogs =0;
 
 /* Debugging functionality */
 void
 dbg2(const char *funcname, const char *format,  ...)
 {
-	/*va_list arglist;
+	char * start, * finish, * comb;
+	va_list arglist;
 	va_start(arglist, format);
-	fprintf(stderr, KRED "[dbg] " KMAG "[%s] " KNRM, funcname);
-	vfprintf(stderr, format, arglist);
-	va_end(arglist);*/
-	/* put it in a buffer or something. */
+	if(!lstLogs) lstLogs =List_new();
+	asprintf(&start, KRED "[dbg] " KMAG "[%s] " KNRM, funcname);
+	vasprintf(&finish, format, arglist);
+	comb = malloc(strlen(start) + strlen(finish));
+	strcpy(comb, start);
+	strcpy(comb + strlen(start), finish);
+	List_add(lstLogs, comb);
+	free(start);
+	free(finish);
+	va_end(arglist);
 }
 
-/* Events type manipulation */
-Event_t *Ev_new()
+void dbgPrint()
 {
-	return (Event_t*)calloc(1, sizeof(Event_t));
-}
-
-Event_t *Ev_copy(Event_t *ev)
-{
-	return ev;
-}
-
-void Ev_pack(Event_t *ev)
-{
-	if(!ev->S1) ev->S1 =malloc(4);
-
-	if(!ev->S2) ev->S2 =malloc(4);
-}
-
-void Ev_free(Event_t *ev)
-{
-	free(ev->S1);
-	free(ev->S2);
-	if(ev->O.O_len) free (ev->O.O_val);
-	free(ev);
-	return;
+	LIST_ITERATE_OPEN(lstLogs);
+		printf("%s", e_data);
+		free(e_data);
+		free(e);
+	LIST_ITERATE_CLOSE(lstLogs);
+	lstLogs->List =0;
 }
 
 /* Files */

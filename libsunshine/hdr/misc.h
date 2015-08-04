@@ -31,13 +31,6 @@ extern "C"
 #define dbg(format,args...)        \
 	dbg2(PRINTFUNCNAME, format, ## args);
 
-typedef struct Call_s
-{
-	unsigned long Func;
-	char *S1, *S2;
-	int I1, I2;
-} Call_t;
-
 typedef struct Bytes_s
 {
 	char *pbData;
@@ -46,40 +39,10 @@ typedef struct Bytes_s
 
 void dbg2(const char *funcname, const char *format,  ...);
 void dbgPrint();
-typedef struct Event_s Event_t;
-Event_t *Ev_new();
-Event_t *Ev_copy(Event_t *ev);
-void Ev_pack(Event_t *ev);
-void Ev_free(Event_t *ev);
 
 int create_folder_if_not_exist(const char *path);
 const char *get_home_folder();
 
-#ifdef DEF_EV
-
-typedef unsigned int u_int;
-
-typedef struct Event_s {
-	int T;
-	int ID;
-	char *S1;
-	char *S2;
-	int I1;
-	int I2;
-	struct {
-		u_int SI1_len;
-		short *SI1_val;
-	} SI1;
-	struct {
-		u_int SI2_len;
-		short *SI2_val;
-	} SI2;
-	struct {
-		u_int O_len;
-		char *O_val;
-	} O;
-} Event_t;
-#endif
 
 #ifdef __cplusplus
 }
