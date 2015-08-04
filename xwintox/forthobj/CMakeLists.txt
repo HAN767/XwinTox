@@ -11,16 +11,16 @@ FUNCTION(PREPEND var prefix)
    SET(${var} "${listVar}" PARENT_SCOPE)
 ENDFUNCTION(PREPEND)
 
-set (SOFTCORE_FILES_P  softcore.fr ifbrack.fr prefix.fr ficl.fr jhlocal.fr
-					   marker.fr oo.fr classes.fr string.fr ficllocal.fr 
-					   fileaccess.fr xwintox.4th)
+set (SOFTCORE_FILES_P	softcore.fr ifbrack.fr prefix.fr ficl.fr jhlocal.fr
+						marker.fr oo.fr classes.fr string.fr ficllocal.fr
+						fileaccess.fr xwintox.4th)
 
 PREPEND(SOFTCORE_FILES ${PROJECT_SOURCE_DIR}/softcore/ ${SOFTCORE_FILES_P})
 
 add_custom_command(
 OUTPUT ${PROJECT_BINARY_DIR}/softcore.c
 COMMAND mksoftcore ${SOFTCORE_FILES}
-DEPENDS mksoftcore
+DEPENDS mksoftcore ${SOFTCORE_FILES}
 MAIN_DEPENDENCY ${PROJECT_SOURCE_DIR}/softcore/xwintox.4th
 )
 
