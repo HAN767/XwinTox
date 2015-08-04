@@ -34,11 +34,7 @@
 # CodeLite
 *.codelite
 
-# SunshinePro D-Make custom file
-*.plt
-*.cst
-old/*
-*.d
+# XwinTox stuff
 Obj/*
 *.depend
 *.err
