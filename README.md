@@ -16,22 +16,53 @@ As well as this, it makes the development of plugins simple, and provides a
 comprehensive set of security provisions that allow the user to configure the
 exact set of data that a plugin may have access to.
 
-Note that XwinTox Frameworks 2, the new branch of XwinTox which is discussed in
-this README, has not yet implemented all functionality described.
+##### Platform Support #####
+XwinTox is supported on the following platforms:
 
-Screenshot
---------------
+###### First-class (block releases) ######
+ * FreeBSD
+ * Solaris
+ * GNU/Linux
+
+###### Second-class (support offered) ######
+ * Apple OS X
+ * Other BSDs
+
+###### Third-class (best-effort support) ######
+ * Microsoft Windows
+ * Any OS supporting FLTK 1.3 and a C++11 compiler
+
+
+### Screenshot ###
 ![XwinTox screenshot](http://i.imgur.com/DkVPkA5.png)
 
 
-Building
---------------
+### Building ###
 
-XwinTox currently uses mk-configure.
-You should be able to find it in your distribution's repository. 
+XwinTox provides two build systems: kBuild and CMake.
+At present, CMake is recommended.
 
-Design and Development
---------------
+You should be able to find it in your distribution's repository. Install it,
+along with the appropriate FLTK headers package, and simply
+`mkdir bld && cd bld && cmake .. && make`
+
+After this is done, you should be able to run XwinTox with ../cmrun.sh
+
+### Licencing ###
+
+XwinTox is available under two schemes:
+
+##### Individual, Workers'-Own Enterprise, Public-Sector, or Charity #####
+If you or your organisation match the above, then you may use XwinTox under the 
+GNU General Public Licence; either version 3, or any later, at your choosing.
+Please find a copy of the licence [here](doc/CPYRIGHT).
+
+##### For-Profit Enterprise, Private or Publicly-listed Corporation #####
+XwinTox is available to for-profit, both private or publicly-listed enterprises,
+under the terms of the Affero General Public Licence; either version 3, or any
+later, at your choosing. Please find a copy of the licence [here](doc/CPYRIGHT.ALT).
+
+### Design and Development ###
 
 In the near future, a comprehensive developer's guide shall be written and will
 appear in a subfolder of this repository, `docs/`.
