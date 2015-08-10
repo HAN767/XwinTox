@@ -11,10 +11,9 @@ if(LIBSTDTHREADS)
 endif()
 
 set_property(TARGET xwintox APPEND PROPERTY COMPILE_DEFINITIONS XWVERS="DR0")
-TARGET_LINK_LIBRARIES(xwintox ${CMAKE_DL_LIBS} libsunshine luaobj forthobj)
+TARGET_LINK_LIBRARIES(xwintox ${CMAKE_DL_LIBS} libsunshine luaobj)
 
 add_subdirectory(luaobj)
-add_subdirectory(forthobj)
 
 install(TARGETS xwintox RUNTIME DESTINATION bin)
 install(FILES ${H_FILES} DESTINATION include)

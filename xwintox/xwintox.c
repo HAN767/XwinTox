@@ -7,7 +7,7 @@
 #include "Module/Module.h"
 #include "AOM/IXWClass.h"
 #include "luaobj/modLOBJ.h"
-#include "forthobj/modFOBJ.h"
+/*#include "forthobj/modFOBJ.h"*/
 #include "module/manager.h"
 #include "xwt.h"
 
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	int c, index, modcount =0;
 	char szConfigFilename[255], *next, *mods[argc];
 
-	dbg("XwinTox Frameworks 2.0_%s\n", XWVERS);
+	printf("XwinTox Frameworks 2.0_%s\n", XWVERS);
 
 	App.dictConfig =Dictionary_new();
 	snprintf(szConfigFilename, 255, "%s/%s", get_home_folder(),
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 	default_config(App.dictConfig);
 
 	ModuleManager_init(AppCall);
-	ModuleManager_loadStaticModule(FOBJ_init);
+	/*ModuleManager_loadStaticModule(FOBJ_init);*/
 	ModuleManager_loadStaticModule(LOBJ_init);
 
 	while((c = getopt(argc, argv, "m:-")) != -1)
