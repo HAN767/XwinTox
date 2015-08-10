@@ -10,6 +10,6 @@ xwintox_SOURCES = xwintox.c module/manager.c
 xwintox_INCS = $(PATH_ROOT)/libsunshine/hdr\
 		hdr \
 		.
-xwintox_LIBS = $(libsunshine_1_TARGET)
+xwintox_LIBS = $(libsunshine_1_TARGET) $(libluaobj_1_TARGET)
 
 include $(FILE_KBUILD_SUB_FOOTER)
