@@ -25,10 +25,10 @@ List_t * lstLogs = 0;
 /* Debugging functionality */
 void dbg2 (const char * funcname, const char * format, ...)
 {
-    char * start, *finish, *comb;
+    // char * start, *finish, *comb;
     va_list arglist;
     va_start (arglist, format);
-    if (!lstLogs)
+    /*if (!lstLogs)
         lstLogs = List_new ();
     asprintf (&start, KRED "[dbg] " KMAG "[%s] " KNRM, funcname);
     vasprintf (&finish, format, arglist);
@@ -37,7 +37,9 @@ void dbg2 (const char * funcname, const char * format, ...)
     strcpy (comb + strlen (start), finish);
     List_add (lstLogs, comb);
     free (start);
-    free (finish);
+    free (finish);*/
+    printf (KRED "[dbg] " KMAG "[%s] " KNRM, funcname);
+    vprintf (format, arglist);
     va_end (arglist);
 }
 
