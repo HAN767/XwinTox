@@ -22,7 +22,7 @@
     <Excludepaths/>
     <Ignorefiles/>
     <Extensions>
-      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;cpp;Makefile]]>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;cpp;Makefile;cxx;CMakeLists.txt;txt]]>
     </Extensions>
     <Topleveldir>../xwintox</Topleveldir>
   </Reconciliation>
@@ -137,4 +137,10 @@
   </Settings>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
+  <VirtualDirectory Name="luaobj">
+    <File Name="luaobj/CMakeLists.txt"/>
+    <File Name="luaobj/Makefile.kmk"/>
+    <File Name="luaobj/modLOBJ.cxx"/>
+    <File Name="luaobj/modLOBJ.h"/>
+  </VirtualDirectory>
 </CodeLite_Project>

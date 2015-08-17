@@ -11,23 +11,24 @@
 typedef struct Transfer_s Transfer_t;
 class GFLTransfer;
 
-class TransfersEntry: public Fl_Group
+class TransfersEntry : public Fl_Group
 {
-	friend class GFLTransfer;
-public:
-	// Ctor
-	TransfersEntry(int X, int Y, int W, int H, int S, struct tm *Time, 
-					GFLTransfer *Transfer,  int I);
+    friend class GFLTransfer;
 
-	void draw();
-	void resize(int X, int Y, int W, int H);
+  public:
+    // Ctor
+    TransfersEntry (int X, int Y, int W, int H, int S, struct tm * Time,
+                    GFLTransfer * Transfer, int I);
 
-	Fl_Progress *progress;
-	Fl_Button *accept, *reject, *saveto;
+    void draw ();
+    void resize (int X, int Y, int W, int H);
 
-	GFLTransfer *transfer;
-	int scale, inv, dl;
-	char date[255] = { 0 };
+    Fl_Progress * progress;
+    Fl_Button * accept, *reject, *saveto;
+
+    GFLTransfer * transfer;
+    int scale, inv, dl;
+    char date[255] = {0};
 };
 
 #endif

@@ -11,24 +11,21 @@
 #include "control/translst.h"
 #include "control/transent.h"
 
-GTransfers::GTransfers(const XWF_hObj_t* hObj, int S) :
-	GArea(hObj, S, "File Transfers")
+GTransfers::GTransfers (const XWF_hObj_t * hObj, int S)
+    : GArea (hObj, S, "File Transfers")
 {
-	scale = S;
+    scale = S;
 
-	list =new TransfersList(0, 0, 1, 1, scale);
+    list = new TransfersList (0, 0, 1, 1, scale);
 
-	resize(x(), y(), w(), h());
-	end();
+    resize (x (), y (), w (), h ());
+    end ();
 }
 
-void GTransfers::resize(int X, int Y, int W, int H)
+void GTransfers::resize (int X, int Y, int W, int H)
 {
-	Fl_Group::resize(X, Y, W, H);
-	list->resize(x(), y() + (61 * scale), w(), h() - (61 * scale));
+    Fl_Group::resize (X, Y, W, H);
+    list->resize (x (), y () + (61 * scale), w (), h () - (61 * scale));
 }
 
-void GTransfers::draw()
-{
-	GArea::draw();
-}
+void GTransfers::draw () { GArea::draw (); }

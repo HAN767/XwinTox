@@ -9,187 +9,191 @@
 #include "misc.h"
 #include "list.h"
 
-void updatecontacts(ContactsList *self, List_t *lstContacts)
+void updatecontacts (ContactsList * self, List_t * lstContacts)
 {
-	int iSel =-1;
-	int iSeltype =-1;
-	unsigned int wCurY =0;
-	XwinTox *Xw;
+    int iSel = -1;
+    int iSeltype = -1;
+    unsigned int wCurY = 0;
+    XwinTox * Xw;
 
-	Fl_Widget *p =self;
+    Fl_Widget * p = self;
 
-	while(p->parent()) p =p->parent();
+    while (p->parent ())
+        p = p->parent ();
 
-	Xw =(XwinTox*)p;
+    Xw = (XwinTox *)p;
 
-	if(self->selected >= 0)
-	{
-		iSel =self->selected;
-		iSeltype =self->seltype;
-	}
+    if (self->selected >= 0)
+    {
+        iSel = self->selected;
+        iSeltype = self->seltype;
+    }
 
-	self->clear_all();
-	self->lstContacts =lstContacts;
+    self->clear_all ();
+    self->lstContacts = lstContacts;
 
-	LIST_ITERATE_OPEN(lstContacts)
-	XWContact_t *ctEntry =(XWContact_t*) e_data;
-	ContactsEntry *newgui;
-	dbg("Contact GUI. CTEntry num: %d \n", ctEntry->wNum);
-	if((newgui =FindContactEntry(Xw, ctEntry->wNum)) == 0)
-	{
-		dbg("need to build a new contacts entry\n");
-		newgui =new ContactsEntry(self->hObj_, self->x(),
-				self->y() + wCurY,
-				self->scale,
-				ctEntry, 0, 0);
-	}
+    LIST_ITERATE_OPEN (lstContacts)
+    XWContact_t * ctEntry = (XWContact_t *)e_data;
+    ContactsEntry * newgui;
+    dbg ("Contact GUI. CTEntry num: %d \n", ctEntry->wNum);
+    if ((newgui = FindContactEntry (Xw, ctEntry->wNum)) == 0)
+    {
+        dbg ("need to build a new contacts entry\n");
+        newgui = new ContactsEntry (self->hObj_, self->x (), self->y () + wCurY,
+                                    self->scale, ctEntry, 0, 0);
+    }
 
-	if(!FindContactMArea(Xw, ctEntry))
-	{
-		dbg("Need to make a new MArea\n");
-		GMessageArea *newarea =new
-		GMessageArea(self->hObj_, self->scale,  ctEntry, 0, 0);
-		newarea->hide();
+    if (!FindContactMArea (Xw, ctEntry))
+    {
+        dbg ("Need to make a new MArea\n");
+        GMessageArea * newarea =
+            new GMessageArea (self->hObj_, self->scale, ctEntry, 0, 0);
+        newarea->hide ();
 
-		Xw->add(newarea);
-		Xw->contents->messageareas.push_back(newarea);
-	}
+        Xw->add (newarea);
+        Xw->contents->messageareas.push_back (newarea);
+    }
 
-	self->add(newgui);
-	self->entries.push_back(newgui);
-	wCurY += (50 * self->scale);
-	LIST_ITERATE_CLOSE(lstContacts)
-	dbg("Finished contacts update\n");
+    self->add (newgui);
+    self->entries.push_back (newgui);
+    wCurY += (50 * self->scale);
+    LIST_ITERATE_CLOSE (lstContacts)
+    dbg ("Finished contacts update\n");
 }
 
-void CtList_recv(int iType, PBMessage_t* msg, void* custom)
+void CtList_recv (int iType, PBMessage_t * msg, void * custom)
 {
-	ContactsList *self =(ContactsList*) custom;
+    ContactsList * self = (ContactsList *)custom;
 
-	if(iType == clContacts)
-	{
-		Fl::lock();
+    if (iType == clContacts)
+    {
+        Fl::lock ();
 
-		if(msg == 0) return;
+        if (msg == 0)
+            return;
 
-		updatecontacts(self, (List_t*)msg->V);
-		Fl::unlock();
-		Fl::awake();
-	}
-	else if(iType == frRequestServiced)
-	{
-		XWContact_t *newContact =(XWContact_t*)calloc(1, sizeof(XWContact_t));
-		userdata *ud =new userdata_t;
+        updatecontacts (self, (List_t *)msg->V);
+        Fl::unlock ();
+        Fl::awake ();
+    }
+    else if (iType == frRequestServiced)
+    {
+        XWContact_t * newContact =
+            (XWContact_t *)calloc (1, sizeof (XWContact_t));
+        userdata * ud = new userdata_t;
 
-		Fl::lock();
-		ud->op='U';
-		ud->lptr =self;
-		newContact->wNum =msg->I1;
-		newContact->pszID =strdup(msg->S1);
-		if(!self->lstContacts) self->lstContacts =List_new();
-		List_add(self->lstContacts, newContact);
-		Fl::unlock();
+        Fl::lock ();
+        ud->op = 'U';
+        ud->lptr = self;
+        newContact->wNum = msg->I1;
+        newContact->pszID = strdup (msg->S1);
+        if (!self->lstContacts)
+            self->lstContacts = List_new ();
+        List_add (self->lstContacts, newContact);
+        Fl::unlock ();
 
-		Fl::awake(ud);
-	}
-	else if(iType == frNew)
-	{
-		XWContact_t *newContact =(XWContact_t*)calloc(1, sizeof(XWContact_t));
-		userdata *ud =new userdata_t;
+        Fl::awake (ud);
+    }
+    else if (iType == frNew)
+    {
+        XWContact_t * newContact =
+            (XWContact_t *)calloc (1, sizeof (XWContact_t));
+        userdata * ud = new userdata_t;
 
-		Fl::lock();
-		ud->op='U';
-		ud->lptr =self;
-		newContact->wNum =msg->I1;
-		newContact->pszID =strdup(msg->S1);
-		if(!self->lstContacts) self->lstContacts =List_new();
-		List_add(self->lstContacts, newContact);
-		Fl::unlock();
+        Fl::lock ();
+        ud->op = 'U';
+        ud->lptr = self;
+        newContact->wNum = msg->I1;
+        newContact->pszID = strdup (msg->S1);
+        if (!self->lstContacts)
+            self->lstContacts = List_new ();
+        List_add (self->lstContacts, newContact);
+        Fl::unlock ();
 
-		Fl::awake(ud);
-	}
+        Fl::awake (ud);
+    }
 }
 
-ContactsList::ContactsList(const XWF_hObj_t *hObj, int S)
-	: Fl_Scroll(0, 0, 1, 1)
+ContactsList::ContactsList (const XWF_hObj_t * hObj, int S)
+    : Fl_Scroll (0, 0, 1, 1)
 {
-	hObj_ =hObj;
-	scale =S;
-	selected =-1;
-	color(fl_rgb_color(65, 65, 65));
-	startpoint =0 * S;
-	lstContacts =0;
-	lstChatrooms =List_new();
+    hObj_ = hObj;
+    scale = S;
+    selected = -1;
+    color (fl_rgb_color (65, 65, 65));
+    startpoint = 0 * S;
+    lstContacts = 0;
+    lstChatrooms = List_new ();
 
-	Fl_Widget *p =this;
+    Fl_Widget * p = this;
 
-	while(p->parent()) p =p->parent();
+    while (p->parent ())
+        p = p->parent ();
 
-	Xw =(XwinTox*)p;
+    Xw = (XwinTox *)p;
 
-	type(VERTICAL);
-	end();
+    type (VERTICAL);
+    end ();
 
-	hObj->pSvcs->fnSubscribe(hObj, clContacts, this, CtList_recv);
-	hObj->pSvcs->fnSubscribe(hObj, frRequestServiced, this, CtList_recv);
-	hObj->pSvcs->fnSubscribe(hObj, frNew, this, CtList_recv);
-
+    hObj->pSvcs->fnSubscribe (hObj, clContacts, this, CtList_recv);
+    hObj->pSvcs->fnSubscribe (hObj, frRequestServiced, this, CtList_recv);
+    hObj->pSvcs->fnSubscribe (hObj, frNew, this, CtList_recv);
 }
 
-void ContactsList::draw()
+void ContactsList::draw ()
 {
-	Fl_Scroll::draw();
+    Fl_Scroll::draw ();
 
-	for(const ContactsEntry* entry : entries)
-	{
-		entry->icon->redraw();
-	}
+    for (const ContactsEntry * entry : entries)
+    {
+        entry->icon->redraw ();
+    }
 }
 
-void ContactsList::resize(int X, int Y, int W, int H)
+void ContactsList::resize (int X, int Y, int W, int H)
 {
-	Fl_Scroll::resize(X, Y, W, H);
+    Fl_Scroll::resize (X, Y, W, H);
 }
 
-int ContactsList::handle(int event)
+int ContactsList::handle (int event)
 {
-	switch(event)
-	{
-	case FL_PUSH:
-		if(Fl::event_button() == FL_LEFT_MOUSE)
-		{
-			deselect_all();
+    switch (event)
+    {
+    case FL_PUSH:
+        if (Fl::event_button () == FL_LEFT_MOUSE)
+        {
+            deselect_all ();
 
-			for(const auto entry : entries)
-			{
-				entry->redraw();
-				entry->icon->redraw();
-			}
-		}
-	}
+            for (const auto entry : entries)
+            {
+                entry->redraw ();
+                entry->icon->redraw ();
+            }
+        }
+    }
 
-	return Fl_Scroll::handle(event);
+    return Fl_Scroll::handle (event);
 }
 
-void ContactsList::clear_all()
+void ContactsList::clear_all ()
 {
-	for (const auto entry : entries)
-	{
-		this->remove(entry);
-	}
-	entries.clear();
-	this->redraw();
-	parent()->redraw();
+    for (const auto entry : entries)
+    {
+        this->remove (entry);
+    }
+    entries.clear ();
+    this->redraw ();
+    parent ()->redraw ();
 }
 
-void ContactsList::deselect_all()
+void ContactsList::deselect_all ()
 {
-	for(const auto entry : entries)
-	{
-		entry->selected =0;
-		entry->icon->show();
-		entry->invicon->hide();
-		entry->redraw();
-		entry->icon->redraw();
-	}
+    for (const auto entry : entries)
+    {
+        entry->selected = 0;
+        entry->icon->show ();
+        entry->invicon->hide ();
+        entry->redraw ();
+        entry->icon->redraw ();
+    }
 }

@@ -17,61 +17,62 @@ class GUIFLTK;
 
 typedef struct userdata
 {
-	char op;
-	void *lptr;
+    char op;
+    void * lptr;
 } userdata_t;
-void handle(void *userdata);
+void handle (void * userdata);
 
-class XWContents: public Fl_Box
+class XWContents : public Fl_Box
 {
-public:
-	// Ctor
-	XWContents(const XWF_hObj_t *hobj, int S);
+  public:
+    // Ctor
+    XWContents (const XWF_hObj_t * hobj, int S);
 
-	void draw();
+    void draw ();
 
-	void NewCurrentArea(Fl_Group* G);
+    void NewCurrentArea (Fl_Group * G);
 
-	Fl_Box *fake;
-	GAddFriend *addfriend;
-	GTransfers *transfers;
-	GSettings *settings;
+    Fl_Box * fake;
+    GAddFriend * addfriend;
+    GTransfers * transfers;
+    GSettings * settings;
 
-	vector <GMessageArea*> messageareas;
+    vector< GMessageArea * > messageareas;
 
-	Fl_Group *currentarea;
-	Fl_Group *newcurrentarea;
-	int scale;
+    Fl_Group * currentarea;
+    Fl_Group * newcurrentarea;
+    int scale;
 
-private:
-	const XWF_hObj_t *hObj_;
+  private:
+    const XWF_hObj_t * hObj_;
 };
 
 class XwinTox : public Fl_Double_Window
 {
-public:
-	// Ctor
-	XwinTox(GUIFLTK *G, int w, int h, const char* c, int S);
-	void init2();
+  public:
+    // Ctor
+    XwinTox (GUIFLTK * G, int w, int h, const char * c, int S);
+    void init2 ();
 
-	void resize(int X, int Y, int W, int H);
+    void resize (int X, int Y, int W, int H);
 
-	Fl_Menu_Bar *mbar;
-	Sidebar *sidebar;
-	XWContents *contents;
+    Fl_Menu_Bar * mbar;
+    Sidebar * sidebar;
+    XWContents * contents;
 
-	int scale, sblength, basex, basey;
+    int scale, sblength, basex, basey;
 
-	GUIFLTK* Obj;
+    GUIFLTK * Obj;
 };
 
-static inline XwinTox *getXwin(Fl_Widget *p)
+static inline XwinTox * getXwin (Fl_Widget * p)
 {
-	XwinTox *Xw;
+    XwinTox * Xw;
 
-    while (p->parent()) p =p->parent();
-	Xw =(XwinTox*)p;
-	return Xw;
+    while (p->parent ())
+        p = p->parent ();
+    Xw = (XwinTox *)p;
+    return Xw;
 }
 
 #endif

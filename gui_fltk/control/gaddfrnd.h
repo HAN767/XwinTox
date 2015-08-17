@@ -7,21 +7,21 @@
 
 #include "control/garea.h"
 
-class GAddFriend: public GArea
+class GAddFriend : public GArea
 {
-public:
-	// Ctor
-	GAddFriend(const XWF_hObj_t* hObj, int S);
+  public:
+    // Ctor
+    GAddFriend (const XWF_hObj_t * hObj, int S);
 
-	void resize(int X, int Y, int W, int H);
-	void draw();
+    void resize (int X, int Y, int W, int H);
+    void draw ();
 
-	Fl_Input *id;
-	Fl_Input *message;
-	Fl_Button *send;
+    Fl_Input * id;
+    Fl_Input * message;
+    Fl_Button * send;
 
-	Fl_Group *fakebox;
-	const XWF_hObj_t* hObj_;
+    Fl_Group * fakebox;
+    const XWF_hObj_t * hObj_;
 };
 
 #endif

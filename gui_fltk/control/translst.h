@@ -12,25 +12,25 @@ using namespace std;
 
 class TransfersEntry;
 
-class TransfersList: public Fl_Scroll
+class TransfersList : public Fl_Scroll
 {
-public:
-	// Ctor
-	TransfersList(int X, int Y, int W, int H, int S);
+  public:
+    // Ctor
+    TransfersList (int X, int Y, int W, int H, int S);
 
-	void draw();
-	void resize(int X, int Y, int W, int H);
-	int handle(int event);
+    void draw ();
+    void resize (int X, int Y, int W, int H);
+    int handle (int event);
 
-	void regen_gui();
-	void clear_all();
+    void regen_gui ();
+    void clear_all ();
 
-	vector <TransfersEntry*> entries;
+    vector< TransfersEntry * > entries;
 
-	/* the purpose of 'startpoint' is to indicate where
-	 * the first ContactEntry should be drawn relative to
-	 * the y() of the contacts list*/
-	int scale, startpoint;
+    /* the purpose of 'startpoint' is to indicate where
+     * the first ContactEntry should be drawn relative to
+     * the y() of the contacts list*/
+    int scale, startpoint;
 };
 
 #endif

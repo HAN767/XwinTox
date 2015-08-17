@@ -9,23 +9,23 @@
 #include "control/svgbox.h"
 #include "control/statbox.h"
 
-class Sidebar_Top_Area: public Fl_Group
+class Sidebar_Top_Area : public Fl_Group
 {
-public:
-	// Ctor
-	Sidebar_Top_Area(const XWF_hObj_t* hObj, int S);
+  public:
+    // Ctor
+    Sidebar_Top_Area (const XWF_hObj_t * hObj, int S);
 
-	void resize(int X, int Y, int W, int H);
+    void resize (int X, int Y, int W, int H);
 
-	SVGBox *avbox;
-	Fl_Input *name;
-	Fl_Input *status;
-	StatusBox *statusbox;
+    SVGBox * avbox;
+    Fl_Input * name;
+    Fl_Input * status;
+    StatusBox * statusbox;
 
-	int scale;
+    int scale;
 
-private:
-	const XWF_hObj_t* hObj_;
+  private:
+    const XWF_hObj_t * hObj_;
 };
 
 #endif

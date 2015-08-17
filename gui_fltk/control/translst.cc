@@ -6,77 +6,77 @@
 #include "control/translst.h"
 #include "control/transent.h"
 
-TransfersList::TransfersList(int X, int Y, int W, int H, int S)
-	: Fl_Scroll(X, Y, W, H)
+TransfersList::TransfersList (int X, int Y, int W, int H, int S)
+    : Fl_Scroll (X, Y, W, H)
 {
-	scale =S;
-	startpoint =0 * S;
-	
-	type(VERTICAL_ALWAYS);
-	end();
+    scale = S;
+    startpoint = 0 * S;
+
+    type (VERTICAL_ALWAYS);
+    end ();
 }
 
-void TransfersList::draw()
+void TransfersList::draw ()
 {
-	Fl_Scroll::draw();
+    Fl_Scroll::draw ();
 
-	for(const auto entry : entries)
-	{
-		entry->redraw();
-	}
+    for (const auto entry : entries)
+    {
+        entry->redraw ();
+    }
 }
 
-void TransfersList::resize(int X, int Y, int W, int H)
+void TransfersList::resize (int X, int Y, int W, int H)
 {
-	Fl_Scroll::resize(X, Y, W, H);
+    Fl_Scroll::resize (X, Y, W, H);
 
-	for(const auto entry : entries)
-	{
-		entry->resize(entry->x(), entry->y(), W, entry->h());
-		entry->redraw();
-	}
+    for (const auto entry : entries)
+    {
+        entry->resize (entry->x (), entry->y (), W, entry->h ());
+        entry->redraw ();
+    }
 }
 
-int TransfersList::handle(int event)
+int TransfersList::handle (int event)
 {
-	switch(event)
-	{
-	case FL_PUSH:
-		if(Fl::event_button() == FL_LEFT_MOUSE)
-		{
-			for(const auto entry : entries)
-			{
-				entry->redraw();
-			}
-		}
-	}
+    switch (event)
+    {
+    case FL_PUSH:
+        if (Fl::event_button () == FL_LEFT_MOUSE)
+        {
+            for (const auto entry : entries)
+            {
+                entry->redraw ();
+            }
+        }
+    }
 
-	return Fl_Scroll::handle(event);
+    return Fl_Scroll::handle (event);
 }
 
-void TransfersList::regen_gui()
+void TransfersList::regen_gui ()
 {
-	int YM =y(), XM =x(), inv =0;
+    int YM = y (), XM = x (), inv = 0;
 
-	for(const auto entry : entries)
-	{
-		entry->inv =inv;
-		entry->position(XM, YM);
-		dbg("Regen for Trans\n");
+    for (const auto entry : entries)
+    {
+        entry->inv = inv;
+        entry->position (XM, YM);
+        dbg ("Regen for Trans\n");
 
-		entry->show();
-		YM += 50;
-		inv =1 - inv;
-	}
+        entry->show ();
+        YM += 50;
+        inv = 1 - inv;
+    }
 
-	redraw();
+    redraw ();
 
-	return;
+    return;
 }
 
-void TransfersList::clear_all()
+void TransfersList::clear_all ()
 {
-	//for (const auto entry: entrie)
-	this->redraw();
-	parent()->redraw();
+    // for (const auto entry: entrie)
+    this->redraw ();
+    parent ()->redraw ();
 }

@@ -9,24 +9,24 @@
 #include "control/garea.h"
 #include "control/sr_table.h"
 
-class GSettings: public GArea
+class GSettings : public GArea
 {
-public:
-	// Ctor
-	GSettings(const XWF_hObj_t* hObj, int S);
+  public:
+    // Ctor
+    GSettings (const XWF_hObj_t * hObj, int S);
 
-	void resize(int X, int Y, int W, int H);
-	void draw();
+    void resize (int X, int Y, int W, int H);
+    void draw ();
 
-	Fl_Tabs *pages;
+    Fl_Tabs * pages;
 
-	Fl_Group *pagePlugins, *pageIdentity;
+    Fl_Group * pagePlugins, *pageIdentity;
 
-	/* pagePlugins */
-	MyTable *tblMods, *tblClasses;
-	/* end pagePlugins */
+    /* pagePlugins */
+    MyTable * tblMods, *tblClasses;
+    /* end pagePlugins */
 
-	const XWF_hObj_t* hObj_;
+    const XWF_hObj_t * hObj_;
 };
 
 #endif

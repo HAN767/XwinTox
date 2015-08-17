@@ -5,18 +5,18 @@
 
 #include "Module/Module.h"
 
-class StatusBox: public Fl_Box
+class StatusBox : public Fl_Box
 {
-public:
-	// Ctor
-	StatusBox(const XWF_hObj_t* hObj, int S);
+  public:
+    // Ctor
+    StatusBox (const XWF_hObj_t * hObj, int S);
 
-	void draw();
+    void draw ();
 
-	int scale;
-	int status; /* 1 is green, 2 is red, 3 is yellow, 4 is grey */
+    int scale;
+    int status; /* 1 is green, 2 is red, 3 is yellow, 4 is grey */
 
-	const XWF_hObj_t* hObj_;
+    const XWF_hObj_t * hObj_;
 };
 
 #endif

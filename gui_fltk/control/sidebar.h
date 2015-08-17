@@ -9,27 +9,26 @@
 #include "control/frequest.h"
 #include "control/cntctlst.h"
 
-
-class Sidebar: public Fl_Group
+class Sidebar : public Fl_Group
 {
-public:
-	// Ctor
-	Sidebar(const XWF_hObj_t* hObj, int S);
+  public:
+    // Ctor
+    Sidebar (const XWF_hObj_t * hObj, int S);
 
-	void resize(int X, int Y, int W, int H);
+    void resize (int X, int Y, int W, int H);
 
-	Sidebar_Top_Area *top_area;
-	/* top2*/
-	Fl_Button *frbutton;
-	FriendRequests *f_reqs;
-	/* end top2 */
-	ContactsList *contacts;
-	Sidebar_Bottom_Area *bottom_area;
+    Sidebar_Top_Area * top_area;
+    /* top2*/
+    Fl_Button * frbutton;
+    FriendRequests * f_reqs;
+    /* end top2 */
+    ContactsList * contacts;
+    Sidebar_Bottom_Area * bottom_area;
 
-	int scale, top2_h, frs;
+    int scale, top2_h, frs;
 
-private:
-	const XWF_hObj_t* hObj_;
+  private:
+    const XWF_hObj_t * hObj_;
 };
 
 #endif

@@ -7,26 +7,25 @@
 
 #include "control/svgbox.h"
 
-class Sidebar_Bottom_Area: public Fl_Group
+class Sidebar_Bottom_Area : public Fl_Group
 {
-public:
-	// Ctor
-	Sidebar_Bottom_Area(const XWF_hObj_t* hObj, int S);
+  public:
+    // Ctor
+    Sidebar_Bottom_Area (const XWF_hObj_t * hObj, int S);
 
-	void resize(int X, int Y, int W, int H);
+    void resize (int X, int Y, int W, int H);
 
-	void deselect_all();
+    void deselect_all ();
 
-	SVGBox *addfriend;
-	SVGBox *newgroup;
-	SVGBox *transfers;
-	SVGBox *settings;
+    SVGBox * addfriend;
+    SVGBox * newgroup;
+    SVGBox * transfers;
+    SVGBox * settings;
 
-	int scale;
+    int scale;
 
-private:
-	const XWF_hObj_t* hObj_;
+  private:
+    const XWF_hObj_t * hObj_;
 };
-
 
 #endif

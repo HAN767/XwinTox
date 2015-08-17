@@ -4,39 +4,36 @@
 
 #include "control/svgbox.h"
 
-
-SVGBox::SVGBox(int X, int Y, int W, int H, int S, const char* pic,
-               double factor) : Fl_Box(X, Y, W, H)
+SVGBox::SVGBox (int X, int Y, int W, int H, int S, const char * pic,
+                double factor)
+    : Fl_Box (X, Y, W, H)
 {
-	img_r =svgrast(pic, W, H, S, factor);
-	img =new Fl_RGB_Image(img_r, W, H, 4);
+    img_r = svgrast (pic, W, H, S, factor);
+    img = new Fl_RGB_Image (img_r, W, H, 4);
 }
 
-void SVGBox::draw()
+void SVGBox::draw () { Fl_Box::draw (); }
+
+int SVGBox::handle (int event)
 {
-	Fl_Box::draw();
+    switch (event)
+    {
+    case FL_PUSH:
+        do_callback ();
+        return 1;
+    }
+
+    return 0;
 }
 
-int SVGBox::handle(int event)
+void SVGBox::hide ()
 {
-	switch(event)
-	{
-	case FL_PUSH:
-		do_callback();
-		return 1;
-	}
-
-	return 0;
+    Fl_Box::hide ();
+    image (0);
 }
 
-void SVGBox::hide()
+void SVGBox::show ()
 {
-	Fl_Box::hide();
-	image(0);
-}
-
-void SVGBox::show()
-{
-	Fl_Box::show();
-	image(img);
+    Fl_Box::show ();
+    image (img);
 }

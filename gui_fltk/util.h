@@ -6,17 +6,16 @@
 #include "control/msgarea.h"
 #include "control/cntctent.h"
 
-ContactsEntry *FindContactEntry(XwinTox *Xw, unsigned int num);
-GMessageArea *FindContactMArea(XwinTox *Xw, XWContact_t *contact);
-GMessageArea *FindContactMArea(XwinTox *Xw, unsigned int id);
-XWContact_t *FindContact(XwinTox *Xw, unsigned int id);
+ContactsEntry * FindContactEntry (XwinTox * Xw, unsigned int num);
+GMessageArea * FindContactMArea (XwinTox * Xw, XWContact_t * contact);
+GMessageArea * FindContactMArea (XwinTox * Xw, unsigned int id);
+XWContact_t * FindContact (XwinTox * Xw, unsigned int id);
 
-char *GetDisplayName(XWContact_t *contact, size_t LenLimit);
-char *GetDisplayStatus(XWContact_t *contact, size_t LenLimit);
-char *GetShortenedText(char* text, size_t LenLimit);
+char * GetDisplayName (XWContact_t * contact, size_t LenLimit);
+char * GetDisplayStatus (XWContact_t * contact, size_t LenLimit);
+char * GetShortenedText (char * text, size_t LenLimit);
 
-const char *GetDisplaySize(unsigned int bytes);
-void RemoveSpaces(char * s);
+const char * GetDisplaySize (unsigned int bytes);
+void RemoveSpaces (char * s);
 
 #endif
-

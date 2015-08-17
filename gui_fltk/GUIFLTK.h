@@ -11,34 +11,35 @@
 #include "GFL_FILE.h"
 #include "control/xwin.h"
 
-class GUIFLTK : public XWClassT<GUIFLTK>
+class GUIFLTK : public XWClassT< GUIFLTK >
 {
-	friend class GFLTransfer;
+    friend class GFLTransfer;
 
-public:
-	GUIFLTK(XWF_ObjectParams_t *pobjParams);
-	int start();
+  public:
+    GUIFLTK (XWF_ObjectParams_t * pobjParams);
+    int start ();
 
-	void recvSignal(unsigned int dwType, PBMessage_t *msg);
+    void recvSignal (unsigned int dwType, PBMessage_t * msg);
 
-	void cbAddFriendSend(Fl_Widget* w);
+    void cbAddFriendSend (Fl_Widget * w);
 
-	vector<class GFLTransfer *> vecTransfers;
-private:
-	static int fltkLoop(void*);
-	void setFLTKCallbacks();
-	XwinTox *Xw_; 
-	thrd_t thrdFLTK_;
+    vector< class GFLTransfer * > vecTransfers;
+
+  private:
+    static int fltkLoop (void *);
+    void setFLTKCallbacks ();
+    XwinTox * Xw_;
+    thrd_t thrdFLTK_;
 };
 
-template<class T, class Method, Method m>
-static void flThunk(Fl_Widget *w, void *userData)
+template < class T, class Method, Method m >
+static void flThunk (Fl_Widget * w, void * userData)
 {
-	return ((*static_cast<T *>(userData)).*m)(w);
+    return ((*static_cast< T * > (userData)).*m)(w);
 }
 
-typedef void (*FLTK_Callback_f)(Fl_Widget *w, void *userData);
+typedef void (*FLTK_Callback_f)(Fl_Widget * w, void * userData);
 
-extern GUIFLTK *pgflCurrent;
+extern GUIFLTK * pgflCurrent;
 
 #endif

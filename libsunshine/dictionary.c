@@ -15,207 +15,194 @@
 #include "dictionary.h"
 #include "ini/ini.h"
 
-#define _Lock_Dictionary mtx_lock(dict->Lock);
-#define _Unlock_Dictionary mtx_unlock(dict->Lock);
+#define _Lock_Dictionary mtx_lock (dict->Lock);
+#define _Unlock_Dictionary mtx_unlock (dict->Lock);
 
 /* internal functions */
 
 static unsigned long
-jenkins_hash (const char *key) /* Jenkins One-at-a-Time Hash function */
+jenkins_hash (const char * key) /* Jenkins One-at-a-Time Hash function */
 {
-	unsigned long int hash;
-	size_t len =strlen (key);
+    unsigned long int hash;
+    size_t len = strlen (key);
 
-	for (int i =hash =0; i < len; ++i)
-	{
-		hash +=key[i];
-		hash += (hash << 10);
-		hash ^= (hash >> 6);
-	}
+    for (int i = hash = 0; i < len; ++i)
+    {
+        hash += key[i];
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+    }
 
-	hash += (hash << 3);
-	hash ^= (hash >> 11);
-	hash += (hash << 15);
-	return hash;
+    hash += (hash << 3);
+    hash ^= (hash >> 11);
+    hash += (hash << 15);
+    return hash;
 }
 
-Dictionary_t *Dictionary_new_i (int size);
+Dictionary_t * Dictionary_new_i (int size);
 
-static Dictionary_t*
-resize (Dictionary_t *dict)
+static Dictionary_t * resize (Dictionary_t * dict)
 {
-	Dictionary_t *newdict;
-	Dictionary_t tmp;
-	List_t_ *e;
-	Dictionary_entry_t *entry;
-	mtx_t *lock =dict->Lock;
+    Dictionary_t * newdict;
+    Dictionary_t tmp;
+    List_t_ * e;
+    Dictionary_entry_t * entry;
+    mtx_t * lock = dict->Lock;
 
-	newdict = Dictionary_new_i (dict->size * 2);
+    newdict = Dictionary_new_i (dict->size * 2);
 
-	for (int i = 0; i < dict->size; i++)
-	{
-		for (e = dict->entries[i]; e != 0; e = e->Link)
-		{
-			entry =e->data;
-			Dictionary_set (newdict, entry->key, entry->value);
-		}
-	}
+    for (int i = 0; i < dict->size; i++)
+    {
+        for (e = dict->entries[i]; e != 0; e = e->Link)
+        {
+            entry = e->data;
+            Dictionary_set (newdict, entry->key, entry->value);
+        }
+    }
 
-	tmp =*dict;
-	*dict =*newdict;
-	*newdict =tmp;
+    tmp = *dict;
+    *dict = *newdict;
+    *newdict = tmp;
 
-	Dictionary_delete (newdict);
-	dict->Lock =lock;
-	return dict;
+    Dictionary_delete (newdict);
+    dict->Lock = lock;
+    return dict;
 }
 
 /* primary functions */
 
-Dictionary_t*
-Dictionary_new_i (int size)
+Dictionary_t * Dictionary_new_i (int size)
 {
-	Dictionary_t *newdict =calloc (1, sizeof (Dictionary_t));
+    Dictionary_t * newdict = calloc (1, sizeof (Dictionary_t));
 
-	newdict->size =size;
-	newdict->entries =calloc (1, sizeof (List_t_ *) * newdict->size);
+    newdict->size = size;
+    newdict->entries = calloc (1, sizeof (List_t_ *) * newdict->size);
 
-	newdict->Lock =calloc(1, sizeof (mtx_t));
-	mtx_init(newdict->Lock, mtx_plain);
+    newdict->Lock = calloc (1, sizeof (mtx_t));
+    mtx_init (newdict->Lock, mtx_plain);
 
-	return newdict;
+    return newdict;
 }
 
-Dictionary_t*
-Dictionary_new ()
+Dictionary_t * Dictionary_new () { return Dictionary_new_i (32); }
+
+void Dictionary_delete (Dictionary_t * dict)
 {
-	return Dictionary_new_i(32);
+    List_t_ * e, *next;
+    Dictionary_entry_t * entry;
+    for (int i = 0; i < (dict)->size; i++)
+    {
+        for (e = (dict)->entries[i]; e != 0; e = next)
+        {
+            next = e->Link;
+            entry = e->data;
+            free (entry->key);
+            free (entry->value);
+            free (entry);
+            free (e);
+        }
+    }
+
+    free (dict->entries);
+    free (dict);
 }
 
-void
-Dictionary_delete (Dictionary_t *dict)
+void Dictionary_set (Dictionary_t * dict, const char * key, const char * value)
 {
-	List_t_ *e, *next;
-	Dictionary_entry_t *entry;
-	for (int i = 0; i < ( dict )->size; i++)
-	{
-		for (e = ( dict )->entries[i]; e != 0; e = next)
-		{
-			next =e->Link;
-			entry =e->data;
-			free (entry->key);
-			free (entry->value);
-			free (entry);
-			free (e);
-		}
-	}
+    Dictionary_entry_t * new, *e;
+    List_t_ * lentry, *l;
+    unsigned long hash;
 
-	free (dict->entries);
-	free (dict);
+    _Lock_Dictionary
+
+        new = calloc (1, sizeof (Dictionary_entry_t));
+    lentry = calloc (1, sizeof (List_t_));
+
+    new->key = strdup (key);
+    new->value = strdup (value);
+
+    hash = jenkins_hash (key) % dict->size;
+
+    if ((dict->count + 2) >= dict->size)
+    {
+        dict = resize (dict);
+        assert (dict != 0);
+    }
+
+    for (l = dict->entries[hash]; l != 0; l = l->Link)
+    {
+        e = l->data;
+
+        if (!strcmp (e->key, key))
+        {
+            free (e->value);
+            e->value = new->value;
+            free (new->key);
+            free (new);
+            free (lentry);
+            _Unlock_Dictionary return; /* reassigned value of an entry */
+        }
+    }
+    /* hash collision */
+    {
+        lentry->Link = dict->entries[hash];
+        lentry->data = new;
+        dict->entries[hash] = lentry;
+        dict->count++;
+        _Unlock_Dictionary
+    }
 }
 
-void
-Dictionary_set (Dictionary_t *dict, const char *key, const char *value)
+const char * Dictionary_get (Dictionary_t * dict, const char * key)
 {
-	Dictionary_entry_t *new, *e;
-	List_t_ *lentry, *l;
-	unsigned long hash;
+    List_t_ * l;
+    Dictionary_entry_t * e;
 
-	_Lock_Dictionary
+    _Lock_Dictionary
 
-	new =calloc (1, sizeof (Dictionary_entry_t));
-	lentry =calloc (1, sizeof (List_t_));
+        for (l = dict->entries[jenkins_hash (key) % dict->size]; l != 0;
+             l = l->Link)
+    {
+        e = l->data;
 
-	new->key =strdup (key);
-	new->value =strdup (value);
+        if (!strcmp (e->key, key))
+        {
+            _Unlock_Dictionary return e->value;
+        }
+    }
 
-	hash = jenkins_hash (key) % dict->size;
-
-	if ( (dict->count + 2) >= dict->size)
-	{
-		dict =resize (dict);
-		assert (dict != 0);
-	}
-
-	for (l = dict->entries[hash]; l != 0; l = l->Link)
-	{
-		e =l->data;
-
-		if (!strcmp (e->key, key))
-		{
-			free (e->value);
-			e->value = new->value;
-			free (new->key); free (new); free (lentry);
-			_Unlock_Dictionary
-			return; /* reassigned value of an entry */
-		}
-	}
-	/* hash collision */
-	{
-		lentry->Link =dict->entries[hash];
-		lentry->data =new;
-		dict->entries[hash] =lentry;
-		dict->count++;
-		_Unlock_Dictionary
-	}
-
+    _Unlock_Dictionary return 0;
 }
 
-const char*
-Dictionary_get (Dictionary_t *dict, const char *key)
+void Dictionary_unset (Dictionary_t * dict, const char * key)
 {
-	List_t_ *l;
-	Dictionary_entry_t *e;
+    List_t_ ** p;
+    List_t_ * e;
+    Dictionary_entry_t * entry;
 
-	_Lock_Dictionary
+    _Lock_Dictionary
 
-	for (l = dict->entries[jenkins_hash (key) % dict->size]; l != 0; l = l->Link)
-	{
-		e =l->data;
+        for (p = &(dict->entries[jenkins_hash (key) % dict->size]); *p != 0;
+             p = &((*p)->Link))
+    {
 
+        entry = (*p)->data;
 
-		if (!strcmp (e->key, key))
-		{
-			_Unlock_Dictionary
-			return e->value;
-		}
-	}
+        if (!strcmp (entry->key, key))
+        {
+            e = *p;
+            *p = e->Link;
 
-	_Unlock_Dictionary
-	return 0;
-}
+            free (entry->key);
+            free (entry->value);
+            free (entry);
+            free (e);
+            _Unlock_Dictionary
 
-void
-Dictionary_unset (Dictionary_t *dict, const char *key)
-{
-	List_t_ **p;
-	List_t_ *e;
-	Dictionary_entry_t *entry;
-
-	_Lock_Dictionary
-
-	for (p =& (dict->entries[jenkins_hash (key) % dict->size]);
-	        *p != 0;
-	        p = & ( (*p)->Link))
-	{
-
-		entry = (*p)->data;
-
-		if (!strcmp (entry->key, key))
-		{
-			e =*p;
-			*p =e->Link;
-
-			free (entry->key);
-			free (entry->value);
-			free (entry);
-			free (e);
-			_Unlock_Dictionary
-
-			return;
-		}
-	}
-	_Unlock_Dictionary
+                return;
+        }
+    }
+    _Unlock_Dictionary
 }
 
 /* auxillary functions */
@@ -224,159 +211,167 @@ Dictionary_unset (Dictionary_t *dict, const char *key)
  * sets value only if unset
  * returns value in either case
  */
-const char*
-Dictionary_set_aux (Dictionary_t *dict, const char *key, const char *value)
+const char * Dictionary_set_aux (Dictionary_t * dict, const char * key,
+                                 const char * value)
 {
-	const char* val;
-	
-	if (!(val =Dictionary_get(dict, key)))
-	{
-		Dictionary_set (dict, key, value); 
-		return value;
-	}
-	else return val;
+    const char * val;
+
+    if (!(val = Dictionary_get (dict, key)))
+    {
+        Dictionary_set (dict, key, value);
+        return value;
+    }
+    else
+        return val;
 }
 
 /* Dictionary_set_if_exists
  * sets value if key already exists
  * returns 0 for success and 1 if key doesn't exist
  */
-int
-Dictionary_set_if_exists (Dictionary_t *dict, const char *key, const char *value)
+int Dictionary_set_if_exists (Dictionary_t * dict, const char * key,
+                              const char * value)
 {
-	if (Dictionary_get(dict, key))
-	{
-		Dictionary_set (dict, key, value); 
-		return 0;
-	}
-	else return 1;
+    if (Dictionary_get (dict, key))
+    {
+        Dictionary_set (dict, key, value);
+        return 0;
+    }
+    else
+        return 1;
 }
 
 /* Dictionary_set_pointer
  * sets value for a pointer
  */
-void
-Dictionary_set_pointer(Dictionary_t *dict, const char *key, const void *pvValue)
+void Dictionary_set_pointer (Dictionary_t * dict, const char * key,
+                             const void * pvValue)
 {
-	const char szValue[255];
+    const char szValue[255];
 
-	snprintf((char*)szValue, 255, "%p", pvValue);
+    snprintf ((char *)szValue, 255, "%p", pvValue);
 
-	Dictionary_set (dict, key, szValue);
+    Dictionary_set (dict, key, szValue);
 }
 
 /* Dictionary_get_pointer
  * gets value from an entry that stores a pointer
  */
-void
-*Dictionary_get_pointer(Dictionary_t *dict, const char *key)
+void * Dictionary_get_pointer (Dictionary_t * dict, const char * key)
 {
-	void *pvValue;
-	const char *pszValue =Dictionary_get(dict, key);
+    void * pvValue;
+    const char * pszValue = Dictionary_get (dict, key);
 
-	if(!pszValue) return 0;
-	else
-	{
-		sscanf(pszValue, "%p", &pvValue);
-		return pvValue;
-	}
+    if (!pszValue)
+        return 0;
+    else
+    {
+        sscanf (pszValue, "%p", &pvValue);
+        return pvValue;
+    }
 }
 
 /* Utility function for Dictionary_load_from_file()
  */
-int
-parse_config_line (void* user, const char* section, const char* name,
-                   const char* value)
+int parse_config_line (void * user, const char * section, const char * name,
+                       const char * value)
 {
-	char key[255];
-	snprintf (key, 255, "%s.%s", section, name);
-	Dictionary_set ((Dictionary_t*) user, key, value);
-	return 1;
+    char key[255];
+    snprintf (key, 255, "%s.%s", section, name);
+    Dictionary_set ((Dictionary_t *)user, key, value);
+    return 1;
 }
 
 /* Dictionary_load_from_file
  * loads a dictionary with a file exported by Dictionary_export_to_file()
  * returns 0 for success, -1 for file created, 1 for unable to open file,
- * 2 for unable to open file and could not create it, and 3 for ini error 
+ * 2 for unable to open file and could not create it, and 3 for ini error
  * reading file.
  */
-int
-Dictionary_load_from_file (Dictionary_t *dict, const char *filename, 
-int createifnotexist)
+int Dictionary_load_from_file (Dictionary_t * dict, const char * filename,
+                               int createifnotexist)
 {
-	int inierror;
-	FILE* dictFILE =fopen (filename, "r");
+    int inierror;
+    FILE * dictFILE = fopen (filename, "r");
 
-	if (dictFILE == NULL && createifnotexist)
-	{
-		printf ("Failed to open config file\nAttempting to create one\n");
-		dictFILE =fopen (filename, "w+");
+    if (dictFILE == NULL && createifnotexist)
+    {
+        printf ("Failed to open config file\nAttempting to create one\n");
+        dictFILE = fopen (filename, "w+");
 
-		if (dictFILE == NULL)
-		{
-			printf ("Failed to create config file!\n");
-			return -2;
-		}
+        if (dictFILE == NULL)
+        {
+            printf ("Failed to create config file!\n");
+            return -2;
+        }
 
-		fclose (dictFILE);
-		return -1;
-	}
-	else if (dictFILE == NULL)
-	{ printf("Failed to open config file\n"); return 0; }
+        fclose (dictFILE);
+        return -1;
+    }
+    else if (dictFILE == NULL)
+    {
+        printf ("Failed to open config file\n");
+        return 0;
+    }
 
-	inierror =ini_parse_file (dictFILE, parse_config_line, dict);
+    inierror = ini_parse_file (dictFILE, parse_config_line, dict);
 
-	if (inierror > 0) dbg ("Error starting line %d of config file\n", inierror);
+    if (inierror > 0)
+        dbg ("Error starting line %d of config file\n", inierror);
 
-	if (inierror < 0) { dbg ("Error reading file %s\n", tmpfile); return 3; }
+    if (inierror < 0)
+    {
+        dbg ("Error reading file %s\n", tmpfile);
+        return 3;
+    }
 
-	return 0;
+    return 0;
 }
 
-int
-Dictionary_write_to_file (Dictionary_t *dict, const char *filename)
+int Dictionary_write_to_file (Dictionary_t * dict, const char * filename)
 {
-	FILE* dictFILE;
-	List_t *secbuffer =List_new();
+    FILE * dictFILE;
+    List_t * secbuffer = List_new ();
 
-	DICTIONARY_ITERATE_OPEN (dict)
-		char *tofree, *section, *name, *secbuf, secbegin[255], secline[8192];
-		secbuf =0;
+    DICTIONARY_ITERATE_OPEN (dict)
+    char * tofree, *section, *name, *secbuf, secbegin[255], secline[8192];
+    secbuf = 0;
 
-		tofree = name = strdup (entry->key);
-		section =strsep (&name, ".");
+    tofree = name = strdup (entry->key);
+    section = strsep (&name, ".");
 
-		sprintf (secbegin, "[%s]\n", section); /* fine */
+    sprintf (secbegin, "[%s]\n", section); /* fine */
 
-		LIST_ITERATE_OPEN(secbuffer)
-			if (!strncmp (e->data, secbegin, strlen (secbegin))) secbuf =e->data;
-		LIST_ITERATE_CLOSE(secbuffer)
+    LIST_ITERATE_OPEN (secbuffer)
+    if (!strncmp (e->data, secbegin, strlen (secbegin)))
+        secbuf = e->data;
+    LIST_ITERATE_CLOSE (secbuffer)
 
-		if (!secbuf)
-		{
-			secbuf =calloc (8192, sizeof (char));
-			sprintf (secbuf, "%s", secbegin);
-			List_add (secbuffer, secbuf);
-		}
+    if (!secbuf)
+    {
+        secbuf = calloc (8192, sizeof (char));
+        sprintf (secbuf, "%s", secbegin);
+        List_add (secbuffer, secbuf);
+    }
 
-		sprintf (secline, "%s=%s\n", name, entry->value);
-		strcat (secbuf, secline);
+    sprintf (secline, "%s=%s\n", name, entry->value);
+    strcat (secbuf, secline);
 
-		free (tofree);
-	DICTIONARY_ITERATE_CLOSE(dict)
+    free (tofree);
+    DICTIONARY_ITERATE_CLOSE (dict)
 
-	dictFILE =fopen (filename, "w");
+    dictFILE = fopen (filename, "w");
 
-	if (dictFILE == NULL)
-	{
-		dbg ("Failed to open config file (%s) for writing\n", filename);
-		return 1;
-	}
+    if (dictFILE == NULL)
+    {
+        dbg ("Failed to open config file (%s) for writing\n", filename);
+        return 1;
+    }
 
-	LIST_ITERATE_OPEN(secbuffer)
-		fprintf (dictFILE, "%s", e->data);
-	LIST_ITERATE_CLOSE(secbuffer)
+    LIST_ITERATE_OPEN (secbuffer)
+    fprintf (dictFILE, "%s", e->data);
+    LIST_ITERATE_CLOSE (secbuffer)
 
-	fclose (dictFILE);
-	return 0;
+    fclose (dictFILE);
+    return 0;
 }
