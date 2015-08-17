@@ -50,17 +50,21 @@ After this is done, you should be able to run XwinTox with ../cmrun.sh
 
 ### Licencing ###
 
-XwinTox is available under two schemes:
+XwinTox (refering to both binaries AND the source code available in this 
+repository) is available under two schemes:
 
-##### Individual, Workers'-Own Enterprise, Public-Sector, or Charity #####
+##### Individual, Workers'-Owned Enterprise, Public-Sector, or Charity #####
 If you or your organisation match the above, then you may use XwinTox under the 
 GNU General Public Licence; either version 3, or any later, at your choosing.
-Please find a copy of the licence [here](doc/CPYRIGHT).
+You may distribute XwinTox either under the same terms as XwinTox is distributed
+(i.e. GPLv3 for non-profit enterprise, AGPLv3 for for-profit enterprise) or,
+at your option, under the Affero GPL version 3.
+Please find a copy of the licence [here](doc/CPYRIGHT.NFP).
 
-##### For-Profit Enterprise, Private or Publicly-listed Corporation #####
+##### For-Profit Enterprise, Private or Public Company #####
 XwinTox is available to for-profit, both private or publicly-listed enterprises,
 under the terms of the Affero General Public Licence; either version 3, or any
-later, at your choosing. Please find a copy of the licence [here](doc/CPYRIGHT.ALT).
+later, at your choosing. Please find a copy of the licence [here](doc/CPYRIGHT.FPE).
 
 ### Design and Development ###
 
