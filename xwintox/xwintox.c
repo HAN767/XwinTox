@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "misc.h"
 
 #include "Module/Module.h"
 #include "AOM/IXWClass.h"
 #include "luaobj/modLOBJ.h"
-/*#include "forthobj/modFOBJ.h"*/
 #include "module/manager.h"
 #include "xwt.h"
 
@@ -71,11 +71,15 @@ static void default_config (Dictionary_t * conf)
 int main (int argc, char * argv[])
 {
     int c, index, modcount = 0;
-    char szConfigFilename[255], *next, *mods[argc];
+    char szConfigFilename[255], *next, *mods[argc], szMiscDir[255];
 
     printf ("XwinTox Frameworks 2.0_%s\n", XWVERS);
 
     App.dictConfig = Dictionary_new ();
+    snprintf (szMiscDir, 255, "%s/.XwinTox/", get_home_folder ());
+    mkdir (szMiscDir, 755);
+    snprintf (szMiscDir, 255, "%s/.XwinTox/miscdata/", get_home_folder ());
+    mkdir (szMiscDir, 755);
     snprintf (szConfigFilename, 255, "%s/%s", get_home_folder (),
               ".XwinTox/XwinTox.ini");
     Dictionary_load_from_file (App.dictConfig, szConfigFilename, 1);
