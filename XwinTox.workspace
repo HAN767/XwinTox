@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="XwinTox" Database="">
+<CodeLite_Workspace Name="XwinTox" Database="" SWTLW="No">
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>
   <Project Name="xwintox" Path="xwintox/xwintox.project" Active="Yes"/>
   <Project Name="mcom_tox" Path="mcom_tox/mcom_tox.project" Active="No"/>

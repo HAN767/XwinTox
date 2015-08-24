@@ -30,37 +30,34 @@ void teSaveasPressed (Fl_Widget * w)
 
 TransfersEntry::TransfersEntry (int X, int Y, int W, int H, int S,
                                 struct tm * Time, GFLTransfer * T, int I)
-    : Fl_Group (X, Y, W, 50 * S), scale (S), transfer (T), inv (I)
+    : Fl_Group (X, Y, W, 50 * S), scale (S), transfer (T), inv (I),
+      accept (0, 0, 1, 1, "Accept"), reject (0, 0, 1, 1, "Reject"),
+      saveto (0, 0, 1, 1, "Save as"), progress (0, 0, 1, 1)
 {
     strftime (date, 255, "%d/%b/%y %H:%M", Time);
 
     fl_font (FL_HELVETICA, 11 * scale);
     dl = fl_width (date) + 20;
 
-    accept = new Fl_Button (0, 0, 1, 1, "Accept");
-    reject = new Fl_Button (0, 0, 1, 1, "Reject");
-    saveto = new Fl_Button (0, 0, 1, 1, "Save as");
-    progress = new Fl_Progress (0, 0, 1, 1);
+    accept.color (fl_rgb_color (118, 202, 116));
+    reject.color (fl_rgb_color (214, 78, 77));
+    saveto.color (fl_rgb_color (160, 84, 160));
+    progress.color (fl_rgb_color (209, 210, 214));
 
-    accept->color (fl_rgb_color (118, 202, 116));
-    reject->color (fl_rgb_color (214, 78, 77));
-    saveto->color (fl_rgb_color (160, 84, 160));
-    progress->color (fl_rgb_color (209, 210, 214));
+    accept.labelsize (11 * scale);
+    reject.labelsize (11 * scale);
+    saveto.labelsize (11 * scale);
 
-    accept->labelsize (11 * scale);
-    reject->labelsize (11 * scale);
-    saveto->labelsize (11 * scale);
+    saveto.callback (teSaveasPressed);
 
-    saveto->callback (teSaveasPressed);
-
-    progress->selection_color (fl_rgb_color (118, 202, 116));
-    progress->labelcolor (fl_rgb_color (25, 25, 50));
-    progress->minimum (0);
-    progress->maximum (1000);
-    // progress->value((transfer->pos / transfer->size) * 1000);
-    progress->labelsize (11.2 * scale);
-    progress->labelfont (FL_HELVETICA_BOLD);
-    progress->deactivate ();
+    progress.selection_color (fl_rgb_color (118, 202, 116));
+    progress.labelcolor (fl_rgb_color (25, 25, 50));
+    progress.minimum (0);
+    progress.maximum (1000);
+    // progress.value((transfer->pos / transfer->size) * 1000);
+    progress.labelsize (11.2 * scale);
+    progress.labelfont (FL_HELVETICA_BOLD);
+    progress.deactivate ();
 
     box (FL_FLAT_BOX);
 
@@ -71,14 +68,14 @@ TransfersEntry::TransfersEntry (int X, int Y, int W, int H, int S,
 void TransfersEntry::resize (int X, int Y, int W, int H)
 {
     Fl_Group::resize (X, Y, W, H);
-    accept->resize (X + w () - (78 * scale), y () + (2 * scale), 54 * scale,
-                    (h () / 2) - 2 * scale);
-    reject->resize (X + w () - (78 * scale), y () + (h () / 2) + (2 * scale),
-                    54 * scale, (h () / 2) - 4 * scale);
-    saveto->resize (X + w () - (78 * scale) - (59 * scale), y () + (2 * scale),
-                    54 * scale, (h () / 2) - 2 * scale);
-    progress->resize (x () + dl, y () + (30 * scale), w () - dl - (83 * scale),
-                      (16 * scale));
+    accept.resize (X + w () - (78 * scale), y () + (2 * scale), 54 * scale,
+                   (h () / 2) - 2 * scale);
+    reject.resize (X + w () - (78 * scale), y () + (h () / 2) + (2 * scale),
+                   54 * scale, (h () / 2) - 4 * scale);
+    saveto.resize (X + w () - (78 * scale) - (59 * scale), y () + (2 * scale),
+                   54 * scale, (h () / 2) - 2 * scale);
+    progress.resize (x () + dl, y () + (30 * scale), w () - dl - (83 * scale),
+                     (16 * scale));
 }
 
 void TransfersEntry::draw ()
@@ -95,9 +92,9 @@ void TransfersEntry::draw ()
         color (fl_rgb_color (239, 239, 239));
 
     sprintf (proglabel, "%.1f %%", percent);
-    progress->value (val);
-    progress->label (proglabel);
-    progress->redraw ();
+    progress.value (val);
+    progress.label (proglabel);
+    progress.redraw ();
 
     Fl_Group::draw ();
 

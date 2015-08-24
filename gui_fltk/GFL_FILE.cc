@@ -23,7 +23,7 @@ GFLTransfer::GFLTransfer (class GUIFLTK * gui, XWContact_t * pcontact,
                  &GFLTransfer::recvSignal >);
     entry_ = new TransfersEntry (0, 0, gui->Xw_->w () - (224 * gui->Xw_->scale),
                                  50, gui->Xw_->scale, time, this, 0);
-    entry_->accept->callback (FLCB (cbAccept));
+    entry_->accept.callback (FLCB (cbAccept));
 
     xwfSubscribe_ (ftControl);
     xwfSubscribe_ (ftBytes);
@@ -46,9 +46,9 @@ void GFLTransfer::recvSignal (unsigned int dwType, PBMessage_t * msg)
         if (msg->I3 == TC_Resume)
         {
             file_ = fopen (localfilename_, "wb");
-            entry_->accept->deactivate ();
-            entry_->saveto->deactivate ();
-            entry_->progress->activate ();
+            entry_->accept.deactivate ();
+            entry_->saveto.deactivate ();
+            entry_->progress.activate ();
         }
     }
     else if (dwType == ftBytes)
@@ -64,14 +64,14 @@ void GFLTransfer::recvSignal (unsigned int dwType, PBMessage_t * msg)
             else
             {
                 pos_ += msg->I4;
-                entry_->progress->redraw ();
+                entry_->progress.redraw ();
             }
         }
         else
         {
             dbg ("Transfer complete\n");
             fclose (file_);
-            entry_->reject->deactivate ();
+            entry_->reject.deactivate ();
         }
     }
 }

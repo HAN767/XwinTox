@@ -23,8 +23,8 @@ class TransfersEntry : public Fl_Group
     void draw ();
     void resize (int X, int Y, int W, int H);
 
-    Fl_Progress * progress;
-    Fl_Button * accept, *reject, *saveto;
+    Fl_Progress progress;
+    Fl_Button accept, reject, saveto;
 
     GFLTransfer * transfer;
     int scale, inv, dl;
