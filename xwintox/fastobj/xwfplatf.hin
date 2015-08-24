@@ -1,0 +1,74 @@
+#ifndef __CMCONF__HIN
+#define __CMCONF__HIN
+
+#include <stdint.h>
+
+#cmakedefine HAVE_MALLOC_H
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#endif
+#cmakedefine HAVE_UNISTD_H
+
+#cmakedefine WATCOM @WATCOM@
+#define XWF_COMPILER_INFO "@CMAKE_CXX_COMPILER_ID@ @CMAKE_CXX_COMPILER_VERSION@"
+#define XWF_SYSTEM_INFO "@CMAKE_SYSTEM@"
+
+// The size of `long' as computed by sizeof.
+#define SIZEOF_INT @SIZEOF_INT@
+
+// The size of `long' as computed by sizeof.
+#define SIZEOF_LONG @SIZEOF_LONG@
+
+// The size of `long long' as computed by sizeof.
+#define SIZEOF_LONG_LONG @SIZEOF_LONG_LONG@
+
+// The size of `void *' as computed by sizeof. 
+#define SIZEOF_VOID_P @SIZEOF_VOID_P@
+
+typedef short XwfI16;
+typedef unsigned short XwfU16;
+
+typedef int XwfI32;
+typedef unsigned int XwfU32;
+
+#if (SIZEOF_LONG_LONG == 8)
+typedef long long XwfI64;
+typedef unsigned long long XwfU64;
+#elif (SIZEOF_LONG == 8)
+typedef long XwfI64;
+typedef unsigned long XwfU64;
+#else
+typedef int64_t XwfI64;
+typedef uint64_t XwfU64;
+#endif
+
+#if (SIZEOF_INT == SIZEOF_VOID_P)
+typedef unsigned int XwfU;
+typedef int XwfI;
+#elif (SIZEOF_LONG == SIZEOF_VOID_P)
+typedef unsigned long XwfU;
+typedef long XwfI;
+#elif (SIZEOF_LONG_LONG == SIZEOF_VOID_P)
+typedef unsigned long long XwfU;
+typedef long long XwfI;
+#else
+#error "Neither INT, LONG, or LONG LONG correspond with VOID*"
+#endif
+
+#define XwfCellSize SIZEOF_VOID_P
+
+#if (XwfCellSize == 8)
+#define XWF_PAD_WORD
+#elif (XwfCellSize == 4)
+#define XWF_PAD_WORD char[2] pad;
+#else
+#define XWF_PAD_WORD
+#endif
+
+typedef XwfU * XwfPointer;
+
+#ifdef WATCOM
+#define toupper _toupper
+#endif
+
+#endif
