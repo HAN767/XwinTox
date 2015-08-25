@@ -6,6 +6,7 @@ include $(PATH_CURRENT)/libsunshine/Makefile.kmk
 include $(PATH_CURRENT)/xwintox/Makefile.kmk
 include $(PATH_CURRENT)/mcom_tox/Makefile.kmk
 include $(PATH_CURRENT)/gui_fltk/Makefile.kmk
+include $(PATH_CURRENT)/xwintox/fastobj/Makefile.kmk
 include $(PATH_CURRENT)/xwintox/luaobj/Makefile.kmk
 
 include $(FILE_KBUILD_SUB_FOOTER)

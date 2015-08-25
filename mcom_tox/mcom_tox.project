@@ -107,10 +107,10 @@
     <File Name="MCT_SIG.cc"/>
     <File Name="Makefile.kmk"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <VirtualDirectory Name="toxdns3">
     <File Name="toxdns3/TOXDNS3.h"/>
     <File Name="toxdns3/TOXDNS3.cc"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

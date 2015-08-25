@@ -147,4 +147,9 @@ class VM
     std::vector< yyVMData > yyVMContexts;
 };
 
+class Context
+{
+    WordPtr SYSDict, USERDict;
+};
+
 #endif

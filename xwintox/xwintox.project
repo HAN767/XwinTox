@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="xwintox" InternalType="">
+  <VirtualDirectory Name="fastobj">
+    <VirtualDirectory Name="word">
+      <File Name="fastobj/word/integer.cxx"/>
+      <File Name="fastobj/word/array.cxx"/>
+      <File Name="fastobj/word/string.cxx"/>
+      <File Name="fastobj/word/real.cxx"/>
+      <File Name="fastobj/word/dict.cxx"/>
+      <File Name="fastobj/word/lambda.cxx"/>
+      <File Name="fastobj/word/name.cxx"/>
+    </VirtualDirectory>
+    <File Name="fastobj/modFOBJ.cxx"/>
+    <File Name="fastobj/xwfword.h"/>
+    <File Name="fastobj/operator.cxx"/>
+    <File Name="fastobj/modFOBJ.h"/>
+    <File Name="fastobj/xwfmisc.cxx"/>
+    <File Name="fastobj/main.cxx"/>
+    <File Name="fastobj/vm.cxx"/>
+    <File Name="fastobj/CMakeLists.txt"/>
+    <File Name="fastobj/xwfvm.h"/>
+    <File Name="fastobj/binop.cxx"/>
+    <File Name="fastobj/xwforth.h"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00010001N0005Debug000000000000]]>
