@@ -2,9 +2,8 @@
 #include <threads.h>
 
 #include "AOM/IXWClass.h"
-//#include "LUAOBJ.h"
+#include "FASTOBJ.h"
 
-// std::vector<FORTHOBJ*> instances;
 extern "C" int FOBJ_exit () { return 0; }
 
 extern "C" int FOBJ_init (XWF_Module_t * pmodSelf,
@@ -15,12 +14,12 @@ extern "C" int FOBJ_init (XWF_Module_t * pmodSelf,
     pmodSelf->pszName = "XwinFast VM";
     pmodSelf->fnExit = FOBJ_exit;
 
-    objMCOM->pszType = "FASTLOBJ";
+    objMCOM->pszType = "FASTOBJ";
     objMCOM->pszSubtype = "DYN";
     objMCOM->enLang = XWF_Lang_Forth;
     objMCOM->pmodProvider = pmodSelf;
-    // objMCOM->fnCreate =FORTHOBJ::create;
-    // objMCOM->fnDestroy =FORTHOBJ::destroy;
+    objMCOM->fnCreate = FASTOBJ::create;
+    objMCOM->fnDestroy = FASTOBJ::destroy;
 
     psrvServices->fnRegisterClass (objMCOM);
 

@@ -96,6 +96,9 @@ class VM
 
     VM (std::string lib_path) : libPath (lib_path), FactoryW (*this)
     {
+        printf ("XwinFast QuickSilver(TM) Performance Engine [1.98 DR0]\n");
+        printf ("[" XWF_COMPILER_INFO " on " XWF_SYSTEM_INFO ", " __DATE__
+                ", at " __TIME__ "]\n");
         initLexer ();
         createBaseDicts ();
         loadSoftKernel ();

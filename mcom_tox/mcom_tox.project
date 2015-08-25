@@ -102,10 +102,10 @@
     <File Name="modMCT.cc"/>
     <File Name="MCOMMTOX.h"/>
     <File Name="CMakeLists.txt"/>
-    <File Name="MCOMMTOX.cc"/>
     <File Name="MCT_CB.cc"/>
     <File Name="MCT_SIG.cc"/>
     <File Name="Makefile.kmk"/>
+    <File Name="MCOMMTOX.cc"/>
   </VirtualDirectory>
   <VirtualDirectory Name="toxdns3">
     <File Name="toxdns3/TOXDNS3.h"/>
