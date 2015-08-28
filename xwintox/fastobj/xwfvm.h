@@ -76,6 +76,7 @@ struct yyVMData
 class VM
 {
     void createBaseDicts ();
+    class Context & ctx;
 
     void initLexer ();
     void destroyLexer ();
@@ -94,7 +95,8 @@ class VM
     std::vector< WordPtr > DStack;
     std::vector< WordPtr > OStack;
 
-    VM (std::string lib_path) : libPath (lib_path), FactoryW (*this)
+    VM (class Context & Ctx, std::string lib_path)
+        : ctx (Ctx), libPath (lib_path), FactoryW (*this)
     {
         printf ("XwinFast QuickSilver(TM) Performance Engine [1.98 DR0]\n");
         printf ("[" XWF_COMPILER_INFO " on " XWF_SYSTEM_INFO ", " __DATE__
@@ -103,6 +105,16 @@ class VM
         createBaseDicts ();
         loadSoftKernel ();
     }
+
+    VM (class Context & Ctx, std::string lib_path, WordPtr Sys, WordPtr User)
+        : ctx (Ctx), libPath (lib_path), FactoryW (*this)
+    {
+        initLexer ();
+        DStack.push_back (Sys);
+        DStack.push_back (User);
+        DStack.push_back (FactoryW.MakeDictionary ("VM"));
+    }
+
     ~VM () { destroyLexer (); }
 
     void OPush (WordPtr word) { OStack.push_back (word); }
@@ -152,7 +164,19 @@ class VM
 
 class Context
 {
-    WordPtr SYSDict, USERDict;
+    std::string libPath;
+
+    WordPtr SysDict, UserDict;
+    VM SysVM;
+
+  public:
+    Context (std::string lib_path) : libPath (lib_path), SysVM (*this, lib_path)
+    {
+        SysDict = SysVM.DStack[0];
+        UserDict = SysVM.DStack[1];
+    }
+
+    VM createVM () { return VM (*this, libPath, SysDict, UserDict); }
 };
 
 #endif

@@ -9,8 +9,7 @@
 void VM::createBaseDicts ()
 {
     WordPtr Sys = FactoryW.MakeDictionary ("SYS");
-    WordPtr Global = FactoryW.MakeDictionary ("GLOBAL");
-    WordPtr User = FactoryW.MakeDictionary ("USER");
+    WordPtr Global = FactoryW.MakeDictionary ("USER");
 
     WordPtr Null = FactoryW.MakeInteger (0);
     As (WDictionary, &Sys)->AddFromString ("NULL", Null);
@@ -59,7 +58,6 @@ void VM::createBaseDicts ()
 
     DStack.push_back (Sys);
     DStack.push_back (Global);
-    DStack.push_back (User);
 }
 
 void WOperator::Execute (class VM & Vm)

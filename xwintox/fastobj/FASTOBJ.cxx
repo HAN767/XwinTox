@@ -10,7 +10,9 @@
 #include "Module/Module.h"
 #include "FASTOBJ.h"
 
-FASTOBJ::FASTOBJ (XWF_ObjectParams_t * prmObj) : Vm ("../lib")
+Context context ("../lib");
+
+FASTOBJ::FASTOBJ (XWF_ObjectParams_t * prmObj) : Vm (context.createVM ())
 {
     dbg ("New FASTOBJ created. Subtype: %s\n", prmObj->pszObjSubtype);
 

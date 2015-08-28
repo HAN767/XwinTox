@@ -9,6 +9,8 @@
 #include "Module/Module.h"
 #include "AOM/IXWClass.h"
 
+extern Context context;
+
 class FASTOBJ : public XWClassT< FASTOBJ >
 {
   public:
