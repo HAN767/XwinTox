@@ -81,8 +81,10 @@ typedef enum XWMtypes_e
 
 typedef struct XWContact_s
 {
+    int blAvatar;
     unsigned int wNum, wStatus;
     char * pszName, *pszStatus, *pszID;
+    void * pAvatar;
 } XWContact_t;
 
 typedef enum XWContactStatus_e

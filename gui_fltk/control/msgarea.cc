@@ -119,6 +119,7 @@ GMessageArea::GMessageArea (const XWF_hObj_t * hObj, int S, XWContact_t * C,
         icon->show ();
         contact = new XWContact_t;
         contact->wNum = 65535;
+        contact->blAvatar = 0;
     }
 
     names = new Fl_Select_Browser (0, 0, 60 * scale, h () - 80 * scale);

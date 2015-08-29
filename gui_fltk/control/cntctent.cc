@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <vector>
 
+#include <FL/Fl_PNG_Image.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu.H>
 
@@ -51,6 +52,24 @@ void ctentFrName (int, PBMessage_t * msg, void * custom)
     Fl::awake ();
 }
 
+void ctentFrAvatar (int, PBMessage_t * msg, void * custom)
+{
+    ContactsEntry * self = static_cast< ContactsEntry * > (custom);
+
+    if (msg->I1 == self->contact->wNum)
+    {
+        Fl_PNG_Image rawImage (msg->S1);
+        Fl_RGB_Image * newImage =
+            dynamic_cast< Fl_RGB_Image * > (rawImage.copy (40, 40));
+        delete (self->icon->img);
+        delete (self->invicon->img);
+        self->icon->img = newImage;
+        self->invicon->img = newImage;
+        self->redraw ();
+        return;
+    }
+}
+
 void ce_deletecontact (ContactsEntry * ce)
 {
     /* ugly but necessary */
@@ -76,7 +95,8 @@ void ce_deletecontact (ContactsEntry * ce)
         delMsg->I1 = ce->contact->wNum;
         freeContact (ce->contact);
         ce->hObj_->pSvcs->fnDispatch (ce->hObj_, frDelete, delMsg);
-        ce->hObj_->pSvcs->fnSubscribe (ce->hObj_, frStatus, ce, ctentFrStatus);
+        ce->hObj_->pSvcs->fnDesubscribe (ce->hObj_, frStatus, ce,
+                                         ctentFrStatus);
         ce->hObj_->pSvcs->fnDesubscribe (ce->hObj_, frName, ce, ctentFrName);
     }
 
@@ -112,6 +132,7 @@ ContactsEntry::ContactsEntry (const XWF_hObj_t * hObj, int X, int Y, int S,
         groupchat->wNum = 65535;
         hObj_->pSvcs->fnSubscribe (hObj_, frStatus, this, ctentFrStatus);
         hObj_->pSvcs->fnSubscribe (hObj_, frName, this, ctentFrName);
+        hObj_->pSvcs->fnSubscribe (hObj_, frAvDownloaded, this, ctentFrAvatar);
     }
     else
     {
@@ -122,6 +143,7 @@ ContactsEntry::ContactsEntry (const XWF_hObj_t * hObj, int X, int Y, int S,
         invicon->hide ();
         contact = new XWContact_t;
         contact->wNum = 65535;
+        contact->blAvatar = false;
     }
 
     icon->box (FL_ENGRAVED_BOX);
