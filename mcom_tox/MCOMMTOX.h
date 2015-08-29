@@ -65,6 +65,14 @@ class MCOMMTOX : public XWClassT< MCOMMTOX >
     /* Miscellaneous */
     TOX_FILE_CONTROL getToxFC (unsigned int eCtrl);
 
+    struct AvatarTransfer
+    {
+        FILE * file;
+        unsigned int uFrNum, uTNum;
+    };
+
+    std::vector< AvatarTransfer > vecAvTransfers;
+
     Dictionary_t * dictConfig_;
     std::string strSavefile_, strConffile_;
     MCT_Data_t datSave_;

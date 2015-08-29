@@ -21,7 +21,7 @@ void MCOMMTOX::registerCallbacks_ ()
     TOXCALLBACK (friend_request)
 
     TOXCALLBACK (file_recv)
-    //TOXCALLBACK (file_recv_control)
+    // TOXCALLBACK (file_recv_control)
     TOXCALLBACK (file_recv_chunk)
 }
 
@@ -149,10 +149,22 @@ void MCOMMTOX::cb_file_recv (uint32_t friend_number, uint32_t file_number,
     {
         char szFNAvEnd[31];
         std::string strFNAv;
+        AvatarTransfer avtransNew;
 
         snprintf (szFNAvEnd, 31, "%d.png", friend_number);
         strFNAv.assign (pszxwfCall ("APP/GetMiscDataFilename", szFNAvEnd));
+
+        avtransNew.file = fopen (strFNAv.c_str (), "wb");
+        avtransNew.uFrNum = friend_number;
+        avtransNew.uTNum = file_number;
+
         dbg ("Avatar from %d: %s\n", friend_number, strFNAv.c_str ());
+
+        vecAvTransfers.push_back (avtransNew);
+
+        tox_file_control (tox_, friend_number, file_number,
+                          TOX_FILE_CONTROL_RESUME, NULL);
+        return;
     }
     else if (kind != TOX_FILE_KIND_DATA)
     {
@@ -176,7 +188,27 @@ void MCOMMTOX::cb_file_recv_chunk (uint32_t friend_number, uint32_t file_number,
                                    uint64_t position, const uint8_t * data,
                                    size_t length)
 {
+    for (const AvatarTransfer & avTrC : vecAvTransfers)
+    {
+        if ((avTrC.uTNum == file_number) && (avTrC.uFrNum == friend_number))
+        {
+            if (length > 0)
+            {
+                fseek (avTrC.file, position, SEEK_SET);
+                fwrite (data, length, 1, avTrC.file);
+                return;
+            }
+            else
+            {
+                dbg ("Avatar transfer complete\n");
+                fclose (avTrC.file);
+                /* signal, and remove AvTrC from the vector */
+            }
+        }
+    }
+
     PBMessage_t * msgFtBytes = PB_New_Message ();
+    // dbg("Receive chunk\n");
 
     msgFtBytes->I1 = friend_number;
     msgFtBytes->I2 = file_number;
