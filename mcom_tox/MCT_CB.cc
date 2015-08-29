@@ -12,7 +12,6 @@
 
 void MCOMMTOX::registerCallbacks_ ()
 {
-
     TOXCALLBACK (self_connection_status)
 
     TOXCALLBACK (friend_connection_status)
@@ -22,7 +21,7 @@ void MCOMMTOX::registerCallbacks_ ()
     TOXCALLBACK (friend_request)
 
     TOXCALLBACK (file_recv)
-    // TOXCALLBACK(file_recv_control)
+    //TOXCALLBACK (file_recv_control)
     TOXCALLBACK (file_recv_chunk)
 }
 
@@ -146,7 +145,16 @@ void MCOMMTOX::cb_file_recv (uint32_t friend_number, uint32_t file_number,
                              uint32_t kind, uint64_t file_size,
                              const uint8_t * filename, size_t filename_length)
 {
-    if (kind != TOX_FILE_KIND_DATA)
+    if (kind == TOX_FILE_KIND_AVATAR)
+    {
+        char szFNAvEnd[31];
+        std::string strFNAv;
+
+        snprintf (szFNAvEnd, 31, "%d.png", friend_number);
+        strFNAv.assign (pszxwfCall ("APP/GetMiscDataFilename", szFNAvEnd));
+        dbg ("Avatar from %d: %s\n", friend_number, strFNAv.c_str ());
+    }
+    else if (kind != TOX_FILE_KIND_DATA)
     {
         tox_file_control (tox_, friend_number, file_number,
                           TOX_FILE_CONTROL_CANCEL, NULL);
@@ -181,7 +189,4 @@ void MCOMMTOX::cb_file_recv_chunk (uint32_t friend_number, uint32_t file_number,
     xwfDispatch (ftBytes, msgFtBytes);
 }
 /*	void cb_file_recv_control(uint32_t friend_number,uint32_t file_number,
-                              TOX_FILE_CONTROL c);
-    void cb_file_recv_chunk(uint32_t friendnumber, uint32_t filenumber,
-                            uint64_t position, const uint8_t *data,
-                            size_t length);*/
+                              TOX_FILE_CONTROL c);*/

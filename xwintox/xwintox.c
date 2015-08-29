@@ -49,6 +49,13 @@ static void * AppCall (const XWF_Object_Handle_t * pobjhSource,
                   pvParams);
         return szPath;
     }
+    else if (strcmp (pszService, "GetMiscDataFilename") == 0)
+    {
+        static char szPath[255];
+        snprintf (szPath, 255, "%s/.XwinTox/miscdata/%s", get_home_folder (),
+                  pvParams);
+        return szPath;
+    }
     else if (strcmp (pszService, "GetDictionaryEntry") == 0)
     {
         return (void *)Dictionary_get (App.dictConfig, pvParams);
@@ -78,9 +85,9 @@ int main (int argc, char * argv[])
 
     App.dictConfig = Dictionary_new ();
     snprintf (szMiscDir, 255, "%s/.XwinTox/", get_home_folder ());
-    mkdir (szMiscDir, 755);
+    mkdir (szMiscDir, 0755);
     snprintf (szMiscDir, 255, "%s/.XwinTox/miscdata/", get_home_folder ());
-    mkdir (szMiscDir, 755);
+    mkdir (szMiscDir, 0755);
     snprintf (szConfigFilename, 255, "%s/%s", get_home_folder (),
               ".XwinTox/XwinTox.ini");
     Dictionary_load_from_file (App.dictConfig, szConfigFilename, 1);
