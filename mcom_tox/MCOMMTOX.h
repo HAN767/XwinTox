@@ -67,6 +67,7 @@ class MCOMMTOX : public XWClassT< MCOMMTOX >
 
     struct AvatarTransfer
     {
+        char * szFilename;
         FILE * file;
         unsigned int uFrNum, uTNum;
     };

@@ -29,6 +29,8 @@ typedef enum XWMtypes_e
     frRequestServiced,
     frMsg,
 
+    frAvDownloaded,
+
     frDelete,
     frMComDelete, /* issued by frDelete handler in GUI after it's cleared up */
     frSendMsg,

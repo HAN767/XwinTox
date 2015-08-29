@@ -157,6 +157,7 @@ void MCOMMTOX::cb_file_recv (uint32_t friend_number, uint32_t file_number,
         avtransNew.file = fopen (strFNAv.c_str (), "wb");
         avtransNew.uFrNum = friend_number;
         avtransNew.uTNum = file_number;
+        avtransNew.szFilename = strdup (strFNAv.c_str ());
 
         dbg ("Avatar from %d: %s\n", friend_number, strFNAv.c_str ());
 
@@ -188,23 +189,38 @@ void MCOMMTOX::cb_file_recv_chunk (uint32_t friend_number, uint32_t file_number,
                                    uint64_t position, const uint8_t * data,
                                    size_t length)
 {
-    for (const AvatarTransfer & avTrC : vecAvTransfers)
+    bool erase = false;
+    std::vector< AvatarTransfer >::iterator avTrC = vecAvTransfers.begin ();
+    for (; avTrC != vecAvTransfers.end (); avTrC++)
     {
-        if ((avTrC.uTNum == file_number) && (avTrC.uFrNum == friend_number))
+        if ((avTrC->uTNum == file_number) && (avTrC->uFrNum == friend_number))
         {
             if (length > 0)
             {
-                fseek (avTrC.file, position, SEEK_SET);
-                fwrite (data, length, 1, avTrC.file);
+                fseek (avTrC->file, position, SEEK_SET);
+                fwrite (data, length, 1, avTrC->file);
                 return;
             }
             else
             {
+                PBMessage_t * msgAvDownloaded = PB_New_Message ();
                 dbg ("Avatar transfer complete\n");
-                fclose (avTrC.file);
-                /* signal, and remove AvTrC from the vector */
+                fclose (avTrC->file);
+                erase = true;
+
+                msgAvDownloaded->S1 = strdup (avTrC->szFilename);
+                msgAvDownloaded->I1 = friend_number;
+                xwfDispatch (frAvDownloaded, msgAvDownloaded);
+                break;
             }
         }
+    }
+
+    if (erase)
+    {
+        free (avTrC->szFilename);
+        vecAvTransfers.erase (avTrC);
+        return;
     }
 
     PBMessage_t * msgFtBytes = PB_New_Message ();
