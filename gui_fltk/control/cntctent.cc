@@ -59,8 +59,8 @@ void ctentFrAvatar (int, PBMessage_t * msg, void * custom)
     if (msg->I1 == self->contact->wNum)
     {
         Fl_PNG_Image rawImage (msg->S1);
-        Fl_RGB_Image * newImage =
-            dynamic_cast< Fl_RGB_Image * > (rawImage.copy (40, 40));
+        Fl_RGB_Image * newImage = dynamic_cast< Fl_RGB_Image * > (
+            rawImage.copy (40 * self->scale, 40 * self->scale));
         delete (self->icon->img);
         delete (self->invicon->img);
         self->icon->img = newImage;
@@ -98,6 +98,8 @@ void ce_deletecontact (ContactsEntry * ce)
         ce->hObj_->pSvcs->fnDesubscribe (ce->hObj_, frStatus, ce,
                                          ctentFrStatus);
         ce->hObj_->pSvcs->fnDesubscribe (ce->hObj_, frName, ce, ctentFrName);
+        ce->hObj_->pSvcs->fnDesubscribe (ce->hObj_, frAvDownloaded, ce,
+                                         ctentFrAvatar);
     }
 
     mareaVec->erase (

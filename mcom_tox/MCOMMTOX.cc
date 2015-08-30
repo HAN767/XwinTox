@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstring>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <threads.h>
 #include <unistd.h>
@@ -26,8 +27,13 @@ int MCOMMTOX::start ()
     TOX_ERR_BOOTSTRAP errBootstrap;
     uint8_t mypubkey[TOX_ADDRESS_SIZE];
 
-    std::string strName = std::string (pszxwfCall ("APP/GetName", 0));
-    std::string strStatus = std::string (pszxwfCall ("APP/GetName", 0));
+    std::string strName (pszxwfCall ("APP/GetName", 0));
+    std::string strStatus (pszxwfCall ("APP/GetName", 0));
+    std::string strAvFolder (pszxwfCall ("APP/GetAvatarDataFolder", 0));
+
+    DIR * dir;
+    struct dirent * ent;
+
     strSavefile_ = std::string (pszxwfCall ("APP/GetDataFilename", "toxsave"));
     strConffile_ =
         std::string (pszxwfCall ("APP/GetConfigFilename", "toxconf"));
@@ -96,6 +102,28 @@ int MCOMMTOX::start ()
     thrd_create (&thrdTox_, (thrd_start_t)toxLoop_, this);
 
     sendFriends_ ();
+
+    if ((dir = opendir (strAvFolder.c_str ())) != NULL)
+    {
+        while ((ent = readdir (dir)) != NULL)
+        {
+            char * p = NULL, * pszC = strdup (ent->d_name);
+
+            p = strsep (&pszC, ".png");
+
+            if (p != NULL && strlen (p) > 0) /* avatar found */
+            {
+                PBMessage_t * msgAv = PB_New_Message ();
+                std::string path = strAvFolder + "/" + p + ".png";
+
+                msgAv->I1 = strtol (p, 0, 10);
+                msgAv->S1 = strdup (path.c_str ());
+
+                xwfDispatch (frAvDownloaded, msgAv);
+            }
+        }
+        closedir (dir);
+    }
 
     return 0;
 }

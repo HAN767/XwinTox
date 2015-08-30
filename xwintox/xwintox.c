@@ -49,6 +49,12 @@ static void * AppCall (const XWF_Object_Handle_t * pobjhSource,
                   pvParams);
         return szPath;
     }
+    else if (strcmp (pszService, "GetAvatarDataFolder") == 0)
+    {
+        static char szPath[255];
+        snprintf (szPath, 255, "%s/.XwinTox/miscdata", get_home_folder ());
+        return szPath;
+    }
     else if (strcmp (pszService, "GetMiscDataFilename") == 0)
     {
         static char szPath[255];
