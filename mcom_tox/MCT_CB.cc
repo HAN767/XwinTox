@@ -21,8 +21,10 @@ void MCOMMTOX::registerCallbacks_ ()
     TOXCALLBACK (friend_request)
 
     TOXCALLBACK (file_recv)
-    // TOXCALLBACK (file_recv_control)
+    TOXCALLBACK (file_recv_control)
     TOXCALLBACK (file_recv_chunk)
+
+    TOXCALLBACK (file_chunk_request)
 }
 
 void MCOMMTOX::cb_self_connection_status (TOX_CONNECTION connection_status)
@@ -236,5 +238,30 @@ void MCOMMTOX::cb_file_recv_chunk (uint32_t friend_number, uint32_t file_number,
 
     xwfDispatch (ftBytes, msgFtBytes);
 }
-/*	void cb_file_recv_control(uint32_t friend_number,uint32_t file_number,
-                              TOX_FILE_CONTROL c);*/
+void MCOMMTOX::cb_file_recv_control (uint32_t friend_number,
+                                     uint32_t file_number, TOX_FILE_CONTROL c)
+{
+    printf ("FILE RECV CONTROL: %d\n", c);
+
+    PBMessage_t * msg = PB_New_Message ();
+
+    msg->I1 = friend_number;
+    msg->I2 = file_number;
+    msg->I3 = getXwFC (c);
+    xwfDispatch (ftControl, msg);
+}
+
+void MCOMMTOX::cb_file_chunk_request (uint32_t friend_number,
+                                      uint32_t file_number, uint64_t position,
+                                      size_t length)
+{
+    printf ("FILE CHUNK REQUEST: %d %d\n", position, length);
+    PBMessage_t * msg = PB_New_Message ();
+
+    msg->I1 = friend_number;
+    msg->I2 = file_number;
+    msg->I3 = position;
+    msg->I4 = length;
+    xwfDispatch (ftBytesRequest, msg);
+    return;
+}

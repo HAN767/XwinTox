@@ -36,6 +36,12 @@ TransfersEntry::TransfersEntry (int X, int Y, int W, int H, int S,
 {
     strftime (date, 255, "%d/%b/%y %H:%M", Time);
 
+    if (transfer->dir_ == TR_Send)
+    {
+        accept.hide ();
+        saveto.hide ();
+    }
+
     fl_font (FL_HELVETICA, 11 * scale);
     dl = fl_width (date) + 20;
 
@@ -98,7 +104,7 @@ void TransfersEntry::draw ()
 
     Fl_Group::draw ();
 
-    sprintf (from, "From: %s", GetDisplayName (transfer->contact_, 100));
+    sprintf (from, "Friend: %s", GetDisplayName (transfer->contact_, 100));
 
     fl_font (FL_HELVETICA, 11 * scale);
     fl_color (fl_rgb_color (110, 110, 118));

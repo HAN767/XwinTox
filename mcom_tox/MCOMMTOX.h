@@ -62,8 +62,12 @@ class MCOMMTOX : public XWClassT< MCOMMTOX >
                              uint64_t position, const uint8_t * data,
                              size_t length);
 
+    void cb_file_chunk_request (uint32_t friend_number, uint32_t file_number,
+                                uint64_t position, size_t length);
+
     /* Miscellaneous */
     TOX_FILE_CONTROL getToxFC (unsigned int eCtrl);
+    unsigned int getXwFC (TOX_FILE_CONTROL tCtrl);
 
     struct AvatarTransfer
     {

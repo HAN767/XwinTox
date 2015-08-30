@@ -56,15 +56,19 @@ void ctentFrAvatar (int, PBMessage_t * msg, void * custom)
 {
     ContactsEntry * self = static_cast< ContactsEntry * > (custom);
 
+    printf ("%d == %d\n", msg->I1, self->contact->wNum);
+
     if (msg->I1 == self->contact->wNum)
     {
         Fl_PNG_Image rawImage (msg->S1);
         Fl_RGB_Image * newImage = dynamic_cast< Fl_RGB_Image * > (
-            rawImage.copy (40 * self->scale, 40 * self->scale));
+                           rawImage.copy (40 * self->scale, 40 * self->scale)),
+                       * newImage2 =
+                           dynamic_cast< Fl_RGB_Image * > (newImage->copy ());
         delete (self->icon->img);
         delete (self->invicon->img);
         self->icon->img = newImage;
-        self->invicon->img = newImage;
+        self->invicon->img = newImage2;
         self->redraw ();
         return;
     }

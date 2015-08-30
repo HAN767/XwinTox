@@ -27,6 +27,11 @@ GFLTransfer::GFLTransfer (class GUIFLTK * gui, XWContact_t * pcontact,
 
     xwfSubscribe_ (ftControl);
     xwfSubscribe_ (ftBytes);
+
+    if (dir_ == TR_Send)
+    {
+        xwfSubscribe_ (ftBytesRequest);
+    }
 }
 
 int GFLTransfer::xwfSubscribe_ (unsigned int dwType)
@@ -37,18 +42,26 @@ int GFLTransfer::xwfSubscribe_ (unsigned int dwType)
 
 void GFLTransfer::recvSignal (unsigned int dwType, PBMessage_t * msg)
 {
-    // dbg("Signal received\n");
-
     if (msg->I1 != contact_->wNum | msg->I2 != id_)
         return;
     else if (dwType == ftControl)
     {
+        printf ("Matched\n");
         if (msg->I3 == TC_Resume)
         {
-            file_ = fopen (localfilename_, "wb");
+            if (dir_ == TR_Recv)
+            {
+
+                file_ = fopen (localfilename_, "wb");
+            }
             entry_->accept.deactivate ();
             entry_->saveto.deactivate ();
             entry_->progress.activate ();
+            if (dir_ == TR_Send)
+            {
+                file_ = fopen (localfilename_, "rb");
+                dbg ("Request to send accepted\n");
+            }
         }
     }
     else if (dwType == ftBytes)
@@ -72,6 +85,33 @@ void GFLTransfer::recvSignal (unsigned int dwType, PBMessage_t * msg)
             dbg ("Transfer complete\n");
             fclose (file_);
             entry_->reject.deactivate ();
+        }
+    }
+    else if (dwType == ftBytesRequest)
+    {
+        if (msg->I4 == 0)
+        {
+            dbg ("Transfer (send) complete.\n");
+            fclose (file_);
+            entry_->reject.deactivate ();
+        }
+        else
+        {
+            unsigned char * bytes =
+                static_cast< unsigned char * > (malloc (msg->I4));
+            PBMessage_t * msgBytes = PB_New_Message ();
+
+            fread (bytes, 1, sizeof (bytes), file_);
+            pos_ += msg->I4;
+            entry_->progress.redraw ();
+
+            msgBytes->I1 = msg->I1;
+            msgBytes->I2 = msg->I2;
+            msgBytes->I3 = msg->I3;
+            msgBytes->I4 = msg->I4;
+            msgBytes->V = bytes;
+
+            gui_->xwfDispatch (ftBytesDelivery, msg);
         }
     }
 }

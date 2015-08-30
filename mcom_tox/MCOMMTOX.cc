@@ -103,6 +103,8 @@ int MCOMMTOX::start ()
 
     sendFriends_ ();
 
+    sleep (1);
+
     if ((dir = opendir (strAvFolder.c_str ())) != NULL)
     {
         while ((ent = readdir (dir)) != NULL)
@@ -118,6 +120,7 @@ int MCOMMTOX::start ()
 
                 msgAv->I1 = strtol (p, 0, 10);
                 msgAv->S1 = strdup (path.c_str ());
+                printf ("Friend: %s\n", msgAv->S1);
 
                 xwfDispatch (frAvDownloaded, msgAv);
             }

@@ -53,7 +53,7 @@ typedef enum XWMtypes_e
      * I1 = Friend number. I2 = File number.
      * I3 = (Enum TransferControl) Control ID */
 
-    /* ftBytes = File data delivery
+    /* ftBytes = File data from remote sender
      * I1 = Friend number. I2 = File number.
      * I3 = Position. I4 = Length.
      * V = Data */
@@ -66,6 +66,15 @@ typedef enum XWMtypes_e
      * I3 = file size. S1 = full path.
      * S2 = file name. */
     ftSendRequest,
+    /* ftSendRequest = MCOM says to transfer a file
+     * I1 = Friend number. I2 = File number.
+     * I3 = position within file. I4 = number of bytes. */
+    ftBytesRequest,
+    /* ftBytes = File data to send to recipient
+     * I1 = Friend number. I2 = File number.
+     * I3 = Position. I4 = Length.
+     * V = Data */
+    ftBytesDelivery,
 
     /* ftResume = Resume a file transfer (or start one)
      * I1 = Friend number. I2 = File number. */

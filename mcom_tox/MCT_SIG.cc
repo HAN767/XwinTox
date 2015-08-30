@@ -61,7 +61,8 @@ void MCOMMTOX::recvSignal (unsigned int dwType, PBMessage_t * msg)
 
         free (szFilename);
 
-        dbg ("Transfer %s to %d. Error: %d\n", szFilename, msg->I1, errSend);
+        dbg ("Transfer %s to %d. Error: %d. %s %s\n", szFilename, msg->I1,
+             errSend, msg->S1, szFilename);
 
         if (errSend != TOX_ERR_FILE_SEND_OK)
             return;
@@ -71,10 +72,15 @@ void MCOMMTOX::recvSignal (unsigned int dwType, PBMessage_t * msg)
         msgFtSendRequest->I2 = dwFilenum;
         msgFtSendRequest->I3 = msg->I2;
         msgFtSendRequest->S1 = strdup (msg->S1);
-        msgFtSendRequest->S2 = strdup (szFilename);
+        msgFtSendRequest->S2 = strdup (msg->S1);
 
         xwfDispatch (ftSendRequest, msgFtSendRequest);
 
+        break;
+
+    case ftBytesDelivery:
+        tox_file_send_chunk (tox_, msg->I1, msg->I2, msg->I3, (uint8_t *)msg->V,
+                             msg->I4, 0);
         break;
     }
 }
@@ -117,6 +123,18 @@ TOX_FILE_CONTROL MCOMMTOX::getToxFC (unsigned int eCtrl)
         return TOX_FILE_CONTROL_PAUSE;
     else if (eCtrl == TC_Cancel)
         return TOX_FILE_CONTROL_CANCEL;
+    else
+        return static_cast< TOX_FILE_CONTROL > (0);
+}
+
+unsigned int MCOMMTOX::getXwFC (TOX_FILE_CONTROL tCtrl)
+{
+    if (tCtrl == TOX_FILE_CONTROL_RESUME)
+        return TC_Resume;
+    else if (tCtrl == TOX_FILE_CONTROL_PAUSE)
+        return TC_Pause;
+    else if (tCtrl == TOX_FILE_CONTROL_CANCEL)
+        return TC_Cancel;
     else
         return static_cast< TOX_FILE_CONTROL > (0);
 }
