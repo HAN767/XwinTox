@@ -263,5 +263,7 @@ void MCOMMTOX::cb_file_chunk_request (uint32_t friend_number,
     msg->I3 = position;
     msg->I4 = length;
     xwfDispatch (ftBytesRequest, msg);
+
+    usleep (250);
     return;
 }

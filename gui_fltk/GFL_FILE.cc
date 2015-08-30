@@ -16,8 +16,6 @@ GFLTransfer::GFLTransfer (class GUIFLTK * gui, XWContact_t * pcontact,
       time_ (time), id_ (num), size_ (size), pos_ (0), dir_ (dir)
 {
     dbg ("Pos: %d. Size: %d\n", pos_, size_);
-    asprintf (&localfilename_, "%s/%s", gui_->xwfCall ("APP/GetHomeFolder", 0),
-              filename_);
     fnRecvSignal_ = reinterpret_cast< PB_Callback_f > (
         pbThunk< GFLTransfer, decltype (&GFLTransfer::recvSignal),
                  &GFLTransfer::recvSignal >);
@@ -25,13 +23,18 @@ GFLTransfer::GFLTransfer (class GUIFLTK * gui, XWContact_t * pcontact,
                                  50, gui->Xw_->scale, time, this, 0);
     entry_->accept.callback (FLCB (cbAccept));
 
-    xwfSubscribe_ (ftControl);
-    xwfSubscribe_ (ftBytes);
-
     if (dir_ == TR_Send)
     {
+        localfilename_ = strdup (filename);
         xwfSubscribe_ (ftBytesRequest);
     }
+    else
+    {
+        xwfSubscribe_ (ftBytes);
+        asprintf (&localfilename_, "%s/%s",
+                  gui_->xwfCall ("APP/GetHomeFolder", 0), filename_);
+    }
+    xwfSubscribe_ (ftControl);
 }
 
 int GFLTransfer::xwfSubscribe_ (unsigned int dwType)
@@ -111,7 +114,7 @@ void GFLTransfer::recvSignal (unsigned int dwType, PBMessage_t * msg)
             msgBytes->I4 = msg->I4;
             msgBytes->V = bytes;
 
-            gui_->xwfDispatch (ftBytesDelivery, msg);
+            gui_->xwfDispatch (ftBytesDelivery, msgBytes);
         }
     }
 }
