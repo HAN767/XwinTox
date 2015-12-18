@@ -1,12 +1,14 @@
-
 SUB_DEPTH = .
+BUILD_TYPE ?= debug
 include $(KBUILD_PATH)/subheader.kmk
+include $(PATH_CURRENT)/Kmk/OBJC.kmk
 
-include $(PATH_CURRENT)/libsunshine/Makefile.kmk
-include $(PATH_CURRENT)/xwintox/Makefile.kmk
-include $(PATH_CURRENT)/mcom_tox/Makefile.kmk
-include $(PATH_CURRENT)/gui_fltk/Makefile.kmk
-include $(PATH_CURRENT)/xwintox/fastobj/Makefile.kmk
-include $(PATH_CURRENT)/xwintox/luaobj/Makefile.kmk
+include $(PATH_CURRENT)/src/Makefile.kmk
+
+PKGNAME = XwinTox-$(KBUILD_TARGET)_$(KBUILD_TARGET_ARCH).tar.gz
+PKGDIRS = lib bin include
+
+package:
+	tar -C $(PATH_INS) -cvzf $(PKGNAME) $(PKGDIRS)
 
 include $(FILE_KBUILD_SUB_FOOTER)

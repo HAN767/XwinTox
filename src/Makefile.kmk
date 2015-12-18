@@ -1,0 +1,9 @@
+SUB_DEPTH = ..
+include $(KBUILD_PATH)/subheader.kmk
+
+PROGRAMS += xwintox
+
+xwintox_TEMPLATE = OBJC
+xwintox_SOURCES = tmp.m
+
+include $(FILE_KBUILD_SUB_FOOTER)

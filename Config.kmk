@@ -1,49 +1,13 @@
-#TOOL_GCC_CC =cc
-#TOOL_GCC_CXX=CC
-#TOOL_GCC_LD=CC
+DBGFLAGS = -ggdb
+WARNFLAGS = -Wall -Wno-unused-function -Wno-format -Wno-switch -Wno-import
+ALLFLAGS = $(DBGFLAGS) $(WARNFLAGS) -Wno-deprecated -pthread
+PKGCONF ?= pkg-config
 
-TEMPLATE_XwinTox = XwinTox base template
-TEMPLATE_XwinTox_TOOL = GCC
-TEMPLATE_XwinTox_CXXFLAGS = -std=c++11 -ggdb
-TEMPLATE_XwinTox_CFLAGS = $(CFLAGS)  -std=c11 -ggdb
-#TEMPLATE_XwinTox_CXXFLAGS = $(CFLAGS) -fprofile-arcs -ftest-coverage --coverage -ggdb
-#TEMPLATE_XwinTox_LDFLAGS = $(LDFLAGS) -lgcov -fprofile-arcs --coverage -ftest-coverage -ggdb
+BOEHM_INCS = /usr/local
 
-TEMPLATE_XwDLL = XwinTox DLL template
-TEMPLATE_XwDLL_EXTENDS = XwinTox
-TEMPLATE_XwDLL_EXTENDS_BY = appending
-TEMPLATE_XwDLL_CFLAGS = -fPIC
-TEMPLATE_XwDLL_CXXFLAGS = -fPIC
-TEMPLATE_XwDLL_LDFLAGS = -fPIC
-
-TEMPLATE_XwSTATIC = XwinTox Static template
-TEMPLATE_XwSTATIC_EXTENDS = XwDLL
-TEMPLATE_XwSTATIC_EXTENDS_BY = appending
-TEMPLATE_XwSTATIC_CFLAGS = -fPIC -static
-TEMPLATE_XwSTATIC_CXXFLAGS = -fPIC -static
-TEMPLATE_XwSTATIC_LDFLAGS = -fPIC -static
-
-if "$(KBUILD_TARGET)" == "freebsd"
-TEMPLATE_XwinTox_LIBS += stdthreads
-endif # FreeBSD
-
-if "$(KBUILD_TARGET)" == "linux"
-TEMPLATE_XwinTox_CFLAGS += -I$(PATH_ROOT)/libsunshine/hdr/compat
-TEMPLATE_XwinTox_LIBS += pthread
-endif # Linux
-
-## C++ ##
-# if GCC
-CXX_LIBS = stdc++ 
-
-## libraries ##
-
-PKGCONF		= pkg-config
-FLTKCONF	?= fltk-config
-
-TOX_CFLAGS = $(shell $(PKGCONF) libtoxcore --cflags)
-TOX_LDFLAGS = $(shell $(PKGCONF) libtoxcore --libs)
-
-FLTK_CFLAGS = $(shell $(FLTKCONF) --cflags)
-FLTK_LDFLAGS = $(shell $(FLTKCONF) --ldstaticflags)
-FLTK_LIB = $(shell $(FLTKCONF) --libs)
+TEMPLATE_OBJC = Objective-C
+TEMPLATE_OBJC_TOOL = PCPP
+TEMPLATE_OBJC_CXXFLAGS = $(ALLFLAGS)
+TEMPLATE_OBJC_CFLAGS = $(ALLFLAGS)
+TEMPLATE_OBJC_OBJCFLAGS = $(ALLFLAGS)
+TEMPLATE_OBJC_INCS = $(PATH_ROOT)/objcrt/hdr $(PATH_ROOT)/objpak/hdr . hdr
