@@ -3,6 +3,7 @@ BUILD_TYPE ?= debug
 include $(KBUILD_PATH)/subheader.kmk
 include $(PATH_CURRENT)/Kmk/OBJC.kmk
 
+include $(PATH_CURRENT)/external/fltkhs/Makefile.kmk
 include $(PATH_CURRENT)/src/Makefile.kmk
 
 PKGNAME = XwinTox-$(KBUILD_TARGET)_$(KBUILD_TARGET_ARCH).tar.gz

@@ -1,0 +1,13 @@
+SUB_DEPTH = ../..
+include $(KBUILD_PATH)/subheader.kmk
+
+LIBRARIES += libfltkhs
+
+libfltkhs_TEMPLATE = XwSTATIC
+libfltkhs_INCS = .
+libfltkhs_SOURCES = $(wildcard $(PATH_ROOT)/external/fltkhs/*.cpp)
+libfltkhs_DEFS = INTERNAL_LINKAGE
+libfltkhs_CFLAGS = $(FLTK_CFLAGS)
+libfltkhs_LDFLAGS = $(FLTK_LDFLAGS)
+
+include $(FILE_KBUILD_SUB_FOOTER)

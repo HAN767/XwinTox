@@ -2,8 +2,16 @@ DBGFLAGS = -ggdb
 WARNFLAGS = -Wall -Wno-unused-function -Wno-format -Wno-switch -Wno-import
 ALLFLAGS = $(DBGFLAGS) $(WARNFLAGS) -Wno-deprecated -pthread
 PKGCONF ?= pkg-config
+FLTKCONF ?= fltk-config
 
-BOEHM_INCS = /usr/local
+PKGCONF		= pkg-config
+
+TOX_CFLAGS = $(shell $(PKGCONF) libtoxcore --cflags)
+TOX_LDFLAGS = $(shell $(PKGCONF) libtoxcore --libs)
+
+FLTK_CFLAGS = $(shell $(FLTKCONF) --cflags)
+FLTK_LDFLAGS = $(shell $(FLTKCONF) --ldstaticflags)
+FLTK_LIB = $(shell $(FLTKCONF) --libs)
 
 TEMPLATE_OBJC = Objective-C
 TEMPLATE_OBJC_TOOL = PCPP
@@ -11,3 +19,15 @@ TEMPLATE_OBJC_CXXFLAGS = $(ALLFLAGS)
 TEMPLATE_OBJC_CFLAGS = $(ALLFLAGS)
 TEMPLATE_OBJC_OBJCFLAGS = $(ALLFLAGS)
 TEMPLATE_OBJC_INCS = $(PATH_ROOT)/objcrt/hdr $(PATH_ROOT)/objpak/hdr . hdr
+
+TEMPLATE_XwCXX = C/C++ base template
+TEMPLATE_XwCXX_TOOL = GCC
+TEMPLATE_XwCXX_CXXFLAGS = -std=c++11 -ggdb
+TEMPLATE_XwCXX_CFLAGS = $(CFLAGS)  -std=c11 -ggdb
+
+TEMPLATE_XwSTATIC = C/C++ static template
+TEMPLATE_XwSTATIC_EXTENDS = XwCXX
+TEMPLATE_XwSTATIC_EXTENDS_BY = appending
+TEMPLATE_XwSTATIC_CFLAGS = -fPIC -static
+TEMPLATE_XwSTATIC_CXXFLAGS = -fPIC -static
+TEMPLATE_XwSTATIC_LDFLAGS = -fPIC -static
