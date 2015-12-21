@@ -5,5 +5,8 @@ PROGRAMS += xwintox
 
 xwintox_TEMPLATE = OBJC
 xwintox_SOURCES = tmp.m
+xwintox_INCS = ${FLTKHS_INCS}
+xwintox_LIBS = ${FLTKHS_LIBS}
+xwintox_LDFLAGS = ${FLTKHS_LDFLAGS}
 
 include $(FILE_KBUILD_SUB_FOOTER)

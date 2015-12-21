@@ -7,9 +7,10 @@
 #include "FL/Fl.H"
 #include "FL/fl_show_colormap.H"
 #include "Fl_CallbackC.h"
-EXPORT {
+EXPORT
+{
 #endif
-  FL_EXPORT_C(Fl_Color, flc_show_colormap)(Fl_Color oldcol);
+    FL_EXPORT_C (Fl_Color, flc_show_colormap) (Fl_Color oldcol);
 #ifdef __cplusplus
 }
 #endif

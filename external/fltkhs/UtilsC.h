@@ -4,6 +4,6 @@
 #include "Fl_Types.h"
 #include "FL/Fl.H"
 #include "FL/Fl_Menu_Item.H"
-Fl_Menu_Item* convert(fl_Menu_Item* item, int size);
+Fl_Menu_Item * convert (fl_Menu_Item * item, int size);
 #endif
 #endif

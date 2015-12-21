@@ -5,6 +5,7 @@ PKGCONF ?= pkg-config
 FLTKCONF ?= fltk-config
 
 PKGCONF		= pkg-config
+CXX_LDFLAGS = -lstdc++
 
 TOX_CFLAGS = $(shell $(PKGCONF) libtoxcore --cflags)
 TOX_LDFLAGS = $(shell $(PKGCONF) libtoxcore --libs)
@@ -19,6 +20,7 @@ TEMPLATE_OBJC_CXXFLAGS = $(ALLFLAGS)
 TEMPLATE_OBJC_CFLAGS = $(ALLFLAGS)
 TEMPLATE_OBJC_OBJCFLAGS = $(ALLFLAGS)
 TEMPLATE_OBJC_INCS = $(PATH_ROOT)/objcrt/hdr $(PATH_ROOT)/objpak/hdr . hdr
+TEMPLATE_OBJC_LDFLAGS = ${CXX_LDFLAGS}
 
 TEMPLATE_XwCXX = C/C++ base template
 TEMPLATE_XwCXX_TOOL = GCC
@@ -31,3 +33,7 @@ TEMPLATE_XwSTATIC_EXTENDS_BY = appending
 TEMPLATE_XwSTATIC_CFLAGS = -fPIC -static
 TEMPLATE_XwSTATIC_CXXFLAGS = -fPIC -static
 TEMPLATE_XwSTATIC_LDFLAGS = -fPIC -static
+
+FLTKHS_INCS = $(PATH_ROOT)/external/fltkhs
+FLTKHS_LIBS =  ${libfltkhs_1_TARGET} ${FLTK_LIB}
+FLTKHS_LDFLAGS = ${FLTK_LDFLAGS}
